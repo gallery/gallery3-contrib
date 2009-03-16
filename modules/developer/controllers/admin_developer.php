@@ -110,6 +110,46 @@ class Admin_Developer_Controller extends Admin_Controller {
     return $v;
   }
 
+  function mptt() {
+    $v = new Admin_View("admin.html");
+    $v->content = new View("mptt_tree.html");
+
+    $v->content->tree = $this->_build_tree();
+    
+    $v->content->url = exec("which /usr/bin/dot") ? url::site("admin/developer/mptt_graph") : null;
+
+    print $v;
+  }
+
+  function mptt_graph() {
+    $items = ORM::factory("item")->orderby("id")->find_all();
+    $data = $this->_build_tree();
+
+    $proc = proc_open("/usr/bin/dot -Tsvg",
+                      array(array("pipe", "r"),
+                            array("pipe", "w")),
+                      $pipes,
+                      VARPATH . "tmp");
+    fwrite($pipes[0], $data);
+    fclose($pipes[0]);
+
+    header("Content-Type: image/svg+xml");
+    print(stream_get_contents($pipes[1]));
+    fclose($pipes[1]);
+    proc_close($proc);
+  }
+
+  private function _build_tree() {
+    $items = ORM::factory("item")->orderby("id")->find_all();
+    $data = "digraph G {\n";
+    foreach ($items as $item) {
+      $data .= "  $item->parent_id -> $item->id\n";
+      $data .= "  $item->id [label=\"$item->id [$item->level] <$item->left, $item->right>\"]\n";
+    }
+    $data .= "}\n";
+    return $data;
+  }
+
   public function _is_module_defined(Validation $post, $field) {
     $module_name = $post[$field];
     if (file_exists(MODPATH . "$module_name/module.info")) {

@@ -28,7 +28,12 @@ class developer_menu_Core {
       ->append(Menu::factory("link")
           ->id("generate_menu")
           ->label(t("Generate"))
-          ->url(url::site("admin/developer")));
+          ->url(url::site("admin/developer")))
+      ->append(Menu::factory("link")
+          ->id("mptt_tree_menu")
+          ->label(t("MPTT Tree"))
+          ->url(url::site("admin/developer/mptt")));
+
     if (Session::instance()->get("profiler", false)) {
       $developer_menu->append(Menu::factory("link")
                               ->id("scaffold_profiler")
