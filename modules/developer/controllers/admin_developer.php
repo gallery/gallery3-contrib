@@ -18,15 +18,17 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class Admin_Developer_Controller extends Admin_Controller {
-  public function index() {
+  public function module() {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_developer.html");
+    $view->content->title = t("Generate module");
+    
     if (!is_writable(MODPATH)) {
       message::warning(
         t("The module directory is not writable. Please insure that it is writable by the web server"));
     }
     list ($form, $errors) = $this->_get_module_form();
-    $view->content->module_create = $this->_get_module_create_content($form, $errors);
+    $view->content->developer_content = $this->_get_module_create_content($form, $errors);
     print $view;
   }
 
@@ -155,7 +157,7 @@ class Admin_Developer_Controller extends Admin_Controller {
   }
 
   public function _is_module_defined(Validation $post, $field) {
-    $module_name = $post[$field];
+    $module_name = strtolower(strtr($post[$field], " ", "_"));
     if (file_exists(MODPATH . "$module_name/module.info")) {
       $post->add_error($field, "module_exists");
     }

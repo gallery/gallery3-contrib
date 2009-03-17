@@ -34,7 +34,6 @@ class developer_task_Core {
 
     switch ($context["step"]) {
     case 0:               // Create directory tree
-      Kohana::log("debug", Kohana::debug($context));
       foreach (array("", "controllers", "helpers", "js", "views") as $dir) {
         $path = "{$context['module_path']}/$dir";
         if (!file_exists($path)) {
@@ -44,19 +43,19 @@ class developer_task_Core {
       }
       break;
     case 1:               // Generate installer
-      $context["installer"] = 1;
+      $context["installer"] = array();
       self::_render_helper_file($context, "installer");
       break;
     case 2:               // Generate theme helper
-      $context["theme"] = 1;
+      $context["theme"] = !isset($context["theme"]) ? array() : $context["theme"];
       self::_render_helper_file($context, "theme");
       break;
     case 3:               // Generate block helper
-      $context["block"] = 1;
+      $context["block"] = array();
       self::_render_helper_file($context, "block");
       break;
     case 4:               // Generate menu helper
-      $context["menu"] = empty($context["menu"]) ? 1 : $context["menu"];
+      $context["menu"] = !isset($context["menu"]) ? array() : $context["menu"];
       self::_render_helper_file($context, "menu");
       break;
     case 5:               // Generate event helper
@@ -126,7 +125,7 @@ class developer_task_Core {
   }
 
   private static function _render_helper_file($context, $helper) {
-    if (!empty($context[$helper])) {
+    if (isset($context[$helper])) {
       $config = Kohana::config("developer.methods");
       $file = "{$context["module_path"]}/helpers/{$context["module"]}_{$helper}.php";
       touch($file);

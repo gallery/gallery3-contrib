@@ -27,8 +27,8 @@ class developer_menu_Core {
     $developer_menu
       ->append(Menu::factory("link")
           ->id("generate_menu")
-          ->label(t("Generate"))
-          ->url(url::site("admin/developer")))
+          ->label(t("Generate Module"))
+          ->url(url::site("admin/developer/module")))
       ->append(Menu::factory("link")
           ->id("mptt_tree_menu")
           ->label(t("MPTT Tree"))

@@ -1,24 +1,23 @@
-$("#gDeveloperTools").ready(function() {
-  $("#gDeveloperTools").tabs();
-});
-
 var module_success = function(data) {
-  $("#gGenerateModule").after('<div id="moduleProgress" style="margin-left: 5.5em;"></div>');
-  $("#moduleProgress").progressbar();
+  $("#gDeveloperAdmin").append('<div id="gModuleProgress" style="margin-top: 1em;"></div>');
+  $("#gModuleProgress").progressbar();
 
   var task = data.task;
   var url = data.url;
   var done = false;
+  var counter = 0;
   while (!done) {
     $.ajax({async: false,
       success: function(data, textStatus) {
-        $("#moduleProgress").progressbar("value", data.task.percent_complete);
+        $("#gModuleProgress").progressbar("value", data.task.percent_complete);
         done = data.task.done;
       },
       dataType: "json",
       type: "POST",
       url: url
     });
+    // Leave this in as insurance that we never run away
+    done = done || ++counter > 12;
   }
   document.location.reload();
 };
