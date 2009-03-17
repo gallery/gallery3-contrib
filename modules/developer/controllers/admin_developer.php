@@ -115,9 +115,13 @@ class Admin_Developer_Controller extends Admin_Controller {
     $v->content = new View("mptt_tree.html");
 
     $v->content->tree = $this->_build_tree();
-    
-    $v->content->url = exec("which /usr/bin/dot") ? url::site("admin/developer/mptt_graph") : null;
 
+    if (exec("which /usr/bin/dot")) {
+      $v->content->url = url::site("admin/developer/mptt_graph");
+    } else {
+      $v->content->url = null;
+      message::warning(t("The package 'graphviz' is not installed, degrading to text view"));
+    }
     print $v;
   }
 
