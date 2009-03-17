@@ -7,7 +7,7 @@
   <? if (empty($url)): ?>
     <pre><?= $tree ?></pre>
   <? else: ?>
-    <object type="image/svg+xml" data="<?= $url ?>" ><pre><?= $tree ?></pre></object>
+    <object type="image/svg+xml" data="<?= $url ?>" style="width: 100%" ><pre><?= $tree ?></pre></object>
   <? endif ?>     
   </div>
 </div>
