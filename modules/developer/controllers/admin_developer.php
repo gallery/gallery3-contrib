@@ -32,6 +32,16 @@ class Admin_Developer_Controller extends Admin_Controller {
     print $view;
   }
 
+  public function test_data() {
+    $v = new Admin_View("admin.html");
+    $v->content = new View("admin_developer.html");
+    $v->content->title = t("Generate Test Data");
+    
+    list ($form, $errors) = $this->_get_module_form();
+    $v->content->developer_content = $this->_get_test_data_view($form, $errors);
+    print $v;
+  }
+
   public function module_create() {
     access::verify_csrf();
 
@@ -49,10 +59,15 @@ class Admin_Developer_Controller extends Admin_Controller {
         ->name(t("Create Module"));
       $task = task::create($task_def, array_merge(array("step" => 0), $post->as_array()));
 
+      $success_msg = t("Generation of %module completed successfully",
+                       array("module" => $post->name));
+      $error_msg = t("Generation of %module failed.", array("module" => $post->name));
       print json_encode(array("result" => "started",
-                            "url" => url::site("admin/developer/run_create/{$task->id}?csrf=" .
-                                               access::csrf_token()),
-                            "task" => $task->as_array()));
+                              "max_iterations" => 15,
+                              "success_msg" => $success_msg, "error_msg" => $error_msg,
+                              "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
+                                                 access::csrf_token()),
+                              "task" => $task->as_array()));
     } else {
       $v = $this->_get_module_create_content(arr::overwrite($form, $post->as_array()),
         arr::overwrite($errors, $post->errors()));
@@ -61,22 +76,69 @@ class Admin_Developer_Controller extends Admin_Controller {
     }
   }
 
-  public function run_create($task_id) {
+  public function test_data_create() {
+    access::verify_csrf();
+      
+    list ($form, $errors) = $this->_get_test_data_form();
+
+    $post = new Validation($_POST);
+    $post->add_rules("albums", "numeric");
+    $post->add_rules("photos", "numeric");
+    $post->add_rules("comments", "numeric");
+    $post->add_rules("tags", "numeric");
+    $post->add_callbacks("albums", array($this, "_set_default"));
+    $post->add_callbacks("photos", array($this, "_set_default"));
+    $post->add_callbacks("comments", array($this, "_set_default"));
+    $post->add_callbacks("tags", array($this, "_set_default"));
+   
+    if ($post->validate()) {
+      $task_def = Task_Definition::factory()
+        ->callback("developer_task::create_content")
+        ->description(t("Create test content"))
+        ->name(t("Create Test Data"));
+      $total = $post->albums + $post->photos + $post->comments + $post->tags;
+      $success_msg = t("Successfully generated test data");
+      $error_msg = t("Problems with test data generation was encountered");
+      $task = task::create($task_def, array("total" => $total, "batch" => (int)ceil($total / 10),
+                                            "success_msg" => $success_msg, 
+                                            "current" => 0, "error_msg" => $error_msg,
+                                            "albums" => $post->albums, "photos" => $post->photos,
+                                            "comments" => $post->comments, "tags" => $post->tags));
+      batch::start();
+
+      print json_encode(array("result" => "started",
+                              "max_iterations" => $total + 5,
+                              "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
+                                                 access::csrf_token()),
+                              "task" => $task->as_array()));
+    } else {
+      $v = $this->_get_test_data_view(arr::overwrite($form, $post->as_array()),
+        arr::overwrite($errors, $post->errors()));
+       print json_encode(array("result" => "error",
+                              "form" => $v->__toString()));
+    }
+  }
+
+  public function run_task($task_id) {
     access::verify_csrf();
 
-    $task = task::run($task_id);
+    try {
+      $task = task::run($task_id);
+    } catch (Exception $e) {
+      $error_msg = $e->getMessage();
+      $task->done = true;
+    }
 
     if ($task->done) {
+      batch::stop();
       $context = unserialize($task->context);
       switch ($task->state) {
       case "success":
-        message::success(t("Generation of %module completed successfully",
-                           array("module" => $context["name"])));
+        message::success($context["success_msg"]);
         break;
 
       case "error":
-        message::success(t("Generation of %module failed.",
-                           array("module" => $context["name"])));
+        message::success(empty($error_msg) ? $context["error_msg"] : $error_msg);
         break;
       }
       print json_encode(array("result" => "success",
@@ -86,30 +148,6 @@ class Admin_Developer_Controller extends Admin_Controller {
       print json_encode(array("result" => "in_progress",
                               "task" => $task->as_array()));
     }
-  }
-
-  public function session($key) {
-    if (!(user::active()->admin)) {
-      throw new Exception("@todo UNAUTHORIZED", 401);
-    }
-
-    Session::instance()->set($key, $this->input->get("value", false));
-    $this->auto_render = false;
-    url::redirect($_SERVER["HTTP_REFERER"]);
-  }
-
-  private function _get_module_create_content($form, $errors) {
-    $config = Kohana::config("developer.methods");
-
-    $v = new View("developer_module.html");
-    $v->action = "admin/developer/module_create";
-    $v->hidden = array("csrf" => access::csrf_token());
-    $v->theme = $config["theme"];
-    $v->event = $config["event"];
-    $v->menu = $config["menu"];
-    $v->form = $form;
-    $v->errors = $errors;
-    return $v;
   }
 
   function mptt() {
@@ -163,11 +201,61 @@ class Admin_Developer_Controller extends Admin_Controller {
     }
   }
 
-  private function _get_module_form($name="", $description="") {
+  public function _set_default(Validation $post, $field) {
+    if (empty($post->$field)) {
+      $post->$field = 0;
+    }
+  }
+
+  private function _get_module_form() {
     $form = array("name" => "", "description" => "", "theme[]" => array(), "menu[]" => array(),
                   "event[]" => array());
     $errors = array_fill_keys(array_keys($form), "");
 
     return array($form, $errors);
+  }
+
+  private function _get_module_create_content($form, $errors) {
+    $config = Kohana::config("developer.methods");
+
+    $v = new View("developer_module.html");
+    $v->action = "admin/developer/module_create";
+    $v->hidden = array("csrf" => access::csrf_token());
+    $v->theme = $config["theme"];
+    $v->event = $config["event"];
+    $v->menu = $config["menu"];
+    $v->form = $form;
+    $v->errors = $errors;
+    return $v;
+  }
+
+  private function _get_test_data_form() {
+    $form = array("albums" => "10", "photos" => "10", "comments" => "10", "tags" => "10",
+                  "generate_albums" => "");
+    $errors = array_fill_keys(array_keys($form), "");
+    
+    return array($form, $errors);
+  }
+
+  private function _get_test_data_view($form, $errors) {
+    $v = new View("admin_developer_test_data.html");
+    $v->action = "admin/developer/test_data_create";
+    $v->hidden = array("csrf" => access::csrf_token());
+    $album_count = ORM::factory("item")->where("type", "album")->count_all();
+    $photo_count = ORM::factory("item")->where("type", "photo")->count_all();
+
+    $v->comment_installed = module::is_installed("comment");
+    $comment_count = empty($v->comment_installed) ? 0 : ORM::factory("comment")->count_all();
+
+    $v->tag_installed = module::is_installed("tag");
+    $tag_count = empty($v->tag_installed) ? 0 : ORM::factory("tag")->count_all();
+
+    $v->album_count = t2("%count album", "%count albums", $album_count);
+    $v->photo_count = t2("%count photo", "%count photos", $photo_count);
+    $v->comment_count = t2("%count comment", "%count comments", $comment_count);
+    $v->tag_count = t2("%count tag", "%count tags", $tag_count);
+    $v->form = $form;
+    $v->errors = $errors;
+    return $v;
   }
 }

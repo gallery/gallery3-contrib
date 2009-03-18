@@ -6,18 +6,22 @@ var module_success = function(data) {
   var url = data.url;
   var done = false;
   var counter = 0;
+  var max_iterations = data.max_iterations;
   while (!done) {
     $.ajax({async: false,
       success: function(data, textStatus) {
         $("#gModuleProgress").progressbar("value", data.task.percent_complete);
         done = data.task.done;
       },
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+        done = true;
+      },
       dataType: "json",
       type: "POST",
       url: url
     });
     // Leave this in as insurance that we never run away
-    done = done || ++counter > 12;
+    done = done || ++counter > max_iterations;
   }
   document.location.reload();
 };

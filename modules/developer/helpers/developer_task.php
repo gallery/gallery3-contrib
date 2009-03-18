@@ -147,4 +147,164 @@ class developer_task_Core {
       ob_end_clean();
     }
   }
+
+  static function create_content($task) {
+    $context = unserialize($task->context);
+    $batch_cnt = $context["batch"];
+    while ($context["albums"] > 0 && $batch_cnt > 0) {
+      set_time_limit(30);
+      self::_add_album_or_photo("album");
+
+      $context["current"]++;
+      $context["albums"]--;
+      $batch_cnt--;
+    }
+    while ($context["photos"] > 0 && $batch_cnt > 0) {
+      set_time_limit(30);
+      self::_add_album_or_photo();
+
+      $context["current"]++;
+      $context["photos"]--;
+      $batch_cnt--;
+    }
+    while ($context["comments"] > 0 && $batch_cnt > 0) {
+      self::_add_comment();
+      $context["current"]++;
+      $context["comments"]--;
+      $batch_cnt--;
+    }
+    while ($context["tags"] > 0 && $batch_cnt > 0) {
+      self::_add_tag();
+      $context["current"]++;
+      $context["tags"]--;
+      $batch_cnt--;
+    }
+    $task->done = $context["current"] >= $context["total"];
+    $task->context = serialize($context);
+    $task->state = "success";
+    $task->percent_complete = $context["current"] / $context["total"] * 100;
+  }
+
+  private static function _add_album_or_photo($desired_type=null) {
+    srand(time());
+    $parents = ORM::factory("item")->where("type", "album")->find_all()->as_array();
+    $owner_id = module::is_installed("user") ? user::active()->id : null;
+
+    $test_images = glob(APPPATH . "tests/images/*.[Jj][Pp][Gg]");
+
+    $parent = $parents[array_rand($parents)];
+    $parent->reload();
+    $type = $desired_type;
+    if (!$type) {
+      $type = rand(0, 10) ? "photo" : "album";
+    }
+    if ($type == "album") {
+      $thumb_size = module::get_var("core", "thumb_size");
+      $rand = rand();
+      $parents[] = album::create(
+        $parent, "rnd_$rand", "Rnd $rand", "random album $rand", $owner_id)
+        ->save();
+    } else {
+      $photo_index = rand(0, count($test_images) - 1);
+      photo::create($parent, $test_images[$photo_index], basename($test_images[$photo_index]),
+                    "rnd_" . rand(), "sample thumb", $owner_id);
+    }
+  }
+
+  private static function _add_comment() {
+    srand(time());
+    $photos = ORM::factory("item")->where("type", "photo")->find_all()->as_array();
+    $users = ORM::factory("user")->find_all()->as_array();
+
+    if (empty($photos)) {
+      return;
+    }
+
+    if (module::is_installed("akismet")) {
+      akismet::$test_mode = 1;
+    }
+
+    $photo = $photos[array_rand($photos)];
+    $author = $users[array_rand($users)];
+    $guest_name = ucfirst(self::_random_phrase(rand(1, 3)));
+    $guest_email = sprintf("%s@%s.com", self::_random_phrase(1), self::_random_phrase(1));
+    $guest_url = sprintf("http://www.%s.com", self::_random_phrase(1));
+    comment::create($photo, $author, self::_random_phrase(rand(8, 500)),
+                    $guest_name, $guest_email, $guest_url);
+  }
+
+  private static function _add_tag() {
+    $items = ORM::factory("item")->find_all()->as_array();
+
+    if (!empty($items)) {
+      $tags = self::_generateTags();
+
+      $tag_name = $tags[array_rand($tags)];
+      $item = $items[array_rand($items)];
+
+      tag::add($item, $tag_name);
+    }
+  }
+
+  private static function _random_phrase($count) {
+    static $words;
+    if (empty($words)) {
+      $sample_text = "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium
+        laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi
+        architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas
+        sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione
+        voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit,
+        amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt, ut
+        labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
+        nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi
+        consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam
+        nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla
+        pariatur?  At vero eos et accusamus et iusto odio dignissimos ducimus, qui blanditiis
+        praesentium voluptatum deleniti atque corrupti, quos dolores et quas molestias excepturi
+        sint, obcaecati cupiditate non provident, similique sunt in culpa, qui officia deserunt
+        mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et
+        expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque
+        nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas
+        assumenda est, omnis dolor repellendus.  Temporibus autem quibusdam et aut officiis
+        debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et
+        molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut
+        reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores
+        repellat.";
+      $words = preg_split('/\s+/', $sample_text);
+    }
+
+    $chosen = array();
+    for ($i = 0; $i < $count; $i++) {
+      $chosen[] = $words[array_rand($words)];
+    }
+
+    return implode(' ', $chosen);
+  }
+
+  
+  private static function _generateTags($number=10){
+    // Words from lorem2.com
+    $words = explode(
+      " ",
+      "Lorem ipsum dolor sit amet consectetuer adipiscing elit Donec odio Quisque volutpat " .
+      "mattis eros Nullam malesuada erat ut turpis Suspendisse urna nibh viverra non " .
+      "semper suscipit posuere a pede  Donec nec justo eget felis facilisis " .
+      "fermentum Aliquam porttitor mauris sit amet orci Aenean dignissim pellentesque " .
+      "felis Morbi in sem quis dui placerat ornare Pellentesque odio nisi euismod in " .
+      "pharetra a ultricies in diam Sed arcu Cras consequat Praesent dapibus neque " .
+      "id cursus faucibus tortor neque egestas augue eu vulputate magna eros eu " .
+      "erat Aliquam erat volutpat Nam dui mi tincidunt quis accumsan porttitor " .
+      "facilisis luctus metus Phasellus ultrices nulla quis nibh Quisque a " .
+      "lectus Donec consectetuer ligula vulputate sem tristique cursus Nam nulla quam " .
+      "gravida non commodo a sodales sit amet nisi Pellentesque fermentum " .
+      "dolor Aliquam quam lectus facilisis auctor ultrices ut elementum vulputate " .
+      "nunc Sed adipiscing ornare risus Morbi est est blandit sit amet sagittis vel " .
+      "euismod vel velit Pellentesque egestas sem Suspendisse commodo ullamcorper " .
+      "magna");
+
+    while ($number--) {
+      $results[] = $words[array_rand($words, 1)];
+    }
+    return $results;
+  }
 }

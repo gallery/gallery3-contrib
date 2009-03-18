@@ -27,7 +27,6 @@ class developer_installer {
   }
 
   static function uninstall() {
-    $config = Kohana::config("developer.methods");
     module::delete("developer");
   }
 }

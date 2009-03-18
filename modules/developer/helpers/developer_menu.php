@@ -30,6 +30,10 @@ class developer_menu_Core {
           ->label(t("Generate Module"))
           ->url(url::site("admin/developer/module")))
       ->append(Menu::factory("link")
+          ->id("generate_data")
+          ->label(t("Generate Test Data"))
+          ->url(url::site("admin/developer/test_data")))
+      ->append(Menu::factory("link")
           ->id("mptt_tree_menu")
           ->label(t("MPTT Tree"))
           ->url(url::site("admin/developer/mptt")));
