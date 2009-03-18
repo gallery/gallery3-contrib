@@ -1,3 +1,4 @@
+<?php defined("SYSPAU") or die("No direct script access.") ?>
 name = <?= $module_name ?>
 
 description = <?= $module_description ?>
