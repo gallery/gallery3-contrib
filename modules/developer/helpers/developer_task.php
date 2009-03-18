@@ -38,7 +38,7 @@ class developer_task_Core {
         $path = "{$context['module_path']}/$dir";
         if (!file_exists($path)) {
           mkdir($path);
-          chmod($path, 0774);
+          chmod($path, 0777);
          }
       }
       break;
@@ -118,6 +118,9 @@ class developer_task_Core {
       ob_end_clean();
       break;
     }
+    if (isset($file)) {
+      chmod($file, 0666);
+    }
     $task->done = (++$context["step"]) >= 11;
     $task->context = serialize($context);
     $task->state = "success";
@@ -129,7 +132,7 @@ class developer_task_Core {
       $config = Kohana::config("developer.methods");
       $file = "{$context["module_path"]}/helpers/{$context["module"]}_{$helper}.php";
       touch($file);
-      chmod($file, 0772);
+      chmod($file, 0666);
       ob_start();
       $v = new View("$helper.txt");
       $v->helper = $helper;

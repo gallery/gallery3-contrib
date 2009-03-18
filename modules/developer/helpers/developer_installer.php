@@ -20,7 +20,6 @@
 class developer_installer {
   static function install() {
     $config = Kohana::config("developer.methods");
-    Kohana::log(Kohana::debug($config));
     $version = module::get_version("developer");
     if ($version == 0) {
       module::set_version("developer", 1);
@@ -29,7 +28,6 @@ class developer_installer {
 
   static function uninstall() {
     $config = Kohana::config("developer.methods");
-    Kohana::log(Kohana::debug($config));
     module::delete("developer");
   }
 }

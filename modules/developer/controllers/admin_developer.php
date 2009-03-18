@@ -22,10 +22,10 @@ class Admin_Developer_Controller extends Admin_Controller {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_developer.html");
     $view->content->title = t("Generate module");
-    
+
     if (!is_writable(MODPATH)) {
       message::warning(
-        t("The module directory is not writable. Please insure that it is writable by the web server"));
+        t("The module directory is not writable. Please ensure that it is writable by the web server"));
     }
     list ($form, $errors) = $this->_get_module_form();
     $view->content->developer_content = $this->_get_module_create_content($form, $errors);
@@ -34,14 +34,14 @@ class Admin_Developer_Controller extends Admin_Controller {
 
   public function module_create() {
     access::verify_csrf();
-      
+
     list ($form, $errors) = $this->_get_module_form();
 
     $post = new Validation($_POST);
     $post->add_rules("name", "required");
     $post->add_rules("description", "required");
     $post->add_callbacks("name", array($this, "_is_module_defined"));
-    
+
     if ($post->validate()) {
       $task_def = Task_Definition::factory()
         ->callback("developer_task::create_module")
@@ -162,12 +162,12 @@ class Admin_Developer_Controller extends Admin_Controller {
       $post->add_error($field, "module_exists");
     }
   }
-  
+
   private function _get_module_form($name="", $description="") {
     $form = array("name" => "", "description" => "", "theme[]" => array(), "menu[]" => array(),
                   "event[]" => array());
     $errors = array_fill_keys(array_keys($form), "");
-    
+
     return array($form, $errors);
   }
 }
