@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2008 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ class Admin_Developer_Controller extends Admin_Controller {
     $v = new Admin_View("admin.html");
     $v->content = new View("admin_developer.html");
     $v->content->title = t("Generate Test Data");
-    
+
     list ($form, $errors) = $this->_get_module_form();
     $v->content->developer_content = $this->_get_test_data_view($form, $errors);
     print $v;
@@ -76,9 +76,15 @@ class Admin_Developer_Controller extends Admin_Controller {
     }
   }
 
+  public function session($key) {
+    access::verify_csrf();
+    Session::instance()->set($key, Input::instance()->get("value"));
+    url::redirect("albums/1");
+  }
+
   public function test_data_create() {
     access::verify_csrf();
-      
+
     list ($form, $errors) = $this->_get_test_data_form();
 
     $post = new Validation($_POST);
@@ -90,7 +96,7 @@ class Admin_Developer_Controller extends Admin_Controller {
     $post->add_callbacks("photos", array($this, "_set_default"));
     $post->add_callbacks("comments", array($this, "_set_default"));
     $post->add_callbacks("tags", array($this, "_set_default"));
-   
+
     if ($post->validate()) {
       $task_def = Task_Definition::factory()
         ->callback("developer_task::create_content")
@@ -100,7 +106,7 @@ class Admin_Developer_Controller extends Admin_Controller {
       $success_msg = t("Successfully generated test data");
       $error_msg = t("Problems with test data generation was encountered");
       $task = task::create($task_def, array("total" => $total, "batch" => (int)ceil($total / 10),
-                                            "success_msg" => $success_msg, 
+                                            "success_msg" => $success_msg,
                                             "current" => 0, "error_msg" => $error_msg,
                                             "albums" => $post->albums, "photos" => $post->photos,
                                             "comments" => $post->comments, "tags" => $post->tags));
@@ -233,7 +239,7 @@ class Admin_Developer_Controller extends Admin_Controller {
     $form = array("albums" => "10", "photos" => "10", "comments" => "10", "tags" => "10",
                   "generate_albums" => "");
     $errors = array_fill_keys(array_keys($form), "");
-    
+
     return array($form, $errors);
   }
 
