@@ -188,7 +188,7 @@ class developer_task_Core {
   private static function _add_album_or_photo($desired_type=null) {
     srand(time());
     $parents = ORM::factory("item")->where("type", "album")->find_all()->as_array();
-    $owner_id = module::is_installed("user") ? user::active()->id : null;
+    $owner_id = user::active()->id;
 
     $test_images = glob(APPPATH . "tests/images/*.[Jj][Pp][Gg]");
 
@@ -220,7 +220,7 @@ class developer_task_Core {
       return;
     }
 
-    if (module::is_installed("akismet")) {
+    if (module::is_active("akismet")) {
       akismet::$test_mode = 1;
     }
 
@@ -281,7 +281,7 @@ class developer_task_Core {
     return implode(' ', $chosen);
   }
 
-  
+
   private static function _generateTags($number=10){
     // Words from lorem2.com
     $words = explode(

@@ -25,8 +25,4 @@ class developer_installer {
       module::set_version("developer", 1);
     }
   }
-
-  static function uninstall() {
-    module::delete("developer");
-  }
 }

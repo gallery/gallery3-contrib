@@ -251,10 +251,10 @@ class Admin_Developer_Controller extends Admin_Controller {
     $album_count = ORM::factory("item")->where("type", "album")->count_all();
     $photo_count = ORM::factory("item")->where("type", "photo")->count_all();
 
-    $v->comment_installed = module::is_installed("comment");
+    $v->comment_installed = module::is_active("comment");
     $comment_count = empty($v->comment_installed) ? 0 : ORM::factory("comment")->count_all();
 
-    $v->tag_installed = module::is_installed("tag");
+    $v->tag_installed = module::is_active("tag");
     $tag_count = empty($v->tag_installed) ? 0 : ORM::factory("tag")->count_all();
 
     $v->album_count = t2("%count album", "%count albums", $album_count);
