@@ -78,8 +78,9 @@ class Admin_Developer_Controller extends Admin_Controller {
 
   public function session($key) {
     access::verify_csrf();
-    Session::instance()->set($key, Input::instance()->get("value"));
-    url::redirect("albums/1");
+    $input = Input::instance();
+    Session::instance()->set($key, $input->get("value"));
+    url::redirect($input->server("HTTP_REFERER"));
   }
 
   public function test_data_create() {
