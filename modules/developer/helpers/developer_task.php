@@ -190,7 +190,7 @@ class developer_task_Core {
     $parents = ORM::factory("item")->where("type", "album")->find_all()->as_array();
     $owner_id = user::active()->id;
 
-    $test_images = glob(APPPATH . "tests/images/*.[Jj][Pp][Gg]");
+    $test_images = glob(dirname(dirname(__FILE__)) . "/data/*.[Jj][Pp][Gg]");
 
     $parent = $parents[array_rand($parents)];
     $parent->reload();
@@ -280,7 +280,6 @@ class developer_task_Core {
 
     return implode(' ', $chosen);
   }
-
 
   private static function _generateTags($number=10){
     // Words from lorem2.com
