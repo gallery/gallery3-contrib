@@ -20,13 +20,11 @@ class downloadfullsize_installer {
   static function install() {
     $version = module::get_version("downloadfullsize");
     if ($version == 0) {
-      /* @todo Put database creation here */
       module::set_version("downloadfullsize", 1);
     }
   }
 
   static function uninstall() {
-    /* @todo Put database table drops here */
     module::delete("downloadfullsize");
   }
 }

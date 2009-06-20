@@ -31,6 +31,7 @@ class downloadfullsize_menu_Core {
       }
     }
   }
+
   static function admin($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")

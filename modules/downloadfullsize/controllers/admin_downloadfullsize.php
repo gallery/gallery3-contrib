@@ -28,14 +28,14 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
   }
 
   public function saveprefs() {
-    // This probably does something important.
+    // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
     // Figure out which boxes where checked
-    $dlLinks_array = $_POST['DownloadLinkOptions'];
+    $dlLinks_array = Input::instance()->post("DownloadLinkOptions");
     $tButton = false;
     $fButton = false;
-    for ($i=0; $i<count($dlLinks_array); $i++) { 
+    for ($i = 0; $i < count($dlLinks_array); $i++) {
       if ($dlLinks_array[$i] == "tButton") {
         $tButton = true;
       }
