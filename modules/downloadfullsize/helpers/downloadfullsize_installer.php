@@ -20,13 +20,19 @@ class downloadfullsize_installer {
   static function install() {
     $version = module::get_version("downloadfullsize");
     if ($version == 0) {
+<<<<<<< HEAD:modules/downloadfullsize/helpers/downloadfullsize_installer.php
       /* @todo Put database creation here */
+=======
+>>>>>>> gallery3-contrib/master:modules/downloadfullsize/helpers/downloadfullsize_installer.php
       module::set_version("downloadfullsize", 1);
     }
   }
 
   static function uninstall() {
+<<<<<<< HEAD:modules/downloadfullsize/helpers/downloadfullsize_installer.php
     /* @todo Put database table drops here */
+=======
+>>>>>>> gallery3-contrib/master:modules/downloadfullsize/helpers/downloadfullsize_installer.php
     module::delete("downloadfullsize");
   }
 }

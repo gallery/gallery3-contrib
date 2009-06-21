@@ -18,11 +18,18 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class downloadfullsize_Controller extends Controller {
+<<<<<<< HEAD:modules/downloadfullsize/controllers/downloadfullsize.php
   
+=======
+
+>>>>>>> gallery3-contrib/master:modules/downloadfullsize/controllers/downloadfullsize.php
   public function send($id) {
     $item = ORM::factory("item", $id);
     access::required("view_full", $item);
     download::force($item->file_path());
+<<<<<<< HEAD:modules/downloadfullsize/controllers/downloadfullsize.php
     return ;
+=======
+>>>>>>> gallery3-contrib/master:modules/downloadfullsize/controllers/downloadfullsize.php
   }
 }
