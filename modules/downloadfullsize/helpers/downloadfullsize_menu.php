@@ -31,10 +31,7 @@ class downloadfullsize_menu_Core {
       }
     }
   }
-<<<<<<< HEAD:modules/downloadfullsize/helpers/downloadfullsize_menu.php
-=======
 
->>>>>>> gallery3-contrib/master:modules/downloadfullsize/helpers/downloadfullsize_menu.php
   static function admin($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")

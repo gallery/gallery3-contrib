@@ -1,9 +1,5 @@
-<<<<<<< HEAD:modules/downloadfullsize/helpers/downloadfullsize_theme.php
-<?php defined("SYSPATH") or die("No direct script access.");/**
-=======
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
->>>>>>> gallery3-contrib/master:modules/downloadfullsize/helpers/downloadfullsize_theme.php
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -23,23 +19,6 @@
  */
 class downloadfullsize_theme {
   static function sidebar_blocks($theme) {
-<<<<<<< HEAD:modules/downloadfullsize/helpers/downloadfullsize_theme.php
-    if ($theme->item()->is_photo()) {
-      if (access::can("view_full", $theme->item)) {
-        if (module::get_var("downloadfullsize", "tButton")) {
-          $block = new Block();
-          $block->css_id = "gDownloadFullsize";
-          $block->title = t("Download");
-          $block->content = new View("downloadfullsize_block.html");
-
-          $block->content->item = ORM::factory("item", 1);
-
-          return $block;
-        }
-      }
-    }
-  }  
-=======
     $item = $theme->item();
     if ($item && $item->is_photo() && access::can("view_full", $item)) {
       if (module::get_var("downloadfullsize", "tButton")) {
@@ -54,5 +33,4 @@ class downloadfullsize_theme {
       }
     }
   }
->>>>>>> gallery3-contrib/master:modules/downloadfullsize/helpers/downloadfullsize_theme.php
 }

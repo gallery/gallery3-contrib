@@ -28,16 +28,6 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
   }
 
   public function saveprefs() {
-<<<<<<< HEAD:modules/downloadfullsize/controllers/admin_downloadfullsize.php
-    // This probably does something important.
-    access::verify_csrf();
-
-    // Figure out which boxes where checked
-    $dlLinks_array = $_POST['DownloadLinkOptions'];
-    $tButton = false;
-    $fButton = false;
-    for ($i=0; $i<count($dlLinks_array); $i++) { 
-=======
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
@@ -46,7 +36,6 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
     $tButton = false;
     $fButton = false;
     for ($i = 0; $i < count($dlLinks_array); $i++) {
->>>>>>> gallery3-contrib/master:modules/downloadfullsize/controllers/admin_downloadfullsize.php
       if ($dlLinks_array[$i] == "tButton") {
         $tButton = true;
       }
