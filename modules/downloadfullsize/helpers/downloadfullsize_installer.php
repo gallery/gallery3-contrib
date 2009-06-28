@@ -18,13 +18,6 @@
  */
 class downloadfullsize_installer {
   static function install() {
-    $version = module::get_version("downloadfullsize");
-    if ($version == 0) {
-      module::set_version("downloadfullsize", 1);
-    }
-  }
-
-  static function uninstall() {
-    module::delete("downloadfullsize");
+    module::set_version("downloadfullsize", 1);
   }
 }
