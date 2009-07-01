@@ -27,6 +27,9 @@ class <?= $module ?>_installer {
     }
   }
 
+  static function upgrade($version) {
+  }
+
   static function uninstall() {
     /* @todo Put database table drops here */
     module::delete("<?= $module ?>");

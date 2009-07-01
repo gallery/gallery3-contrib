@@ -21,4 +21,11 @@ class developer_installer {
   static function install() {
     module::set_version("developer", 1);
   }
+
+  static function upgrade($version) {
+  }
+
+  static function uninstall() {
+    module::delete("developer");
+  }
 }
