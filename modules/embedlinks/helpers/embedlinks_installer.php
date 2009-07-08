@@ -19,9 +19,6 @@
  */
 class embedlinks_installer {
   static function install() {
-    $version = module::get_version("embedlinks");
-    if ($version == 0) {
-      module::set_version("embedlinks", 1);
-    }
+    module::set_version("embedlinks", 1);
   }
 }

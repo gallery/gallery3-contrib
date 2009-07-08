@@ -19,9 +19,6 @@
  */
 class nobots_installer {
   static function install() {
-    $version = module::get_version("nobots");
-    if ($version == 0) {
-      module::set_version("nobots", 1);
-    }
+    module::set_version("nobots", 1);
   }
 }

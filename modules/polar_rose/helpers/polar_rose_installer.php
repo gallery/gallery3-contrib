@@ -19,14 +19,6 @@
  */
 class polar_rose_installer {
   static function install() {
-    $db = Database::instance();
-    $version = module::get_version("polar_rose");
-    if ($version == 0) {
-      module::set_version("polar_rose", 1);
-    }
-  }
-
-  static function uninstall() {
-    module::delete("polar_rose");
+    module::set_version("polar_rose", 1);
   }
 }

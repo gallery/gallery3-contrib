@@ -19,10 +19,13 @@
  */
 class developer_installer {
   static function install() {
-    $config = Kohana::config("developer.methods");
-    $version = module::get_version("developer");
-    if ($version == 0) {
-      module::set_version("developer", 1);
-    }
+    module::set_version("developer", 1);
+  }
+
+  static function upgrade($version) {
+  }
+
+  static function uninstall() {
+    module::delete("developer");
   }
 }

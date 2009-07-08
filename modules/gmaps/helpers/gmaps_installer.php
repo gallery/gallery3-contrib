@@ -19,13 +19,6 @@
  */
 class gmaps_installer {
   static function install() {
-    $version = module::get_version("gmaps");
-    if ($version == 0) {
-      module::set_version("gmaps", 1);
-    }
-  }
-
-  static function uninstall() {
-    module::delete("gmaps");
+    module::set_version("gmaps", 1);
   }
 }
