@@ -20,7 +20,7 @@
       <td><input type="text" value="<a href=&quot;<?= url::abs_site("{$item->type}s/{$item->id}") ?>&quot;><img src=&quot;<?= $item->resize_url(true) ?>&quot;></a>" readonly></td>
     </tr>
 
-
+<?  if (access::can("view_full", $item)) { ?>
     <tr>
       <th colspan="2"><br/><?= t("Link To Fullsize Image:") ?></th>
     </tr>
@@ -34,6 +34,7 @@
       <th><?= t("Thumbnail:") ?></th>
       <td><input type="text" value="<a href=&quot;<?= $item->file_url(true) ?>&quot;><img src=&quot;<?= $item->thumb_url(true) ?>&quot;></a>" readonly></td>
     </tr>
+<? } ?>
 
     <tr>
       <th><?= t("Resized:") ?></th>
