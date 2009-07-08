@@ -17,22 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class embedlinks_theme_Core {
-  static function sidebar_blocks($theme) {
-    if ($theme->item()->is_album()) {
-      $block = new Block();
-      $block->css_id = "gMetadata";
-      $block->title = t("Links");
-      $block->content = new View("embedlinks_album_block.html");
-      return $block;
-    }
-  }
-  
-  static function photo_bottom($theme) { 
-    $block = new Block();
-    $block->css_id = "gMetadata";
-    $block->title = t("Links");
-    $block->content = new View("embedlinks_photo_block.html");
-    return $block;
+class embedlinks_menu_Core {
+  static function admin($menu, $theme) {
+    $menu->get("settings_menu")
+      ->append(Menu::factory("link")
+               ->id("embedlinks")
+               ->label(t("EmbedLinks"))
+               ->url(url::site("admin/embedlinks")));
   }
 }
