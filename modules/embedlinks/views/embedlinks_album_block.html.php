@@ -1,4 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<? if (module::get_var("embedlinks", "HTMLCode")) { ?>
 <table class="gMetadata">
   <tbody>
     <tr>
@@ -16,7 +17,9 @@
     </tr>
   </tbody>
 </table>
+<? } ?>
 
+<? if (module::get_var("embedlinks", "BBCode")) { ?>
 <table class="gMetadata">
   <tbody>
     <tr>
@@ -34,3 +37,4 @@
     </tr>
   </tbody>
 </table>
+<? } ?>

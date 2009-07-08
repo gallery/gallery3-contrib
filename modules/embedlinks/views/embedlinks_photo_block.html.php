@@ -1,5 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-
+      
+<? if (module::get_var("embedlinks", "HTMLCode")) { ?>
 <h3 align="center"><?= t("HTML Links")?></h3>
 <table class="gMetadata">
   <tbody>
@@ -24,7 +25,7 @@
 
 <?  if (access::can("view_full", $item)) { ?>
     <tr>
-      <th colspan="2"><br/><?= t("Link To Fullsize Image:") ?></th>
+      <th colspan="2"><br/><?= t("Link To The Fullsize Image:") ?></th>
     </tr>
 
     <tr>
@@ -44,7 +45,7 @@
 <? } ?>
 
     <tr>
-      <th colspan="2"><br/><?= t("Link To Resized Image:") ?></th>
+      <th colspan="2"><br/><?= t("Link To The Resized Image:") ?></th>
     </tr>
 
     <tr>
@@ -64,8 +65,9 @@
 
   </tbody>
 </table>
+<? } ?>
 
-
+<? if (module::get_var("embedlinks", "BBCode")) { ?>
 <h3 align="center"><?= t("BBCode Links")?></h3>
 <table class="gMetadata">
   <tbody>
@@ -90,7 +92,7 @@
 
 <?  if (access::can("view_full", $item)) { ?>
     <tr>
-      <th colspan="2"><br/><?= t("Link To Fullsize Image:") ?></th>
+      <th colspan="2"><br/><?= t("Link To The Fullsize Image:") ?></th>
     </tr>
 
     <tr>
@@ -110,7 +112,7 @@
 <? } ?>
 
     <tr>
-      <th colspan="2"><br/><?= t("Link To Resized Image:") ?></th>
+      <th colspan="2"><br/><?= t("Link To The Resized Image:") ?></th>
     </tr>
 
     <tr>
@@ -130,3 +132,4 @@
 
   </tbody>
 </table>
+<? } ?>
