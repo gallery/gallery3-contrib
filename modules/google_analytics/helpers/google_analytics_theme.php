@@ -1,4 +1,5 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -16,13 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class google_analytics_theme
-{
-  static function page_bottom($theme)
-  {
-  	$google_code = '
+class google_analytics_theme {
+  static function page_bottom($theme) {
+    $google_code = '
   	<!-- Begin Google Analytics -->
-	<script type="text/javascript"> 
+	<script type="text/javascript">
 		var gaJsHost = (("https:" == document.location.protocol) ?
 		"https://ssl." : "http://www.");
 		document.write(unescape("%3Cscript src=\'" + gaJsHost + "google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));
@@ -36,8 +35,7 @@ class google_analytics_theme
 		catch(err){}
 	</script>
 	<!-- End Google Analytics -->';
-  	
-  	return $google_code;
+
+    return $google_code;
   }
-  
 }

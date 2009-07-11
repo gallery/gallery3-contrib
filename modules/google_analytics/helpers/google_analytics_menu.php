@@ -1,4 +1,5 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -20,8 +21,8 @@ class google_analytics_menu {
   static function admin($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
-        ->id("google_analytics_menu")
-        ->label(t("Google Analytics"))
-        ->url(url::site("admin/google_analytics")));
+               ->id("google_analytics_menu")
+               ->label(t("Google Analytics"))
+               ->url(url::site("admin/google_analytics")));
   }
 }
