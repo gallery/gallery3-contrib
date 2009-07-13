@@ -20,5 +20,5 @@
           <? $counter+= $titles[$i][1]; ?>      
     </tbody>
   </table>
-          <? endfor ?>
+<? endfor ?>
 </div>
