@@ -3,7 +3,7 @@
 <a href="<?= url::site("embedlinks/showhtml/{$item->id}") ?>" title="<?= t("HTML Links") ?>"
   class="gDialogLink gButtonLink ui-icon-left ui-state-default ui-corner-all">
   <span class="ui-icon ui-icon-info"></span>
-  <?= t("HTML Code") ?>
+  <?= t("Show HTML Code") ?>
 </a><br />
 <? } ?>
 
@@ -11,6 +11,6 @@
 <a href="<?= url::site("embedlinks/showbbcode/{$item->id}") ?>" title="<?= t("BBCode Links") ?>"
   class="gDialogLink gButtonLink ui-icon-left ui-state-default ui-corner-all">
   <span class="ui-icon ui-icon-info"></span>
-  <?= t("BBCode") ?>
+  <?= t("Show BBCode") ?>
 </a>
 <? } ?>

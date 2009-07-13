@@ -22,24 +22,31 @@ class EmbedLinks_Controller extends Controller {
    * Display the EXIF data for an item.
    */
   public function showhtml($item_id) {
+    // Generate the Dialog Box for HTML links.
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
 
+    // If the current page is an album, only display two links,
+    //   or else display many.
     if ($item->is_album()) {
       $linkArray[0] = array("Text:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;>Click Here</a>");
       $linkArray[1] = array("Thumbnail:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
       $linkTitles[0] = array("Link To This Album:", 2);  
     } else {
+      // Link to the current page.
       $linkArray[0] = array("Text:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;>Click Here</a>");
       $linkArray[1] = array("Thumbnail:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
       $linkArray[2] = array("Resized:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;><img src=&quot;" . $item->resize_url(true) . "&quot;></a>");
       $linkTitles[0] = array("Link To This Page:", 3);  
 
+      // Link to the "resized" version of the current image.
       $linkArray[3] = array("Text:", "<a href=&quot;" . $item->resize_url(true) . "&quot;>Click Here</a>");
       $linkArray[4] = array("Thumbnail:", "<a href=&quot;" . $item->resize_url(true) . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
       $linkArray[5] = array("Image:", "<img src=&quot;" . $item->resize_url(true) . "&quot;>");
       $linkTitles[1] = array("Link To The Resized Image:", 3);  
       
+      // If the visitor has suficient privlidges to see the fullsized
+      //    version of the current image, then display links to it.
       if (access::can("view_full", $item)) {
         $linkArray[6] = array("Text:", "<a href=&quot;" . $item->file_url(true) . "&quot;>Click Here</a>");
         $linkArray[7] = array("Thumbnail:", "<a href=&quot;" . $item->file_url(true) . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
@@ -55,24 +62,31 @@ class EmbedLinks_Controller extends Controller {
   }
 
   public function showbbcode($item_id) {
-    $item = ORM::factory("item", $item_id);
+    // Generate the Dialog Box for BBCode links.
+  $item = ORM::factory("item", $item_id);
     access::required("view", $item);
-  
+    
+    // If the current page is an album, only display two links,
+    //   or else display many.
     if ($item->is_album()) {
       $linkArray[0] = array("Text:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "]Click Here[/url]");
       $linkArray[1] = array("Thumbnail:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "][img]" . $item->thumb_url(true) . "[/img][/url]");
       $linkTitles[0] = array("Link To This Album:", 2);  
     } else {
-      $linkArray[0] = array("Text:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "]Click Here[/url]");
+      // Link to the current page.
+    $linkArray[0] = array("Text:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "]Click Here[/url]");
       $linkArray[1] = array("Thumbnail:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "][img]" . $item->thumb_url(true) . "[/img][/url]");
       $linkArray[2] = array("Resized:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "][img]" . $item->resize_url(true) . "[/img][/url]");
       $linkTitles[0] = array("Link To This Page:", 3);  
 
+      // Link to the "resized" version of the current image.
       $linkArray[3] = array("Text:", "[url=" . $item->resize_url(true) . "]Click Here[/url]");
       $linkArray[4] = array("Thumbnail:", "[url=" . $item->resize_url(true) . "][img]" . $item->thumb_url(true) . "[/img][/url]");
       $linkArray[5] = array("Image:", "[img]" . $item->resize_url(true) . "[/img]");
       $linkTitles[1] = array("Link To The Resized Image:", 3);  
       
+      // If the visitor has suficient privlidges to see the fullsized
+      //    version of the current image, then display links to it.
       if (access::can("view_full", $item)) {
         $linkArray[6] = array("Text:", "[url=" . $item->file_url(true) . "]Click Here[/url]");
         $linkArray[7] = array("Thumbnail:", "[url=" . $item->file_url(true) . "][img]" . $item->thumb_url(true) . "[/img][/url]");

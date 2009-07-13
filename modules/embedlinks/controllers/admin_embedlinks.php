@@ -33,9 +33,13 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
 
     // Figure out which boxes where checked
     $linkOpts_array = Input::instance()->post("LinkCodeTypeOptions");
+    $displayType_array = Input::instance()->post("LinkDisplayType");
+
     $HTMLButton = false;
     $BBCodeButton = false;
-        
+    $InPageLinks = false;
+    $DialogLinks = false;
+    
     for ($i = 0; $i < count($linkOpts_array); $i++) {
       if ($linkOpts_array[$i] == "HTMLCode") {
         $HTMLButton = true;
@@ -43,11 +47,21 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
       if ($linkOpts_array[$i] == "BBCode") {
         $BBCodeButton = true;
       }
+    }          
+    for ($i = 0; $i < count($displayType_array); $i++) {
+      if ($displayType_array[$i] == "InPageLinks") {
+        $InPageLinks = true;
+      }
+      if ($displayType_array[$i] == "DialogLinks") {
+        $DialogLinks = true;
+      }
     }
-          
+    
     // Save Settings.
     module::set_var("embedlinks", "HTMLCode", $HTMLButton);
     module::set_var("embedlinks", "BBCode", $BBCodeButton);
+    module::set_var("embedlinks", "InPageLinks", $InPageLinks);
+    module::set_var("embedlinks", "DialogLinks", $DialogLinks);
     message::success(t("Your Selection Has Been Saved."));
     
     // Load Admin page.
@@ -66,10 +80,16 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
     $linkCodes["HTMLCode"] = array("Show HTML Links", module::get_var("embedlinks", "HTMLCode"));
     $linkCodes["BBCode"] = array("Show BBCode Links", module::get_var("embedlinks", "BBCode"));
 
+    // Make an array for the different methods of displaying the links.
+    $linkDisplays["InPageLinks"] = array("Show Links In The Actual Page", module::get_var("embedlinks", "InPageLinks"));
+    $linkDisplays["DialogLinks"] = array("Show Links In a Seperate Dialog Box", module::get_var("embedlinks", "DialogLinks"));
+    
     // Setup a few checkboxes on the form.
     $add_links = $form->group("EmbedLinks");
     $add_links->checklist("LinkCodeTypeOptions")
       ->options($linkCodes);
+    $add_links->checklist("LinkDisplayType")
+      ->options($linkDisplays);
 
     // Add a save button to the form.
     $add_links->submit("SaveSettings")->value(t("Save"));
