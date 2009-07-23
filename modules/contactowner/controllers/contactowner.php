@@ -25,13 +25,13 @@ class ContactOwner_Controller extends Controller {
     if (module::get_var("contactowner", "contact_owner_link") != true) {
       kohana::show_404();
     }
-  
+
     // Make a new form with a couple of text boxes.
     $form = new Forge("contactowner/sendemail", "", "post",
                       array("id" => "gContactOwnerSendForm"));
     $sendmail_fields = $form->group("contactOwner");
     $sendmail_fields->input("email_to")->label(t("To:"))->value(module::get_var("contactowner", "contact_owner_name"));
-    $sendmail_fields->input("email_from")->label(t("From:"))->value();
+    $sendmail_fields->input("email_from")->label(t("From:"))->value(user::active()->email);
     $sendmail_fields->input("email_subject")->label(t("Subject:"))->value("");
     $sendmail_fields->textarea("email_body")->label(t("Message:"))->value("");
     $sendmail_fields->hidden("email_to_id")->value("-1");
@@ -65,7 +65,7 @@ class ContactOwner_Controller extends Controller {
                       array("id" => "gContactOwnerSendForm"));
     $sendmail_fields = $form->group("contactOwner");
     $sendmail_fields->input("email_to")->label(t("To:"))->value($userDetails[0]->name);
-    $sendmail_fields->input("email_from")->label(t("From:"))->value();
+    $sendmail_fields->input("email_from")->label(t("From:"))->value(user::active()->email);
     $sendmail_fields->input("email_subject")->label(t("Subject:"))->value("");
     $sendmail_fields->textarea("email_body")->label(t("Message:"))->value("");
     $sendmail_fields->hidden("email_to_id")->value($user_id);
@@ -91,11 +91,11 @@ class ContactOwner_Controller extends Controller {
     $str_emailbody = Input::instance()->post("email_body");
     
     // Add in some <br> tags to the message body where ever there are line breaks.
-    $str_emailbody = str_replace("\n", "<br/>\n", $str_emailbody);
+    $str_emailbody = str_replace("\n", "\n<br/>", $str_emailbody);
     
     // Gallery's Sendmail library doesn't allow for custom from addresses,
     //   so add the from email to the beginning of the message body instead.
-    $str_emailbody = "Message Sent From " . $str_emailfrom . "<br/><br/>\n\n" . $str_emailbody;
+    $str_emailbody = "Message Sent From " . $str_emailfrom . "\r\n\r\n<br/><br/>" . $str_emailbody;
 
     // Figure out where the email is going to.
     $str_emailto = "";
