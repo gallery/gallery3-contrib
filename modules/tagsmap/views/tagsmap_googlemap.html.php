@@ -1,10 +1,10 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 
-<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=<?=$google_map_key ?>&sensor=false"
-  type="text/javascript">
-</script>
+<script src="http://www.google.com/jsapi?key=<?=$google_map_key ?>" type="text/javascript"></script>
 
-<script type="text/javascript">   
+<script type="text/javascript"> 
+google.load("maps", "2");
+
   function initialize() {
     if (GBrowserIsCompatible()) {
       var map = new GMap2(document.getElementById("map_canvas"));
@@ -45,11 +45,10 @@
       }
     }
   }
+  google.setOnLoadCallback(initialize);
 
 
 </script>
-
-<a href="#" onclick="javascript:initialize();">Load Map</a>
 
 <div id="map_canvas" style="width: 600px; height: 480px"></div>
 
