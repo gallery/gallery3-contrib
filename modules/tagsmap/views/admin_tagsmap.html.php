@@ -46,6 +46,18 @@
             <span class="understate">(<?= $tag->count ?>)</span>
 
             <a href="<?= url::site("admin/tagsmap/edit_gps/$tag->id") ?>"><?= t("Edit GPS") ?></a>
+<?
+    // Check and see if this ID already has GPS data.
+    $existingGPS = ORM::factory("tags_gps")
+      ->where("tag_id", $tag->id)
+      ->find_all();
+    if (count($existingGPS) > 0) {
+?>
+            | <a href="<?= url::site("admin/tagsmap/delete_gps/$tag->id") ?>"><?= t("Delete GPS") ?></a>
+
+<?
+    }
+?>
 
           </li>
 

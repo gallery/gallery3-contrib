@@ -44,6 +44,19 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     print $view;
   }
 
+  public function delete_gps($tag_id) {
+    // Delete the GSP data associated with a tag.
+
+    // Delete the record.
+    ORM::factory("tags_gps")
+      ->where("tag_id", $tag_id)
+      ->delete_all();
+
+    // Redirect back to the main screen and display a "success" message.
+    message::success(t("Your Settings Have Been Saved."));
+    url::redirect("admin/tagsmap");
+  }
+
   private function _get_tagsgpsedit_form($tag_id) {
     // Make a new Form.
     $form = new Forge("admin/tagsmap/savegps", "", "post",
