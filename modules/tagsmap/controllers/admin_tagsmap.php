@@ -52,9 +52,19 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     // Add a few input boxes for GPS and Description
     $tagsgps_group = $form->group("TagsMapGPS");
     $tagsgps_group->hidden("tag_id")->value($tag_id);
-    $tagsgps_group->input("gps_latitude")->label(t("Latitude"))->value();
-    $tagsgps_group->input("gps_longitude")->label(t("Longitude"))->value();
-    $tagsgps_group->textarea("gps_description")->label(t("Description"))->value();
+    // Check and see if this ID already has GPS data.
+    $existingGPS = ORM::factory("tags_gps")
+      ->where("tag_id", $tag_id)
+      ->find_all();
+    if (count($existingGPS) == 0) {
+      $tagsgps_group->input("gps_latitude")->label(t("Latitude"))->value();
+      $tagsgps_group->input("gps_longitude")->label(t("Longitude"))->value();
+      $tagsgps_group->textarea("gps_description")->label(t("Description"))->value();
+    } else {
+      $tagsgps_group->input("gps_latitude")->label(t("Latitude"))->value($existingGPS[0]->latitude);
+      $tagsgps_group->input("gps_longitude")->label(t("Longitude"))->value($existingGPS[0]->longitude);
+      $tagsgps_group->textarea("gps_description")->label(t("Description"))->value($existingGPS[0]->description);
+    }
 
     // Add a save button to the form.
     $tagsgps_group->submit("SaveGPS")->value(t("Save"));
@@ -76,12 +86,25 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     $str_description = Input::instance()->post("gps_description");
 
     // Save to database.    
-    $newgps = ORM::factory("tags_gps");
-    $newgps->tag_id = $str_tagid;
-    $newgps->latitude = $str_latitude;
-    $newgps->longitude = $str_longitude;
-    $newgps->description = $str_description;
-    $newgps->save();
+    // Check and see if this ID already has GPS data.
+    $existingGPS = ORM::factory("tags_gps")
+      ->where("tag_id", $str_tagid)
+      ->find_all();
+    if (count($existingGPS) == 0) {
+      $newgps = ORM::factory("tags_gps");
+      $newgps->tag_id = $str_tagid;
+      $newgps->latitude = $str_latitude;
+      $newgps->longitude = $str_longitude;
+      $newgps->description = $str_description;
+      $newgps->save();
+    } else {
+      $updatedGPS = ORM::factory("tags_gps", $existingGPS[0]->id);
+      $updatedGPS->tag_id = $str_tagid;
+      $updatedGPS->latitude = $str_latitude;
+      $updatedGPS->longitude = $str_longitude;
+      $updatedGPS->description = $str_description;
+      $updatedGPS->save();
+    }
     
     // Redirect back to the main screen and display a "success" message.
     message::success(t("Your Settings Have Been Saved."));
