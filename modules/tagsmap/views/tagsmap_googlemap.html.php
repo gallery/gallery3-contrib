@@ -3,7 +3,7 @@
 <script src="http://www.google.com/jsapi?key=<?=$google_map_key ?>" type="text/javascript"></script>
 
 <script type="text/javascript"> 
-google.load("maps", "2");
+  google.load("maps", "2");
 
   function initialize() {
     if (GBrowserIsCompatible()) {
@@ -45,12 +45,9 @@ google.load("maps", "2");
       }
     }
   }
+  
   google.setOnLoadCallback(initialize);
-
-
 </script>
 
-<div id="map_canvas" style="width: 600px; height: 480px"></div>
-
-      
+<div id="map_canvas" style="width: 600px; height: 480px"></div> 
 <br/>

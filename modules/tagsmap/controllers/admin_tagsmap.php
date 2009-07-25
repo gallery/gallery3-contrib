@@ -36,22 +36,19 @@ class Admin_TagsMap_Controller extends Admin_Controller {
   }
 
   public function edit_gps($tag_id) {
-    // Generate a new admin page to edit the tag specified by $tag_id.
+    // Generate a new admin page to edit gps data for the tag specified by $tag_id.
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_tagsmap_edit.html");
     $view->content->tagsmapedit_form = $this->_get_tagsgpsedit_form($tag_id);
-
     print $view;
   }
 
   public function confirm_delete_gps($tag_id) {
     // Make sure the user meant to hit the delete button.
-    // Make a new Form.
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_tagsmap_delete.html");
     $view->content->tag_id = $tag_id;
     print $view;
-
   }
 
   public function delete_gps($tag_id) {
@@ -68,14 +65,16 @@ class Admin_TagsMap_Controller extends Admin_Controller {
   }
 
   private function _get_tagsgpsedit_form($tag_id) {
-    // Make a new Form.
+    // Make a new form for editing GPS data associated with a tag ($tag_id).
     $form = new Forge("admin/tagsmap/savegps", "", "post",
                       array("id" => "gTagsMapAdminForm"));
 
     // Add a few input boxes for GPS and Description
     $tagsgps_group = $form->group("TagsMapGPS");
     $tagsgps_group->hidden("tag_id")->value($tag_id);
-    // Check and see if this ID already has GPS data.
+
+    // Check and see if this ID already has GPS data, then create
+    //  input boxes to either update it or enter in new information.
     $existingGPS = ORM::factory("tags_gps")
       ->where("tag_id", $tag_id)
       ->find_all();
@@ -109,7 +108,8 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     $str_description = Input::instance()->post("gps_description");
 
     // Save to database.    
-    // Check and see if this ID already has GPS data.
+    // Check and see if this ID already has GPS data,
+    //   Update it if it does, create a new record if it doesn't.
     $existingGPS = ORM::factory("tags_gps")
       ->where("tag_id", $str_tagid)
       ->find_all();
@@ -135,7 +135,7 @@ class Admin_TagsMap_Controller extends Admin_Controller {
   }
 
   private function _get_googlemaps_form() {
-    // Make a new Form.
+    // Make a new form for inputing information associated with google maps.
     $form = new Forge("admin/tagsmap/savemapprefs", "", "post",
                       array("id" => "gTagsMapAdminForm"));
 
@@ -145,7 +145,7 @@ class Admin_TagsMap_Controller extends Admin_Controller {
                  ->label(t("Google Maps API Key"))
                  ->value(module::get_var("tagsmap", "googlemap_api_key"));
 
-    // Input boxes for the Maps starting location and zoom.
+    // Input boxes for the Maps starting location map type and zoom.
     $startingmap_group = $form->group("GoogleMapsPos");
     $startingmap_group->input("google_starting_latitude")
                  ->label(t("Starting Latitude"))
@@ -165,10 +165,11 @@ class Admin_TagsMap_Controller extends Admin_Controller {
 
     // Return the newly generated form.
     return $form;
-                 
   }
   
   public function savemapprefs() {
+    // Save information associated with Google Maps to the database.
+
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
@@ -185,9 +186,9 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     module::set_var("tagsmap", "googlemap_longitude", $str_googlelongitude);
     module::set_var("tagsmap", "googlemap_zoom", $str_googlezoom);
     module::set_var("tagsmap", "googlemap_type", $str_googlemaptype);
-    message::success(t("Your Settings Have Been Saved."));
 
-    // Redirect back to the TagsMap admin page.
+    // Display a success message and redirect back to the TagsMap admin page.
+    message::success(t("Your Settings Have Been Saved."));
     url::redirect("admin/tagsmap");
   }
 }

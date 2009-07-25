@@ -19,8 +19,8 @@
  */
 class tagsmap_installer {
   static function install() {
+    // Create a table to store GPS data in.
     $db = Database::instance();
-
     $db->query("CREATE TABLE IF NOT EXISTS {tags_gpses} (
                `id` int(9) NOT NULL auto_increment,
                `tag_id` int(9) NOT NULL,
@@ -31,6 +31,7 @@ class tagsmap_installer {
                KEY(`tag_id`, `id`))
                ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
+    // Set the module's version number.
     module::set_version("tagsmap", 1);
   }
 
@@ -39,6 +40,7 @@ class tagsmap_installer {
   }
 
   static function uninstall() {
+    // Delete the GPS table before uninstalling.
     $db = Database::instance();
     $db->query("DROP TABLE IF EXISTS {tags_gpses};");
     module::delete("tagsmap");

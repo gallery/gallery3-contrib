@@ -19,6 +19,7 @@
  */
 class tagsmap_menu_Core {
   static function admin($menu, $theme) {
+    // Add a link to the TagsMap admin page to the Content menu.
     $menu->get("content_menu")
       ->append(Menu::factory("link")
                ->id("tagsmap")

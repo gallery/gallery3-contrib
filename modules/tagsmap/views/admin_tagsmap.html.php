@@ -46,19 +46,18 @@
             <span class="understate">(<?= $tag->count ?>)</span>
 
             <a href="<?= url::site("admin/tagsmap/edit_gps/$tag->id") ?>"><?= t("Edit GPS") ?></a>
-<?
-    // Check and see if this ID already has GPS data.
-    $existingGPS = ORM::factory("tags_gps")
-      ->where("tag_id", $tag->id)
-      ->find_all();
-    if (count($existingGPS) > 0) {
-?>
-            | <a href="<?= url::site("admin/tagsmap/confirm_delete_gps/$tag->id") ?>"><?= t("Delete GPS") ?></a>
 
-<?
-    }
-?>
-
+            <?
+              // Check and see if this ID already has GPS data, display a delete button if it does.
+              $existingGPS = ORM::factory("tags_gps")
+                             ->where("tag_id", $tag->id)
+                             ->find_all();
+              if (count($existingGPS) > 0) {
+              ?>
+               | <a href="<?= url::site("admin/tagsmap/confirm_delete_gps/$tag->id") ?>"><?= t("Delete GPS") ?></a>
+              <?
+              }
+            ?>
           </li>
 
           <? $column_tag_count++ ?>
