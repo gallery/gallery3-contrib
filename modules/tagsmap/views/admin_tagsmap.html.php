@@ -53,7 +53,7 @@
       ->find_all();
     if (count($existingGPS) > 0) {
 ?>
-            | <a href="<?= url::site("admin/tagsmap/delete_gps/$tag->id") ?>"><?= t("Delete GPS") ?></a>
+            | <a href="<?= url::site("admin/tagsmap/confirm_delete_gps/$tag->id") ?>"><?= t("Delete GPS") ?></a>
 
 <?
     }

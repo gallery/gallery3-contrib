@@ -44,6 +44,16 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     print $view;
   }
 
+  public function confirm_delete_gps($tag_id) {
+    // Make sure the user meant to hit the delete button.
+    // Make a new Form.
+    $view = new Admin_View("admin.html");
+    $view->content = new View("admin_tagsmap_delete.html");
+    $view->content->tag_id = $tag_id;
+    print $view;
+
+  }
+
   public function delete_gps($tag_id) {
     // Delete the GSP data associated with a tag.
 
