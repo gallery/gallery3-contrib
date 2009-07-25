@@ -17,30 +17,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class tagsmap_installer {
-  static function install() {
-    $db = Database::instance();
-
-    $db->query("CREATE TABLE IF NOT EXISTS {tags_gpses} (
-               `id` int(9) NOT NULL auto_increment,
-               `tag_id` int(9) NOT NULL,
-               `latitude` varchar(128) NOT NULL,
-               `longitude` varchar(128) NOT NULL,
-               `description` varchar(2048) default NULL,
-               PRIMARY KEY (`id`),
-               KEY(`tag_id`, `id`))
-               ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-
-    module::set_version("tagsmap", 1);
-  }
-
-  static function deactivate() {
-    site_status::clear("tagsmap_needs_tag");
-  }
-
-  static function uninstall() {
-    $db = Database::instance();
-    $db->query("DROP TABLE IF EXISTS {tags_gpses};");
-    module::delete("tagsmap");
+class tagsmap_event_Core {
+  static function module_change($changes) {
+    if (!module::is_active("tag") || in_array("tag", $changes->deactivate)) {
+      site_status::warning(
+        t("The TagsMap module requires the Tags module.  " .
+          "<a href=\"%url\">Activate the Tags module now</a>",
+          array("url" => url::site("admin/modules"))),
+        "tagsmap_needs_tag");
+    } else {
+      site_status::clear("tagsmap_needs_tag");
+    }
   }
 }
