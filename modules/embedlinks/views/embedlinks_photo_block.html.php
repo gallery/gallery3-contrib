@@ -1,4 +1,9 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<style>
+input[type="text"] {
+  width: 95%;
+}
+</style>
       
 <? if (module::get_var("embedlinks", "HTMLCode")) { ?>
 <h3 align="center"><?= t("HTML Links")?></h3>
@@ -10,17 +15,17 @@
 
     <tr>
       <th><?= t("Text:") ?></th>
-      <td><input type="text" value="<a href=&quot;<?= url::abs_site("{$item->type}s/{$item->id}") ?>&quot;>Click Here</a>" readonly></td>
+      <td><input type="text" value="<a href=&quot;<?= url::abs_site("{$item->type}s/{$item->id}") ?>&quot;>Click Here</a>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Thumbnail:") ?></th>
-      <td><input type="text" value="<a href=&quot;<?= url::abs_site("{$item->type}s/{$item->id}") ?>&quot;><img src=&quot;<?= $item->thumb_url(true) ?>&quot;></a>" readonly></td>
+      <td><input type="text" value="<a href=&quot;<?= url::abs_site("{$item->type}s/{$item->id}") ?>&quot;><img src=&quot;<?= $item->thumb_url(true) ?>&quot;></a>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Resized:") ?></th>
-      <td><input type="text" value="<a href=&quot;<?= url::abs_site("{$item->type}s/{$item->id}") ?>&quot;><img src=&quot;<?= $item->resize_url(true) ?>&quot;></a>" readonly></td>
+      <td><input type="text" value="<a href=&quot;<?= url::abs_site("{$item->type}s/{$item->id}") ?>&quot;><img src=&quot;<?= $item->resize_url(true) ?>&quot;></a>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
 <?  if (access::can("view_full", $item)) { ?>
@@ -30,17 +35,17 @@
 
     <tr>
       <th><?= t("Text:") ?></th>
-      <td><input type="text" value="<a href=&quot;<?= $item->file_url(true) ?>&quot;>Click Here</a>" readonly></td>
+      <td><input type="text" value="<a href=&quot;<?= $item->file_url(true) ?>&quot;>Click Here</a>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Thumbnail:") ?></th>
-      <td><input type="text" value="<a href=&quot;<?= $item->file_url(true) ?>&quot;><img src=&quot;<?= $item->thumb_url(true) ?>&quot;></a>" readonly></td>
+      <td><input type="text" value="<a href=&quot;<?= $item->file_url(true) ?>&quot;><img src=&quot;<?= $item->thumb_url(true) ?>&quot;></a>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Resized:") ?></th>
-      <td><input type="text" value="<a href=&quot;<?= $item->file_url(true) ?>&quot;><img src=&quot;<?= $item->resize_url(true) ?>&quot;></a>" readonly></td>
+      <td><input type="text" value="<a href=&quot;<?= $item->file_url(true) ?>&quot;><img src=&quot;<?= $item->resize_url(true) ?>&quot;></a>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 <? } ?>
 
@@ -50,17 +55,17 @@
 
     <tr>
       <th><?= t("Text:") ?></th>
-      <td><input type="text" value="<a href=&quot;<?= $item->resize_url(true) ?>&quot;>Click Here</a>" readonly></td>
+      <td><input type="text" value="<a href=&quot;<?= $item->resize_url(true) ?>&quot;>Click Here</a>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Thumbnail:") ?></th>
-      <td><input type="text" value="<a href=&quot;<?= $item->resize_url(true) ?>&quot;><img src=&quot;<?= $item->thumb_url(true) ?>&quot;></a>" readonly></td>
+      <td><input type="text" value="<a href=&quot;<?= $item->resize_url(true) ?>&quot;><img src=&quot;<?= $item->thumb_url(true) ?>&quot;></a>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Image:") ?></th>
-      <td><input type="text" value="<img src=&quot;<?= $item->resize_url(true) ?>&quot;>" readonly></td>
+      <td><input type="text" value="<img src=&quot;<?= $item->resize_url(true) ?>&quot;>" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
   </tbody>
@@ -77,17 +82,17 @@
 
     <tr>
       <th><?= t("Text:") ?></th>
-      <td><input type="text" value="[url=<?= url::abs_site("{$item->type}s/{$item->id}") ?>]Click Here[/url]" readonly></td>
+      <td><input type="text" value="[url=<?= url::abs_site("{$item->type}s/{$item->id}") ?>]Click Here[/url]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Thumbnail:") ?></th>
-      <td><input type="text" value="[url=<?= url::abs_site("{$item->type}s/{$item->id}") ?>][img]<?= $item->thumb_url(true) ?>[/img][/url]" readonly></td>
+      <td><input type="text" value="[url=<?= url::abs_site("{$item->type}s/{$item->id}") ?>][img]<?= $item->thumb_url(true) ?>[/img][/url]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Resized:") ?></th>
-      <td><input type="text" value="[url=<?= url::abs_site("{$item->type}s/{$item->id}") ?>][img]<?= $item->resize_url(true) ?>[/img][/url]" readonly></td>
+      <td><input type="text" value="[url=<?= url::abs_site("{$item->type}s/{$item->id}") ?>][img]<?= $item->resize_url(true) ?>[/img][/url]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
 <?  if (access::can("view_full", $item)) { ?>
@@ -97,17 +102,17 @@
 
     <tr>
       <th><?= t("Text:") ?></th>
-      <td><input type="text" value="[url=<?= $item->file_url(true) ?>]Click Here[/url]" readonly></td>
+      <td><input type="text" value="[url=<?= $item->file_url(true) ?>]Click Here[/url]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Thumbnail:") ?></th>
-      <td><input type="text" value="[url=<?= $item->file_url(true) ?>][img]<?= $item->thumb_url(true) ?>[/img][/url]" readonly></td>
+      <td><input type="text" value="[url=<?= $item->file_url(true) ?>][img]<?= $item->thumb_url(true) ?>[/img][/url]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Resized:") ?></th>
-      <td><input type="text" value="[url=<?= $item->file_url(true) ?>][img]<?= $item->resize_url(true) ?>[/img][/url]" readonly></td>
+      <td><input type="text" value="[url=<?= $item->file_url(true) ?>][img]<?= $item->resize_url(true) ?>[/img][/url]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 <? } ?>
 
@@ -117,17 +122,17 @@
 
     <tr>
       <th><?= t("Text:") ?></th>
-      <td><input type="text" value="[url=<?= $item->resize_url(true) ?>]Click Here[/url]" readonly></td>
+      <td><input type="text" value="[url=<?= $item->resize_url(true) ?>]Click Here[/url]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Thumbnail:") ?></th>
-      <td><input type="text" value="[url=<?= $item->resize_url(true) ?>][img]<?= $item->thumb_url(true) ?>[/img][/url]" readonly></td>
+      <td><input type="text" value="[url=<?= $item->resize_url(true) ?>][img]<?= $item->thumb_url(true) ?>[/img][/url]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
     <tr>
       <th><?= t("Image:") ?></th>
-      <td><input type="text" value="[img]<?= $item->resize_url(true) ?>[/img]" readonly></td>
+      <td><input type="text" value="[img]<?= $item->resize_url(true) ?>[/img]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
 
   </tbody>
