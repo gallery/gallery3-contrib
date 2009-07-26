@@ -3,7 +3,7 @@
 <script src="http://www.google.com/jsapi?key=<?=$google_map_key ?>" type="text/javascript"></script>
 
 <script type="text/javascript"> 
-  google.load("maps", "2");
+  google.load("maps", "2.160");
 
   function initialize() {
     if (GBrowserIsCompatible()) {
