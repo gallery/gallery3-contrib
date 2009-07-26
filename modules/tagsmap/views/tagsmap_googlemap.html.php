@@ -1,7 +1,14 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<? if ($map_fullsize == true) { ?>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+  <head> 
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
+    <title>Gallery: Map</title> 
+  </head>
+  <body>
+<? } ?>
 
 <script src="http://www.google.com/jsapi?key=<?=$google_map_key ?>" type="text/javascript"></script>
-
 <script type="text/javascript"> 
   google.load("maps", "2.160");
 
@@ -49,5 +56,12 @@
   google.setOnLoadCallback(initialize);
 </script>
 
-<div id="map_canvas" style="width: 600px; height: 480px"></div> 
-<br/>
+<? if ($map_fullsize == true) { ?>
+  <div id="map_canvas" style="width: 100%; height: 100%"></div>
+  </body></html>
+<? } else { ?>
+  <div id="map_canvas" style="width: 600px; height: 480px"></div> <br/>
+  <a href="<?= url::site("tagsmap/googlemap/fullsize/1")?>">
+           <?= t("View Fullsize")?>
+  </a><br/><br/>
+<? } ?>

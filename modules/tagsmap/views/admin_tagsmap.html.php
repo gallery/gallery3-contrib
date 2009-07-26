@@ -17,7 +17,7 @@
   <? $tags_per_column = $tags->count()/5 ?>
   <? $column_tag_count = 0 ?>
 
-  <table id="gTagAdmin" class="gBlockContent">
+  <table id="gGPSTagAdmin" class="gBlockContent">
     <caption class="understate">
       <?= t2("There is one tag", "There are %count tags", $tags->count()) ?>
     </caption>
@@ -66,5 +66,18 @@
         </ul>
       </td>
     </tr>
+  </table>
+</div>
+
+<div class="gBlock">  
+  <h3>
+    <?= t("Remove Orphaned GPS Data") ?>
+  </h3>
+  <table id="gOrphanedTagAdmin" class="gBlockContent">
+    <tr><td>
+      <a href="<?= url::site("admin/tagsmap/orphaned_tags") ?>">
+        <?= t("Search For and Delete Orphaned Data") ?>
+      </a>
+    </td></tr>
   </table>
 </div>

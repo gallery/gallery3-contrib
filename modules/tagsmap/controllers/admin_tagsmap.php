@@ -37,17 +37,61 @@ class Admin_TagsMap_Controller extends Admin_Controller {
 
   public function edit_gps($tag_id) {
     // Generate a new admin page to edit gps data for the tag specified by $tag_id.
+    
+    // Determine the name of the tag.
+    $tagName = ORM::factory("tag")
+      ->where("id", $tag_id)
+      ->find_all();
+      
+    // Set up the admin page.
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_tagsmap_edit.html");
     $view->content->tagsmapedit_form = $this->_get_tagsgpsedit_form($tag_id);
+    $view->content->tag_name = $tagName[0]->name;
     print $view;
   }
 
+  public function orphaned_tags() {
+    // Locate and delete any orphaned GPS data.
+    $int_deleted_records = 0;
+    
+    // Generate a list of all tags with GPS data.
+    $existingGPS = ORM::factory("tags_gps")
+      ->find_all();
+
+    // Loop through each record and see if a corresponding tag exists.
+    foreach ($existingGPS as $oneGPS) {
+      $oneTag = ORM::factory("tag")
+        ->where("id", $oneGPS->tag_id)
+        ->find_all();
+      
+      // If the tag no longer exists then delete the record.
+      if (count($oneTag) == 0) {
+          // Delete the record.
+        ORM::factory("tags_gps")
+          ->where("tag_id", $oneGPS->tag_id)
+          ->delete_all();
+        $int_deleted_records++;
+      }
+    }
+        
+    // Redirect back to the main screen and display a "success" message.
+    message::success($int_deleted_records . t(" Orphaned Record(s) have been deleted."));
+    url::redirect("admin/tagsmap");
+  }
+  
   public function confirm_delete_gps($tag_id) {
     // Make sure the user meant to hit the delete button.
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_tagsmap_delete.html");
     $view->content->tag_id = $tag_id;
+    
+    // Determine the name of the tag.
+    $tagName = ORM::factory("tag")
+      ->where("id", $tag_id)
+      ->find_all();
+    $view->content->tag_name = $tagName[0]->name;
+    
     print $view;
   }
 

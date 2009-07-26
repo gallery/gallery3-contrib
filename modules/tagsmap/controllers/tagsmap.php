@@ -18,24 +18,41 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class TagsMap_Controller extends Controller {
-  public function googlemap() {
+  public function googlemap($fullsize) {
     // Display all tags with GPS coordinates on a google map.
     
-    // Set up and display the actual page.
-    $template = new Theme_View("page.html", "Contact");
-    $template->content = new View("tagsmap_googlemap.html");
-
     // Generate a list of GPS coordinates.
     $tagsGPS = ORM::factory("tags_gps")->find_all();
-    $template->content->tags_gps = $tagsGPS;
+  
+    // Set up and display the actual page.
+    //  If fullsize is true, allow the map to take up the entire browser window,
+    //  if not, then display the map in the gallery theme.
+    if ($fullsize == true) {
+      $view = new View("tagsmap_googlemap.html");
+      $view->map_fullsize = true;
+      
+      // Load in module preferences.
+      $view->tags_gps = $tagsGPS;
+      $view->google_map_key = module::get_var("tagsmap", "googlemap_api_key");
+      $view->google_map_latitude = module::get_var("tagsmap", "googlemap_latitude");
+      $view->google_map_longitude = module::get_var("tagsmap", "googlemap_longitude");
+      $view->google_map_zoom = module::get_var("tagsmap", "googlemap_zoom");
+      $view->google_map_type = module::get_var("tagsmap", "googlemap_type");
     
-    // Load in module preferences.
-    $template->content->google_map_key = module::get_var("tagsmap", "googlemap_api_key");
-    $template->content->google_map_latitude = module::get_var("tagsmap", "googlemap_latitude");
-    $template->content->google_map_longitude = module::get_var("tagsmap", "googlemap_longitude");
-    $template->content->google_map_zoom = module::get_var("tagsmap", "googlemap_zoom");
-    $template->content->google_map_type = module::get_var("tagsmap", "googlemap_type");
+      print $view;
+    } else {
+      $template = new Theme_View("page.html", "Contact");
+      $template->content = new View("tagsmap_googlemap.html");
+
+        // Load in module preferences.
+      $template->content->tags_gps = $tagsGPS;
+      $template->content->google_map_key = module::get_var("tagsmap", "googlemap_api_key");
+      $template->content->google_map_latitude = module::get_var("tagsmap", "googlemap_latitude");
+      $template->content->google_map_longitude = module::get_var("tagsmap", "googlemap_longitude");
+      $template->content->google_map_zoom = module::get_var("tagsmap", "googlemap_zoom");
+      $template->content->google_map_type = module::get_var("tagsmap", "googlemap_type");
     
-    print $template;
+      print $template;
+    }
   }
 }
