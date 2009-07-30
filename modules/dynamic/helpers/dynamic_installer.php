@@ -20,27 +20,25 @@ class dynamic_installer {
   static function install() {
     $version = module::get_version("dynamic");
     if ($version == 0) {
-      module::set_var("dynamic", "popular",
-                      serialize((object)array("enabled" => false,
-                                              "limit" => null,
-                                              "description" => "",
-                                              "key_field" => "view_count",
-                                              "title" => t("Most Viewed"))));
-      module::set_var("dynamic", "updates",
-                      serialize((object)array("enabled" => false,
-                                              "limit" => null,
-                                              "description" => "",
-                                              "key_field" => "created",
-                                              "title" => t("Recent Changes"))));
+      module::set_var(
+        "dynamic", "popular",
+        serialize((object)array("enabled" => false,
+                                "limit" => null,
+                                "description" => "",
+                                "key_field" => "view_count",
+                                "title" => t("Most Viewed"))));
+      module::set_var(
+        "dynamic", "updates",
+        serialize((object)array("enabled" => false,
+                                "limit" => null,
+                                "description" => "",
+                                "key_field" => "created",
+                                "title" => t("Recent Changes"))));
       module::set_version("dynamic", 1);
     }
   }
 
-  static function upgrade($version) {
-  }
-
   static function uninstall() {
-    /* @todo Put database table drops here */
     module::delete("dynamic");
   }
 }
