@@ -8,23 +8,28 @@ class user_homes_installer
 	}
 
 	/**
-	 * installs the extra collumn on the users table when the
+	 * installs the the table of user homes when the
 	 * module is installed
 	 */
 	 
 	static function activate()
 	{
 		$db = Database::instance();
-		$db->query("ALTER TABLE {users} ADD home int(9) default NULL;");
+		$db->query("CREATE TABLE IF NOT EXISTS {user_homes} (
+			`id` int(9) NOT NULL,
+			`home` int(9) default NULL,
+                 	PRIMARY KEY (`id`),
+                 	UNIQUE KEY(`id`))
+               		ENGINE=InnoDB DEFAULT CHARSET=utf8;");			
 	}
 
 	/**
-	 * uninstalls the extra collumn on the users table when the
+	 * drops the table of user homes when the 
 	 * module is uninstalled
 	 */
 	static function deactivate() 
 	{
 		$db = Database::instance();
-		$db->query("ALTER TABLE {users} DROP COLUMN home;");
+		$db->query("DROP TABLE IF EXISTS {user_homes};");
 	}
 }
