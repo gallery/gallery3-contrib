@@ -224,10 +224,15 @@ class graphics_Core {
     }
 
     // BEGIN rWatcher MOD:
+    //   If $input_file is located in VARPATH/albums/ then assume its a fullsize photo.
     if (strncmp($input_file, VARPATH . "albums/", strlen(VARPATH . "albums/")) == 0) {
+      // Figure out where the original copy should be stashed at.
       $temp_path = str_replace(VARPATH . "albums/", "", $input_file);
       $original_image = VARPATH . "original/" . $temp_path;
       $individual_dirs = split("[/\]", $temp_path);
+      // If any original file does not already exist, then create a folder structure
+      //   similar to that found in VARPATH/albums/ and copy the photo over before
+      //   rotating it.
       if (!file_exists($original_image)) {
         $new_img_path = VARPATH . "original/";
         for($i = 0; $i < count($individual_dirs)-1; $i++) {

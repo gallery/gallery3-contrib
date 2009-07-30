@@ -19,12 +19,16 @@
  */
 class keeporiginal_event_Core {
   static function item_before_delete($item) {
+    // If deleting a photo, make sure the original is deleted as well, if it exists.
     if ($item->is_photo()) {
       $original_file = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item->file_path());
       if (file_exists($original_file)) {
         unlink($original_file);
       }
     }
+    
+    // When deleting an album, make sure its corresponding location in 
+    //   VARPATH/original/ is deleted as well, if it exists. 
     if ($item->is_album()) {
       $original_file = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item->file_path());
       if (file_exists($original_file)) {
@@ -32,7 +36,11 @@ class keeporiginal_event_Core {
       }
     }
   }
+  
   static function item_updated($old, $new) {
+    // When updating an item, check and see if the file name is being changed.
+    //  If so, check for and modify any corresponding file/folder in 
+    //  VARPATH/original/ as well.
     if ($old->is_photo() || $old->is_album()) {
       if ($old->file_path() != $new->file_path()) {
         $old_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $old->file_path());

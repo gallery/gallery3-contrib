@@ -19,7 +19,7 @@
  */
 class keeporiginal_menu_Core {
   static function site($menu, $theme) {
-
+    // Create a menu option to restore the original photo.
     $item = $theme->item();
 
     if ((access::can("view", $item)) && (access::can("edit", $item))) {

@@ -20,25 +20,32 @@
 class keeporiginal_Controller extends Controller {
 
   public function restore($id) {
+    // Allow the user to restore the original photo.
+    
+    // Make sure the current user has suficient access to view and edit the item.
     $item = ORM::factory("item", $id);
-
     access::required("view", $item);
     access::required("edit", $item);
 
+    // Figure out where the original was stashed at.
     $original_image = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item->file_path());
 
+    // Make sure the current item is a photo and that an original exists.
     if ($item->is_photo() && file_exists($original_image)) {
 
+      // Delete the modified version and move the original over in place of it.
       unlink($item->file_path());
       rename($original_image, $item->file_path());
 
+      // Re-generate the items resize and thumbnail.
       $item_data = model_cache::get("item", $id);
       $item_data->resize_dirty= 1;
       $item_data->thumb_dirty= 1;
       $item_data->save();
-
       graphics::generate($item_data);
 
+      // If the item is the thumbnail for the parent album, 
+      //   fix the parent's thumbnail as well.
       $parent = $item_data->parent();
       if ($parent->album_cover_item_id == $item_data->id) {
         copy($item_data->thumb_path(), $parent->thumb_path());
@@ -47,9 +54,9 @@ class keeporiginal_Controller extends Controller {
         $parent->save();
       }
 
+      // Display a success message and redirect to the items page.
       message::success(t("Your Original Image Has Been Restored."));
       url::redirect($item->url());
-
     }
   }
 }
