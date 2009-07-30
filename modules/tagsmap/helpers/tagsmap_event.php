@@ -19,7 +19,7 @@
  */
 class tagsmap_event_Core {
   static function module_change($changes) {
-    // See if the Tags module is installed, 
+    // See if the Tags module is installed,
     //   tell the user to install it if it isn't.
     if (!module::is_active("tag") || in_array("tag", $changes->deactivate)) {
       site_status::warning(
@@ -30,5 +30,14 @@ class tagsmap_event_Core {
     } else {
       site_status::clear("tagsmap_needs_tag");
     }
+  }
+
+  static function admin_menu($menu, $theme) {
+    // Add a link to the TagsMap admin page to the Content menu.
+    $menu->get("content_menu")
+      ->append(Menu::factory("link")
+               ->id("tagsmap")
+               ->label(t("TagsMap Settings"))
+               ->url(url::site("admin/tagsmap")));
   }
 }

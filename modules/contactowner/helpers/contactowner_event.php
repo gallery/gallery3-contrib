@@ -17,12 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class google_analytics_menu {
-  static function admin($menu, $theme) {
+class contactowner_event_Core {
+  static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
-               ->id("google_analytics_menu")
-               ->label(t("Google Analytics"))
-               ->url(url::site("admin/google_analytics")));
+               ->id("contactowner")
+               ->label(t("ContactOwner Settings"))
+               ->url(url::site("admin/contactowner")));
   }
 }

@@ -17,12 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class embedlinks_menu_Core {
-  static function admin($menu, $theme) {
+class google_analytics_event_Core {
+  static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
-               ->id("embedlinks")
-               ->label(t("EmbedLinks"))
-               ->url(url::site("admin/embedlinks")));
+               ->id("google_analytics_menu")
+               ->label(t("Google Analytics"))
+               ->url(url::site("admin/google_analytics")));
   }
 }
