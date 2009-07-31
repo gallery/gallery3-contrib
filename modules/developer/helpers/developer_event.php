@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class developer_menu_Core {
-  static function admin($menu, $theme) {
+class developer_event_Core {
+  static function admin_menu($menu, $theme) {
     $developer_menu = Menu::factory("submenu")
         ->id("developer_menu")
       ->label(t("Developer Tools"));

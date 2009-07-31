@@ -17,12 +17,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class contactowner_menu_Core {
-  static function admin($menu, $theme) {
-    $menu->get("settings_menu")
+class tagsmap_event_Core {
+  static function module_change($changes) {
+    // See if the Tags module is installed,
+    //   tell the user to install it if it isn't.
+    if (!module::is_active("tag") || in_array("tag", $changes->deactivate)) {
+      site_status::warning(
+        t("The TagsMap module requires the Tags module.  " .
+          "<a href=\"%url\">Activate the Tags module now</a>",
+          array("url" => url::site("admin/modules"))),
+        "tagsmap_needs_tag");
+    } else {
+      site_status::clear("tagsmap_needs_tag");
+    }
+  }
+
+  static function admin_menu($menu, $theme) {
+    // Add a link to the TagsMap admin page to the Content menu.
+    $menu->get("content_menu")
       ->append(Menu::factory("link")
-               ->id("contactowner")
-               ->label(t("ContactOwner Settings"))
-               ->url(url::site("admin/contactowner")));
+               ->id("tagsmap")
+               ->label(t("TagsMap Settings"))
+               ->url(url::site("admin/tagsmap")));
   }
 }

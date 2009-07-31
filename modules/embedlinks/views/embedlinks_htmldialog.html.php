@@ -1,20 +1,20 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <style>
-  #gExifData {font-size: .85em;}
-  .gOdd {background: #BDD2FF;}
-  .gEven {background: #DFEFFC;}
+input[type="text"] {
+  width: 95%;
+}
 </style>
 <h1 style="display: none;"><?= t("HTML Code") ?></h1>
-<div id="gExifData">
+<div id="gEmbedLinksHTMLData">
 <? $counter = 0; ?>
 <? for ($i = 0; $i < count($titles); $i++): ?>    
-  <table class="gMetadata" >
-  <thead><tr><th cellspan="2"><?= t($titles[$i][0]) ?></th></thead>
+  <table class="gLinksHTML" >
+  <thead><tr><th colspan="2"><?= t($titles[$i][0]) ?></th></thead>
     <tbody>
           <? for ($j = $counter; $j < $titles[$i][1]+$counter; $j++): ?>    
             <tr>
-              <td><?= t($details[$j][0]) ?></td>
-              <td><input type="text" value="<?= $details[$j][1] ?>" readonly></td>
+              <td width="100"><?= t($details[$j][0]) ?></td>
+              <td><input type="text" onclick="this.focus(); this.select();" value="<?= $details[$j][1] ?>" readonly></td>
             </tr>
           <? endfor ?>
           <? $counter+= $titles[$i][1]; ?>      

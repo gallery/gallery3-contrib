@@ -17,12 +17,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class phpmailer_menu_Core {
-  static function admin($menu, $theme) {
-    $menu->get("settings_menu")
-      ->append(Menu::factory("link")
-               ->id("phpmailer")
-               ->label(t("PHPMailer Settings"))
-               ->url(url::site("admin/phpmailer")));
+class tagsmap_theme_Core {
+		
+  static function sidebar_blocks($theme) {
+    // Display a link to the map in the Gallery sidebar
+    
+    // Make sure the current page belongs to an item.
+    if (!$theme->item()) {
+      return;
+    }
+    
+    // Create a new block to display the link in.
+    $block = new Block();
+    $block->css_id = "gTagsMap";
+    $block->title = t("Map:");
+    $block->content = new View("tagsmap_block.html");
+    
+    return $block;
   }
 }
