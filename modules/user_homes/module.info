@@ -1,0 +1,3 @@
+name = "User Homes"
+description = "Allows users to have home galleries that they are redirected to when logged in."
+version = 1
