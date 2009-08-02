@@ -11,6 +11,11 @@
       }
     }  
   }
+
+  // If $metaTags is empty, use the item's title instead.
+  if ($metaTags == "") {
+    $metaTags = p::clean($item->title);
+  }
   
   $metaDescription = "";
   $metaDescription = trim(nl2br(p::purify($item->description)));
