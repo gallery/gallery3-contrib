@@ -37,6 +37,7 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
 
     $HTMLButton = false;
     $BBCodeButton = false;
+    $FullURLButton = false;
     $InPageLinks = false;
     $DialogLinks = false;
     
@@ -46,6 +47,9 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
       }
       if ($linkOpts_array[$i] == "BBCode") {
         $BBCodeButton = true;
+      }
+      if ($linkOpts_array[$i] == "FullURL") {
+        $FullURLButton = true;
       }
     }          
     for ($i = 0; $i < count($displayType_array); $i++) {
@@ -60,6 +64,7 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
     // Save Settings.
     module::set_var("embedlinks", "HTMLCode", $HTMLButton);
     module::set_var("embedlinks", "BBCode", $BBCodeButton);
+    module::set_var("embedlinks", "FullURL", $FullURLButton);
     module::set_var("embedlinks", "InPageLinks", $InPageLinks);
     module::set_var("embedlinks", "DialogLinks", $DialogLinks);
     message::success(t("Your Selection Has Been Saved."));
@@ -79,6 +84,7 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
     // Make an array for the different types of link codes.
     $linkCodes["HTMLCode"] = array("Show HTML Links", module::get_var("embedlinks", "HTMLCode"));
     $linkCodes["BBCode"] = array("Show BBCode Links", module::get_var("embedlinks", "BBCode"));
+    $linkCodes["FullURL"] = array("Show the full URL", module::get_var("embedlinks", "FullURL"));
 
     // Make an array for the different methods of displaying the links.
     $linkDisplays["InPageLinks"] = array("Show Links In The Actual Page", module::get_var("embedlinks", "InPageLinks"));

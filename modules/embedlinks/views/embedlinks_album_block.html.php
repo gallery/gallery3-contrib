@@ -5,7 +5,7 @@ input[type="text"] {
 }
 </style>
 <? if (module::get_var("embedlinks", "HTMLCode")) { ?>
-<table class="gMetadata">
+<table class="gEmbedLinks">
   <tbody>
     <tr>
       <th colspan="2"><?= t("HTML Links:") ?></th>
@@ -25,7 +25,7 @@ input[type="text"] {
 <? } ?>
 
 <? if (module::get_var("embedlinks", "BBCode")) { ?>
-<table class="gMetadata">
+<table class="gEmbedLinks">
   <tbody>
     <tr>
       <th colspan="2"><?= t("BBCode Links:") ?></th>
@@ -40,6 +40,27 @@ input[type="text"] {
       <th><?= t("Thumbnail:") ?></th>
       <td><input onclick="this.focus(); this.select();" name="forum" type="text" readonly="true" size="85" value="[url=<?= url::abs_site("{$item->type}s/{$item->id}") ?>][img]<?= $item->thumb_url(true) ?>[/img][/url]" /></td>
     </tr>
+  </tbody>
+</table>
+<? } ?>
+
+<? if (module::get_var("embedlinks", "FullURL")) { ?>
+<table class="gEmbedLinks">
+  <tbody>
+    <tr>
+      <th colspan="2"><?= t("URLs:") ?></th>
+    </tr>
+
+    <tr>
+      <th><?= t("Album URL:") ?></th>
+      <td><input onclick="this.focus(); this.select();" name="forum" type="text" readonly="true" value="<?= url::abs_site("{$item->type}s/{$item->id}") ?>" /></td>
+    </tr>
+    
+    <tr>
+      <th><?= t("Thumbnail:") ?></th>
+      <td><input onclick="this.focus(); this.select();" name="forum" type="text" readonly="true" size="85" value="<?= $item->thumb_url(true) ?>" /></td>
+    </tr>
+
   </tbody>
 </table>
 <? } ?>
