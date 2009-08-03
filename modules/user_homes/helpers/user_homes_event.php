@@ -146,7 +146,7 @@ class user_homes_event_Core {
    */
   static function tree($parent, $dashes, &$array) {
     if ($parent->id == "1") {
-      $array[$parent->id] = "home";
+      $array[$parent->id] = ORM::factory("item", 1)->title;
     } else {
       $array[$parent->id] = "$dashes $parent->name";
     }
