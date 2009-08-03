@@ -1,5 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.");
-/*
+/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -24,8 +24,7 @@ class user_homes_installer {
   }
 
   /**
-   * installs the the table of user homes when the
-   * module is installed
+   * Installs the table of user homes when the module is installed.
    */
   static function activate() {
     $db = Database::instance();
@@ -35,11 +34,11 @@ class user_homes_installer {
                   PRIMARY KEY (`id`),
                   UNIQUE KEY(`id`))
                   ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+    module::set_version("user_homes", 1);
   }
 
   /**
-   * drops the table of user homes when the
-   * module is uninstalled
+   * Drops the table of user homes when the module is uninstalled.
    */
   static function deactivate() {
     $db = Database::instance();
