@@ -100,4 +100,38 @@ class EmbedLinks_Controller extends Controller {
     $view->details = $linkArray;
     print $view;
   }
+
+  public function showfullurl($item_id) {
+    // Generate the Dialog Box for the URLs to the items thumb, resize and fullsize image.
+  $item = ORM::factory("item", $item_id);
+    access::required("view", $item);
+    
+    // If the current page is an album, only display a URL field,
+    //   or else display a couple of fields.
+    if ($item->is_album()) {
+      $linkArray[0] = array("Album URL:", url::abs_site("{$item->type}s/{$item->id}"));
+      $linkArray[1] = array("Thumbnail:", $item->thumb_url(true));
+      $linkTitles[0] = array("URLs:", 2);  
+    } else {
+      // Link to the current page.    
+      $linkArray[0] = array("This Page:", url::abs_site("{$item->type}s/{$item->id}"));
+      $linkArray[1] = array("Thumbnail:", $item->thumb_url(true));
+      $linkArray[2] = array("Resized:", $item->resize_url(true));
+      
+      // If the visitor has suficient privlidges to see the fullsized
+      //    version of the current image, then display its URL.
+      if (access::can("view_full", $item)) {
+        $linkArray[3] = array("Fullsize:", $item->file_url(true));
+        $linkTitles[0] = array("URLs:", 4);  
+      } else {
+        $linkTitles[0] = array("URLs:", 3);  
+      }
+    }
+    
+    $view = new View("embedlinks_fullurldialog.html");
+    $view->titles = $linkTitles;
+    $view->details = $linkArray;
+    print $view;
+  }
+  
 }

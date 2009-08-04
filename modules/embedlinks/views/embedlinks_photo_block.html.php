@@ -7,7 +7,7 @@ input[type="text"] {
       
 <? if (module::get_var("embedlinks", "HTMLCode")) { ?>
 <h3 align="center"><?= t("HTML Links")?></h3>
-<table class="gMetadata">
+<table class="gEmbedLink">
   <tbody>
     <tr>
       <th colspan="2"><?= t("Link To This Page:") ?></th>
@@ -74,7 +74,7 @@ input[type="text"] {
 
 <? if (module::get_var("embedlinks", "BBCode")) { ?>
 <h3 align="center"><?= t("BBCode Links")?></h3>
-<table class="gMetadata">
+<table class="gEmbedLinks">
   <tbody>
     <tr>
       <th colspan="2"><?= t("Link To This Page:") ?></th>
@@ -134,6 +134,46 @@ input[type="text"] {
       <th><?= t("Image:") ?></th>
       <td><input type="text" value="[img]<?= $item->resize_url(true) ?>[/img]" onclick="this.focus(); this.select();" readonly></td>
     </tr>
+
+  </tbody>
+</table>
+<? } ?>
+
+
+
+
+
+
+
+
+
+
+
+<? if (module::get_var("embedlinks", "FullURL")) { ?>
+<h3 align="center"><?= t("URLs")?></h3>
+<table class="gEmbedLinks">
+  <tbody>
+    <tr>
+      <th><?= t("This Page:") ?></th>
+      <td><input type="text" value="<?= url::abs_site("{$item->type}s/{$item->id}") ?>" onclick="this.focus(); this.select();" readonly></td>
+    </tr>
+
+    <tr>
+      <th><?= t("Thumbnail:") ?></th>
+      <td><input type="text" value="<?= $item->thumb_url(true) ?>" onclick="this.focus(); this.select();" readonly></td>
+    </tr>
+
+    <tr>
+      <th><?= t("Resized:") ?></th>
+      <td><input type="text" value="<?= $item->resize_url(true) ?>" onclick="this.focus(); this.select();" readonly></td>
+    </tr>
+
+<?  if (access::can("view_full", $item)) { ?>
+    <tr>
+      <th><?= t("Fullsize:") ?></th>
+      <td><input type="text" value="<?= $item->file_url(true) ?>" onclick="this.focus(); this.select();" readonly></td>
+    </tr>
+<? } ?>
 
   </tbody>
 </table>

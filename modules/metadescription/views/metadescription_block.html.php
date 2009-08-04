@@ -11,6 +11,24 @@
       }
     }  
   }
+
+  // If $metaTags is empty, use the item's title instead.
+  if ($metaTags == "") {
+    $metaTags = p::clean($item->title);
+  }
+  
+  $metaDescription = "";
+  $metaDescription = trim(nl2br(p::purify($item->description)));
+  // If description is empty, use title instead.
+  if ($metaDescription == "") {
+    $metaDescription = p::clean($item->title);
+  }
+  // Strip HTML
+  $metaDescription = strip_tags($metaDescription);
+  // Strip Line Breaks
+  $metaDescription = str_replace("\n", " ", $metaDescription);
+  // Limit Description to 150 characters.
+  $metaDescription = substr($metaDescription, 0,150);
 ?>
 <META NAME="KEYWORDS" CONTENT="<?= $metaTags ?>">
-<META NAME="DESCRIPTION" CONTENT="<?= nl2br(p::purify($item->description)) ?>">
+<META NAME="DESCRIPTION" CONTENT="<?= $metaDescription ?>">

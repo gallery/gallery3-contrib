@@ -14,3 +14,11 @@
   <?= t("Show BBCode") ?>
 </a>
 <? } ?>
+
+<? if (module::get_var("embedlinks", "FullURL")) { ?>
+<a href="<?= url::site("embedlinks/showfullurl/{$item->id}") ?>" title="<?= t("URLs") ?>"
+  class="gDialogLink gButtonLink ui-icon-left ui-state-default ui-corner-all">
+  <span class="ui-icon ui-icon-info"></span>
+  <?= t("Show URLs") ?>
+</a>
+<? } ?>
