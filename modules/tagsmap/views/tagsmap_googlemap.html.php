@@ -15,31 +15,20 @@
   function initialize() {
     if (GBrowserIsCompatible()) {
       var map = new GMap2(document.getElementById("map_canvas"));
-      map.setCenter(new GLatLng(<?=$google_map_latitude ?>, 
-                                <?=$google_map_longitude ?>));
-      map.setZoom(<?=$google_map_zoom ?>);
-      map.setUIToDefault();
 
       // Make Google Earth an Option.
       map.addMapType(G_SATELLITE_3D_MAP);
       var mapControl = new GMapTypeControl();
       map.addControl(mapControl);
-            
+
+      // Set map defaults.
+      map.setCenter(new GLatLng(<?=$google_map_latitude ?>, 
+                                <?=$google_map_longitude ?>));
+      map.setZoom(<?=$google_map_zoom ?>);
+      map.setUIToDefault();      
       map.setMapType(<?=$google_map_type ?>);
-      
-      <? foreach ($tags_gps as $oneGPS): ?>
-      {
-          
-        var myGeographicCoordinates = new GLatLng(<?= $oneGPS->latitude ?>, 
-                                                  <?= $oneGPS->longitude ?>);
-        map.addOverlay(createMarker(myGeographicCoordinates, 
-                                      "<?= $oneGPS->description ?>", 
-                                      "<?= url::site("tags/$oneGPS->tag_id")?>", 
-                                      "<?= ORM::factory("tag", $oneGPS->tag_id)->name ?>"
-                                    ));
-      }
-      <? endforeach ?>
-      
+
+      // Function for making the clickable markers.
       function createMarker(point, description, tagURL, tagName) {
         var marker = new GMarker(point);
     	GEvent.addListener(marker, "click", function() {
@@ -47,12 +36,24 @@
                        "Tag: <a href=\"" + tagURL + "\">" + tagName + "</a>";
     	  map.openInfoWindowHtml(point, myHtml);
         });
-  
         return marker;
       }
+
+      // Create markers for each tag with GPS coordinates.
+      <? $counter = 0; ?>
+      <? foreach ($tags_gps as $oneGPS): ?>
+        var myGeographicCoordinates<?=$counter; ?> = new GLatLng(<?= $oneGPS->latitude ?>, 
+                                                  <?= $oneGPS->longitude ?>);
+        map.addOverlay(createMarker(myGeographicCoordinates<?=$counter; ?>, 
+                                      "<?= $oneGPS->description ?>", 
+                                      "<?= url::site("tags/$oneGPS->tag_id")?>", 
+                                      "<?= ORM::factory("tag", $oneGPS->tag_id)->name ?>"
+                                    ));
+        <? $counter++; ?>
+      <? endforeach ?>
     }
   }
-  
+
   google.setOnLoadCallback(initialize);
 </script>
 
