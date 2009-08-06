@@ -85,15 +85,15 @@ class rescue_task_Core {
       ->select("id")
       ->from("items")
       ->where("parent_id", $parent_id)
-      ->orderby("left", "ASC")
+      ->orderby("left_ptr", "ASC")
       ->get();
   }
 
   static function set_left($id, $value) {
-    Database::instance()->update("items", array("left" => $value), array("id" => $id));
+    Database::instance()->update("items", array("left_ptr" => $value), array("id" => $id));
   }
 
   static function set_right($id, $value) {
-    Database::instance()->update("items", array("right" => $value), array("id" => $id));
+    Database::instance()->update("items", array("right_ptr" => $value), array("id" => $id));
   }
 }
