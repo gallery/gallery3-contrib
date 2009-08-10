@@ -20,10 +20,12 @@
 class videodimensions_event_Core {
   static function item_edit_form($item, $form) {
     // Retrieve the existing height and width and display it on the form.
-    $form->edit_item->input("vidheight")->label(t("Video Height"))
-      ->value($item->height);
-    $form->edit_item->input("vidwidth")->label(t("Video Width"))
-      ->value($item->width);
+    if ($item->is_movie()) {
+      $form->edit_item->input("vidheight")->label(t("Video Height"))
+           ->value($item->height);
+      $form->edit_item->input("vidwidth")->label(t("Video Width"))
+           ->value($item->width);
+    }
   }
 
   static function item_edit_form_completed($item, $form) {
