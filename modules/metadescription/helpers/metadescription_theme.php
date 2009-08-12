@@ -19,20 +19,29 @@
  */
 class metadescription_theme_Core {
   static function head($theme) {
-    // Make sure the current page belongs to an item.
-    if (!$theme->item()) {
+    if ($theme->tag()) {
+      // If the current page belongs to a tag, look up
+      //   the information for that tag.
+      $tagsItem = ORM::factory("tag")
+      ->where("id", $theme->tag())
+      ->find_all();
+
+    }elseif ($theme->item()) {
+      // If the current page belongs to an item (album, photo, etc.),
+      //   look up any tags that have been applied to that item.
+      $tagsItem = ORM::factory("tag")
+        ->join("items_tags", "tags.id", "items_tags.tag_id")
+        ->where("items_tags.item_id", $theme->item->id)
+        ->find_all();
+
+    } else {
+      // If the current page is neighter an item nor tag, do nothing.
       return;
     }
 
-    // Create an array of all the tags for the current item.
-    $tagsItem = ORM::factory("tag")
-      ->join("items_tags", "tags.id", "items_tags.tag_id")
-      ->where("items_tags.item_id", $theme->item->id)
-      ->find_all();
-    
+    // Load the meta tags into the top of the page.
     $metaView = new View("metadescription_block.html");
     $metaView->tags = $tagsItem;
     return $metaView; 
   }
-
 }
