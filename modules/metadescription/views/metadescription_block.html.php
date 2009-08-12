@@ -23,6 +23,10 @@
   if ($metaDescription == "") {
     $metaDescription = p::clean($item->title);
   }
+  // If it's still empty, use $metaTags.
+  if ($metaDescription == "") {
+    $metaDescription = $metaTags;
+  }
   // Strip HTML
   $metaDescription = strip_tags($metaDescription);
   // Strip Line Breaks
