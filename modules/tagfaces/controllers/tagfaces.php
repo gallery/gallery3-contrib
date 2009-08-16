@@ -20,12 +20,25 @@
 class tagfaces_Controller extends Controller {
   public function drawfaces($id) {
     // Generate the page that allows the user to draw boxes over a photo.
-    
+      
     // Make sure user has access to view and edit the photo.
     $item = ORM::factory("item", $id);
     access::required("view", $item);
     access::required("edit", $item);
 
+    // Make sure the item actually has tags on it.
+    $all_tags = ORM::factory("tag")
+      ->join("items_tags", "tags.id", "items_tags.tag_id")
+      ->where("items_tags.item_id", $id)
+      ->find_all();
+      
+    // If it doesn't, display an error and direct back to the photo.
+    if (count($all_tags) == 0) {
+      message::error(t("Please add some tags first."));
+      url::redirect(url::abs_site("{$item->type}s/{$item->id}"));
+    
+    }
+    
     // Create the page.
     $template = new Theme_View("page.html", "drawfaces");
     $template->set_global("item_id", $id);

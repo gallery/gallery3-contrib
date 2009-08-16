@@ -34,10 +34,14 @@ class tagfaces_event_Core {
 
   static function site_menu($menu, $theme) {  
     // Create a menu option for adding face data.
+    if (!$theme->item()) {
+      return;
+    }
+  
     $item = $theme->item();
 
-    if ((access::can("view", $item)) && (access::can("edit", $item))) {
-      if ($item->is_photo()) {        
+    if ($item->is_photo()) {        
+      if ((access::can("view", $item)) && (access::can("edit", $item))) {
         $menu->get("options_menu")
              ->append(Menu::factory("link")
              ->id("tagfaces")
