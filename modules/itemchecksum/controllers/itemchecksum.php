@@ -18,6 +18,16 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class itemchecksum_Controller extends Controller {
+  public function albumcount($album_id) {
+    $item = ORM::factory("item")
+      ->viewable()
+      ->where("parent_id", $album_id)
+      ->where("type !=", "album")
+      ->find_all();
+
+    print count($item);
+  }
+
   public function md5($album_id, $file_name) {
     $item = ORM::factory("item")
       ->where("parent_id", $album_id)
