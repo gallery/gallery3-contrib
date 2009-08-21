@@ -19,6 +19,9 @@
  */
 class itemchecksum_Controller extends Controller {
   public function albumcount($album_id) {
+    // Display the number of non-album items (photos and videos)
+    //   in the specified album ($album_id).
+    
     $item = ORM::factory("item")
       ->viewable()
       ->where("parent_id", $album_id)
@@ -29,6 +32,9 @@ class itemchecksum_Controller extends Controller {
   }
 
   public function md5($album_id, $file_name) {
+    // Locate an item with $file_name in the album $album_id
+    //   and display it's md5 checksum.
+    
     $item = ORM::factory("item")
       ->where("parent_id", $album_id)
       ->where("name", $file_name)
@@ -36,6 +42,9 @@ class itemchecksum_Controller extends Controller {
 
     if (count($item) > 0) {
       access::required("view_full", $item[0]);
+      
+      // If the KeepOriginal module is active, check for/use the 
+      //   original image instead of the gallery edited version.
       if (module::is_active("keeporiginal")) {
         $original_image = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item[0]->file_path());
         if ($item[0]->is_photo() && file_exists($original_image)) {        
@@ -52,7 +61,9 @@ class itemchecksum_Controller extends Controller {
   }
 
   public function sha1($album_id, $file_name) {
-
+    // Locate an item with $file_name in the album $album_id
+    //   and display it's sha-1 checksum.
+  
     $item = ORM::factory("item")
       ->where("parent_id", $album_id)
       ->where("name", $file_name)
@@ -60,6 +71,9 @@ class itemchecksum_Controller extends Controller {
 
     if (count($item) > 0) {
       access::required("view_full", $item[0]);
+      
+      // If the KeepOriginal module is active, check for/use the 
+      //   original image instead of the gallery edited version.
       if (module::is_active("keeporiginal")) {
         $original_image = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item[0]->file_path());
         if ($item[0]->is_photo() && file_exists($original_image)) {        
