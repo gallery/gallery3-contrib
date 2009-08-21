@@ -17,31 +17,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class metadescription_theme_Core {
-  static function head($theme) {
-    if ($theme->tag()) {
-      // If the current page belongs to a tag, look up
-      //   the information for that tag.
-      $tagsItem = ORM::factory("tag")
-      ->where("id", $theme->tag())
-      ->find_all();
-
-    }elseif ($theme->item()) {
-      // If the current page belongs to an item (album, photo, etc.),
-      //   look up any tags that have been applied to that item.
-      $tagsItem = ORM::factory("tag")
-        ->join("items_tags", "tags.id", "items_tags.tag_id")
-        ->where("items_tags.item_id", $theme->item->id)
-        ->find_all();
-
-    } else {
-      // If the current page is neighter an item nor tag, do nothing.
-      return;
+class videodimensions_event_Core {
+  static function item_edit_form($item, $form) {
+    // Retrieve the existing height and width and display it on the form.
+    if ($item->is_movie()) {
+      $form->edit_item->input("vidheight")->label(t("Video Height"))
+           ->value($item->height);
+      $form->edit_item->input("vidwidth")->label(t("Video Width"))
+           ->value($item->width);
     }
+  }
 
-    // Load the meta tags into the top of the page.
-    $metaView = new View("metadescription_block.html");
-    $metaView->tags = $tagsItem;
-    return $metaView; 
+  static function item_edit_form_completed($item, $form) {
+    // Save the new height and width to the database.
+    $item->height = $form->edit_item->vidheight->value;
+    $item->width = $form->edit_item->vidwidth->value;
+    $item->save();
   }
 }

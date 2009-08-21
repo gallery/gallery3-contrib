@@ -23,6 +23,17 @@
   if ($metaDescription == "") {
     $metaDescription = p::clean($item->title);
   }
+  // If this page belongs to a tag, use the description of the first item instead.
+  if ($theme->tag()) {
+    if (count($children) > 0) {
+      $metaDescription = trim(nl2br(p::purify($children[0]->description)));
+    }
+  }
+  // If it's still empty, use $metaTags.
+  if ($metaDescription == "") {
+    $metaDescription = $metaTags;
+  }
+
   // Strip HTML
   $metaDescription = strip_tags($metaDescription);
   // Strip Line Breaks

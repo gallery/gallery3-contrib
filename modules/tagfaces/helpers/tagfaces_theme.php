@@ -17,31 +17,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class metadescription_theme_Core {
-  static function head($theme) {
-    if ($theme->tag()) {
-      // If the current page belongs to a tag, look up
-      //   the information for that tag.
-      $tagsItem = ORM::factory("tag")
-      ->where("id", $theme->tag())
+class tagfaces_theme_Core {
+  static function photo_bottom($theme) {
+    // Check and see if the current photo has any tagged faces
+    //   associated with it.
+    $item = $theme->item;
+    $existingFaces = ORM::factory("items_face")
+      ->where("item_id", $item->id)
       ->find_all();
-
-    }elseif ($theme->item()) {
-      // If the current page belongs to an item (album, photo, etc.),
-      //   look up any tags that have been applied to that item.
-      $tagsItem = ORM::factory("tag")
-        ->join("items_tags", "tags.id", "items_tags.tag_id")
-        ->where("items_tags.item_id", $theme->item->id)
-        ->find_all();
-
-    } else {
-      // If the current page is neighter an item nor tag, do nothing.
-      return;
+      
+    // If it does, add an image map to the page to display them.
+    if (count($existingFaces) > 0) {
+      return new View("drawfaces_highlight_block.html");
     }
-
-    // Load the meta tags into the top of the page.
-    $metaView = new View("metadescription_block.html");
-    $metaView->tags = $tagsItem;
-    return $metaView; 
   }
 }
