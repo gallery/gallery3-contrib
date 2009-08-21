@@ -21,6 +21,11 @@ class batchtag_theme_Core {
   static function sidebar_blocks($theme) {
     // Display form for tagging in the album sidebar.
 
+    // Make sure the current page belongs to an item.
+    if (!$theme->item()) {
+      return;
+    }
+    
     $item = $theme->item();
     
     // Only display the form in albums that the user has edit permission in.
