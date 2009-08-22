@@ -54,8 +54,8 @@ class MiniSlideShow_Controller extends Controller {
     }
     if (module::get_var("minislideshow", "use_full_image") != "") {
       $slideshow_params = $slideshow_params . "&useFull=true";
-      if (module::get_var("minislideshow", "use_full_image") != "2") {
-        $slideshow_params = $slideshow_params . "useResizes=true";
+      if (module::get_var("minislideshow", "use_full_image") == "2") {
+        $slideshow_params = $slideshow_params . "&useResizes=true";
       }
     }
     if (module::get_var("minislideshow", "delay") != "") {
