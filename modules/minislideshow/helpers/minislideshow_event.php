@@ -48,7 +48,7 @@ class minislideshow_event_Core {
                ->label(t("View MiniSlide Show"))
                ->url(url::site("minislideshow/showslideshow/" . $theme->item()))
                ->css_class("gDialogLink")
-               ->css_id("gSlideshowLink"));
+               ->css_id("gMiniSlideshowLink"));
   }
 
   static function photo_menu($menu, $theme) {
@@ -59,6 +59,6 @@ class minislideshow_event_Core {
                ->label(t("View MiniSlide Show"))
                ->url(url::site("minislideshow/showslideshow/" . $theme->item()))
                ->css_class("gDialogLink")
-               ->css_id("gSlideshowLink"));
+               ->css_id("gMiniSlideshowLink"));
   }
 }
