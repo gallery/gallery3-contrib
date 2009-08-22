@@ -1,0 +1,6 @@
+Copy "ico-view-minislideshow.png" into your "themes/CURRENTTHEME/images" folder.
+
+Edit the file "themes/CURRENTTHEME/css/screen.css" to include the following lines:
+#gViewMenu #gMiniSlideshowLink {
+  background-image: url('../images/ico-view-minislideshow.png');
+}
