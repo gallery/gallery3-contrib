@@ -82,13 +82,13 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
                       array("id" => "gEmbedLinksAdminForm"));
 
     // Make an array for the different types of link codes.
-    $linkCodes["HTMLCode"] = array("Show HTML Links", module::get_var("embedlinks", "HTMLCode"));
-    $linkCodes["BBCode"] = array("Show BBCode Links", module::get_var("embedlinks", "BBCode"));
-    $linkCodes["FullURL"] = array("Show the full URL", module::get_var("embedlinks", "FullURL"));
+    $linkCodes["HTMLCode"] = array(t("Show HTML Links"), module::get_var("embedlinks", "HTMLCode"));
+    $linkCodes["BBCode"] = array(t("Show BBCode Links"), module::get_var("embedlinks", "BBCode"));
+    $linkCodes["FullURL"] = array(t("Show the full URL"), module::get_var("embedlinks", "FullURL"));
 
     // Make an array for the different methods of displaying the links.
-    $linkDisplays["InPageLinks"] = array("Show Links In The Actual Page", module::get_var("embedlinks", "InPageLinks"));
-    $linkDisplays["DialogLinks"] = array("Show Links In a Seperate Dialog Box", module::get_var("embedlinks", "DialogLinks"));
+    $linkDisplays["InPageLinks"] = array(t("Show Links In The Actual Page"), module::get_var("embedlinks", "InPageLinks"));
+    $linkDisplays["DialogLinks"] = array(t("Show Links In a Seperate Dialog Box"), module::get_var("embedlinks", "DialogLinks"));
     
     // Setup a few checkboxes on the form.
     $add_links = $form->group("EmbedLinks");
