@@ -29,11 +29,45 @@ class tagfaces_installer {
                `y1` int(9) NOT NULL,
                `x2` int(9) NOT NULL,
                `y2` int(9) NOT NULL,
+               `description` varchar(2048) default NULL,
+               PRIMARY KEY (`id`))
+               ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+    $db->query("CREATE TABLE IF NOT EXISTS {items_notes} (
+               `id` int(9) NOT NULL auto_increment,
+               `item_id` int(9) NOT NULL,
+               `x1` int(9) NOT NULL,
+               `y1` int(9) NOT NULL,
+               `x2` int(9) NOT NULL,
+               `y2` int(9) NOT NULL,
+               `title` varchar(64) NOT NULL,
+               `description` varchar(2048) default NULL,
                PRIMARY KEY (`id`))
                ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
     // Set the module's version number.
-    module::set_version("tagfaces", 1);
+    module::set_version("tagfaces", 2);
+  }
+
+  static function upgrade($version) {
+    $db = Database::instance();
+    if ($version == 1) {
+      $db->query("ALTER TABLE {items_faces} ADD `description` varchar(2048) default NULL");
+
+      $db->query("CREATE TABLE IF NOT EXISTS {items_notes} (
+               `id` int(9) NOT NULL auto_increment,
+               `item_id` int(9) NOT NULL,
+               `x1` int(9) NOT NULL,
+               `y1` int(9) NOT NULL,
+               `x2` int(9) NOT NULL,
+               `y2` int(9) NOT NULL,
+               `title` varchar(64) NOT NULL,
+               `description` varchar(2048) default NULL,
+               PRIMARY KEY (`id`))
+               ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
+      module::set_version("tagfaces", $version = 2);
+    }
   }
 
   static function deactivate() {
@@ -45,6 +79,7 @@ class tagfaces_installer {
     // Delete the face table before uninstalling.
     $db = Database::instance();
     $db->query("DROP TABLE IF EXISTS {items_faces};");
+    $db->query("DROP TABLE IF EXISTS {items_notes};");
     module::delete("tagfaces");
   }
 }

@@ -80,7 +80,23 @@
 </fieldset> 
 
 <style>
-input[type="text"] {
+#face_title {
+  width: 200px;
+}
+
+#face_description {
+  width: 400px;
+}
+#x {
+  width: 40px;
+}
+#y {
+  width: 40px;
+}
+#x2 {
+  width: 40px;
+}
+#y2 {
   width: 40px;
 }
 

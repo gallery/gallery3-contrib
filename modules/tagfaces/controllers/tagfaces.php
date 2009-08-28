@@ -25,19 +25,6 @@ class tagfaces_Controller extends Controller {
     $item = ORM::factory("item", $id);
     access::required("view", $item);
     access::required("edit", $item);
-
-    // Make sure the item actually has tags on it.
-    $all_tags = ORM::factory("tag")
-      ->join("items_tags", "tags.id", "items_tags.tag_id")
-      ->where("items_tags.item_id", $id)
-      ->find_all();
-      
-    // If it doesn't, display an error and direct back to the photo.
-    if (count($all_tags) == 0) {
-      message::error(t("Please add some tags first."));
-      url::redirect(url::abs_site("{$item->type}s/{$item->id}"));
-    
-    }
     
     // Create the page.
     $template = new Theme_View("page.html", "drawfaces");
@@ -94,19 +81,14 @@ class tagfaces_Controller extends Controller {
 
     // Convert submitted data to local variables.
     $tag_data = Input::instance()->post("tagsList");
+    $str_face_title = str_replace("'", "\'", Input::instance()->post("face_title"));
+    $str_face_description = str_replace("'", "\'", Input::instance()->post("face_description"));
     $item_data = Input::instance()->post("item_id");
     $str_x1 = Input::instance()->post("x");
     $str_y1 = Input::instance()->post("y");
     $str_x2 = Input::instance()->post("x2");
     $str_y2 = Input::instance()->post("y2");
-
-    // If the user didn't select a tag, display and error and abort.
-    if (count($tag_data) == 0) {
-      message::error(t("Please select a tag."));
-      url::redirect("tagfaces/drawfaces/$item_data");
-      return;
-    }
-
+    
     // If the user didn't select a face, display an error and abort.
     if (($str_x1 == "") || ($str_x2 == "") || ($str_y1 == "") || ($str_y2 == "")) {
       message::error(t("Please select a face."));
@@ -114,30 +96,54 @@ class tagfaces_Controller extends Controller {
       return;
     }
 
-    // Check to see if the tag already has a face associated with it.
-    $existingFace = ORM::factory("items_face")
-      ->where("tag_id", $tag_data[0])
-      ->where("item_id", $item_data)
-      ->find_all();
-
-    if (count($existingFace) == 0) {
-      // Save the new face to the database.
-      $newface = ORM::factory("items_face");
-      $newface->tag_id = $tag_data[0];
-      $newface->item_id = $item_data;
-      $newface->x1 = $str_x1;
-      $newface->y1 = $str_y1;
-      $newface->x2 = $str_x2;
-      $newface->y2 = $str_y2;
-      $newface->save();
+    // Decide if we are saving a face or a note.
+    if ($tag_data == -1) {
+      // Make sure there's a title.
+      if ($str_face_title == "") {
+        message::error(t("Please select a Tag or specify a Title."));
+        url::redirect("tagfaces/drawfaces/$item_data");
+        return;
+      }
+      
+      // Save a new Note to the database.
+      $newnote = ORM::factory("items_note");
+      $newnote->item_id = $item_data;
+      $newnote->x1 = $str_x1;
+      $newnote->y1 = $str_y1;
+      $newnote->x2 = $str_x2;
+      $newnote->y2 = $str_y2;
+      $newnote->title = $str_face_title;
+      $newnote->description = $str_face_description;
+      $newnote->save();
+        
     } else {
-      // Update the coordinates of an existing face.
-      $updatedFace = ORM::factory("items_face", $existingFace[0]->id);
-      $updatedFace->x1 = $str_x1;
-      $updatedFace->y1 = $str_y1;
-      $updatedFace->x2 = $str_x2;
-      $updatedFace->y2 = $str_y2;
-      $updatedFace->save();
+      // Check to see if the tag already has a face associated with it.
+      $existingFace = ORM::factory("items_face")
+                           ->where("tag_id", $tag_data)
+                           ->where("item_id", $item_data)
+                           ->find_all();
+
+      if (count($existingFace) == 0) {
+        // Save the new face to the database.
+        $newface = ORM::factory("items_face");
+        $newface->tag_id = $tag_data;
+        $newface->item_id = $item_data;
+        $newface->x1 = $str_x1;
+        $newface->y1 = $str_y1;
+        $newface->x2 = $str_x2;
+        $newface->y2 = $str_y2;
+        $newface->description = $str_face_description;
+        $newface->save();
+      } else {
+        // Update the coordinates of an existing face.
+        $updatedFace = ORM::factory("items_face", $existingFace[0]->id);
+        $updatedFace->x1 = $str_x1;
+        $updatedFace->y1 = $str_y1;
+        $updatedFace->x2 = $str_x2;
+        $updatedFace->y2 = $str_y2;
+        $updatedFace->description = $str_face_description;
+        $updatedFace->save();
+      }
     }
 
     // Redirect back to the main screen and display a "success" message.
@@ -162,16 +168,26 @@ class tagfaces_Controller extends Controller {
 
     // Generate an array of tags to use as checkboxes.
     $array_tags = "";
+    $array_tags[-1] = t("No Tag");
     foreach ($all_tags as $oneTag) {
-      $array_tags[$oneTag->id] = array($oneTag->name, false);
+      $array_tags[$oneTag->id] = $oneTag->name;
     }
 
     // Make a checklist of tags on the form.
-    $tags_group = $form->group("FaceTag")->label(t("Select a tag:"));
-    $tags_group->checklist("tagsList")
-               ->options($array_tags)
-               ->label(t("Select one of the tags below to associate with the face:"));
-    
+    $tags_group = $form->group("FaceTag")
+                       ->label(t("Select a tag or enter in a title:"));
+        
+    $tags_group->dropdown('tagsList')
+               ->label(t("Select a tag:"))
+               ->options($array_tags);
+
+    $tags_group->input("face_title")
+               ->label(t("Title"));
+               
+    $tags_description = $form->group("TagsDescription")
+                             ->label(t("Description (optional):"));
+    $tags_description->input("face_description");
+                      
     // Generate input boxes to hold the coordinates of the face.
     $coordinates_group = $form->group("FaceCoordinates")
                               ->label(t("Coordinates:"));

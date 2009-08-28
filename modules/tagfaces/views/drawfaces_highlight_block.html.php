@@ -1,13 +1,16 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <?
-  // Check and see if the current photo has any faces associated with it.
+  // Check and see if the current photo has any faces or notes associated with it.
   $existingFaces = ORM::factory("items_face")
                         ->where("item_id", $item->id)
                         ->find_all();
-
+  $existingNotes = ORM::factory("items_note")
+                        ->where("item_id", $item->id)
+                        ->find_all();
+                        
   // If it does, then insert some javascript and display an image map
   //   to show where the faces are at.
-  if (count($existingFaces) > 0) {
+  if ((count($existingFaces) > 0) || (count($existingNotes) > 0)) {
 ?>
 <style>
 .transparent30
@@ -31,7 +34,7 @@
     photoimg.useMap = '#faces';
   }
 
-  function highlightbox(x1, y1, x2, y2, str_title, str_url) {
+  function highlightbox(x1, y1, x2, y2, str_title, str_description, str_url) {
     var divtext = document.getElementById('divtagtext');
     var photodiv = document.getElementById('gPhoto');
     var photoimg = document.getElementById('<?="gPhotoId-{$item->id}"?>');
@@ -42,12 +45,22 @@
     divface.style.top = (photodiv.offsetTop + y1) + 'px';
     divface.style.width=(x2-x1) + 'px';
     divface.style.height=(y2-y1) + 'px';
-    divface.onclick = function() {self.location.href = str_url;}
+    if (str_url == '') {
+      divface.onclick = function() {return; }
+    } else {
+      divface.onclick = function() {self.location.href = str_url;}
+    }
     
     divtext.style.display = 'block';
     divtext.style.left = divface.style.left;
-    divtext.innerText = str_title;
-    divtext.textContent = str_title;
+    
+    if (str_description == '') {
+      divtext.innerText = str_title;
+      divtext.textContent = str_title;
+    } else {
+        divtext.innerHTML = str_title + '<br/>' + str_description;
+    }
+    
     divtext.style.top = (parseInt(divface.style.top.split('p')[0]) + parseInt(divface.style.height.split('p')[0]) + 2) + 'px';
   }
 
@@ -70,8 +83,16 @@
     foreach ($existingFaces as $oneFace) {
       $oneTag = ORM::factory("tag", $oneFace->tag_id)
 ?>
-  <area shape="rect" coords="<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>" href="<?=url::site("tags/$oneFace->tag_id") ?>" title="<?=p::clean($oneTag->name); ?>" alt="<?=p::clean($oneTag->name); ?>" onMouseOver="highlightbox(<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>,'<?=p::clean($oneTag->name); ?>', '<?=url::site("tags/$oneFace->tag_id") ?>')" />
+  <area shape="rect" coords="<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>" href="<?=url::site("tags/$oneFace->tag_id") ?>" title="<?=p::clean($oneTag->name); ?>" alt="<?=p::clean($oneTag->name); ?>" onMouseOver="highlightbox(<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>,'<?=p::clean($oneTag->name); ?>', '<?=p::clean($oneFace->description); ?>', '<?=url::site("tags/$oneFace->tag_id") ?>')" />
 <? } ?>
+
+<?
+    // For each note, add a rectangle area to the page.
+    foreach ($existingNotes as $oneNote) {
+?>
+  <area shape="rect" coords="<?=$oneNote->x1 ?>,<?=$oneNote->y1 ?>,<?=$oneNote->x2 ?>,<?=$oneNote->y2 ?>" title="<?=p::clean($oneNote->title); ?>" alt="<?=p::clean($oneNote->title); ?>" onMouseOver="highlightbox(<?=$oneNote->x1 ?>,<?=$oneNote->y1 ?>,<?=$oneNote->x2 ?>,<?=$oneNote->y2 ?>,'<?=p::clean($oneNote->title); ?>', '<?=p::clean($oneNote->description); ?>', '')" />
+<? } ?>
+
 </map>
 <?
   }

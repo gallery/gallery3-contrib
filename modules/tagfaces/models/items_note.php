@@ -17,22 +17,5 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class tagfaces_theme_Core {
-  static function photo_bottom($theme) {
-    // Check and see if the current photo has any tagged faces
-    //   or notes associated with it.
-    $item = $theme->item;
-
-    $existingFaces = ORM::factory("items_face")
-                          ->where("item_id", $item->id)
-                          ->find_all();
-    $existingNotes = ORM::factory("items_note")
-                          ->where("item_id", $item->id)
-                          ->find_all();
-      
-    // If it does, add an image map to the page to display them.
-    if ((count($existingFaces) > 0) || (count($existingNotes) > 0)) {
-      return new View("drawfaces_highlight_block.html");
-    }
-  }
+class Items_Note_Model extends ORM {
 }
