@@ -1,0 +1,5 @@
+#basket {float:right;}
+#add_to_basket {float:right}
+#basketForm {max-width:200px}
+#basketThumb {float:left; padding:10px 10px 0 0;}
+#basketThumb img{max-width:100px;}
