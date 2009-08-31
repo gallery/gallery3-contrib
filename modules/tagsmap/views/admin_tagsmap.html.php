@@ -42,7 +42,7 @@
           <? endif ?>
 
           <li>
-            <?= p::clean($tag->name) ?>
+            <?= html::clean($tag->name) ?>
             <span class="understate">(<?= $tag->count ?>)</span>
 
             <a href="<?= url::site("admin/tagsmap/edit_gps/$tag->id") ?>"><?= t("Edit GPS") ?></a>

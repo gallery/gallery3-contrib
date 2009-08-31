@@ -3,7 +3,7 @@
 
 <div id="gLatestUpdates">
   <h1><?= t("Latest Updates") ?></h1>
-<? array("term" => p::clean($q)) ?>
+<? array("term" => html::clean($q)) ?>
  <? if (count($items)): ?>
   <ul id="gAlbumGrid">
     <? foreach ($items as $item): ?>
@@ -15,10 +15,10 @@
       <a href="<?= url::site("items/$item->id") ?>">
         <?= $item->thumb_img() ?>
         <p>
-          <?= p::clean($item->title) ?>
+          <?= html::clean($item->title) ?>
         </p>
         <div>
-          <?= p::clean($item->description) ?>
+          <?= html::clean($item->description) ?>
         </div>
       </a>
     </li>
