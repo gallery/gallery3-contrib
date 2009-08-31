@@ -20,7 +20,7 @@
 ?>
 <div id="basket">
   <? if ($theme->page_type != 'basket'): ?>
-  <? if ($basket): ?>
+  <? if (isset($basket) && isset($basket->contents)): ?>
     <a href="<?= url::site("basket/view_basket") ?>"
        title="<?= t("View Basket") ?>">
        <img src="<?= url::file("modules/basket/images/basket.png") ?>"><br/>
