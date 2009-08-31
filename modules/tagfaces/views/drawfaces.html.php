@@ -64,14 +64,14 @@
   <div id="gAlbumHeaderButtons">
     <?= $theme->dynamic_top() ?>
   </div>
-  <h1><?= p::clean($title) ?></h1>
+  <h1><?= html::clean($title) ?></h1>
 </div>
   <p><?=t("Use the mouse to select a face on the image below."); ?></p>
 
 <fieldset> 
   <div id="gItem">
     <div id="gInfo">
-      <h2><?= p::purify($item->title) ?></h2>
+      <h2><?= html::purify($item->title) ?></h2>
     </div>
     <div id="gPhoto">
       <?= $item->resize_img(array("id" => "gPhotoId-{$item->id}", "class" => "gResize")) ?>
