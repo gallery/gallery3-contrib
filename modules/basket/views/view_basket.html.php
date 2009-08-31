@@ -19,6 +19,8 @@
  */
 ?>
 <div class="gBlock">
+  <? if (isset($basket->contents ) && count($basket->contents) > 0): ?>
+
   <? if (basket::isPaypal()): ?>
   <?= basket::generatePaypalForm($basket) ?>
   <script language="JavaScript">
@@ -36,7 +38,7 @@
     class="right gButtonLink ui-state-default ui-corner-all ui-icon-right">
       <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Proceed to Checkout") ?></a>
   <? endif; ?>
-
+<? endif; ?>
   <h2>
     <?= t("Shopping Basket") ?>
   </h2>
@@ -65,10 +67,10 @@
         </div>
         </td>
         <td>
-          <?= p::clean($prod_details->product_description()) ?>
+          <?= html::clean($prod_details->product_description()) ?>
         </td>
         <td>
-          <?= p::clean($prod_details->quantity) ?>
+          <?= html::clean($prod_details->quantity) ?>
         </td>
         <td>
           <? $total += $prod_details->cost?>
@@ -97,6 +99,8 @@
 
   </div>
 
+  <? if (isset($basket->contents ) && count($basket->contents) > 0): ?>
+
   <? if (basket::isPaypal()): ?>
   <a href="javascript:co();"
     class="right gButtonLink ui-state-default ui-corner-all ui-icon-right">
@@ -108,5 +112,6 @@
   <a href="<?= url::site("basket/checkout") ?>"
     class="right gButtonLink ui-state-default ui-corner-all ui-icon-right">
       <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Proceed to Checkout") ?></a>
+  <? endif; ?>
   <? endif; ?>
 </div>

@@ -43,13 +43,13 @@
       <? foreach ($products as $i => $product): ?>
       <tr id="gProduct-<?= $product->id ?>" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
         <td id="product-<?= $product->id ?>" class="core-info ">
-          <?= p::clean($product->name) ?>
+          <?= html::clean($product->name) ?>
   </td>
   <td>
     <?= basket::formatMoney($product->cost) ?>
         </td>
   <td>
-    <?= p::clean($product->description) ?>
+    <?= html::clean($product->description) ?>
   </td>
     <td class="gActions">
       <a href="<?= url::site("admin/product_lines/edit_product_form/$product->id") ?>"

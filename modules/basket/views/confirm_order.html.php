@@ -38,14 +38,14 @@ function so(){document.confirm.submit();}
         <td id="item-<?= $prod_details->item ?>" class="core-info ">
           <?  $item = $prod_details->getItem(); ?>
         <div>
-          <?= p::clean($item->title) ?>
+          <?= html::clean($item->title) ?>
         </div>
         </td>
         <td>
-          <?= p::clean($prod_details->product_description()) ?>
+          <?= html::clean($prod_details->product_description()) ?>
         </td>
         <td>
-          <?= p::clean($prod_details->quantity) ?>
+          <?= html::clean($prod_details->quantity) ?>
         </td>
         <td>
           <?= basket::formatMoney($prod_details->cost) ?>

@@ -32,7 +32,7 @@ class basket_theme_Core {
 
   static function admin_head($theme) {
     if (strpos(Router::$current_uri, "admin/product_lines") !== false) {
-      $theme->script("lib/gallery.panel.js");
+      $theme->script("gallery.panel.js");
     }
   }
   static function photo_top($theme)
