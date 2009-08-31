@@ -83,18 +83,14 @@
     foreach ($existingFaces as $oneFace) {
       $oneTag = ORM::factory("tag", $oneFace->tag_id)
 ?>
-<<<<<<< HEAD:modules/tagfaces/views/drawfaces_highlight_block.html.php
-  <area shape="rect" coords="<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>" href="<?=url::site("tags/$oneFace->tag_id") ?>" title="<?=p::clean($oneTag->name); ?>" alt="<?=p::clean($oneTag->name); ?>" onMouseOver="highlightbox(<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>,'<?=p::clean($oneTag->name); ?>', '<?=p::clean($oneFace->description); ?>', '<?=url::site("tags/$oneFace->tag_id") ?>')" />
-=======
-  <area shape="rect" coords="<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>" href="<?=url::site("tags/$oneFace->tag_id") ?>" title="<?=html::clean($oneTag->name); ?>" alt="<?=$oneTag->name; ?>" onMouseOver="highlightbox(<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>,'<?=html::clean($oneTag->name); ?>')" onMouseOut="hidebox()" />
->>>>>>> gallery3-contrib/master:modules/tagfaces/views/drawfaces_highlight_block.html.php
+      <area shape="rect" coords="<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>" href="<?=url::site("tags/$oneFace->tag_id") ?>" title="<?=html::clean($oneTag->name); ?>" alt="<?=$oneTag->name; ?>" onMouseOver="highlightbox(<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>,'<?=html::clean($oneTag->name); ?>', '<?=html::clean($oneFace->description); ?>', '<?=url::site("tags/$oneFace->tag_id") ?>')" />
 <? } ?>
 
 <?
     // For each note, add a rectangle area to the page.
     foreach ($existingNotes as $oneNote) {
 ?>
-  <area shape="rect" coords="<?=$oneNote->x1 ?>,<?=$oneNote->y1 ?>,<?=$oneNote->x2 ?>,<?=$oneNote->y2 ?>" title="<?=p::clean($oneNote->title); ?>" alt="<?=p::clean($oneNote->title); ?>" onMouseOver="highlightbox(<?=$oneNote->x1 ?>,<?=$oneNote->y1 ?>,<?=$oneNote->x2 ?>,<?=$oneNote->y2 ?>,'<?=p::clean($oneNote->title); ?>', '<?=p::clean($oneNote->description); ?>', '')" />
+      <area shape="rect" coords="<?=$oneNote->x1 ?>,<?=$oneNote->y1 ?>,<?=$oneNote->x2 ?>,<?=$oneNote->y2 ?>" title="<?=html::clean($oneNote->title); ?>" alt="<?=$oneNote->title; ?>" onMouseOver="highlightbox(<?=$oneNote->x1 ?>,<?=$oneNote->y1 ?>,<?=$oneNote->x2 ?>,<?=$oneNote->y2 ?>,'<?=html::clean($oneNote->title); ?>', '<?=html::clean($oneNote->description); ?>', '')" />
 <? } ?>
 
 </map>
