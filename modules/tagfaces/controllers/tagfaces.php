@@ -229,12 +229,14 @@ class tagfaces_Controller extends Controller {
                                      $oneFace->tag_id)->name, false);
     }
 
-    // Add a checklist to the form.
-    $tags_group = $form->group("ExistingFaces")
-                       ->label(t("Tags with faces:"));
-    $tags_group->checklist("facesList")
-               ->options($array_faces)
-               ->label(t("Select the tag(s) that correspond(s) to the face(s) you wish to delete:"));
+    if ($array_faces) {
+      // Add a checklist to the form.
+      $tags_group = $form->group("ExistingFaces")
+                         ->label(t("Tags with faces:"));
+      $tags_group->checklist("facesList")
+                 ->options($array_faces)
+                 ->label(t("Select the tag(s) that correspond(s) to the face(s) you wish to delete:"));
+    }
     
     // Add the id# of the photo and a delete button to the form.
     $form->hidden("item_id")->value($id);
