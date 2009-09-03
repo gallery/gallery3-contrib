@@ -1,4 +1,5 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -16,8 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class htmlpurifier_installer {
-  static function install() {
-    module::set_version("htmlpurifier", 1);
-  }
-}
+
+$config["Cache"] = array(
+  "SerializerPath" => TMPPATH
+);
+
+$config["Attr"] = array(
+  "EnableID" => true
+);
