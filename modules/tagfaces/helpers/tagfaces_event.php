@@ -51,4 +51,25 @@ class tagfaces_event_Core {
       }
     }
   }
+
+  static function item_deleted($item) {
+    // Check for and delete existing Faces and Notes.
+    $existingFaces = ORM::factory("items_face")
+                          ->where("item_id", $item->id)
+                          ->find_all();
+    if (count($existingFaces) > 0) {
+      ORM::factory("items_face")
+        ->where("item_id", $item->id)
+        ->delete_all();
+    }
+
+    $existingNotes = ORM::factory("items_note")
+                          ->where("item_id", $item->id)
+                          ->find_all();
+    if (count($existingNotes) > 0) {
+      ORM::factory("items_note")
+        ->where("item_id", $item->id)
+        ->delete_all();
+    }
+  }
 }

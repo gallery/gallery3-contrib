@@ -123,9 +123,9 @@ class Admin_TagsMap_Controller extends Admin_Controller {
       ->where("tag_id", $tag_id)
       ->find_all();
     if (count($existingGPS) == 0) {
-      $tagsgps_group->input("gps_latitude")->label(t("Latitude"))->value();
-      $tagsgps_group->input("gps_longitude")->label(t("Longitude"))->value();
-      $tagsgps_group->textarea("gps_description")->label(t("Description"))->value();
+      $tagsgps_group->input("gps_latitude")->label(t("Latitude"))->value("");
+      $tagsgps_group->input("gps_longitude")->label(t("Longitude"))->value("");
+      $tagsgps_group->textarea("gps_description")->label(t("Description"))->value("");
     } else {
       $tagsgps_group->input("gps_latitude")->label(t("Latitude"))->value($existingGPS[0]->latitude);
       $tagsgps_group->input("gps_longitude")->label(t("Longitude"))->value($existingGPS[0]->longitude);

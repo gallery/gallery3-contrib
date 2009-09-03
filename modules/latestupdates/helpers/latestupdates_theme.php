@@ -26,13 +26,14 @@ class latestupdates_theme_Core {
     $albumID = $theme->item->is_album() ? $theme->item->id : $theme->item->parent_id;
     
     $block = new Block();
-    $block->css_id = "gUpdates";
+    $block->css_id = "gUpdatesBlock";
     $block->title = t("Updates");
     $block->content = new View("latestupdates_block.html");
-    $block->content->updateLinks = array(
-      t("Entire Gallery") => url::site("latestupdates/updates"),
-      t("This Album") => url::site("latestupdates/albums/$albumID")
+    $block->content->update_links = array(
+      "Entire Gallery" => url::site("latestupdates/updates"),
+      "This Album" => url::site("latestupdates/albums/$albumID")
     );
+
     return $block;
   }
 }
