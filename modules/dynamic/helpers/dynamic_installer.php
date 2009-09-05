@@ -37,8 +37,4 @@ class dynamic_installer {
       module::set_version("dynamic", 1);
     }
   }
-
-  static function uninstall() {
-    module::delete("dynamic");
-  }
 }
