@@ -18,15 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class minislideshow_installer {
-  static function install() {
-    module::set_version("minislideshow", 1);
-  }
-
   static function deactivate() {
     site_status::clear("minislideshow_needs_rss");
-  }
-
-  static function uninstall() {
-    module::delete("minislideshow");
   }
 }

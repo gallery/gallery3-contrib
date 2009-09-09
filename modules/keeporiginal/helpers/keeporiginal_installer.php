@@ -22,8 +22,4 @@ class keeporiginal_installer {
     @mkdir(VARPATH . "original");
     module::set_version("keeporiginal", 1);
   }
-
-  static function uninstall() {
-    module::delete("keeporiginal");
-  }
 }

@@ -17,16 +17,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-class basket_installer
-{
-  static function install(){
-   module::set_version("basket", 1);
-  }
-  static function activate() {
-
+class basket_installer {
+  static function install() {
    $db = Database::instance();
-
    $db->query("CREATE TABLE IF NOT EXISTS {products} (
                  `id` int(9) NOT NULL auto_increment,
                  `name` TEXT NOT NULL,
@@ -34,16 +27,14 @@ class basket_installer
                  `description` varchar(1024),
                  PRIMARY KEY (`id`))
                  ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-
-
-
    product::create("4x6",5,"4\"x6\" print");
    product::create("8x10",25,"8\"x10\" print");
    product::create("8x12",30,"8\"x12\" print");
 
+   module::set_version("basket", 1);
   }
 
-  static function deactivate(){
+  static function uninstall() {
     $db = Database::instance();
     $db->query("DROP TABLE IF EXISTS {products}");
   }
