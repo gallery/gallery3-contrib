@@ -43,6 +43,5 @@ class tagsmap_installer {
     // Delete the GPS table before uninstalling.
     $db = Database::instance();
     $db->query("DROP TABLE IF EXISTS {tags_gpses};");
-    module::delete("tagsmap");
   }
 }
