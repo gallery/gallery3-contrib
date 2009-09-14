@@ -36,25 +36,25 @@ class rescue_task_Core {
     $total = $task->get("total");
     if (empty($total)) {
       $task->set("total", $total = Database::instance()->count_records("items"));
-      $task->set("stack", array(array(1, self::LEFT)));
+      $task->set("stack", "1:" . self::LEFT);
       $task->set("ptr", 1);
       $task->set("completed", 0);
     }
 
     $ptr = $task->get("ptr");
-    $stack = $task->get("stack");
+    $stack = explode(" ", $task->get("stack"));
     $completed = $task->get("completed");
 
     // Implement a depth-first tree walk using a stack.  Not the most efficient, but it's simple.
     while ($stack && microtime(true) - $start < 1.5) {
-      list($id, $state) = array_pop($stack);
+      list($id, $state) = explode(":", array_pop($stack));
       switch ($state) {
       case self::LEFT:
         self::set_left($id, $ptr++);
         $item = ORM::factory("item", $id);
-        array_push($stack, array($id, self::RIGHT));
+        array_push($stack, $id . ":" . self::RIGHT);
         foreach (self::children($id) as $child) {
-          array_push($stack, array($child->id, self::LEFT));
+          array_push($stack, $child->id . ":" . self::LEFT);
         }
         break;
 
@@ -65,7 +65,7 @@ class rescue_task_Core {
       }
     }
 
-    $task->set("stack", $stack);
+    $task->set("stack", implode(" ", $stack));
     $task->set("ptr", $ptr);
     $task->set("completed", $completed);
 
