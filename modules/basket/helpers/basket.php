@@ -40,16 +40,16 @@ class basket_Core {
     "MXN" => "Mexican Peso");
 
   static $format= array(
-    "AUD" => "&#36;",
-    "CAD" => "&#36;",
-    "EUR" => "&#8364;",
-    "GBP" => "&#163;",
-    "JPY" => "&#165;",
-    "USD" => "&#36;",
-    "NZD" => "&#36;",
+    "AUD" => "$",
+    "CAD" => "$",
+    "EUR" => "€",
+    "GBP" => "£",
+    "JPY" => "¥",
+    "USD" => "$",
+    "NZD" => "$",
     "CHF" => "",
-    "HKD" => "&#36;",
-    "SGD" => "&#36;",
+    "HKD" => "$",
+    "SGD" => "$",
     "SEK" => "",
     "DKK" => "",
     "PLN" => "",
@@ -63,12 +63,13 @@ class basket_Core {
  static function get_configure_form() {
     $form = new Forge("admin/configure", "", "post", array("id" => "gConfigureForm"));
     $group = $form->group("configure")->label(t("Configure Basket"));
-    $group->input("email")->label(t("Order Email Address"))->id("gOrderEmailAddress");
-    $group->checkbox("paypal")->label(t("Use Paypal"))->id("gPaypal");
-    $group->input("paypal_account")->label(t("Paypal Account"))->id("gPaypalAddress");
+    $group->input("email")->label(t("Offline Paying Email Address"))->id("gOrderEmailAddress");
     $group->dropdown("currency")
       ->label(t("Currency"))
       ->options(self::$currencies);
+
+    $group->checkbox("paypal")->label(t("Use Paypal"))->id("gPaypal");
+    $group->input("paypal_account")->label(t("Paypal E-Mail Address"))->id("gPaypalAddress");
     $group->submit("")->value(t("Save"));
     return $form;
   }

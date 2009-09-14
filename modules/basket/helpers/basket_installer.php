@@ -35,7 +35,21 @@ class basket_installer
                  PRIMARY KEY (`id`))
                  ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
+   $db->query("CREATE TABLE IF NOT EXISTS {product_overrides} (
+                 `id` int(9) NOT NULL auto_increment,
+                 `item_id` int(9) NOT NULL,
+                 `none` BOOLEAN default false,
+                 PRIMARY KEY (`id`))
+                 ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
+   $db->query("CREATE TABLE IF NOT EXISTS {item_products} (
+                 `id` int(9) NOT NULL auto_increment,
+                 `product_override_id` int(9) NOT NULL,
+                 `product_id` int(9) NOT NULL,
+                 `include` BOOLEAN default false,
+                 `cost` INTEGER(9) default -1,
+                 PRIMARY KEY (`id`))
+                 ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
    product::create("4x6",5,"4\"x6\" print");
    product::create("8x10",25,"8\"x10\" print");
@@ -46,5 +60,7 @@ class basket_installer
   static function deactivate(){
     $db = Database::instance();
     $db->query("DROP TABLE IF EXISTS {products}");
+    $db->query("DROP TABLE IF EXISTS {product_overrides}");
+    $db->query("DROP TABLE IF EXISTS {item_products}");
   }
 }

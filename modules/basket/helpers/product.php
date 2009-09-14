@@ -80,12 +80,95 @@ class product_Core {
     return $product;
   }
 
-  static function getProductArray(){
+  static function getProductArray($id){
+    $producta = array();
+    // check for product override
+    $product_override = ORM::factory("product_override")->where('item_id', $id)->find();
+
+    if (!$product_override->loaded){
+      // no override found so check parents
+      // check parents for product override
+      $item = ORM::factory("item",$id);
+
+      $parents = $item->parents();
+      foreach ($parents as $parent){
+        // check for product override
+        $product_override = ORM::factory("product_override")->where('item_id', $parent->id)->find();
+        if ($product_override->loaded){
+          break;
+        }
+      }
+    }
+
     $products = ORM::factory("product")->find_all();
     foreach ($products as $product){
-      $producta[$product->id] = $product->description." (".basket::formatMoney($product->cost).")";
+      $show = true;
+      $cost = $product->cost;
+      if ($product_override->loaded){
+        $show = !$product_override->none;
+        $item_product = ORM::factory("item_product")
+            ->where('product_override_id', $product_override->id)
+            ->where('product_id', $product->id)->find();
+
+        if ($item_product->loaded){
+          $cost = $item_product->cost;
+          if (!$show){
+            $show = $item_product->include;
+          }
+        }
+      }
+
+      if ($show)
+      {
+        $producta[$product->id] = $product->description." (".basket::formatMoney($cost).")";
+      }
     }
 
     return $producta;
+  }
+
+  static function isForSale($id){
+
+    // check for product override
+    $product_override = ORM::factory("product_override")->where('item_id', $id)->find();
+
+    if (!$product_override->loaded){
+      // no override found so check parents
+      // check parents for product override
+      $item = ORM::factory("item",$id);
+
+      $parents = $item->parents();
+      foreach ($parents as $parent){
+        // check for product override
+        $product_override = ORM::factory("product_override")->where('item_id', $parent->id)->find();
+        if ($product_override->loaded){
+          break;
+        }
+      }
+    }
+
+    $products = ORM::factory("product")->find_all();
+
+    if ($product_override->loaded && $product_override->none){
+
+      foreach ($products as $product){
+
+        $item_product = ORM::factory("item_product")
+            ->where('product_override_id', $product_override->id)
+            ->where('product_id', $product->id)->find();
+
+        if ($item_product->loaded){
+
+          if ($item_product->include){
+            return true;
+          }
+        }
+      }
+
+      return false;
+
+    } else {
+      return count($products) > 0;
+    }
   }
 }
