@@ -22,6 +22,16 @@ class downloadfullsize_Controller extends Controller {
   public function send($id) {
     $item = ORM::factory("item", $id);
     access::required("view_full", $item);
-    download::force($item->file_path());
+
+    if (module::is_active("keeporiginal") && $item->is_photo() && module::get_var("downloadfullsize", "DownloadOriginalImage")) {
+      $original_image = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item->file_path());
+      if (file_exists($original_image)) {        
+        download::force($original_image);
+        } else {
+          download::force($item->file_path());
+        }
+    } else {
+      download::force($item->file_path());
+    }
   }
 }
