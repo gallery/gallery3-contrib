@@ -18,8 +18,12 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-class minislideshow_installer {
-  static function deactivate() {
-    site_status::clear("minislideshow_needs_rss");
+class minislideshow_theme_Core {
+  static function head($theme) {
+    if (!$theme->item()) {
+      return;
+    }
+
+    return new View("minislideshow_header_block.html");
   }
 }

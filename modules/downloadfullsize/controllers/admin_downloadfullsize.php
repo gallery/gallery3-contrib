@@ -35,6 +35,7 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
     $dlLinks_array = Input::instance()->post("DownloadLinkOptions");
     $tButton = false;
     $fButton = false;
+    $download_original_button = false;
     for ($i = 0; $i < count($dlLinks_array); $i++) {
       if ($dlLinks_array[$i] == "tButton") {
         $tButton = true;
@@ -42,6 +43,16 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
       if ($dlLinks_array[$i] == "fButton") {
         $fButton = true;
       }
+    }
+
+    if (module::is_active("keeporiginal")) {
+      $keeporiginal_array = Input::instance()->post("DownloadOriginalOptions");
+      for ($i = 0; $i < count($keeporiginal_array); $i++) {
+        if ($keeporiginal_array[$i] == "DownloadOriginalImage") {
+          $download_original_button = true;
+        }
+      }
+      module::set_var("downloadfullsize", "DownloadOriginalImage", $download_original_button);
     }
 
     // Save Settings.
@@ -63,16 +74,24 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
                       array("id" => "gDownloadFullsizeAdminForm"));
 
     // Make an array for the different types of download links.
-    $linkOptions["fButton"] = array("Show Floppy Disk Link", module::get_var("downloadfullsize", "fButton"));
-    $linkOptions["tButton"] = array("Show Text Download Text Link", module::get_var("downloadfullsize", "tButton"));
+    $linkOptions["fButton"] = array(t("Show Floppy Disk Link"), module::get_var("downloadfullsize", "fButton"));
+    $linkOptions["tButton"] = array(t("Show Text Download Text Link"), module::get_var("downloadfullsize", "tButton"));
 
     // Setup a few checkboxes on the form.
     $add_links = $form->group("DownloadLinks");
     $add_links->checklist("DownloadLinkOptions")
       ->options($linkOptions);
 
+    if (module::is_active("keeporiginal")) {
+      $KeepOriginalOptions["DownloadOriginalImage"] = array(t("Allow visitors to download the original image when available?"), module::get_var("downloadfullsize", "DownloadOriginalImage"));
+      $keeporiginal_group = $form->group("KeepOriginalPrefs")
+                               ->label(t("KeepOriginal Preferences"));
+      $keeporiginal_group->checklist("DownloadOriginalOptions")
+                       ->options($KeepOriginalOptions);
+    }
+
     // Add a save button to the form.
-    $add_links->submit("SaveLinks")->value(t("Save"));
+    $form->submit("SaveLinks")->value(t("Save"));
 
     // Return the newly generated form.
     return $form;

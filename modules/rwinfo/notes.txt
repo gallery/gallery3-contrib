@@ -3,3 +3,6 @@ Hide the info sidebar for the root album (without title and description there re
 Display date created for albums only (and continue to display the capture date for everything else)
 Display tags in the info sidebar (if the tags module is active).
 Display tags when mousing over the thumbnails (if tags module is active).
+Display "Movie Info" on movies instead of "Photo Info" like the Gallery Info module does.
+Use long month instead of short month on the album display.
+Change Date/Time format to "F j, Y h:i:s a" for photos.

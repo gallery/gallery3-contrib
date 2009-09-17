@@ -17,6 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
 class MiniSlideShow_Controller extends Controller {
   public function showslideshow($item_id) {
     // Generate the Dialog Box to display the slideshow in.
