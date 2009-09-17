@@ -40,4 +40,69 @@ class basket_event_Core{
         ->url(url::site("admin/product_lines")));
 
   }
+
+  static function item_edit_form($item, $form){
+   $group = $form->group("products")->label(t("Available Products"));
+
+   $product_override = ORM::factory("product_override")->where('item_id', $item->id)->find();
+   $group->checkbox("all")->label("No products except..");
+   if ($product_override->loaded){
+     $group->all->checked($product_override->none);
+   }
+
+   $products = ORM::factory("product")->find_all();
+   foreach ($products as $product){
+      $p_group = $group->group("product_$product->id")->label(t("$product->description"));
+
+      $description = $product->description;
+      $cost = $product->cost;
+      $checked = false;
+
+      if ($product_override->loaded){
+        $item_product = ORM::factory("item_product")
+            ->where('product_override_id', $product_override->id)
+            ->where('product_id', $product->id)->find();
+        if ($item_product->loaded){
+          $checked = $item_product->include;
+          if ($item_product->cost != -1){
+            $cost = $item_product->cost;
+          }
+        }
+      }
+
+      $p_group->checkbox("exclude_$product->id")->label($description)->checked($checked);
+      $p_group->input("cost_$product->id")->label("Cost")->value($cost);
+      //$producta[$product->id] = $product->description." (".basket::formatMoney($product->cost).")";
+   }
+  }
+
+  static function item_edit_form_completed($item, $form){
+    $product_override = ORM::factory("product_override")->where('item_id', $item->id)->find();
+
+    if ($form->products->all->checked)
+    {
+      $product_override->none = $form->products->all->checked;
+      $product_override->item_id=$item->id;
+      $product_override->save();
+      $products = ORM::factory("product")->find_all();
+      foreach ($products as $product){
+          $p_group = $form->products->__get("product_$product->id");
+          $item_product = ORM::factory("item_product")
+            ->where('product_override_id', $product_override->id)
+            ->where('product_id', $product->id)->find();
+
+          $item_product->include = $p_group->__get("exclude_$product->id")->checked;
+          $item_product->cost = $p_group->__get("cost_$product->id")->value;
+          $item_product->product_id = $product->id;
+          $item_product->product_override_id = $product_override->id;
+          $item_product->save();
+      }
+    }
+    else
+    {
+      if ($product_override->loaded){
+        $product_override->delete();
+      }
+    }
+  }
 }

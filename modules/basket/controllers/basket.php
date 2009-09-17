@@ -151,14 +151,14 @@ Items Ordered:
     print $template;
   }
 
-  private function getAddToBasketForm(){
+  private function getAddToBasketForm($id){
 
     $form = new Forge("basket/add_to_basket", "", "post", array("id" => "gAddToBasketForm"));
     $group = $form->group("add_to_basket")->label(t("Add To Basket"));
     $group->hidden("id");
     $group->dropdown("product")
         ->label(t("Product"))
-        ->options(product::getProductArray());
+        ->options(product::getProductArray($id));
     $group->input("quantity")->label(t("Quantity"))->id("gQuantity");
     $group->submit("")->value(t("Add"));
     //$group->submit("proceedToCheckout")->value(t("Proceed To Checkout"));
@@ -170,7 +170,12 @@ Items Ordered:
 
     access::verify_csrf();
 
-    $form = self::getAddToBasketForm();
+
+    if (!isset($_POST['id']))
+    {
+      die("no id");
+    }
+    $form = self::getAddToBasketForm($_POST['id']);
     $valid = $form->validate();
 
     if ($valid){
@@ -203,9 +208,10 @@ Items Ordered:
     }
 
     // get the basket to add to
-    $form = self::getAddToBasketForm();
+    $form = self::getAddToBasketForm($id);
     $form->add_to_basket->id->value($id);
     $form->add_to_basket->quantity->value(1);
+
     $view->form = $form;
     $view->item = $item;
 

@@ -1,4 +1,4 @@
-<?php defined("SYSPATH") or die("No direct script access.")
+<?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
@@ -17,14 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-?>
-  <? if ($theme->page_type != 'basket'): ?>
-  <? if (isset($basket) && isset($basket->contents) && ($basket->size() > 0)): ?>
-<div id="basket">
-    <a href="<?= url::site("basket/view_basket") ?>"
-       title="<?= t("View Basket") ?>">
-       <img src="<?= url::file("modules/basket/images/basket.png") ?>"><br/>
-       <?= $basket->size()?> items</a>
-</div>
-  <? endif ?>
-  <? endif ?>
+class Product_Override_Model extends ORM {
+    protected $has_many=array('item_products');
+}

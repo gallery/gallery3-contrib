@@ -48,12 +48,12 @@ function so(){document.confirm.submit();}
           <?= html::clean($prod_details->quantity) ?>
         </td>
         <td>
-          <?= basket::formatMoney($prod_details->cost) ?>
+          <?= html::clean(basket::formatMoney($prod_details->cost)) ?>
         </td>
     </tr>
       <? endforeach ?>
       <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
-        <td></td><td></td><td>Total Cost</td><td><?= $basket->cost()?></td>
+        <td></td><td></td><td>Total Cost</td><td><?= html::clean($basket->cost())?></td>
       </tr>
 
    </table>
