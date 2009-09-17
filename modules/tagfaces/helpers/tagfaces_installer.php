@@ -31,7 +31,7 @@ class tagfaces_installer {
                `y2` int(9) NOT NULL,
                `description` varchar(2048) default NULL,
                PRIMARY KEY (`id`))
-               ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+               DEFAULT CHARSET=utf8;");
 
     $db->query("CREATE TABLE IF NOT EXISTS {items_notes} (
                `id` int(9) NOT NULL auto_increment,
@@ -43,7 +43,7 @@ class tagfaces_installer {
                `title` varchar(64) NOT NULL,
                `description` varchar(2048) default NULL,
                PRIMARY KEY (`id`))
-               ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+               DEFAULT CHARSET=utf8;");
 
     // Set the module's version number.
     module::set_version("tagfaces", 2);
@@ -64,7 +64,7 @@ class tagfaces_installer {
                `title` varchar(64) NOT NULL,
                `description` varchar(2048) default NULL,
                PRIMARY KEY (`id`))
-               ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+               DEFAULT CHARSET=utf8;");
 
       module::set_version("tagfaces", $version = 2);
     }

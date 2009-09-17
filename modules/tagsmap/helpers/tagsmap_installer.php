@@ -29,7 +29,7 @@ class tagsmap_installer {
                `description` varchar(2048) default NULL,
                PRIMARY KEY (`id`),
                KEY(`tag_id`, `id`))
-               ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+               DEFAULT CHARSET=utf8;");
 
     // Set the module's version number.
     module::set_version("tagsmap", 1);
