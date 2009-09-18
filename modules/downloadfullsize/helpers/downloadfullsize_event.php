@@ -32,6 +32,20 @@ class downloadfullsize_event_Core {
     }
   }
 
+  static function movie_menu($menu, $theme) {
+    if (access::can("view_full", $theme->item)) {
+      if (module::get_var("downloadfullsize", "fButton")) {
+        $downloadLink = url::site("downloadfullsize/send/$theme->item");
+        $menu
+          ->append(Menu::factory("link")
+               ->id("downloadfullsize")
+               ->label(t("Download Video"))
+               ->url($downloadLink)
+               ->css_id("gDownloadFullsizeLink"));
+      }
+    }
+  }
+
   static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")

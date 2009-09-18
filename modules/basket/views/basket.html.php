@@ -18,18 +18,13 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 ?>
-<div id="basket">
   <? if ($theme->page_type != 'basket'): ?>
-  <? if (isset($basket) && isset($basket->contents)): ?>
+  <? if (isset($basket) && isset($basket->contents) && ($basket->size() > 0)): ?>
+<div id="basket">
     <a href="<?= url::site("basket/view_basket") ?>"
        title="<?= t("View Basket") ?>">
        <img src="<?= url::file("modules/basket/images/basket.png") ?>"><br/>
        <?= $basket->size()?> items</a>
-  <? else: ?>
-    <a href="<?= url::site("basket/view_basket") ?>"
-       title="<?= t("View Basket") ?>">
-       <img src="<?= url::file("modules/basket/images/basket.png") ?>"><br/>
-       <?= t("Empty") ?></a>
-  <? endif ?>
-  <? endif ?>
 </div>
+  <? endif ?>
+  <? endif ?>

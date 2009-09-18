@@ -26,7 +26,15 @@ class rwinfo_theme_Core {
 
       $block = new Block();
       $block->css_id = "gMetadata";
-      $block->title = $theme->item()->is_album() ? t("Album Info") : t("Photo Info");
+      $block_title = "";
+      if ($theme->item->is_album()) {
+        $block_title = t("Album Info");
+      } else if ($theme->item->is_movie()) {
+        $block_title = t("Movie Info");
+      } else {
+        $block_title = t("Photo Info");
+      }
+      $block->title = $block_title;
       $block->content = new View("rwinfo_block.html");
       return $block;
     }

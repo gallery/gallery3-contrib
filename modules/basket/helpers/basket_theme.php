@@ -35,12 +35,14 @@ class basket_theme_Core {
       $theme->script("gallery.panel.js");
     }
   }
-  static function photo_top($theme)
-  {
-    $view = new View("add_to_basket.html");
+  static function photo_top($theme){
+    if ( product::isForSale($theme->item()->id)){
+      $view = new View("add_to_basket.html");
 
-    $view->item = $theme->item();
+      $view->item = $theme->item();
 
-    return $view->render();
+      return $view->render();
+    }
+    return "";
   }
 }

@@ -26,7 +26,7 @@ class user_homes_installer {
                   `home` int(9) default NULL,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY(`id`))
-                  ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+                  DEFAULT CHARSET=utf8;");
     module::set_version("user_homes", 1);
   }
 

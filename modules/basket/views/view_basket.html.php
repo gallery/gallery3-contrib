@@ -74,7 +74,7 @@
         </td>
         <td>
           <? $total += $prod_details->cost?>
-          <?= basket::formatMoney($prod_details->cost) ?>
+          <?= html::clean(basket::formatMoney($prod_details->cost)) ?>
         </td>
         <td class="gActions">
         <!-- a href="<?= url::site("admin/product_lines/edit_product_form/") ?>"
@@ -89,7 +89,7 @@
   </tr>
       <? endforeach ?>
       <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
-        <td></td><td></td><td>Total Cost</td><td><?= basket::formatMoney($total)?></td><td></td>
+        <td></td><td></td><td>Total Cost</td><td><?= html::clean(basket::formatMoney($total))?></td><td></td>
       </tr>
 
    </table>

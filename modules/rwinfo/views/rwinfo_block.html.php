@@ -12,7 +12,7 @@
   <? if ($item->is_album()): ?>
   <li>
     <strong class="caption"><?= t("Date:") ?></strong>
-    <?= date("M j, Y", $item->created)?>
+    <?= date("F j, Y", $item->created)?>
   </li>
   <? endif ?>
   <? endif ?>
@@ -27,7 +27,7 @@
   <? if ($item->captured): ?>
   <li>
     <strong class="caption"><?= t("Date:") ?></strong>
-    <?= date("M j, Y H:i:s", $item->captured)?>
+    <?= date("F j, Y h:i:s a", $item->captured)?>
   </li>
   <? endif ?>
 
