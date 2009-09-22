@@ -27,7 +27,14 @@ class rescue_task_Core {
                  ->name(t("Fix Album/Photo hierarchy"))
                  ->description(t("Fix problems where your album/photo breadcrumbs are out of " .
                                  "sync with your actual hierarchy."))
-                 ->severity(log::SUCCESS));
+                 ->severity(log::SUCCESS),
+
+                 Task_Definition::factory()
+                 ->callback("rescue_task::fix_internet_addresses")
+                 ->name(t("Fix internet addresses"))
+                 ->description(t("Fix internet addresses broken when upgrading to Beta 3"))
+                 ->severity(log::SUCCESS),
+                 );
   }
 
   static function fix_mptt($task) {
@@ -68,6 +75,48 @@ class rescue_task_Core {
     $task->set("stack", implode(" ", $stack));
     $task->set("ptr", $ptr);
     $task->set("completed", $completed);
+
+    if ($total == $completed) {
+      $task->done = true;
+      $task->state = "success";
+      $task->percent_complete = 100;
+    } else {
+      $task->percent_complete = round(100 * $completed / $total);
+    }
+    $task->status = t2("One row updated", "%count / %total rows updated", $completed,
+                       array("total" => $total));
+  }
+
+  static function fix_internet_addresses($task) {
+    $start = microtime(true);
+
+    $total = $task->get("total");
+    if (empty($total)) {
+      $task->set("total", $total = Database::instance()->count_records("items"));
+      $task->set("last_id", 0);
+      $task->set("completed", 0);
+    }
+
+    $last_id = $task->get("last_id");
+    $completed = $task->get("completed");
+
+    foreach (ORM::factory("item")
+             ->where("id >", $last_id)
+             ->find_all(20) as $item) {
+      $item->slug = item::convert_filename_to_slug($item->slug);
+      $item->relative_path_cache = null;
+      $item->relative_url_cache = null;
+      $item->save();
+      $last_id = $item->id;
+      $completed++;
+
+      if ($completed == $total || microtime(true) - $start > 1.5) {
+        break;
+      }
+    }
+
+    $task->set("completed", $completed);
+    $task->set("last_id", $last_id);
 
     if ($total == $completed) {
       $task->done = true;
