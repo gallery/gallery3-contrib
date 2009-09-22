@@ -104,8 +104,6 @@ class rescue_task_Core {
              ->where("id >", $last_id)
              ->find_all(20) as $item) {
       $item->slug = item::convert_filename_to_slug($item->slug);
-      $item->relative_path_cache = null;
-      $item->relative_url_cache = null;
       $item->save();
       $last_id = $item->id;
       $completed++;
@@ -122,6 +120,8 @@ class rescue_task_Core {
       $task->done = true;
       $task->state = "success";
       $task->percent_complete = 100;
+      Database::instance()
+        ->query("UPDATE {items} SET `relative_path_cache` = NULL, `relative_url_cache` = NULL");
     } else {
       $task->percent_complete = round(100 * $completed / $total);
     }
