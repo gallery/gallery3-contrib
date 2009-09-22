@@ -102,7 +102,7 @@ class rescue_task_Core {
 
     foreach (ORM::factory("item")
              ->where("id >", $last_id)
-             ->find_all(20) as $item) {
+             ->find_all(100) as $item) {
       $item->slug = item::convert_filename_to_slug($item->slug);
       $item->save();
       $last_id = $item->id;
