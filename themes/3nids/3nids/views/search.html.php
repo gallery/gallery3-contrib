@@ -20,38 +20,43 @@
 		<a href="<?=$child->file_url()?>" rel="fancygroup" class="fancyclass" title="<?= $child->parent()->title ?>, <?=$child->parent()->description?>" name="<?=$fancymodule  ?>"></a>
 	  <? endif	 ?>
 <? endfor ?>
-   <? foreach ($items as $item): ?>
-  <li id="gItemId-<?= $item->id ?>" class="gItem gAlbum">
-    <?= $theme->thumb_top($item) ?>
-    <? if (!($item->is_album())): ?>
-    <? if ($item->is_photo()): ?>
+   <? foreach ($items as $child): ?>
+  <li id="gItemId-<?= $child->id ?>" class="gItem gAlbum">
+    <?= $theme->thumb_top($child) ?>
+    <? if (!($child->is_album())): ?>
+    <? if ($child->is_photo()): ?>
 		<? $fancymodule = ""; ?>
-		<? if (module::is_active("exif")){$fancymodule .= "exif::" . url::site("exif/show/{$item->id}") . ";;";} ?>
-		<? if (module::is_active("comment") && module::is_active("comment_3nids")){$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$item->id}") . ";;comment_count::" . comment_3nids::count($item) . ";;" ;} ?>
-		<a href="<?=$item->file_url()?>" rel="fancygroup" class="fancyclass" title="<?= $item->parent()->title ?>, <?=$item->parent()->description?>" name="<?=$fancymodule  ?>">
+		<? if (module::is_active("exif")){$fancymodule .= "exif::" . url::site("exif/show/{$child->id}") . ";;";} ?>
+		<? if (module::is_active("comment") && module::is_active("comment_3nids")){$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$child->id}") . ";;comment_count::" . comment_3nids::count($child) . ";;" ;} ?>
+		<a href="<?=$child->file_url()?>" rel="fancygroup" class="fancyclass" title="<?= $child->parent()->title ?>, <?=$child->parent()->description?>" name="<?=$fancymodule  ?>">
     <? else: ?>
-      <a href="<?= $item->url() ?>">
+      <a href="<?= $child->url() ?>">
     <? endif ?>
-	      <img id="gPhotoId-<?= $item->id ?>" class="gThumbnail"
-		   alt="photo" src="<?= $item->thumb_url() ?>"
-		   width="<?= $item->thumb_width ?>"
-		   height="<?= $item->thumb_height ?>" />
+	      <img id="gPhotoId-<?= $child->id ?>" class="gThumbnail"
+		   alt="photo" src="<?= $child->thumb_url() ?>"
+		   width="<?= $child->thumb_width ?>"
+		   height="<?= $child->thumb_height ?>" />
        </a>
-    <a href="<?= $item->parent()->url() ?>?show=<?= $item->id?>"><h2><span></span><?= $item->parent()->title ?></h2></a>
+    <a href="<?= $child->parent()->url() ?>?show=<?= $child->id?>"><h2><span></span><?= $child->parent()->title ?></h2></a>
      <? if ($user->admin): ?>
-	<a href="<?=$item->url()?>">view</a>
+	<a href="<?=$child->url()?>">view</a>
      <? endif ?>
    <? else: ?>
-           <a href="<?= $item->url() ?>">
-	      <img id="gPhotoId-<?= $item->id ?>" class="gThumbnail"
-		   alt="photo" src="<?= $item->thumb_url() ?>"
-		   width="<?= $item->thumb_width ?>"
-		   height="<?= $item->thumb_height ?>" />
-                <h2><span></span><?= html::clean($item->title) ?></h2>
+           <a href="<?= $child->url() ?>">
+	      <img id="gPhotoId-<?= $child->id ?>" class="gThumbnail"
+		   alt="photo" src="<?= $child->thumb_url() ?>"
+		   width="<?= $child->thumb_width ?>"
+		   height="<?= $child->thumb_height ?>" />
+                <h2><span></span><?= html::clean($child->title) ?></h2>
 	 </a>   
  <? endif ?>
-<?= $theme->thumb_bottom($item) ?>
-<?= $theme->context_menu($item, "#gItemId-{$item->id} .gThumbnail") ?>
+<?= $theme->thumb_bottom($child) ?>
+<?= $theme->context_menu($child, "#gItemId-{$child->id} .gThumbnail") ?>
+    <? if ($child->is_photo() && module::is_active("comment") && module::is_active("comment_3nids")) :?>
+	<ul class="gMetadata">
+		<li><a href="<?=url::site("comments_3nids?item_id={$child->id}")?>" class="iframe fancyclass"><?=comment_3nids::count($child) ?> <?=t("comments")?></a></li>   
+	</ul>
+     <? endif ?>
   </li>
   <? endforeach ?>
 <? for($i=$children_offset+$page_size;$i<$children_count;$i++): ?>

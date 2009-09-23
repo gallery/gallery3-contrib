@@ -492,6 +492,8 @@ form .gError,
 
 #gContent .gPhoto h2,
 #gContent .gItem .gMetadata {
+  margin-top: .2em;
+  color: #ffffcc;
   display: none;
 }
 

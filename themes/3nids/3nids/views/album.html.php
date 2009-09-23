@@ -44,6 +44,11 @@
     <? endif ?>
     <?= $theme->thumb_bottom($child) ?>
     <?= $theme->context_menu($child, "#gItemId-{$child->id} .gThumbnail") ?>
+    <? if ($child->is_photo() && module::is_active("comment") && module::is_active("comment_3nids")) :?>
+	<ul class="gMetadata">
+		<li><a href="<?=url::site("comments_3nids?item_id={$child->id}")?>" class="iframe fancyclass"><?=comment_3nids::count($child) ?> <?=t("comments")?></a></li>   
+	</ul>
+     <? endif ?>
   </li>
   <? endforeach ?>
 	<? for($i=$children_offset+$page_size;$i<$children_count;$i++): ?>
