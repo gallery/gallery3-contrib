@@ -6,6 +6,17 @@
 		$theme->pagination->initialize(array("query_string" => "page","total_items" => $children_count_true,"items_per_page" => $page_size,"style" => "classic"));
 	$children_offset = ($theme->pagination->current_page -1) * $page_size ; ?>
 
+<script type="text/javascript">
+  <? for($i=0;$i<$children_count;$i++): ?>
+	 <? $child = $children_all[$i] ?>
+	 <? if ($child->is_photo()): ?>
+		image_url[img_count] = "<?=$child->file_url()?>";
+		img_count++;
+	 <? endif ?>
+  <? endfor ?>
+</SCRIPT>     
+
+
 <div id="gSearchResults">
   <h2><?= t("Results for <b>%term</b>", array("term" => $q)) ?></h2>
 
