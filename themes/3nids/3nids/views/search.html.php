@@ -10,11 +10,12 @@
   <? for($i=0;$i<$children_count;$i++): ?>
 	 <? $child = $children_all[$i] ?>
 	 <? if ($child->is_photo()): ?>
-		image_url[img_count] = "<?=$child->file_url()?>";
+		if(img_count>0){preload_image_object += ', ';}
+		preload_image_object += '"<?=$child->file_url()?>"';
 		img_count++;
 	 <? endif ?>
   <? endfor ?>
-</SCRIPT>     
+</script>     
 
 
 <div id="gSearchResults">

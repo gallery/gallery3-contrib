@@ -14,3 +14,10 @@
        <a href="<?= $item->parent()->url() ?>?show=<?= $item->id?>"><h4><span></span><?= $item->parent()->title ?></h4></a>
   </div>
 </div>
+
+<script type="text/javascript">
+	if(img_count>0){preload_image_object += ', ';}
+	preload_image_object += '"<?=$item->file_url()?>"';
+	img_count++;
+</script>     
+

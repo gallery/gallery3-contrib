@@ -25,6 +25,12 @@
 	float: right;
 }
 
+.gCommentThumb{
+    padding: 5px;
+	text-align: left;
+}
+
+
 	
 /** *******************************************************************
  * 1) Basic HTML elements
@@ -546,6 +552,12 @@ form .gError,
  .gCommentBox  {	
   border-bottom: 1px solid #555;
 }
+
+.gCommentBox:hover{
+	background-color: black;
+	color: #ffffcc;
+}
+
  .gComment  {	
   margin-left: 2em;
   margin-top: .3em;

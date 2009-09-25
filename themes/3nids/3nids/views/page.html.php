@@ -62,6 +62,7 @@
     <?= $theme->script("jquery.localscroll.js") ?>
      <?= $theme->script("jquery.easing.js") ?>
     <?= $theme->script("jquery.fancybox.js") ?>
+    <?= $theme->script("jquery.preloadimages.js") ?>
    <?= $theme->script("ui.init.js") ?>
 
     <? /* These are page specific, but if we put them before $theme->head() they get combined */ ?>
@@ -76,11 +77,6 @@
   </head>
 
   <body <?= $theme->body_attributes() ?>>
-  <script type="text/javascript">
-	preload_image_object = new Image();
-	image_url = new Array();
-	var img_count = 0;
-  </script>
     <?= $theme->page_top() ?>
     <div id="doc4" class="yui-t5 gView">
       <?= $theme->site_status() ?>
@@ -174,9 +170,7 @@
     <?= $theme->page_bottom() ?>
   <script type="text/javascript">
      if (img_count > 0){
-    for(var i=0;i<=img_count;i++){
-        preload_image_object.src = image_url[i];
-     }
+     eval("$.preloadImages("+preload_image_object+");");
      }
   </script>
   </body>

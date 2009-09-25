@@ -28,6 +28,7 @@
 <?= $theme->head() ?>
 </head>
 <body class="modcontent">
+	<div class="gCommentThumb">	<img src="<?=$thumb?>"></div>
 	  <a href="<?= url::site("form/add/comments_3nids/{$item_id}") ?>" id="gAddCommentButton"
 	   class="gButtonLink ui-corner-all ui-icon-left ui-state-default right">
 	  <span class="ui-icon ui-icon-comment"></span>
@@ -42,7 +43,7 @@
 	<ul>
 	  <? foreach ($comments as $comment): ?>
 	  <li id="gComment-<?= $comment->id ?>" class="gCommentBox">
-	      <?= t('%date, <b>%name</b>: ',
+	      <?= t('<b>%name</b> <small>%date</small>: ',
 		    array("date" => date(module::get_var("gallery", "date_time_format", "Y-M-d H:i:s"), $comment->created),
 			  "name" => html::clean($comment->author_name()))); ?>
 	    <div class="gComment">
