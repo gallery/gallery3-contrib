@@ -20,5 +20,14 @@ Installation:
 *********
 Use:
 This theme displays full size images. So be carefull to upload not too large images!
-The theme uses the tagsmap module which has been enhanced. If you want to separate geotag from others, name those with the "map." prefix. Hence, they will not be shown in the tag cloud sidebare (the "map." prefix will not be displayed on the map).
+The theme uses the tagsmap module which has been enhanced. 
 
+If you want to separate geotag from others, name those with the "map." prefix., the "map." prefix will not be displayed on the map.
+If you want to remove the prefix in the tag cloud sidebar, wou will have to update in gallery3/modules/tag/helpers/tag.php the popular_tags function:
+  static function popular_tags($count) {
+    return ORM::factory("tag")
+      ->orderby("count", "DESC")
+      ->notregex("name","map\.")
+     ->limit($count)
+      ->find_all();
+  }

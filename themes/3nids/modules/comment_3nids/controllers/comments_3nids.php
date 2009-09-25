@@ -52,6 +52,7 @@ class Comments_3nids_Controller extends REST_Controller {
       $view = new Theme_View("comments.html", "page");
       $view->comments = $comments;
       $view->item_id = $item_id;
+      $view->thumb = $item->thumb_url();
       print $view;
       break;
     }
