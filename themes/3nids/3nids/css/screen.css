@@ -31,7 +31,6 @@
 }
 
 
-	
 /** *******************************************************************
  * 1) Basic HTML elements
  **********************************************************************/
@@ -644,7 +643,7 @@ form .gError,
 #gSiteMenu {
   bottom: 0;
 	display: none;
-  left: 140px;
+  left: 300px;
   position: absolute;
 }
 
@@ -876,13 +875,37 @@ form .gError,
  *********************************************************************/
 
 /* Superfish menu overrides ~~~~~~~~~~~~~~ */
+.sf-menu a {
+	border-left:	1px solid #e8e8e8;
+	border-top:		1px solid #e8e8e8;
+	border-right:		1px solid #e8e8e8;
+	padding: 		.75em 1em;
+	text-decoration:none;
+}
+.sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
+	color:			#13a;
+}
+.sf-menu li {
+	background:		#333333;
+}
+.sf-menu li li {
+	background:		#333333;
+}
+.sf-menu li li li {
+	background:		#333333;
+}
+.sf-menu li:hover, .sf-menu li.sfHover,
+.sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
+	background:		#484848;
+	outline:		0;
+}
 
 .sf-menu li li, .sf-menu li li ul li {
-  background-color: #bdd2ff;
+  background-color: #333333;
 }
 
 .sf-menu li:hover {
-  background-color: #dfe9ff;
+  background-color: #000000;
 }
 
 /* Ajax loading indicator ~~~~~~~~~~~~~~~~ */
