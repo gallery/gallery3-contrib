@@ -9,17 +9,6 @@
      $theme->pagination = new Pagination();
 		$theme->pagination->initialize(array("query_string" => "page","total_items" => $children_count,"items_per_page" => $page_size,"style" => "classic"));
 	$children_offset = ($theme->pagination->current_page -1) * $page_size ; ?>
-
-<script type="text/javascript">
-  <? for($i=0;$i<$children_count;$i++): ?>
-	 <? $child = $children_all[$i] ?>
-	 <? if ($child->is_photo()): ?>
-		if(img_count>0){preload_image_object += ', ';}
-		preload_image_object += '"<?=$child->file_url()?>"';
-		img_count++;
-	 <? endif ?>
-  <? endfor ?>
-</SCRIPT>     
   
 <ul id="gAlbumGrid">
 <? if (count($children)): ?>

@@ -159,8 +159,7 @@
 				var href = opts.itemArray[opts.itemCurrent + 1].href;
 
 				if (href.match(imageRegExp)) {
-					objNext = new Image();
-					objNext.src = href;
+					$("<img>").attr("src", href);
 				}
 			}
 
@@ -168,8 +167,7 @@
 				var href = opts.itemArray[opts.itemCurrent -1].href;
 
 				if (href.match(imageRegExp)) {
-					objNext = new Image();
-					objNext.src = href;
+					$("<img>").attr("src", href);
 				}
 			}
 		};

@@ -62,7 +62,6 @@
     <?= $theme->script("jquery.localscroll.js") ?>
      <?= $theme->script("jquery.easing.js") ?>
     <?= $theme->script("jquery.fancybox.js") ?>
-    <?= $theme->script("jquery.preloadimages.js") ?>
    <?= $theme->script("ui.init.js") ?>
 
     <? /* These are page specific, but if we put them before $theme->head() they get combined */ ?>
@@ -168,10 +167,5 @@
       </div>
     </div>
     <?= $theme->page_bottom() ?>
-  <script type="text/javascript">
-     if (img_count > 0){
-     eval("$.preloadImages("+preload_image_object+");");
-     }
-  </script>
   </body>
 </html>
