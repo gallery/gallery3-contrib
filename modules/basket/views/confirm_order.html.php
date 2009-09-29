@@ -52,8 +52,14 @@ function so(){document.confirm.submit();}
         </td>
     </tr>
       <? endforeach ?>
+      <? $postage = $basket->postage_cost();?>
+      <? if ($postage > 0):?>
       <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
-        <td></td><td></td><td>Total Cost</td><td><?= html::clean($basket->cost())?></td>
+        <td></td><td></td><td>Postage and Packaging</td><td><?= html::clean(basket::formatMoney($postage))?></td><td></td>
+      </tr>
+      <? endif;?>
+      <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
+        <td></td><td></td><td>Total Cost</td><td><?= html::clean(basket::formatMoney($basket->cost() + $postage))?></td>
       </tr>
 
    </table>

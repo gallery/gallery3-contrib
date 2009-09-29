@@ -20,50 +20,44 @@
 ?>
 <div class="gBlock">
 
-  <a href="<?= url::site("admin/product_lines/add_product_form") ?>"
+  <a href="<?= url::site("admin/postage_bands/add_postage_band_form") ?>"
       class="gDialogLink gButtonLink right ui-icon-left ui-state-default ui-corner-all"
-      title="<?= t("Create a new Product") ?>">
+      title="<?= t("Create a new Postage Band") ?>">
     <span class="ui-icon ui-icon-circle-plus"></span>
-    <?= t("Add a new Product") ?>
+    <?= t("Add a new Postage Band") ?>
   </a>
 
   <h2>
-    <?= t("Product Lines") ?>
+    <?= t("Postage Bands") ?>
   </h2>
 
   <div class="gBlockContent">
-    <table id="gProductAdminList">
+    <table id="gPostageAdminList">
       <tr>
   <th><?= t("Name") ?></th>
-        <th><?= t("Cost") ?></th>
-        <th><?= t("Description") ?></th>
-        <th><?= t("Postage Band") ?></th>
+        <th><?= t("Flat Rate") ?></th>
+        <th><?= t("Per Item") ?></th>
         <th><?= t("Actions") ?></th>
 
       </tr>
-      <? foreach ($products as $i => $product): ?>
-      <tr id="gProduct-<?= $product->id ?>" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
-        <td id="product-<?= $product->id ?>" class="core-info ">
-          <?= html::clean($product->name) ?>
+      <? foreach ($postage_bands as $i => $postage_band): ?>
+      <tr id="gProduct-<?= $postage_band->id ?>" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
+        <td id="product-<?= $postage_band->id ?>" class="core-info ">
+          <?= html::clean($postage_band->name) ?>
   </td>
   <td>
-    <?= basket::formatMoney($product->cost) ?>
+    <?= basket::formatMoney($postage_band->flat_rate) ?>
         </td>
   <td>
-    <?= html::clean($product->description) ?>
+    <?= basket::formatMoney($postage_band->per_item) ?>
   </td>
-  <td>
-    <?= html::clean($product->postage_band->name) ?>
-  </td>
-
-
     <td class="gActions">
-      <a href="<?= url::site("admin/product_lines/edit_product_form/$product->id") ?>"
+      <a href="<?= url::site("admin/postage_bands/edit_postage_band_form/$postage_band->id") ?>"
           open_text="<?= t("close") ?>"
           class="gPanelLink gButtonLink ui-state-default ui-corner-all ui-icon-left">
           <span class="ui-icon ui-icon-pencil"></span><span class="gButtonText"><?= t("edit") ?></span></a>
 
-      <a href="<?= url::site("admin/product_lines/delete_product_form/$product->id") ?>"
+      <a href="<?= url::site("admin/postage_bands/delete_postage_band_form/$postage_band->id") ?>"
           class="gDialogLink gButtonLink ui-state-default ui-corner-all ui-icon-left">
             <span class="ui-icon ui-icon-trash"></span><?= t("delete") ?></a>
       </td>

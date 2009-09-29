@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-class Admin_Product_Lines_Controller extends Controller
+class Admin_Postage_Bands_Controller extends Controller
 {
   /**
    * the index page of the user homes admin
@@ -26,40 +26,39 @@ class Admin_Product_Lines_Controller extends Controller
   public function index()
   {
     $view = new Admin_View("admin.html");
-    $view->content = new View("admin_product_lines.html");
-    $view->content->products = ORM::factory("product")->orderby("name")->find_all();
+    $view->content = new View("admin_postage_bands.html");
+    $view->content->postage_bands = ORM::factory("postage_band")->orderby("name")->find_all();
 
     print $view;
   }
 
-  public function add_product_form() {
-    print product::get_add_form_admin();
+  public function add_postage_band_form() {
+    print postage_band::get_add_form_admin();
   }
 
 
-  public function add_product() {
+  public function add_postage_band() {
     access::verify_csrf();
 
-    $form = product::get_add_form_admin();
+    $form = postage_band::get_add_form_admin();
     $valid = $form->validate();
-    $name = $form->add_product->inputs["name"]->value;
-    $product = ORM::factory("product")->where("name", $name)->find();
-    if ($product->loaded) {
-      $form->add_product->inputs["name"]->add_error("in_use", 1);
+    $name = $form->add_postage->inputs["name"]->value;
+    $postage  = ORM::factory("postage_band")->where("name", $name)->find();
+    if ($postage->loaded) {
+      $form->add_postage->inputs["name"]->add_error("in_use", 1);
       $valid = false;
     }
 
     if ($valid) {
-      $product = product::create(
+      $postage = postage_band::create(
         $name,
-        $form->add_product->cost->value,
-        $form->add_product->description->value,
-        $form->add_product->postage_band->value
+        $form->add_postage->flat_rate->value,
+        $form->add_postage->per_item->value
         );
 
-      $product->save();
-      message::success(t("Created product %product_name", array(
-        "product_name" => html::clean($product->name))));
+      $postage->save();
+      message::success(t("Created postage band %postage_name", array(
+        "postage_name" => html::clean($postage->name))));
       print json_encode(array("result" => "success"));
     } else {
       print json_encode(array("result" => "error",
@@ -67,74 +66,73 @@ class Admin_Product_Lines_Controller extends Controller
     }
   }
 
-  public function delete_product_form($id) {
-    $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
+  public function delete_postage_band_form($id) {
+    $postage = ORM::factory("postage_band", $id);
+    if (!$postage->loaded) {
       kohana::show_404();
     }
-    print product::get_delete_form_admin($product);
+    print postage_band::get_delete_form_admin($postage);
   }
 
-  public function delete_product($id) {
+  public function delete_postage_band($id) {
     access::verify_csrf();
 
     if ($id == user::active()->id || $id == user::guest()->id) {
       access::forbidden();
     }
 
-    $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
+    $postage  = ORM::factory("postage_band", $id);
+    if (!$postage->loaded) {
       kohana::show_404();
     }
 
-    $form = product::get_delete_form_admin($product);
+    $form = postage_band::get_delete_form_admin($postage);
     if($form->validate()) {
-      $name = $product->name;
-      $product->delete();
+      $name = $postage->name;
+      $postage->delete();
     } else {
       print json_encode(array("result" => "error",
                               "form" => $form->__toString()));
     }
 
-    $message = t("Deleted user %product_name", array("product_name" => html::clean($name)));
+    $message = t("Deleted user %postage_band", array("postage_band" => html::clean($name)));
     log::success("user", $message);
     message::success($message);
     print json_encode(array("result" => "success"));
   }
 
-  public function edit_product($id) {
+  public function edit_postage_band($id) {
     access::verify_csrf();
 
-    $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
+    $postage = ORM::factory("postage_band", $id);
+    if (!$postage->loaded) {
       kohana::show_404();
     }
 
-    $form = product::get_edit_form_admin($product);
+    $form = postage_band::get_edit_form_admin($postage);
     $valid = $form->validate();
     if ($valid) {
-      $new_name = $form->edit_product->inputs["name"]->value;
-      if ($new_name != $product->name &&
-          ORM::factory("product")
+      $new_name = $form->edit_postage->inputs["name"]->value;
+      if ($new_name != $postage->name &&
+          ORM::factory("postage_band")
           ->where("name", $new_name)
-          ->where("id !=", $product->id)
+          ->where("id !=", $postage->id)
           ->find()
           ->loaded) {
-        $form->edit_product->inputs["name"]->add_error("in_use", 1);
+        $form->edit_postage->inputs["name"]->add_error("in_use", 1);
         $valid = false;
       } else {
-        $product->name = $new_name;
+        $postage->name = $new_name;
       }
     }
 
     if ($valid) {
-      $product->cost = $form->edit_product->cost->value;
-      $product->description = $form->edit_product->description->value;
-      $product->postage_band_id = $form->edit_product->postage_band->value;
-      $product->save();
+      $postage->flat_rate = $form->edit_postage->flat_rate->value;
+      $postage->per_item = $form->edit_postage->per_item->value;
+      $postage->save();
 
-      message::success(t("Changed product %product_name",
-          array("product_name" => html::clean($product->name))));
+      message::success(t("Changed postage band %postage_name",
+          array("postage_name" => html::clean($postage->name))));
       print json_encode(array("result" => "success"));
     } else {
       print json_encode(array("result" => "error",
@@ -142,13 +140,13 @@ class Admin_Product_Lines_Controller extends Controller
     }
   }
 
-  public function edit_product_form($id) {
-    $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
+  public function edit_postage_band_form($id) {
+    $postage = ORM::factory("postage_band", $id);
+    if (!$postage->loaded) {
       kohana::show_404();
     }
 
-    $form = product::get_edit_form_admin($product);
+    $form = postage_band::get_edit_form_admin($postage);
 
     print $form;
   }

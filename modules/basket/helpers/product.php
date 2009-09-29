@@ -26,6 +26,9 @@ class product_Core {
       ->error_messages("in_use", t("There is already a product with that name"));
     $group->input("cost")->label(t("Cost"))->id("gCost");
     $group->input("description")->label(t("Description"))->id("gDescription");
+    $group->dropdown("postage_band")
+        ->label(t("Postage Band"))
+        ->options(postage_band::getPostageArray());
     $group->submit("")->value(t("Add Product"));
     $product = ORM::factory("product");
     $form->add_rules_from($product);
@@ -42,6 +45,10 @@ class product_Core {
     $group->input("cost")->label(t("Cost"))->id("gCost")->value($product->cost);
     $group->input("description")->label(t("Description"))->id("gDescription")->
       value($product->description);
+    $group->dropdown("postage_band")
+        ->label(t("Postage Band"))
+        ->options(postage_band::getPostageArray())
+        ->selected($product->postage_band_id);
 
     $group->submit("")->value(t("Modify Product"));
     $form->add_rules_from($product);
@@ -66,7 +73,7 @@ class product_Core {
    * @param string  $password
    * @return User_Model
    */
-  static function create($name, $cost, $description) {
+  static function create($name, $cost, $description, $postage_band) {
     $product = ORM::factory("product")->where("name", $name)->find();
     if ($product->loaded) {
       throw new Exception("@todo USER_ALREADY_EXISTS $name");
@@ -75,7 +82,7 @@ class product_Core {
     $product->name = $name;
     $product->cost = $cost;
     $product->description = $description;
-
+    $product->postage_band_id = $postage_band;
     $product->save();
     return $product;
   }

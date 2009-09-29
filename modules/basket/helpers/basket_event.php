@@ -38,6 +38,11 @@ class basket_event_Core{
         ->id("product_line")
         ->label(t("Product Lines"))
         ->url(url::site("admin/product_lines")));
+    $basket_menu->append(
+      Menu::factory("link")
+        ->id("postage_bands")
+        ->label(t("Postage Bands"))
+        ->url(url::site("admin/postage_bands")));
 
   }
 
