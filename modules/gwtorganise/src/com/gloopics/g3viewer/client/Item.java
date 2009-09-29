@@ -106,7 +106,7 @@ public class Item extends Composite implements HasAllMouseHandlers{
 				if (isAlbum()){
 					m_Parent.selectSubAlbum(m_ID);
 				}
-				else {
+				else if (isPhoto()){
 					m_Container.showImage(m_Resized);
 				}
 				

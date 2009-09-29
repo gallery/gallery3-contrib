@@ -2,6 +2,8 @@ package com.gloopics.g3viewer.client;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.ErrorEvent;
+import com.google.gwt.event.dom.client.ErrorHandler;
 import com.google.gwt.event.dom.client.LoadEvent;
 import com.google.gwt.event.dom.client.LoadHandler;
 import com.google.gwt.user.client.Window;
@@ -68,10 +70,20 @@ public class ImageDialogBox extends PopupPanel{
 				
 			}
 		});
+		m_Image.addErrorHandler(new ErrorHandler() {
+			
+			@Override
+			public void onError(ErrorEvent event) {
+				sp.removeFromParent();
+				G3Viewer.displayError("Error Loading Image", "It could be that the resized version of the image has not been built correctly.");
+				Loading.getInstance().endLoading();
+			}
+		});
 		
-		sp.setSize("0", "0");
+		sp.setSize("0px", "0px");
+		sp.setStylePrimaryName("hideme");
 		sp.setWidget(m_Image);
-		RootPanel.get().add(m_Image);
+		RootPanel.get().add(sp);
 		
 		m_Image.setUrl(a_Image);
 		
