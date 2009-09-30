@@ -43,6 +43,11 @@ class batchtag_theme_Core {
       $label = t("Tag everything in this album:");
       $group = $form->group("add_tag")->label("Add Tag");
       $group->input("name")->label($label)->rules("required|length[1,64]");
+      $group->checkbox("tag_subitems")
+            ->label(t("Include sub-albums?"))
+            ->value(true)
+            ->checked(false);
+
       $group->hidden("item_id")->value($item->id);
       $group->submit("")->value(t("Add Tag"));
       $block->content->form = $form;
