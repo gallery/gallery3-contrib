@@ -69,6 +69,7 @@ class keeporiginal_event_Core {
     // When updating an item, check and see if the file name is being changed.
     //  If so, check for and modify any corresponding file/folder in
     //  VARPATH/original/ as well.
+
     if ($old->is_photo() || $old->is_album()) {
       if ($old->file_path() != $new->file_path()) {
         $old_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $old->file_path());
@@ -84,12 +85,26 @@ class keeporiginal_event_Core {
     // When moving an item, check and see if a corresponding file exists
     //   in VARPATH/original/.  If so, move that item to a similar directory
     //   in original as well.
+
     if ($item->is_photo() || $item->is_album()) {
       $old_item_path = $old_parent->file_path() . "/" . $item->name;
       if ($item->file_path() != $old_item_path) {
         $old_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $old_item_path);
         $new_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item->file_path());
+
         if (file_exists($old_original)) {
+
+          // Make sure the new folder exists, create it if it doesn't.
+          $individual_dirs = split("[/\]", "original/" . str_replace(VARPATH . "albums/", "", $item->file_path()));
+          $new_img_path = VARPATH;
+          for($i = 0; $i < count($individual_dirs)-1; $i++) {
+            $new_img_path = $new_img_path . "/" . $individual_dirs[$i];
+            if(!file_exists($new_img_path)) {
+              @mkdir($new_img_path);
+            }
+          }
+
+          // Move the file to its new location.
           @rename($old_original, $new_original);
         }
       }
