@@ -20,7 +20,17 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class <?= $module ?>_block {
-  static function get($block_id) {
+  static function get_site_list() {
+    return array(
+      "<?= "{$module}_site" ?>" => t("<?= $name ?> Sidebar Block"));
+  }
+
+  static function get_admin_list() {
+    return array(
+      "<?= "{$module}_admin" ?>" => t("<?= $name ?> Dashboard Block"));
+  }
+
+  static function get($block_id, $theme) {
     $block = new Block();
     switch ($block_id) {
     case "<?= "{$module}_admin" ?>":
@@ -39,15 +49,5 @@ class <?= $module ?>_block {
       break;
     }
     return $block;
-  }
-
-  static function get_site_list() {
-    return array(
-      "<?= "{$module}_site" ?>" => t("<?= $name ?> Sidebar Block"));
-  }
-
-  static function get_admin_list() {
-    return array(
-      "<?= "{$module}_admin" ?>" => t("<?= $name ?> Dashboard Block"));
   }
 }
