@@ -27,11 +27,36 @@ class tag_cloud_block {
     $block = "";
     switch ($block_id) {
     case "tag_cloud_site":
+      $options = array();
+      foreach (array("tagcolor", "background_color", "transparent", "speed", "distribution")
+               as $option) {
+        $value = module::get_var("tag_cloud", $option, null);
+        if (!empty($value)) {
+          switch ($option) {
+          case "tagcolor":
+            $options["tcolor"] = $value;
+            break;
+          case "background_color":
+            $options["bgColor"] = $value;
+            break;
+          case "transparent":
+            $options["wmode"] = "\"transparent\"";
+            break;
+          case "speed":
+            $options["tspeed"] = $value;
+            break;
+          case "distribution":
+            $options["distr"] = "\"true\"";
+            break;
+          }
+        }
+      }
       $block = new Block();
       $block->css_id = "gTag3D";
       $block->title = t("Tag Cloud");
       $block->content = new View("tag_cloud_block.html");
       $block->content->cloud = tag::cloud(30);
+      $block->content->options = $options;
 
       if ($theme->item() && $theme->page_type() != "tag" && access::can("edit", $theme->item())) {
         $controller = new Tags_Controller();

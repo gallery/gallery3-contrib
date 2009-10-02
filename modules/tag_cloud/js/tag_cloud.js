@@ -56,7 +56,7 @@
          "&distr=" + self.options.distr + "&mode=" + self.options.mode +
          "&tagcloud=" + escape("<tags>" + $(tags).html() + "</tags>");
        $(object).append("<param name=\"movie\" value=\"" + self.options.movie +"\" />")
-         .append("<param name=\"wmode\" value=\"" + self.options.transparent + "\" />")
+         .append("<param name=\"wmode\" value=\"" + self.options.wmode + "\" />")
          .append("<param name=\"bgcolor\" value=\"" + self.options.bgColor + "\" />")
          .append("<param name=\"allowScriptAccess\"value=\"" + self.options.scriptAccess + "\" />")
          .append("<param name=\"flashvars\" value=\"" + value + "\" />");
