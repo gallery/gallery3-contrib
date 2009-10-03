@@ -60,7 +60,7 @@
          allowscriptaccess: self.options.scriptAccess
        };
 
-       swfobject.embedSWF(self.options.movie, "gTagCloud", width, .75 * width, "9", false,
+       swfobject.embedSWF(self.options.movie, "gTagCloud", width, .60 * width, "9", false,
                           flashvars, params);
      }
   });
