@@ -40,13 +40,13 @@ class tag_cloud_block {
             $options["bgColor"] = $value;
             break;
           case "transparent":
-            $options["wmode"] = "\"transparent\"";
+            $options["wmode"] = "transparent";
             break;
           case "speed":
             $options["tspeed"] = $value;
             break;
           case "distribution":
-            $options["distr"] = "\"true\"";
+            $options["distr"] = "true";
             break;
           }
         }

@@ -41,7 +41,7 @@
        var tags = document.createElement("tags");
        $("#gTagCloud a").each(function(i) {
          var addr = $(this).clone();
-         $(addr).attr("style", "font-size:" + $(this).css("fontSize") + ";");
+         $(addr).attr("style", "font-size: 14pt;");
          $(tags).append(addr);
        });
 
@@ -52,32 +52,28 @@
          distr: self.options.distr,
          tspeed: self.options.tspeed,
          hicolor: self.options.hicolor,
-         tagcloud: escape("<tags>" + $(tags).html() + "</tags>")
+         tagcloud: escape("<tags>" + $(tags).html() + "</tags>").toLowerCase()
        };
        var params = {
-         bgColor: self.options.bgColor,
+         bgcolor: self.options.bgColor,
          wmode: self.options.wmode,
-         allowscriptaccess: self.options.scriptAccess,
-         swliveconnect: true
+         allowscriptaccess: self.options.scriptAccess
        };
 
-       var attributes = {
-         id: "gTagCloud3D"
-       };
-       swfobject.embedSWF(self.options.movie, "gTagCloud", width, .75 * width, "9.0.0", false,
-                          flashvars, params, attributes);
+       swfobject.embedSWF(self.options.movie, "gTagCloud", width, .75 * width, "9", false,
+                          flashvars, params);
      }
   });
 
   $.extend($.ui.gallery_tag_cloud,  {
     defaults: {
-      bgColor: 0xFFFFFF,
+      bgColor: "0xFFFFFF",
       wmode: "transparent",
       scriptAccess: "always",
-      tcolor: 0x333333,
-      tcolor2: 0x009900,
-      hicolor: 0x000000,
-      tspeed: 100,
+      tcolor: "0x333333",
+      tcolor2: "0x009900",
+      hicolor: "0x000000",
+      tspeed: "100",
       distr: "true",
       mode: "tag"
     }

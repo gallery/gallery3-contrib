@@ -4,7 +4,7 @@
     $("#gTag").gallery_tag_cloud({
       movie: "<?= url::file("modules/tag_cloud/lib/tagcloud.swf") ?>"
       <? foreach ($options as $option => $value) : ?>
-        , <?= $option ?> : <?= $value ?>
+        , <?= $option ?> : "<?= $value ?>"
       <? endforeach ?>
     });
   });
