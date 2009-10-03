@@ -44,34 +44,27 @@
          $(addr).attr("style", "font-size:" + $(this).css("fontSize") + ";");
          $(tags).append(addr);
        });
-       var object = document.createElement("object");
-       $(object).attr({
-         type: "application/x-shockwave-flash",
-         data: self.options.movie,
-         width: width,
-         height: .75 * width
-       });
-       var value = "tcolor=" + self.options.tcolor + "&tcolor2=" + self.options.tcolor2 +
-         "&hicolor=" + self.options.hicolor + "&tspeed=" + self.options.tspeed +
-         "&distr=" + self.options.distr + "&mode=" + self.options.mode +
-         "&tagcloud=" + escape("<tags>" + $(tags).html() + "</tags>");
-       $(object).append("<param name=\"movie\" value=\"" + self.options.movie +"\" />")
-         .append("<param name=\"wmode\" value=\"" + self.options.wmode + "\" />")
-         .append("<param name=\"bgcolor\" value=\"" + self.options.bgColor + "\" />")
-         .append("<param name=\"allowScriptAccess\"value=\"" + self.options.scriptAccess + "\" />")
-         .append("<param name=\"flashvars\" value=\"" + value + "\" />");
-       $("#gTagCloud3D").html(object);
+
+       var so = new SWFObject(self.options.movie, "gTagCloud3D", width, .75 * width, "7", self.options.bgColor);
+       so.addParam("wmode", self.options.wmode);
+       so.addVariable("mode", "tags");
+       so.addVariable("distr", self.options.distr);
+       so.addVariable("tcolor", self.options.tcolor);
+       so.addVariable("tcolor2", self.options.tcolor2);
+       so.addVariable("hicolor", self.options.hicolor);
+       so.addVariable("tagcloud", escape("<tags>" + $(tags).html() + "</tags>"));
+       so.write("gTagCloud3D");
      }
   });
 
   $.extend($.ui.gallery_tag_cloud,  {
     defaults: {
-      bgColor: false,
+      bgColor: 0xFFFFFF,
       wmode: "transparent",
       scriptAccess: "always",
-      tcolor: "0x333333",
-      tcolor2: "0x009900",
-      hicolor: "0x000000",
+      tcolor: 0x333333,
+      tcolor2: 0x009900,
+      hicolor: 0x000000,
       tspeed: 100,
       distr: "true",
       mode: "tag"
