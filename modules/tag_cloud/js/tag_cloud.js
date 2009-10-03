@@ -8,7 +8,7 @@
      },
 
      _autocomplete: function() {
-       var url = $("#gTagCloud3D").attr("title") + "/autocomplete";
+       var url = $("#gTagCloud").attr("title") + "/autocomplete";
        $("#gAddTagForm input:text").autocomplete(
          url, {
            max: 30,
@@ -25,8 +25,8 @@
          dataType: "json",
          success: function(data) {
            if (data.result == "success") {
-             $.get($("#gTagCloud3D").attr("title"), function(data, textStatus) {
-               $("#gTagCloud3D").html(data);
+             $.get($("#gTagCloud").attr("title"), function(data, textStatus) {
+               $("#gTagCloud").html(data);
                self._set_tag_cloud();
 	     });
            }
@@ -37,23 +37,35 @@
 
      _set_tag_cloud: function() {
        var self = this;
-       var width = $("#gTagCloud3D").width();
+       var width = $("#gTagCloud").width();
        var tags = document.createElement("tags");
-       $("#gTagCloud3D a").each(function(i) {
+       $("#gTagCloud a").each(function(i) {
          var addr = $(this).clone();
          $(addr).attr("style", "font-size:" + $(this).css("fontSize") + ";");
          $(tags).append(addr);
        });
 
-       var so = new SWFObject(self.options.movie, "gTagCloud3D", width, .75 * width, "7", self.options.bgColor);
-       so.addParam("wmode", self.options.wmode);
-       so.addVariable("mode", "tags");
-       so.addVariable("distr", self.options.distr);
-       so.addVariable("tcolor", self.options.tcolor);
-       so.addVariable("tcolor2", self.options.tcolor2);
-       so.addVariable("hicolor", self.options.hicolor);
-       so.addVariable("tagcloud", escape("<tags>" + $(tags).html() + "</tags>"));
-       so.write("gTagCloud3D");
+       var flashvars = {
+         tcolor: self.options.tcolor,
+         tcolor2: self.options.tcolor2,
+         mode: "tags",
+         distr: self.options.distr,
+         tspeed: self.options.tspeed,
+         hicolor: self.options.hicolor,
+         tagcloud: escape("<tags>" + $(tags).html() + "</tags>")
+       };
+       var params = {
+         bgColor: self.options.bgColor,
+         wmode: self.options.wmode,
+         allowscriptaccess: self.options.scriptAccess,
+         swliveconnect: true
+       };
+
+       var attributes = {
+         id: "gTagCloud3D"
+       };
+       swfobject.embedSWF(self.options.movie, "gTagCloud", width, .75 * width, "9.0.0", false,
+                          flashvars, params, attributes);
      }
   });
 

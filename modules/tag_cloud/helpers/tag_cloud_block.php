@@ -52,7 +52,7 @@ class tag_cloud_block {
         }
       }
       $block = new Block();
-      $block->css_id = "gTag3D";
+      $block->css_id = "gTag";
       $block->title = t("Tag Cloud");
       $block->content = new View("tag_cloud_block.html");
       $block->content->cloud = tag::cloud(30);
