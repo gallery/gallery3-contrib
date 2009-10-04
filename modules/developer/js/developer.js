@@ -1,6 +1,6 @@
 var module_success = function(data) {
-  $("#gDeveloperAdmin").append('<div id="gModuleProgress" style="margin-top: 1em;"></div>');
-  $("#gModuleProgress").progressbar();
+  $("#g-developer-admin").append('<div id="g-module-progress" style="margin-top: 1em;"></div>');
+  $("#g-module-progress").progressbar();
 
   var task = data.task;
   var url = data.url;
@@ -10,7 +10,7 @@ var module_success = function(data) {
   while (!done) {
     $.ajax({async: false,
       success: function(data, textStatus) {
-        $("#gModuleProgress").progressbar("value", data.task.percent_complete);
+        $("#g-module-progress").progressbar("value", data.task.percent_complete);
         done = data.task.done;
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {

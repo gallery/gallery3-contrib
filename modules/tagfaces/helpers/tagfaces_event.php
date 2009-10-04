@@ -46,7 +46,7 @@ class tagfaces_event_Core {
              ->append(Menu::factory("link")
              ->id("tagfaces")
              ->label(t("Tag faces"))
-             ->css_id("gTagFacesLink")
+             ->css_id("g-tag-faces-link")
              ->url(url::site("tagfaces/drawfaces/" . $item->id)));
       }
     }

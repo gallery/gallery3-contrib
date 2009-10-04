@@ -27,7 +27,7 @@ class downloadfullsize_event_Core {
                ->id("downloadfullsize")
                ->label(t("Download Fullsize Image"))
                ->url($downloadLink)
-               ->css_id("gDownloadFullsizeLink"));
+               ->css_id("g-download-fullsize-link"));
       }
     }
   }
@@ -41,7 +41,7 @@ class downloadfullsize_event_Core {
                ->id("downloadfullsize")
                ->label(t("Download Video"))
                ->url($downloadLink)
-               ->css_id("gDownloadFullsizeLink"));
+               ->css_id("g-download-fullsize-link"));
       }
     }
   }

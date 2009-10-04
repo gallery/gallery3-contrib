@@ -23,7 +23,7 @@ class embedlinks_theme_Core {
     //  display links to the current album in the theme sidebar.
     if ($theme->item()->is_album() && module::get_var("embedlinks", "InPageLinks")) {
       $block = new Block();
-      $block->css_id = "gMetadata";
+      $block->css_id = "g-metadata";
       $block->title = t("Links");
       $block->content = new View("embedlinks_album_block.html");
       return $block;
@@ -36,7 +36,7 @@ class embedlinks_theme_Core {
     //   to open up the dialog window.  
     if (module::get_var("embedlinks", "DialogLinks")) {
       $block = new Block();
-      $block->css_id = "gMetadata";
+      $block->css_id = "g-metadata";
       $block->title = t("Link To This Page:");
       $block->content = new View("embedlinks_sidebar.html");
       return $block;
@@ -49,7 +49,7 @@ class embedlinks_theme_Core {
     //   of the page. 
     if (module::get_var("embedlinks", "InPageLinks")) {
       $block = new Block();
-      $block->css_id = "gMetadata";
+      $block->css_id = "g-metadata";
       $block->title = t("Links");
       $block->content = new View("embedlinks_photo_block.html");
       return $block;

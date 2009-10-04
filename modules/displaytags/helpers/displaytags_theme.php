@@ -31,7 +31,7 @@ class displaytags_theme {
     // If the current item has at least one tag, display it/them.
     if (count($tagsItem) > 0) {
       $block = new Block();
-      $block->css_id = "gDisplayTags";
+      $block->css_id = "g-display-tags";
       $block->title = t("Tags");
       $block->content = new View("displaytags_block.html");
       $block->content->tags = $tagsItem;

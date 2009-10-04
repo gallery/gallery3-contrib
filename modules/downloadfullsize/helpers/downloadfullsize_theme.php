@@ -31,7 +31,7 @@ class downloadfullsize_theme {
     if ($item && $item->is_movie() && access::can("view_full", $item)) {
       if (module::get_var("downloadfullsize", "tButton")) {
         $block = new Block();
-        $block->css_id = "gDownloadFullsize";
+        $block->css_id = "g-download-fullsize";
         $block->title = t("Download");
         $block->content = new View("downloadfullsize_block.html");
 
@@ -44,7 +44,7 @@ class downloadfullsize_theme {
     if ($item && $item->is_photo() && access::can("view_full", $item)) {
       if (module::get_var("downloadfullsize", "tButton")) {
         $block = new Block();
-        $block->css_id = "gDownloadFullsize";
+        $block->css_id = "g-download-fullsize";
         $block->title = t("Download");
         $block->content = new View("downloadfullsize_block.html");
 

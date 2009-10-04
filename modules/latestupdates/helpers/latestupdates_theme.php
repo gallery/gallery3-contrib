@@ -26,7 +26,7 @@ class latestupdates_theme_Core {
     $albumID = $theme->item->is_album() ? $theme->item->id : $theme->item->parent_id;
     
     $block = new Block();
-    $block->css_id = "gUpdatesBlock";
+    $block->css_id = "g-updates-block";
     $block->title = t("Updates");
     $block->content = new View("latestupdates_block.html");
     $block->content->update_links = array(

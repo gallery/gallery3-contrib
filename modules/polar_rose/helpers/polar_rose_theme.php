@@ -33,7 +33,7 @@ class polar_rose_theme_Core {
         "var polarroseconfig = {" .
         "partner: 'gallery3'," .
         "rss: '$url'," .
-        "insert: 'gPolarRose'," .
+        "insert: 'g-polar-rose'," .
         "optin: ''," .
         "theme: 'dark'," .
         "progress: true" .
@@ -45,6 +45,6 @@ class polar_rose_theme_Core {
   }
 
   static function page_bottom($theme) {
-    return "<div id=\"gPolarRose\"></div>";
+    return "<div id=\"g-polar-rose\"></div>";
   }
 }

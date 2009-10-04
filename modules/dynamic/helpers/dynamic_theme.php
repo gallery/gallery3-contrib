@@ -27,7 +27,7 @@ class dynamic_theme {
     }
     if (!empty($albums)) {
       $block = new Block();
-      $block->css_id = "gDynamic";
+      $block->css_id = "g-dynamic";
       $block->title = t("Dynamic Albums");
       $block->content = new View("dynamic_block.html");
       $block->content->albums = $albums;

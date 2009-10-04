@@ -34,14 +34,14 @@ class <?= $module ?>_block {
     $block = new Block();
     switch ($block_id) {
     case "<?= "{$module}_admin" ?>":
-      $block->css_id = "g<?= $css_id ?>Admin";
+      $block->css_id = "g-<?= $css_id ?>-admin";
       $block->title = t("<?= $module ?> Dashboard Block");
       $block->content = new View("admin_<?= $module ?>_block.html");
 
       $block->content->item = ORM::factory("item", 1);
       break;
     case "<?= "{$module}_site" ?>":
-      $block->css_id = "g<?= $css_id ?>Site";
+      $block->css_id = "g-<?= $css_id ?>-site";
       $block->title = t("<?= $module ?> Sidebar Block");
       $block->content = new View("<?= $module ?>_block.html");
 

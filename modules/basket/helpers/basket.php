@@ -42,9 +42,9 @@ class basket_Core {
   static $format= array(
     "AUD" => "$",
     "CAD" => "$",
-    "EUR" => "€",
-    "GBP" => "£",
-    "JPY" => "¥",
+    "EUR" => "ï¿½",
+    "GBP" => "ï¿½",
+    "JPY" => "ï¿½",
     "USD" => "$",
     "NZD" => "$",
     "CHF" => "",
@@ -61,15 +61,15 @@ class basket_Core {
 
 
  static function get_configure_form() {
-    $form = new Forge("admin/configure", "", "post", array("id" => "gConfigureForm"));
+    $form = new Forge("admin/configure", "", "post", array("id" => "g-configure-form"));
     $group = $form->group("configure")->label(t("Configure Basket"));
-    $group->input("email")->label(t("Offline Paying Email Address"))->id("gOrderEmailAddress");
+    $group->input("email")->label(t("Offline Paying Email Address"))->id("g-order-email-address");
     $group->dropdown("currency")
       ->label(t("Currency"))
       ->options(self::$currencies);
 
-    $group->checkbox("paypal")->label(t("Use Paypal"))->id("gPaypal");
-    $group->input("paypal_account")->label(t("Paypal E-Mail Address"))->id("gPaypalAddress");
+    $group->checkbox("paypal")->label(t("Use Paypal"))->id("g-paypal");
+    $group->input("paypal_account")->label(t("Paypal E-Mail Address"))->id("g-paypal-address");
     $group->submit("")->value(t("Save"));
     return $form;
   }

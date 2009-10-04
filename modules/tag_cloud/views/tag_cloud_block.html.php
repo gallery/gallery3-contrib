@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <script>
   $("document").ready(function() {
-    $("#gTag").gallery_tag_cloud({
+    $("#g-tag").gallery_tag_cloud({
       movie: "<?= url::file("modules/tag_cloud/lib/tagcloud.swf") ?>"
       <? foreach ($options as $option => $value) : ?>
         , <?= $option ?> : "<?= $value ?>"
@@ -9,7 +9,7 @@
     });
   });
 </script>
-<div id="gTagCloud" title="<?= url::site("tags") ?>">
+<div id="g-tag-cloud" title="<?= url::site("tags") ?>">
   <?= $cloud ?>
 </div>
 <?= $form ?>

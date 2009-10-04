@@ -47,7 +47,7 @@ class Admin_<?= $class_name ?>_Controller extends Admin_Controller {
   
   private function _get_form() {
     $form = new Forge("admin/<?= $module ?>/handler", "", "post",
-                      array("id" => "gAdminForm"));
+                      array("id" => "g-adminForm"));
     $group = $form->group("group");
     $group->input("text")->label(t("Text"))->rules("required");
     $group->submit("submit")->value(t("Submit"));

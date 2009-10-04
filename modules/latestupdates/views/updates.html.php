@@ -1,17 +1,17 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <? // @todo Set hover on AlbumGrid list items ?>
 
-<div id="gLatestUpdates">
+<div id="g-latest-updates">
   <h1><?= t("Latest Updates") ?></h1>
 <? array("term" => html::clean($q)) ?>
  <? if (count($items)): ?>
-  <ul id="gAlbumGrid">
+  <ul id="g-album-grid">
     <? foreach ($items as $item): ?>
-      <? $item_class = "gPhoto"; ?>
+      <? $item_class = "g-photo"; ?>
       <? if ($item->is_album()): ?>
-        <? $item_class = "gAlbum"; ?>
+        <? $item_class = "g-album"; ?>
       <? endif ?>
-   <li class="gItem <?= $item_class ?>">
+   <li class="g-item <?= $item_class ?>">
       <a href="<?= url::site("items/$item->id") ?>">
         <?= $item->thumb_img() ?>
         <p>

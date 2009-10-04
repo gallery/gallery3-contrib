@@ -153,13 +153,13 @@ Items Ordered:
 
   private function getAddToBasketForm($id){
 
-    $form = new Forge("basket/add_to_basket", "", "post", array("id" => "gAddToBasketForm"));
+    $form = new Forge("basket/add_to_basket", "", "post", array("id" => "g-add-to-basket-form"));
     $group = $form->group("add_to_basket")->label(t("Add To Basket"));
     $group->hidden("id");
     $group->dropdown("product")
         ->label(t("Product"))
         ->options(product::getProductArray($id));
-    $group->input("quantity")->label(t("Quantity"))->id("gQuantity");
+    $group->input("quantity")->label(t("Quantity"))->id("g-quantity");
     $group->submit("")->value(t("Add"));
     //$group->submit("proceedToCheckout")->value(t("Proceed To Checkout"));
 

@@ -5,10 +5,10 @@ input[type="text"] {
 }
 </style>
 <h1 style="display: none;"><?= t("BBCode") ?></h1>
-<div id="gEmbedLinksBBCodeData">
+<div id="g-embed-links-bbcode-data">
 <? $counter = 0; ?>
 <? for ($i = 0; $i < count($titles); $i++): ?>    
-  <table class="gLinksBBCode" >
+  <table class="g-links-bbcode" >
   <thead><tr><th colspan="2"><?= t($titles[$i][0]) ?></th></thead>
     <tbody>
           <? for ($j = $counter; $j < $titles[$i][1]+$counter; $j++): ?>    

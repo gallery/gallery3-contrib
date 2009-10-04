@@ -8,8 +8,8 @@
      },
 
      _autocomplete: function() {
-       var url = $("#gTagCloud").attr("title") + "/autocomplete";
-       $("#gAddTagForm input:text").autocomplete(
+       var url = $("#g-tag-cloud").attr("title") + "/autocomplete";
+       $("#g-add-tag-form input:text").autocomplete(
          url, {
            max: 30,
            multiple: true,
@@ -20,13 +20,13 @@
 
      _ajax_form: function() {
        var self = this;
-       var form = $("#gAddTagForm");
+       var form = $("#g-add-tag-form");
        form.ajaxForm({
          dataType: "json",
          success: function(data) {
            if (data.result == "success") {
-             $.get($("#gTagCloud").attr("title"), function(data, textStatus) {
-               $("#gTagCloud").html(data);
+             $.get($("#g-tag-cloud").attr("title"), function(data, textStatus) {
+               $("#g-tag-cloud").html(data);
                self._set_tag_cloud();
 	     });
            }
@@ -37,9 +37,9 @@
 
      _set_tag_cloud: function() {
        var self = this;
-       var width = $("#gTagCloud").width();
+       var width = $("#g-tag-cloud").width();
        var tags = document.createElement("tags");
-       $("#gTagCloud a").each(function(i) {
+       $("#g-tag-cloud a").each(function(i) {
          var addr = $(this).clone();
          $(addr).attr("style", "font-size: 14pt;");
          $(tags).append(addr);
@@ -60,7 +60,7 @@
          allowscriptaccess: self.options.scriptAccess
        };
 
-       swfobject.embedSWF(self.options.movie, "gTagCloud", width, .60 * width, "9", false,
+       swfobject.embedSWF(self.options.movie, "g-tag-cloud", width, .60 * width, "9", false,
                           flashvars, params);
      }
   });

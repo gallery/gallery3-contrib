@@ -29,7 +29,7 @@ class tagsmap_theme_Core {
     
     // Create a new block to display the link in.
     $block = new Block();
-    $block->css_id = "gTagsMap";
+    $block->css_id = "g-tags-map";
     $block->title = t("Map:");
     $block->content = new View("tagsmap_block.html");
     

@@ -3,6 +3,6 @@
 <div id="add_to_basket">
     <a href="<?= url::site("basket/add_to_basket_ajax/$item->id") ?>"
        title="<?= t("Add To Basket") ?>"
-       class="gDialogLink">
+       class="g-dialog-link">
        Add To Basket</a>
 </div>

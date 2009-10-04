@@ -22,10 +22,10 @@
 function so(){document.confirm.submit();}
 </SCRIPT>
 <?= $form ?>
-<div class="gBlock">
+<div class="g-block">
 <h2>Basket Summary</h2>
-  <div class="gBlockContent">
-    <table id="gBasketList">
+  <div class="g-block-content">
+    <table id="g-basket-list">
       <tr>
         <th><?= t("Name") ?></th>
         <th><?= t("Product") ?></th>
@@ -33,8 +33,7 @@ function so(){document.confirm.submit();}
         <th><?= t("Cost") ?></th>
       </tr>
       <? foreach ($basket->contents as $key => $prod_details): ?>
-      <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
-
+      <tr id="" class="<?= text::alternate("g-odd", "g-even") ?>">
         <td id="item-<?= $prod_details->item ?>" class="core-info ">
           <?  $item = $prod_details->getItem(); ?>
         <div>
@@ -50,12 +49,11 @@ function so(){document.confirm.submit();}
         <td>
           <?= html::clean(basket::formatMoney($prod_details->cost)) ?>
         </td>
-    </tr>
+      </tr>
       <? endforeach ?>
-      <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
+      <tr id="" class="<?= text::alternate("g-odd", "g-even") ?>">
         <td></td><td></td><td>Total Cost</td><td><?= html::clean($basket->cost())?></td>
       </tr>
-
    </table>
   </div>
   <table>
@@ -74,9 +72,9 @@ E-mail : <?= $basket->email ?><br/>
 Telephone : <?= $basket->phone ?>
 </td></tr>
 </table>
-<a href="<?= url::site("basket/checkout") ?>" class="left gButtonLink ui-state-default ui-corner-all ui-icon-left">
+<a href="<?= url::site("basket/checkout") ?>" class="g-left g-button ui-state-default ui-corner-all ui-icon-left">
 <span class="ui-icon ui-icon-arrow-1-w"></span><?= t("Back to Checkout") ?></a>
-<a href="javascript: so()" class="right gButtonLink ui-state-default ui-corner-all ui-icon-right">
+<a href="javascript: so()" class="g-right g-button ui-state-default ui-corner-all ui-icon-right">
 <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Confirm Order") ?></a>
 
 </div>
