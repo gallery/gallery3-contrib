@@ -1,0 +1,58 @@
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
+ * Gallery - a web based photo album viewer and editor
+ * Copyright (C) 2000-2009 Bharat Mediratta
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+class Ldap_User_Model {
+  private $ldap_entry;
+
+  public function __construct($ldap_entry) {
+    $this->ldap_entry = $ldap_entry;
+  }
+
+  public function display_name() {
+    return $this->ldap_entry["displayname"][0];
+  }
+
+  public function __get($key) {
+    switch($key) {
+      case "name":
+        return $this->ldap_entry["uid"][0];
+
+      case "guest":
+        return false;
+
+      case "login_count":
+        return 0;
+
+      case "id":
+        return $this->ldap_entry["uidnumber"][0];
+
+      case "groups":
+        return ldap::groups_for($this);
+
+      case "locale":  // @todo
+        return null;
+
+      case "admin":
+        return in_array($this->ldap_entry["uid"][0], Kohana::config("ldap.admins"));
+
+      default:
+        throw new Exception("@todo UNKNOWN_KEY ($key)");
+    }
+  }
+}
