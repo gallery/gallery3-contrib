@@ -88,8 +88,14 @@
       </td>
   </tr>
       <? endforeach ?>
+      <? $postage = $basket->postage_cost();?>
+      <? if ($postage > 0):?>
       <tr id="" class="<?= text::alternate("g-odd", "g-even") ?>">
-        <td></td><td></td><td>Total Cost</td><td><?= html::clean(basket::formatMoney($total))?></td><td></td>
+        <td></td><td></td><td>Postage and Packaging</td><td><?= html::clean(basket::formatMoney($postage))?></td><td></td>
+      </tr>
+      <? endif;?>
+      <tr id="" class="<?= text::alternate("g-odd", "g-even") ?>">
+        <td></td><td></td><td>Total Cost</td><td><?= html::clean(basket::formatMoney($total + $postage))?></td><td></td>
       </tr>
 
    </table>

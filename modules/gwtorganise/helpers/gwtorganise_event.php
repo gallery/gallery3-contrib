@@ -1,4 +1,5 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -16,26 +17,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class displaytags_theme {  
-  static function sidebar_blocks($theme) {
-    if (!$theme->item()) {
-      return;
-    }
 
-    // Create an array of all the tags for the current item.
-    $tagsItem = ORM::factory("tag")
-      ->join("items_tags", "tags.id", "items_tags.tag_id")
-      ->where("items_tags.item_id", $theme->item->id)
-      ->find_all();
+class gwtorganise_event_Core{
+  /**
+   * adds the shopping basket administration controls to the admin menu
+   */
+  static function admin_menu($menu, $theme){
 
-    // If the current item has at least one tag, display it/them.
-    if (count($tagsItem) > 0) {
-      $block = new Block();
-      $block->css_id = "g-display-tags";
-      $block->title = t("Tags");
-      $block->content = new View("displaytags_block.html");
-      $block->content->tags = $tagsItem;
-      return $block;
-    }
-  }  
+
+    $menu->add_after("users_groups",
+      Menu::factory("link")
+        ->id("gwtorganise")
+        ->label(t("GWT Organise"))
+        ->url(url::site("admin/gwtorganise")));
+  }
 }

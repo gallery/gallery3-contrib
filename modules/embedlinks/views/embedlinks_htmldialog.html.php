@@ -5,7 +5,7 @@ input[type="text"] {
 }
 </style>
 <h1 style="display: none;"><?= t("HTML Code") ?></h1>
-<div id="g-embed-linksHTMLData">
+<div id="g-embed-links-html-data">
 <? $counter = 0; ?>
 <? for ($i = 0; $i < count($titles); $i++): ?>    
   <table class="g-links-html" >

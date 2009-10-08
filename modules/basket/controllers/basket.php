@@ -31,7 +31,7 @@ class Basket_Controller extends Controller {
     print $template;
   }
 
-  private function getCheckoutForm(){
+    private function getCheckoutForm(){
     $form = new Forge("basket/confirm", "", "post", array("id" => "checkout", "name" =>"checkout"));
     $group = $form->group("contact")->label(t("Contact Details"));
     $group->input("fullname")->label(t("Name"))->id("fullname");
@@ -110,6 +110,8 @@ class Basket_Controller extends Controller {
     $basket = Session_Basket::get();
 
     //$admin_address = basket::getEmailAddress();
+    $postage = $basket->postage_cost();
+    $product_cost = $basket->cost();
 
     $admin_email = "Order for :
 ".$basket->name."
@@ -121,7 +123,9 @@ class Basket_Controller extends Controller {
 ".$basket->email."
 ".$basket->phone."
 Placed at ".date("d F Y - H:i" ,time())."
-Total Owed ".$basket->cost()." in ".basket::getCurrency()."
+Cost of Ordered Products = ".$product_cost."
+Postage and Packaging Costs + ".$postage."
+Total Owed ".($product_cost+$postage)." Total in ".basket::getCurrency()."
 
 Items Ordered:
 

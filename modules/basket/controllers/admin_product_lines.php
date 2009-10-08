@@ -51,7 +51,11 @@ class Admin_Product_Lines_Controller extends Controller
 
     if ($valid) {
       $product = product::create(
-        $name, $form->add_product->cost->value, $form->add_product->description->value);
+        $name,
+        $form->add_product->cost->value,
+        $form->add_product->description->value,
+        $form->add_product->postage_band->value
+        );
 
       $product->save();
       message::success(t("Created product %product_name", array(
@@ -83,7 +87,7 @@ class Admin_Product_Lines_Controller extends Controller
       kohana::show_404();
     }
 
-    $form = user::get_delete_form_admin($product);
+    $form = product::get_delete_form_admin($product);
     if($form->validate()) {
       $name = $product->name;
       $product->delete();
@@ -126,6 +130,7 @@ class Admin_Product_Lines_Controller extends Controller
     if ($valid) {
       $product->cost = $form->edit_product->cost->value;
       $product->description = $form->edit_product->description->value;
+      $product->postage_band_id = $form->edit_product->postage_band->value;
       $product->save();
 
       message::success(t("Changed product %product_name",

@@ -21,4 +21,6 @@ class Product_Model extends ORM {
   var $rules = array(
     "name" => "length[1,32]",
     "description" => "length[0,255]");
+    protected $belongs_to=array('postage_band');
+
 }

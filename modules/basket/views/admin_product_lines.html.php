@@ -37,6 +37,7 @@
   <th><?= t("Name") ?></th>
         <th><?= t("Cost") ?></th>
         <th><?= t("Description") ?></th>
+        <th><?= t("Postage Band") ?></th>
         <th><?= t("Actions") ?></th>
 
       </tr>
@@ -51,6 +52,11 @@
   <td>
     <?= html::clean($product->description) ?>
   </td>
+  <td>
+    <?= html::clean($product->postage_band->name) ?>
+  </td>
+
+
     <td class="g-actions">
       <a href="<?= url::site("admin/product_lines/edit_product_form/$product->id") ?>"
           open_text="<?= t("close") ?>"

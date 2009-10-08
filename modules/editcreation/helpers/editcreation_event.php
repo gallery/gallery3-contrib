@@ -21,10 +21,7 @@ class editcreation_event_Core {
   static function item_edit_form($item, $form) {
     // Add a couple of drop-down boxes to allow the user to edit the date
     // that $item was created on.
-    
-    // Inject some css to make everything look right.
-    print ("<style>\nselect {\ndisplay: inline;\n}\n</style>\n");
-    
+        
     // Add the datecreated element to the form.
     $form->edit_item->dateselect("datecreated")
                     ->label(t("Created"))

@@ -17,20 +17,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class batchtag_theme_Core {
-  static function sidebar_blocks($theme) {
-    // Display form for tagging in the album sidebar.
+class batchtag_block_Core {
+  static function get_site_list() {
+    return array("batch_tag" => t("Batch Tag"));
+  }
 
-    // Make sure the current page belongs to an item.
-    if (!$theme->item()) {
-      return;
-    }
-    
-    $item = $theme->item();
-    
-    // Only display the form in albums that the user has edit permission in.
-    if ($item->is_album() && access::can("edit", $item)) {
-
+  static function get($block_id, $theme) {
+    $block = "";
+	
+	// Only display on album pages that the user can edit.
+	$item = $theme->item();
+	if (!$item->is_album() || !access::can("edit", $item)) {
+	  return;
+	}
+	
+    switch ($block_id) {
+    case "batch_tag":
       // Make a new sidebar block.
       $block = new Block();
       $block->css_id = "g-batch-tag";
@@ -43,12 +45,17 @@ class batchtag_theme_Core {
       $label = t("Tag everything in this album:");
       $group = $form->group("add_tag")->label("Add Tag");
       $group->input("name")->label($label)->rules("required|length[1,64]");
+      $group->checkbox("tag_subitems")
+            ->label(t("Include sub-albums?"))
+            ->value(true)
+            ->checked(false);
+
       $group->hidden("item_id")->value($item->id);
       $group->submit("")->value(t("Add Tag"));
-      $block->content->form = $form;
+      $block->content->batch_tag_form = $form;
 
-      // Display the block.
-      return $block;
-    }
+      break;  
+	}
+    return $block;
   }
 }

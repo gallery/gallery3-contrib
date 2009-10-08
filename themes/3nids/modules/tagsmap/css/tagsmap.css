@@ -1,0 +1,96 @@
+.tooltip{
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width: 150px;
+	background-color: #777;
+	color: #ffffcc;
+	border: 1px solid #f9db01;
+	font: bold 13px "Trebuchet MS", Verdana, Arial, sans-serif;
+	padding: 4px;
+	z-index: 20;
+	-moz-border-radius: 10px;
+	-moz-opacity: .87;
+	filter:alpha(opacity=87);
+	opacity:.87;
+}
+
+.gMapThumbTable{
+	width:200px;
+	height: 80px;
+	font-size: 0.9em;
+	font-style: normal;
+	color: #FFFFCC;
+}
+.gMapThumbImg{
+	overflow:auto;
+	position: relative;
+	height:125px;
+}
+.gMapThumbLink{
+	height: 15px;
+}
+.gMapThumbTd{
+	padding: 0;
+	text-align: center;
+}
+.gMapThumbnail{
+   height: 80px;
+}
+#gmInfo{
+  width: 230px;
+}
+#gmInfo_contents{
+  background: #3d3d3d;
+}
+#gmInfo_contents div{
+  font-style: italic;
+  vertical-align: middle; 
+  margin: 0 10px;
+}
+#gmInfo_tl{
+  width: 14px;
+  height: 14px;
+  background: url('../images/gmInfo_tl.png') top left no-repeat transparent;
+}
+#gmInfo_t{
+  background: url('../images/gmInfo_t.png') top left repeat-x transparent;
+}
+#gmInfo_tr{
+  width: 14px;
+  height: 14px;
+  background: url('../images/gmInfo_tr.png') top left no-repeat transparent;
+}
+#gmInfo_l{
+  width: 14px;
+  background: url('../images/gmInfo_l.png') top left repeat-y transparent;
+}
+#gmInfo_r{
+  width: 14px;
+  background: url('../images/gmInfo_r.png') top right repeat-y transparent;
+}
+#gmInfo_bl{
+  width: 14px;
+  height: 14px;
+  background: url('../images/gmInfo_bl.png') top left no-repeat transparent;
+}
+#gmInfo_b{
+  background: url('../images/gmInfo_b.png') top left repeat-x transparent;
+}
+#gmInfo_br{
+  width: 14px;
+  height: 14px;
+  background: url('../images/gmInfo_br.png') top left no-repeat transparent;
+}
+#gmInfo_close{
+  width: 30px;
+  height: 30px;
+  background: url('../images/gmInfo_close.png') top left no-repeat transparent;
+  margin: -10px 0 0 10px;
+  cursor: pointer;
+}
+#gmInfo_beak{
+  width: 27px;
+  height: 33px;
+  background: url('../images/gmInfo_beak.png') top left no-repeat transparent;
+}

@@ -64,6 +64,11 @@ class basket_item
      return $prod->description;
   }
 
+  public function getProduct(){
+     $prod = ORM::factory("product", $this->product);
+     return $prod;
+   }
+
   public function getCode(){
      $photo = ORM::factory("item", $this->item);
      $prod = ORM::factory("product", $this->product);
@@ -120,6 +125,32 @@ class Session_Basket_Core {
 
   public function remove($key){
     unset($this->contents[$key]);
+  }
+
+  public function postage_cost(){
+    $postage_cost = 0;
+    $postage_bands = array();
+    $postage_quantities = array();
+    if (isset($this->contents)){
+      // create array of postage bands
+      foreach ($this->contents as $product => $basket_item){
+        $postage_band = $basket_item->getProduct()->postage_band;
+        if (isset($postage_bands[$postage_band->id]))
+        {
+          $postage_quantities[$postage_band->id] += $basket_item->quantity;
+        }
+        else
+        {
+          $postage_quantities[$postage_band->id] = $basket_item->quantity;
+          $postage_bands[$postage_band->id] = $postage_band;
+        }
+      }
+
+      foreach ($postage_bands as $id => $postage_band){
+        $postage_cost += $postage_band->flat_rate + ($postage_band->per_item * $postage_quantities[$id]);
+      }
+    }
+    return $postage_cost;
   }
 
   public function cost(){
