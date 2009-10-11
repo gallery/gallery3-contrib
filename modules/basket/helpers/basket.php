@@ -42,9 +42,9 @@ class basket_Core {
   static $format= array(
     "AUD" => "$",
     "CAD" => "$",
-    "EUR" => "�",
-    "GBP" => "�",
-    "JPY" => "�",
+    "EUR" => "&euro;",
+    "GBP" => "&pound;",
+    "JPY" => "&yen;",
     "USD" => "$",
     "NZD" => "$",
     "CHF" => "",
@@ -114,7 +114,7 @@ class basket_Core {
   }
 
   static function formatMoney($money){
-    return self::$format[self::getCurrency()].number_format($money);
+    return self::$format[self::getCurrency()].number_format($money,2);
   }
 
   static function setEmailAddress($email){
@@ -141,6 +141,12 @@ class basket_Core {
 <input type=\"hidden\" name=\"currency_code\" value=\"".self::getCurrency()."\">
 <input type=\"hidden\" name=\"business\" value=\"".self::getPaypalAccount()."\"/>";
 
+    $postage = $session_basket->postage_cost();
+    if ($postage > 0) {
+      $form = $form."
+<input type=\"hidden\" name=\"shipping_1\" value=\"".$postage."\">";
+    }
+
     $id = 1;
     foreach ($session_basket->contents as $key => $basket_item){
       $form = $form."
@@ -149,6 +155,7 @@ class basket_Core {
 <input type=\"hidden\" name=\"quantity_$id\" value=\"$basket_item->quantity\"/>";
       $id++;
     }
+
     $form = $form."</form>";
 
     return $form;

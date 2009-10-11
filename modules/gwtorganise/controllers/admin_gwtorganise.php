@@ -17,10 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Product_Model extends ORM {
-  var $rules = array(
-    "name" => "length[1,32]",
-    "description" => "length[0,255]");
-    protected $belongs_to=array('postage_band');
-
+class Admin_GWTOrganise_Controller extends Controller {
+  public function index() {
+      $view = new Admin_View("admin.html");
+      $view->content = new View("gwtorganise_view.html");
+      print $view;
+  }
 }
