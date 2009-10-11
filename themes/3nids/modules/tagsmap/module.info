@@ -1,0 +1,3 @@
+name = TagsMap
+description = Assign GPS coordinates to existing tags and display them on a map.
+version = 1
