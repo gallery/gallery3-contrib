@@ -19,11 +19,9 @@
  */
 class downloadfullsize_theme {
   static function head($theme) {
-    if (!$theme->item()) {
-      return;
+    if ($theme->item && access::can("view_full", $theme->item)) {
+      $theme->css("downloadfullsize_menu.css");
     }
-
-    return new View("downloadfullsize_header_block.html");
   }
 
   static function sidebar_blocks($theme) {
