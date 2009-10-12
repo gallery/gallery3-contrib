@@ -1,2 +1,2 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<?= $form ?>
+<?= $batch_tag_form ?>
