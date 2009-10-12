@@ -7,7 +7,7 @@ input[type="text"] {
       
 <? if (module::get_var("embedlinks", "HTMLCode")) { ?>
 <h3 align="center"><?= t("HTML Links")?></h3>
-<table class="g-embed-link">
+<table class="g-embed-links">
   <tbody>
     <tr>
       <th colspan="2"><?= t("Link To This Page:") ?></th>
