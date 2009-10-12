@@ -158,7 +158,7 @@ class tagfaces_Controller extends Controller {
     
     // Make a new Form.
     $form = new Forge("tagfaces/saveface", "", "post",
-                      array("id" => "gTagFacesForm"));
+                      array("id" => "g-tag-faces-form"));
 
     // Create an array of all the tags for the current item.
     $all_tags = ORM::factory("tag")
@@ -214,7 +214,7 @@ class tagfaces_Controller extends Controller {
     
     // Make a new Form.
     $form = new Forge("tagfaces/delface", "", "post",
-                      array("id" => "gTagDelFacesForm"));
+                      array("id" => "g-tag-del-faces-form"));
 
     // Create an array of all the tags that already have faces.
     $existing_faces = ORM::factory("items_face")

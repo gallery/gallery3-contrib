@@ -5,7 +5,7 @@ input[type="text"] {
 }
 </style>
 <? if (module::get_var("embedlinks", "HTMLCode")) { ?>
-<table class="gEmbedLinks">
+<table class="g-embed-links">
   <tbody>
     <tr>
       <th colspan="2"><?= t("HTML Links:") ?></th>
@@ -25,7 +25,7 @@ input[type="text"] {
 <? } ?>
 
 <? if (module::get_var("embedlinks", "BBCode")) { ?>
-<table class="gEmbedLinks">
+<table class="g-embed-links">
   <tbody>
     <tr>
       <th colspan="2"><?= t("BBCode Links:") ?></th>
@@ -45,7 +45,7 @@ input[type="text"] {
 <? } ?>
 
 <? if (module::get_var("embedlinks", "FullURL")) { ?>
-<table class="gEmbedLinks">
+<table class="g-embed-links">
   <tbody>
     <tr>
       <th colspan="2"><?= t("URLs:") ?></th>

@@ -1,5 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<ul class="gMetadata">
+<ul class="g-metadata">
   <? if ($item->owner): ?>
   <li>
     <strong class="caption"><?= t("Owner:") ?></strong>

@@ -36,7 +36,7 @@ class contactowner_theme_Core {
 
     // Create a new block to display the links in.
     $block = new Block();
-    $block->css_id = "gContactOwner";
+    $block->css_id = "g-contact-owner";
     $block->title = t("Contact:");
     $block->content = new View("contactowner_block.html");
     

@@ -58,7 +58,7 @@ class Admin_PHPMailer_Controller extends Admin_Controller {
   private function _get_admin_form() {
     // Make a new Form.
     $form = new Forge("admin/phpmailer/saveprefs", "", "post",
-                      array("id" => "gPHPMailerAdminForm"));
+                      array("id" => "g-php-mailer-admin-form"));
                       
     // Create the input boxes for the PHPMailer Settings                      
     $phpmailerGroup = $form->group("PHPMailerSettings");

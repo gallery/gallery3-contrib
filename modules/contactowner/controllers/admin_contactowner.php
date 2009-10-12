@@ -67,7 +67,7 @@ class Admin_ContactOwner_Controller extends Admin_Controller {
   private function _get_admin_form() {
     // Make a new Form.
     $form = new Forge("admin/contactowner/saveprefs", "", "post",
-                      array("id" => "gContactOwnerAdminForm"));
+                      array("id" => "g-contact-owner-adminForm"));
 
     // Make an array for the different types of link codes.
     $add_contactlinks = $form->group("contactOwnerLinks");

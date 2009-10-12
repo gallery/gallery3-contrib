@@ -33,13 +33,13 @@ class batchtag_theme_Core {
 
       // Make a new sidebar block.
       $block = new Block();
-      $block->css_id = "gBatchTag";
+      $block->css_id = "g-batch-tag";
       $block->title = t("Batch Tag");
       $block->content = new View("batchtag_block.html");
 
       // Make a new form to place in the sidebar block.
       $form = new Forge("batchtag/tagitems", "", "post",
-                        array("id" => "gBatchTagForm"));
+                        array("id" => "g-batch-tag-form"));
       $label = t("Tag everything in this album:");
       $group = $form->group("add_tag")->label("Add Tag");
       $group->input("name")->label($label)->rules("required|length[1,64]");

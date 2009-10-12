@@ -43,7 +43,7 @@ class <?= $class_name ?>_Controller extends Controller {
  
   private function _get_form() {
     $form = new Forge("<?= $module ?>/handler", "", "post",
-                      array("id" => "g<?= $css_id ?>Form"));
+                      array("id" => "g-<?= $css_id ?>-form"));
     $group = $form->group("group")->label(t("<?= $name ?> Handler"));
     $group->input("text")->label(t("Text"))->rules("required");
     $group->submit("submit")->value(t("Submit"));

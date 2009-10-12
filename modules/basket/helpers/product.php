@@ -20,12 +20,15 @@
 class product_Core {
 
  static function get_add_form_admin() {
-    $form = new Forge("admin/product_lines/add_product", "", "post", array("id" => "gAddProductForm"));
+    $form = new Forge("admin/product_lines/add_product", "", "post", array("id" => "g-add-product-form"));
     $group = $form->group("add_product")->label(t("Add Product"));
-    $group->input("name")->label(t("Name"))->id("gProductName")
+    $group->input("name")->label(t("Name"))->id("g-product-name")
       ->error_messages("in_use", t("There is already a product with that name"));
     $group->input("cost")->label(t("Cost"))->id("gCost");
-    $group->input("description")->label(t("Description"))->id("gDescription");
+    $group->input("description")->label(t("Description"))->id("g-description");
+    $group->dropdown("postage_band")
+        ->label(t("Postage Band"))
+        ->options(postage_band::getPostageArray());
     $group->submit("")->value(t("Add Product"));
     $product = ORM::factory("product");
     $form->add_rules_from($product);
@@ -34,14 +37,18 @@ class product_Core {
 
   static function get_edit_form_admin($product) {
     $form = new Forge("admin/product_lines/edit_product/$product->id", "", "post",
-        array("id" => "gEditProductForm"));
+        array("id" => "g-edit-product-form"));
     $group = $form->group("edit_product")->label(t("Edit Product"));
-    $group->input("name")->label(t("Name"))->id("gProductName")->value($product->name);
+    $group->input("name")->label(t("Name"))->id("g-product-name")->value($product->name);
     $group->inputs["name"]->error_messages(
       "in_use", t("There is already a product with that name"));
-    $group->input("cost")->label(t("Cost"))->id("gCost")->value($product->cost);
-    $group->input("description")->label(t("Description"))->id("gDescription")->
+    $group->input("cost")->label(t("Cost"))->id("g-cost")->value($product->cost);
+    $group->input("description")->label(t("Description"))->id("g-description")->
       value($product->description);
+    $group->dropdown("postage_band")
+        ->label(t("Postage Band"))
+        ->options(postage_band::getPostageArray())
+        ->selected($product->postage_band_id);
 
     $group->submit("")->value(t("Modify Product"));
     $form->add_rules_from($product);
@@ -51,7 +58,7 @@ class product_Core {
 
   static function get_delete_form_admin($product) {
     $form = new Forge("admin/product_lines/delete_product/$product->id", "", "post",
-                      array("id" => "gDeleteProductForm"));
+                      array("id" => "g-delete-product-form"));
     $group = $form->group("delete_product")->label(
       t("Are you sure you want to delete product %name?", array("name" => $product->name)));
     $group->submit("")->value(t("Delete product %name", array("name" => $product->name)));
@@ -66,7 +73,7 @@ class product_Core {
    * @param string  $password
    * @return User_Model
    */
-  static function create($name, $cost, $description) {
+  static function create($name, $cost, $description, $postage_band) {
     $product = ORM::factory("product")->where("name", $name)->find();
     if ($product->loaded) {
       throw new Exception("@todo USER_ALREADY_EXISTS $name");
@@ -75,7 +82,7 @@ class product_Core {
     $product->name = $name;
     $product->cost = $cost;
     $product->description = $description;
-
+    $product->postage_band_id = $postage_band;
     $product->save();
     return $product;
   }

@@ -28,7 +28,7 @@ class ContactOwner_Controller extends Controller {
 
     // Make a new form with a couple of text boxes.
     $form = new Forge("contactowner/sendemail", "", "post",
-                      array("id" => "gContactOwnerSendForm"));
+                      array("id" => "g-contact-owner-send-form"));
     $sendmail_fields = $form->group("contactOwner");
     $sendmail_fields->input("email_to")->label(t("To:"))->value(module::get_var("contactowner", "contact_owner_name"));
     $sendmail_fields->input("email_from")->label(t("From:"))->value(user::active()->email);
@@ -62,7 +62,7 @@ class ContactOwner_Controller extends Controller {
 
     // Make a new form with a couple of text boxes.
     $form = new Forge("contactowner/sendemail", "", "post",
-                      array("id" => "gContactOwnerSendForm"));
+                      array("id" => "g-contact-owner-send-form"));
     $sendmail_fields = $form->group("contactOwner");
     $sendmail_fields->input("email_to")->label(t("To:"))->value($userDetails[0]->name);
     $sendmail_fields->input("email_from")->label(t("From:"))->value(user::active()->email);

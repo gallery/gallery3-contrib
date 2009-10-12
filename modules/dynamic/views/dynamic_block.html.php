@@ -1,5 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<div class="gDynamicBlock">
+<div class="g-dynamic-block">
   <ul>
   <? foreach ($albums as $album => $text): ?>
   <li>

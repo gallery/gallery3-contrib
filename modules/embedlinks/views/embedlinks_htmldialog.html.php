@@ -5,10 +5,10 @@ input[type="text"] {
 }
 </style>
 <h1 style="display: none;"><?= t("HTML Code") ?></h1>
-<div id="gEmbedLinksHTMLData">
+<div id="g-embed-linksHTMLData">
 <? $counter = 0; ?>
 <? for ($i = 0; $i < count($titles); $i++): ?>    
-  <table class="gLinksHTML" >
+  <table class="g-links-html" >
   <thead><tr><th colspan="2"><?= t($titles[$i][0]) ?></th></thead>
     <tbody>
           <? for ($j = $counter; $j < $titles[$i][1]+$counter; $j++): ?>    

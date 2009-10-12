@@ -1,5 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<ul id="gContactOwner">
+<ul id="g-contact-owner">
 <? if ($ownerLink != "") { ?>
   <li style="clear: both;">
 <? print ($ownerLink); ?>

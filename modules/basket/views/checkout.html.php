@@ -53,12 +53,12 @@ function so(){
 	  }
 }
 </SCRIPT>
-<div class="gBlock">
+<div class="g-block">
 <?= $form ?>
 <h2>Payment Details</h2>
 <p>After you have confirmed the order we will get in contact with you to arrange payment.</p>
-<a href="<?= url::site("basket/view_basket") ?>" class="left gButtonLink ui-state-default ui-corner-all ui-icon-left">
+<a href="<?= url::site("basket/view_basket") ?>" class="left g-button ui-state-default ui-corner-all ui-icon-left">
 <span class="ui-icon ui-icon-arrow-1-w"></span><?= t("Back to Basket") ?></a>
-<a href="javascript: so()" class="right gButtonLink ui-state-default ui-corner-all ui-icon-right">
+<a href="javascript: so()" class="g-right g-button ui-state-default ui-corner-all ui-icon-right">
 <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Proceed to Confirmation") ?></a>
 </div>

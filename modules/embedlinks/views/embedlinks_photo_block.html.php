@@ -7,7 +7,7 @@ input[type="text"] {
       
 <? if (module::get_var("embedlinks", "HTMLCode")) { ?>
 <h3 align="center"><?= t("HTML Links")?></h3>
-<table class="gEmbedLink">
+<table class="g-embed-link">
   <tbody>
     <tr>
       <th colspan="2"><?= t("Link To This Page:") ?></th>
@@ -90,7 +90,7 @@ input[type="text"] {
 
 <? if (module::get_var("embedlinks", "BBCode")) { ?>
 <h3 align="center"><?= t("BBCode Links")?></h3>
-<table class="gEmbedLinks">
+<table class="g-embed-links">
   <tbody>
     <tr>
       <th colspan="2"><?= t("Link To This Page:") ?></th>
@@ -166,7 +166,7 @@ input[type="text"] {
 
 <? if (module::get_var("embedlinks", "FullURL")) { ?>
 <h3 align="center"><?= t("URLs")?></h3>
-<table class="gEmbedLinks">
+<table class="g-embed-links">
   <tbody>
     <tr>
       <th><?= t("This Page:") ?></th>

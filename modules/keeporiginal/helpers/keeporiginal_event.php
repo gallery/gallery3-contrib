@@ -123,7 +123,7 @@ class keeporiginal_event_Core {
              ->append(Menu::factory("link")
              ->id("restore")
              ->label(t("Restore original"))
-             ->css_id("gKeepOriginalLink")
+             ->css_id("g-keep-originals-link")
              ->url(url::site("keeporiginal/restore/" . $item->id)));
       }
     }

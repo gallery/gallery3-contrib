@@ -25,7 +25,7 @@ class rwinfo_theme_Core {
       }
 
       $block = new Block();
-      $block->css_id = "gMetadata";
+      $block->css_id = "g-metadata";
       $block_title = "";
       if ($theme->item->is_album()) {
         $block_title = t("Album Info");
