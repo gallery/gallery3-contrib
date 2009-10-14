@@ -9,25 +9,25 @@
     <?= html::clean($item->owner->display_name()) ?>
     <? endif ?>
   </li>
+  <? endif ?>
+
   <? if ($item->is_album()): ?>
   <li>
     <strong class="caption"><?= t("Date:") ?></strong>
     <?= date("F j, Y", $item->created)?>
   </li>
   <? endif ?>
+  <? if ($item->captured): ?>
+  <li>
+    <strong class="caption"><?= t("Date:") ?></strong>
+    <?= date("F j, Y h:i:s a", $item->captured)?>
+  </li>
   <? endif ?>
-
 
   <? if (!$item->is_album()): ?>
   <li>
     <strong class="caption"><?= t("File name:") ?></strong>
     <?= html::clean($item->name) ?>
-  </li>
-  <? endif ?>
-  <? if ($item->captured): ?>
-  <li>
-    <strong class="caption"><?= t("Date:") ?></strong>
-    <?= date("F j, Y h:i:s a", $item->captured)?>
   </li>
   <? endif ?>
 
