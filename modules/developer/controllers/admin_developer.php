@@ -195,7 +195,8 @@ class Admin_Developer_Controller extends Admin_Controller {
     $data = "digraph G {\n";
     foreach ($items as $item) {
       $data .= "  $item->parent_id -> $item->id\n";
-      $data .= "  $item->id [label=\"$item->id [$item->level] <$item->left, $item->right>\"]\n";
+      $data .=
+        "  $item->id [label=\"$item->id [$item->level] <$item->left_ptr, $item->right_ptr>\"]\n";
     }
     $data .= "}\n";
     return $data;
