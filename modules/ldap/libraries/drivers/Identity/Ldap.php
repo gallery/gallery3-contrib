@@ -60,31 +60,17 @@ class Identity_Ldap_Driver implements Identity_Driver {
    * @see Identity_Driver::is_correct_password.
    */
   public function is_correct_password($user, $password) {
-    $valid = $user->password;
+    $ureturn=ldap_search(self::$_connection, $base_dn, "(uid=$uname)", array('dn'));
 
-    // Try phpass first, since that's what we generate.
-    if (strlen($valid) == 34) {
-      require_once(MODPATH . "user/lib/PasswordHash.php");
-      $hashGenerator = new PasswordHash(10, true);
-      return $hashGenerator->CheckPassword($password, $valid);
-    }
+    $uent=ldap_first_entry(self::$_connection, $ureturn);
+    if (!$uent) return ERROR_CODE;
 
-    $salt = substr($valid, 0, 4);
-    // Support both old (G1 thru 1.4.0; G2 thru alpha-4) and new password schemes:
-    $guess = (strlen($valid) == 32) ? md5($password) : ($salt . md5($salt . $password));
-    if (!strcmp($guess, $valid)) {
-      return true;
-    }
+    $bn=ldap_get_dn(self::$_connection, $uent);
 
-    // Passwords with <&"> created by G2 prior to 2.1 were hashed with entities
-    $sanitizedPassword = html::specialchars($password, false);
-    $guess = (strlen($valid) == 32) ? md5($sanitizedPassword)
-          : ($salt . md5($salt . $sanitizedPassword));
-    if (!strcmp($guess, $valid)) {
-      return true;
-    }
+    //This line should use $pass rather than $password
+    $lbind=ldap_bind(self::$_connection, $bn, $password);
 
-    return false;
+    return ($lbind) ? true : false;
   }
 
   /**
