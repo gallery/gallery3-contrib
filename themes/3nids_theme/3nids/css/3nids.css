@@ -1,0 +1,40 @@
+/* 3nids specific */
+.gHeadMap img {
+  display: block;
+  margin: 3px;
+}
+
+.gHeadMap a {
+	float: right;
+}
+
+.gCommentThumb{
+    padding: 5px;
+	text-align: left;
+}
+
+.modcontent{
+  background-color: #333333;
+}
+
+#mod_frame{
+  background-color: #333333;
+  }
+
+ .g-comment-box  {	
+  border-bottom: 1px solid #555;
+}
+
+.g-comment-box:hover{
+	background-color: black;
+	color: #ffffcc;
+}
+
+ #g-comment-detail {
+	width: 360px;
+	height: 100%;
+	background-color: #333333;
+	padding: 10px;
+	text-align: left;
+	margin-top: 30px;
+}
