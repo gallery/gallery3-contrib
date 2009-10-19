@@ -15,22 +15,22 @@
 	opacity:.87;
 }
 
-.gMapThumbTable{
+.g-map-thumb-table{
 	width:200px;
 	height: 80px;
 	font-size: 0.9em;
 	font-style: normal;
 	color: #FFFFCC;
 }
-.gMapThumbImg{
+.g-map-thumb-img{
 	overflow:auto;
 	position: relative;
 	height:125px;
 }
-.gMapThumbLink{
+.g-map-thumb-link{
 	height: 15px;
 }
-.gMapThumbTd{
+.g-map-thumb-td{
 	padding: 0;
 	text-align: center;
 }

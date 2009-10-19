@@ -1,1 +1,1 @@
-Corrected Image block
+Updated CSS classes

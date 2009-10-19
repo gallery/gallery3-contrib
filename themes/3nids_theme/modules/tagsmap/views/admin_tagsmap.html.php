@@ -2,7 +2,7 @@
   <h2>
     <?= t("TagsMap Admin") ?>
   </h2>
-<div class="gBlock">
+<div class="g-block">
   <h3>
     <?= t("Google Maps Settings") ?>
   </h3>
@@ -10,14 +10,14 @@
   <?= $googlemaps_form ?>
 </div>
 
-<div class="gBlock">
+<div class="g-block">
   <h3>
     <?= t("Assign GPS Coordinates") ?>
   </h3>
   <? $tags_per_column = $tags->count()/5 ?>
   <? $column_tag_count = 0 ?>
 
-  <table id="gGPSTagAdmin" class="gBlockContent">
+  <table id="g-gps-tag-admin" class="g-block-content">
     <caption class="understate">
       <?= t2("There is one tag", "There are %count tags", $tags->count()) ?>
     </caption>
@@ -74,11 +74,11 @@
   </table>
 </div>
 
-<div class="gBlock">  
+<div class="g-block">  
   <h3>
     <?= t("Remove Orphaned GPS Data") ?>
   </h3>
-  <table id="gOrphanedTagAdmin" class="gBlockContent">
+  <table id="g-orphaned-tag-admin" class="g-block-content">
     <tr><td>
       <a href="<?= url::site("admin/tagsmap/orphaned_tags") ?>">
         <?= t("Search For and Delete Orphaned Data") ?>

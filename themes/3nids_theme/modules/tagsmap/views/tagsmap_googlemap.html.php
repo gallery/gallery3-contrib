@@ -20,7 +20,7 @@ google.load("maps", "2");
 var map;
   function Gload() {
     if (GBrowserIsCompatible()) {
-      map = new GMap2(document.getElementById("map_canvas"));
+      map = new GMap2(document.getElementById("g-map-canva"));
 
       // Make Google Earth an Option.
       map.addMapType(G_SATELLITE_3D_MAP);
@@ -90,7 +90,7 @@ var map;
                                                   <?= $oneGPS->longitude ?>);
 	
 	<? //$tagitems = $oneGPS->tagitems(); ?>
-	<? $html_thumb = "<div id=\"gMapDiv$counter\" class=\"gMapThumbLink\"></div><div class=\"gMapThumbImg\"><table class=\"gMapThumbTable\"><tr>"; 
+	<? $html_thumb = "<div id=\"g-map-div-$counter\" class=\"g-map-thumb-link\"></div><div class=\"g-map-thumb-img\"><table class=\"g-map-thumb-table\"><tr>"; 
 	$tagitems = ORM::factory("item")
 		      ->viewable()
 		      ->join("items_tags", "items.id", "items_tags.item_id")
@@ -98,7 +98,7 @@ var map;
 		      ->orderby("items.name", "DESC")
 		      ->find_all();
 	foreach ($tagitems as $tagchild){	
-	      $html_thumb .= "<td class=\"gMapThumbTd\"><a href=\"" . $tagchild->url() . "\" onMouseOver=\"ThumbLink('gMapDiv$counter','" . html::purify($tagchild->title) . "')\" onMouseOut=\"ThumbLink('gMapDiv$counter','')\"><img src=\"" . $tagchild->thumb_url() . "\" class=\"gMapThumbnail\"></a></td>";
+	      $html_thumb .= "<td class=\"g-map-thumb-td\"><a href=\"" . $tagchild->url() . "\" onMouseOver=\"ThumbLink('g-map-div-$counter','" . html::purify($tagchild->title) . "')\" onMouseOut=\"ThumbLink('g-map-div-$counter','')\"><img src=\"" . $tagchild->thumb_url() . "\" class=\"gMapThumbnail\"></a></td>";
 		}
 	$html_thumb .= "</tr></table></div>";
 	?>
@@ -138,10 +138,10 @@ var map;
 </script>
 
 <? if ($map_fullsize == true) { ?>
-  <div id="map_canvas" style="width: 100%; height: 100%"></div>
+  <div id="g-map-canva" style="width: 100%; height: 100%"></div>
   </body></html>
 <? } else { ?>
-  <div id="map_canvas" style="width: 660px; height: 550px"></div> <br/>
+  <div id="g-map-canva" style="width: 660px; height: 550px"></div> <br/>
   <!--<a href="<?= url::site("tagsmap/googlemap/fullsize/1")?>">
            <?= t("View Fullsize")?>
   </a><br/><br/>!-->
