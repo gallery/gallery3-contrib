@@ -1,0 +1,1 @@
+Corrected ui-class-clearfix

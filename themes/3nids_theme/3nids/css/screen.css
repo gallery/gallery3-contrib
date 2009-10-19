@@ -241,16 +241,6 @@ li.g-error select {
 
 /* Status messages ~~~~~~~~~~~~~~~~~~~~~~~ */
 
-form .g-error,
-.g-pager .g-info {
-  background-color: #333333 !important;
-}
-
-.g-pager .g-info {
-  background-image: none !important;
-  padding: 0 !important;
-}
-
 /* Inline layout (forms, lists) ~~~~~~~~~~ */
 
 .g-short-form li {

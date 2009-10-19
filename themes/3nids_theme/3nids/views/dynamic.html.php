@@ -11,7 +11,7 @@
 	$children_offset = ($theme->pagination->current_page -1) * $page_size ; ?>
 
 
-<ul id="g-album-grid">
+<ul id="g-album-grid" class="ui-helper-clearfix">
   <? for($i=0;$i<$children_offset;$i++): ?>
 	  <? $child = $children_all[$i] ?>
 	  <? if ($child->is_photo()): ?>

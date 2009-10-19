@@ -10,7 +10,7 @@
   <h2><?= t("Results for <b>%term</b>", array("term" => $q)) ?></h2>
 
   <? if (count($items)): ?>
-  <ul id="g-album-grid">
+  <ul id="g-album-grid" class="ui-helper-clearfix">
    <? for($i=0;$i<$children_offset;$i++): ?>
 	  <? $child = $children_all[$i] ?>
 	  <? if ($child->is_photo()): ?>
