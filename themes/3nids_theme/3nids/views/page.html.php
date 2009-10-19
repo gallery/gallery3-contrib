@@ -58,7 +58,6 @@
     </script>
     <?= $theme->script("gallery.ajax.js") ?>
     <?= $theme->script("gallery.dialog.js") ?>
-    <?= $theme->script("gallery.form.js") ?>
     <?= $theme->script("superfish/js/superfish.js") ?>
     <?= $theme->script("jquery.localscroll.js") ?>
      <?= $theme->script("jquery.easing.js") ?>
@@ -80,7 +79,7 @@
     <?= $theme->page_top() ?>
     <div id="doc4" class="yui-t5 g-view">
       <?= $theme->site_status() ?>
-      <div id="g-header" class="g-clearfix">
+      <div id="g-header" class="ui-helper-clearfix">
         <div id="g-banner">
           <?= $theme->header_top() ?>
           <? if ($header_text = module::get_var("gallery", "header_text")): ?>

@@ -17,6 +17,10 @@ $(document).ready(function() {
   });
   $("#g-site-menu").css("display", "block");
 
+  // Initialize short forms
+  $(".g-short-form").gallery_short_form();
+
+
   // Initialize status message effects
   $("#g-action-status li").gallery_show_message();
 
@@ -29,20 +33,6 @@ $(document).ready(function() {
     $("#g-view-menu ul").removeClass("g-menu").removeClass("sf-menu");
     $("#g-view-menu a").addClass("ui-icon");
   }
-
-  // Initialize short forms
-  var short_forms = new Array(
-    "#g-quick-search-form",
-    "#g-add-tag-form",
-    "#g-search-form"
-  );
-
-  for (var i in short_forms) {
-    short_form_init(short_forms[i]);
-    $(short_forms[i]).addClass("g-short-form");
-  }
-  $(".g-short-form input[type=text]").addClass("ui-corner-left");
-  $(".g-short-form input[type=submit]").addClass("ui-state-default ui-corner-right");
 
   // Apply jQuery UI button css to submit inputs
   $("input[type=submit]:not(.g-short-form input)").addClass("ui-state-default ui-corner-all");

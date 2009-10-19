@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <? // See http://docs.kohanaphp.com/libraries/pagination ?>
-<ul class="g-pager g-clearfix">
+<ul class="g-pager ui-helper-clearfix">
   <? /* @todo This message isn't easily localizable */
      $from_to_msg = t2("%current_page / %total_pages",
                        "%current_page / %total_pages",
