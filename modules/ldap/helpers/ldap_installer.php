@@ -17,12 +17,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Ldap_Group_Model {
-  public $id;
-  public $name;
+class ldap_installer {
+  static function install() {
+  }
 
-  public function __construct($id, $name) {
-    $this->id = $id;
-    $this->name = $name;
+  static function uninstall() {
+    // Delete all users and groups so that we give other modules an opportunity to clean up
+    foreach (ORM::factory("user")->find_all() as $user) {
+      $user->delete();
+    }
+
+    foreach (ORM::factory("group")->find_all() as $group) {
+      $group->delete();
+    }
+
+    try {
+      Session::instance()->destroy();
+    } catch (Exception $e) {
+      // We don't care if there was a problem destroying the session.
+    }
   }
 }
