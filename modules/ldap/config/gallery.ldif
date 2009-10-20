@@ -66,5 +66,9 @@ memberuid: jdoe
 memberuid: hwallbanger
 memberuid: rnail
 
+dn: cn=guest,ou=groups,dc=gallery,dc=local
+objectclass: posixGroup
+cn: guest
+gidnumber: 10002
 
 

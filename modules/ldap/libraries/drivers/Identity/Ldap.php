@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class Identity_Ldap_Driver implements Identity_Driver {
-  private static $_params;
+  static $_params;
   private static $_connection;
   private static $_guest_user;
 
@@ -29,16 +29,45 @@ class Identity_Ldap_Driver implements Identity_Driver {
    */
   public function __construct($params) {
     self::$_params = $params;
-    self::$_connection = ldap_connect($this->_params["url"]);
+    self::$_connection = ldap_connect(self::$_params["url"]);
+    ldap_set_option(self::$_connection, LDAP_OPT_PROTOCOL_VERSION, 3);
     ldap_bind(self::$_connection);
+  }
+
+  /**
+   * @see Identity_Driver::activate.
+   */
+  public function activate() {
+    foreach (self::$_params["groups"] as $group_name) {
+      $root = item::root();
+      $group = Identity::lookup_group_by_name($group_name);
+      module::event("group_created", $group);
+      access::allow($group, "view", $root);
+      access::allow($group, "view_full", $root);
+    }
+  }
+
+  /**
+   * @see Identity_Driver::deactivate.
+   */
+  public function deactivate() {
+    // Delete all groups so that we give other modules an opportunity to clean up
+    foreach (self::$_params["groups"] as $group_name) {
+      $group = Identity::lookup_group_by_name($group_name);
+      module::event("group_deleted", $group);
+    }
   }
 
   /**
    * @see Identity_Driver::guest.
    */
   public function guest() {
+    Kohana::log("alert", "Ldap_Identity_Driver::guest is_empty: " .
+                empty(self::$_guest_user) ? "true" : "false");
     if (empty(self::$_guest_user)) {
+      Kohana::log("alert", "Creating guest User");
       self::$_guest_user = new Ldap_User();
+      Kohana::log("alert", "allocated");
       self::$_guest_user->id = 0;
       self::$_guest_user->name = "Guest";
       self::$_guest_user->guest = true;
@@ -46,6 +75,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
       self::$_guest_user->locale = null;
       self::$_guest_user->groups = array($this->everybody());
     }
+    Kohana::log("alert", "Ldap_Identity_Driver::guest exiting ");
     return self::$_guest_user;
   }
 
@@ -60,15 +90,10 @@ class Identity_Ldap_Driver implements Identity_Driver {
    * @see Identity_Driver::is_correct_password.
    */
   public function is_correct_password($user, $password) {
-    $ureturn=ldap_search(self::$_connection, $base_dn, "(uid=$uname)", array('dn'));
-
-    $uent=ldap_first_entry(self::$_connection, $ureturn);
-    if (!$uent) return ERROR_CODE;
-
-    $bn=ldap_get_dn(self::$_connection, $uent);
-
-    //This line should use $pass rather than $password
-    $lbind=ldap_bind(self::$_connection, $bn, $password);
+    $connection = ldap_connect(self::$_params["url"]);
+    ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3);
+    $lbind = ldap_bind($connection, $user->dn, $password);
+    ldap_unbind($connection);
 
     return ($lbind) ? true : false;
   }
@@ -93,7 +118,6 @@ class Identity_Ldap_Driver implements Identity_Driver {
     $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uid=$name");
     $entries = ldap_get_entries(self::$_connection, $result);
     if ($entries["count"] > 0) {
-      $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
       return new Ldap_User($entries[0]);
     }
     return null;
@@ -110,26 +134,36 @@ class Identity_Ldap_Driver implements Identity_Driver {
    * @see Identity_Driver::everybody.
    */
   public function everybody() {
-    return ldap::lookup_group_by_name(self::$_params["everybody_group"]);
+    Kohana::log("alert", "Ldap_Identity_Driver::everybody");
+    return self::lookup_group_by_name(self::$_params["everybody_group"]);
   }
 
   /**
    * @see Identity_Driver::registered_users.
    */
   public function registered_users() {
-    return ldap::lookup_group_by_name(self::$_params["registered_users_group"]);
+    return self::lookup_group_by_name(self::$_params["registered_users_group"]);
   }
 
   /**
    * @see Identity_Driver::lookup_group_by_name.
    */
   static function lookup_group_by_name($name) {
-    $result = ldap_search(self::$_connection, self::$_params["group_domain"], "cn=$name");
-    $entry_id = ldap_first_entry(, $result);
-    if ($entry_id) {
+    Kohana::log("alert", "lookup_group_by_name($name)");
+    $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "cn=$name");
+    Kohana::log("alert", Kohana::debug($result));
+    $entry_id = ldap_first_entry(self::$_connection, $result);
+
+    Kohana::log("alert", Kohana::debug(($entry_id !== false ? $entry_id : "false")));
+    if ($entry_id !== false) {
       $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
+      Kohana::log("alert", Kohana::debug($cn_entry));
       $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
-      return new Ldap_Group_Model($gid_number_entry[0], $cn_entry[0]);
+      Kohana::log("alert", Kohana::debug($gid_number_entry));
+      return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
+    } else {
+      Kohana::log("alert", Kohana::debug(ldap_errno(self::$_connection)));
+      Kohana::log("alert", Kohana::debug(ldap_error(self::$_connection)));
     }
     return null;
   }
@@ -138,7 +172,11 @@ class Identity_Ldap_Driver implements Identity_Driver {
    * @see Identity_Driver::get_user_list.
    */
   public function get_user_list($ids) {
-    throw new Exception("@todo NOT IMPLEMENTED");
+    $users = array();
+    foreach ($ids as $id) {
+      $users[] = self::lookup_user($id);
+    }
+    return $users;
   }
 
   static function groups_for($user) {
@@ -183,19 +221,22 @@ class Ldap_User implements User_Definition {
         return $this->ldap_entry["uidnumber"][0];
 
       case "groups":
-        return Identity_Ldap::Driver::groups_for($this);
+        return Identity_Ldap_Driver::groups_for($this);
 
       case "locale":  // @todo
         return null;
 
       case "admin":
-        return in_array($this->ldap_entry["uid"][0], Kohana::config("ldap.admins"));
+        return in_array($this->ldap_entry["uid"][0], Identity_Ldap_Driver::$_params["admins"]);
+
+      case "dn":
+        return $this->ldap_entry["dn"];
 
       default:
         throw new Exception("@todo UNKNOWN_KEY ($key)");
     }
   }
-  }
+}
 
 class Ldap_Group implements Group_Definition {
   public $id;

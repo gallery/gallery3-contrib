@@ -34,11 +34,11 @@ $config["ldap"] = array(
   "driver"        => "ldap",
   "allow_updates" => false,
   "params"        => array(
-    "groups" => array("admins", "users", "guest"),
+    "groups" => array("users", "guest"),
     "everybody_group" => "guest",
     "registered_users_group" => "users",
     "admins" => array("jdoe"),
-    "url" => "ldap://127.0.0./",
+    "url" => "ldap://127.0.0.1/",
     "group_domain" => "ou=groups,dc=gallery,dc=local",
     "user_domain" => "ou=people,dc=gallery,dc=local"
   )
