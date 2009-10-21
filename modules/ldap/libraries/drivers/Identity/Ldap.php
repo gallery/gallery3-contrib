@@ -40,11 +40,13 @@ class Identity_Ldap_Driver implements Identity_Driver {
   public function activate() {
     foreach (self::$_params["groups"] as $group_name) {
       $root = item::root();
-      $group = Identity::lookup_group_by_name($group_name);
+      $group = self::lookup_group_by_name($group_name);
       module::event("group_created", $group);
       access::allow($group, "view", $root);
       access::allow($group, "view_full", $root);
     }
+    $admin = self::lookup_user_by_name(self::$_params["admins"][0]);
+    Database::instance()->query("UPDATE {items} SET owner_id = {$admin->id}");
   }
 
   /**
@@ -53,7 +55,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
   public function deactivate() {
     // Delete all groups so that we give other modules an opportunity to clean up
     foreach (self::$_params["groups"] as $group_name) {
-      $group = Identity::lookup_group_by_name($group_name);
+      $group = self::lookup_group_by_name($group_name);
       module::event("group_deleted", $group);
     }
   }
@@ -129,7 +131,6 @@ class Identity_Ldap_Driver implements Identity_Driver {
    * @see Identity_Driver::everybody.
    */
   public function everybody() {
-    Kohana::log("alert", "Ldap_Identity_Driver::everybody");
     return self::lookup_group_by_name(self::$_params["everybody_group"]);
   }
 
@@ -156,7 +157,9 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::lookup_group_by_name.
+   * Look up the group by name.
+   * @param string     $name the name of the group to locate
+   * @return Group_Definition
    */
   static function lookup_group_by_name($name) {
     $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "cn=$name");
