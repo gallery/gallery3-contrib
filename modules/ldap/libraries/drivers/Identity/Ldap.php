@@ -62,12 +62,8 @@ class Identity_Ldap_Driver implements Identity_Driver {
    * @see Identity_Driver::guest.
    */
   public function guest() {
-    Kohana::log("alert", "Ldap_Identity_Driver::guest is_empty: " .
-                empty(self::$_guest_user) ? "true" : "false");
     if (empty(self::$_guest_user)) {
-      Kohana::log("alert", "Creating guest User");
       self::$_guest_user = new Ldap_User();
-      Kohana::log("alert", "allocated");
       self::$_guest_user->id = 0;
       self::$_guest_user->name = "Guest";
       self::$_guest_user->guest = true;
@@ -75,7 +71,6 @@ class Identity_Ldap_Driver implements Identity_Driver {
       self::$_guest_user->locale = null;
       self::$_guest_user->groups = array($this->everybody());
     }
-    Kohana::log("alert", "Ldap_Identity_Driver::guest exiting ");
     return self::$_guest_user;
   }
 
@@ -143,6 +138,21 @@ class Identity_Ldap_Driver implements Identity_Driver {
    */
   public function registered_users() {
     return self::lookup_group_by_name(self::$_params["registered_users_group"]);
+  }
+
+  /**
+   * @see Identity_Driver::lookup_group.
+   */
+  static function lookup_group($id) {
+    $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "gidNumber=$id");
+    $entry_id = ldap_first_entry(self::$_connection, $result);
+
+    if ($entry_id !== false) {
+      $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
+      $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
+      return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
+    }
+    return null;
   }
 
   /**
