@@ -149,21 +149,13 @@ class Identity_Ldap_Driver implements Identity_Driver {
    * @see Identity_Driver::lookup_group_by_name.
    */
   static function lookup_group_by_name($name) {
-    Kohana::log("alert", "lookup_group_by_name($name)");
     $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "cn=$name");
-    Kohana::log("alert", Kohana::debug($result));
     $entry_id = ldap_first_entry(self::$_connection, $result);
 
-    Kohana::log("alert", Kohana::debug(($entry_id !== false ? $entry_id : "false")));
     if ($entry_id !== false) {
       $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
-      Kohana::log("alert", Kohana::debug($cn_entry));
       $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
-      Kohana::log("alert", Kohana::debug($gid_number_entry));
       return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
-    } else {
-      Kohana::log("alert", Kohana::debug(ldap_errno(self::$_connection)));
-      Kohana::log("alert", Kohana::debug(ldap_error(self::$_connection)));
     }
     return null;
   }
@@ -177,6 +169,18 @@ class Identity_Ldap_Driver implements Identity_Driver {
       $users[] = self::lookup_user($id);
     }
     return $users;
+  }
+
+  /**
+   * @see Identity_Driver::groups.
+   */
+  static function groups() {
+    $groups = array();
+    foreach (self::$_params["groups"] as $group_name) {
+      $root = item::root();
+      $groups[] = Identity::lookup_group_by_name($group_name);
+    }
+    return $groups;
   }
 
   static function groups_for($user) {
