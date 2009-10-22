@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Identity_Ldap_Driver implements Identity_Driver {
+class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   static $_params;
   private static $_connection;
   private static $_guest_user;
@@ -35,7 +35,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::activate.
+   * @see IdentityProvider_Driver::activate.
    */
   public function activate() {
     foreach (self::$_params["groups"] as $group_name) {
@@ -50,7 +50,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::deactivate.
+   * @see IdentityProvider_Driver::deactivate.
    */
   public function deactivate() {
     // Delete all groups so that we give other modules an opportunity to clean up
@@ -61,7 +61,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::guest.
+   * @see IdentityProvider_Driver::guest.
    */
   public function guest() {
     if (empty(self::$_guest_user)) {
@@ -77,14 +77,14 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::create_user.
+   * @see IdentityProvider_Driver::create_user.
    */
   public function create_user($name, $full_name, $password) {
     throw new Exception("@todo INVALID OPERATION");
   }
 
   /**
-   * @see Identity_Driver::is_correct_password.
+   * @see IdentityProvider_Driver::is_correct_password.
    */
   public function is_correct_password($user, $password) {
     $connection = ldap_connect(self::$_params["url"]);
@@ -96,7 +96,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::lookup_user.
+   * @see IdentityProvider_Driver::lookup_user.
    */
   public function lookup_user($id) {
     $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uidNumber=$id");
@@ -109,7 +109,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::lookup_user_by_name.
+   * @see IdentityProvider_Driver::lookup_user_by_name.
    */
   public function lookup_user_by_name($name) {
     $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uid=$name");
@@ -121,28 +121,28 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::create_group.
+   * @see IdentityProvider_Driver::create_group.
    */
   public function create_group($name) {
     throw new Exception("@todo INVALID OPERATION");
   }
 
   /**
-   * @see Identity_Driver::everybody.
+   * @see IdentityProvider_Driver::everybody.
    */
   public function everybody() {
     return $this->lookup_group_by_name(self::$_params["everybody_group"]);
   }
 
   /**
-   * @see Identity_Driver::registered_users.
+   * @see IdentityProvider_Driver::registered_users.
    */
   public function registered_users() {
     return $this->lookup_group_by_name(self::$_params["registered_users_group"]);
   }
 
   /**
-   * @see Identity_Driver::lookup_group.
+   * @see IdentityProvider_Driver::lookup_group.
    */
   public function lookup_group($id) {
     $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "gidNumber=$id");
@@ -174,7 +174,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::get_user_list.
+   * @see IdentityProvider_Driver::get_user_list.
    */
   public function get_user_list($ids) {
     $users = array();
@@ -185,7 +185,7 @@ class Identity_Ldap_Driver implements Identity_Driver {
   }
 
   /**
-   * @see Identity_Driver::groups.
+   * @see IdentityProvider_Driver::groups.
    */
   public function groups() {
     $groups = array();
@@ -238,13 +238,14 @@ class Ldap_User implements User_Definition {
         return $this->ldap_entry["uidnumber"][0];
 
       case "groups":
-        return Identity_Ldap_Driver::groups_for($this);
+        return IdentityProvider_Ldap_Driver::groups_for($this);
 
       case "locale":  // @todo
         return null;
 
       case "admin":
-        return in_array($this->ldap_entry["uid"][0], Identity_Ldap_Driver::$_params["admins"]);
+        return in_array($this->ldap_entry["uid"][0],
+                        IdentityProvider_Ldap_Driver::$_params["admins"]);
 
       case "dn":
         return $this->ldap_entry["dn"];
