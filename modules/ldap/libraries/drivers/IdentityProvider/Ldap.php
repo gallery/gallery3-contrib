@@ -35,32 +35,6 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   }
 
   /**
-   * @see IdentityProvider_Driver::activate.
-   */
-  public function activate() {
-    foreach (self::$_params["groups"] as $group_name) {
-      $root = item::root();
-      $group = $this->lookup_group_by_name($group_name);
-      module::event("group_created", $group);
-      access::allow($group, "view", $root);
-      access::allow($group, "view_full", $root);
-    }
-    $admin = $this->lookup_user_by_name(self::$_params["admins"][0]);
-    Database::instance()->query("UPDATE {items} SET owner_id = {$admin->id}");
-  }
-
-  /**
-   * @see IdentityProvider_Driver::deactivate.
-   */
-  public function deactivate() {
-    // Delete all groups so that we give other modules an opportunity to clean up
-    foreach (self::$_params["groups"] as $group_name) {
-      $group = $this->lookup_group_by_name($group_name);
-      module::event("group_deleted", $group);
-    }
-  }
-
-  /**
    * @see IdentityProvider_Driver::guest.
    */
   public function guest() {
@@ -110,8 +84,14 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
 
   /**
    * @see IdentityProvider_Driver::lookup_user_by_name.
+   *
+   * Special processing: if the supplied name is admin then look up the first user
+   * specified by the "admins" driver params
    */
   public function lookup_user_by_name($name) {
+    if ($name == "admin") {
+      $name = self::$_params["admins"][0];
+    }
     $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uid=$name");
     $entries = ldap_get_entries(self::$_connection, $result);
     if ($entries["count"] > 0) {
