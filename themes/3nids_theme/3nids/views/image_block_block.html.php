@@ -2,7 +2,7 @@
 
 <? $fancymodule = ""; ?>
 <? if (module::is_active("exif")){$fancymodule .= "exif::" . url::site("exif/show/{$item->id}") . ";;";} ?>
-<? if (module::is_active("comment") && module::is_active("comment_3nids")){$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$item->id}") . ";;comment_count::" . comment_3nids::count($item) . ";;" ;} ?>
+<? if (module::is_active("comment") && module::is_active("3nids_theme")){$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$item->id}") . ";;comment_count::" . comment_3nids::count($item) . ";;" ;} ?>
 
 <div class="g-image-block">
    <a href="<?= $item->file_url() ?>" class="fancyclass" title="<?= $item->parent()->title ?>, <?=$item->parent()->description?>" name="<?=$fancymodule?>">

@@ -121,9 +121,9 @@ div#fancy_close {
 
 a#fancy_left, a#fancy_right {
 	position: absolute; 
-	bottom: 0px; 
-	height: 100%; 
-	width: 35%; 
+	top: 15px; 
+	height: 50px; 
+	width: 30%; 
 	cursor: pointer;
 	z-index: 111; 
 	display: none;

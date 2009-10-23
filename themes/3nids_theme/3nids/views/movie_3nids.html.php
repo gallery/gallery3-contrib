@@ -26,33 +26,41 @@
      <?= $theme->script("jquery.easing.js") ?>
     <?= $theme->script("jquery.fancybox.js") ?>
     <?= $theme->script("ui.init.js") ?>
+    <?= $theme->script("flowplayer.js") ?>
 <?= $theme->head() ?>
 </head>
 <body class="g-fancy-iframe-body">
-	<div class="g-comment-thumb">	<img src="<?=$thumb?>"></div>
-	  <a href="<?= url::site("form/add/comments_3nids/{$item_id}") ?>" id="g-admin-comment-button"
-	   class="g-button ui-corner-all ui-icon-left ui-state-default right">
-	  <span class="ui-icon ui-icon-comment"></span>
-	  <?= t("Add a comment") ?>
-	</a>
-	<div id="g-comment-detail">
-	<? if (!$comments->count()): ?>
-	<p id="g-NoCommentsYet">
-	  <?= t("No comments yet.") ?>
-	</p>
-	<? endif ?>
-	<ul>
-	  <? foreach ($comments as $comment): ?>
-	  <li id="g-Comment-<?= $comment->id ?>" class="g-comment-box">
-	      <?= t('<b>%name</b> <small>%date</small>: ',
-		    array("date" => date(module::get_var("gallery", "date_time_format", "Y-M-d H:i:s"), $comment->created),
-			  "name" => html::clean($comment->author_name()))); ?>
-	    <div class="g-comment">
-	      <?= nl2br(html::purify($comment->text)) ?>
-	    </div>
-	  </li>
-	  <? endforeach ?>
-	</ul>
-	</div>
+<center>
+<div id="g-item">
+
+<?= html::anchor($item->file_url(true), "", $attrs) ?>
+<script>
+  flowplayer(
+    "<?= $attrs["id"] ?>",
+    {
+      src: "<?= url::abs_file("lib/flowplayer.swf") ?>",
+      wmode: "transparent"
+    },
+    {
+      plugins: {
+        h264streaming: {
+          url: "<?= url::abs_file("lib/flowplayer.h264streaming.swf") ?>"
+        },
+        controls: {
+          autoHide: 'always',
+          hideDelay: 2000
+        }
+      }
+    }
+  )
+</script>
+
+
+  <div id="g-info">
+    <h1><?= html::purify($item->title) ?></h1>
+       <div><?= nl2br(html::purify($item->description)) ?></div>
+  </div>
+
+</div>
 </body>
 </html>

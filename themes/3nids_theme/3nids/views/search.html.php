@@ -11,62 +11,21 @@
 
   <? if (count($items)): ?>
   <ul id="g-album-grid" class="ui-helper-clearfix">
-   <? for($i=0;$i<$children_offset;$i++): ?>
-	  <? $child = $children_all[$i] ?>
-	  <? if ($child->is_photo()): ?>
-		<? $fancymodule = ""; ?>
-		<? if (module::is_active("exif")){$fancymodule .= "exif::" . url::site("exif/show/{$child->id}") . ";;";} ?>
-		<? if (module::is_active("comment") && module::is_active("comment_3nids")){$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$child->id}") . ";;comment_count::" . comment_3nids::count($child) . ";;" ;} ?>
-		<a href="<?=$child->file_url()?>" rel="fancygroup" class="fancyclass" title="<?= $child->parent()->title ?>, <?=$child->parent()->description?>" name="<?=$fancymodule  ?>"></a>
-	  <? endif	 ?>
+<? for($i=0;$i<$children_offset;$i++): ?>
+	<? $child = $children_all[$i] ?>
+	<?= theme_3nids::fancylink($child,"header") ?>
 <? endfor ?>
-   <? foreach ($items as $child): ?>
+<? foreach ($items as $child): ?>
   <li id="g-item-id-<?= $child->id ?>" class="g-item g-album">
-    <?= $theme->thumb_top($child) ?>
-    <? if (!($child->is_album())): ?>
-    <? if ($child->is_photo()): ?>
-		<? $fancymodule = ""; ?>
-		<? if (module::is_active("exif")){$fancymodule .= "exif::" . url::site("exif/show/{$child->id}") . ";;";} ?>
-		<? if (module::is_active("comment") && module::is_active("comment_3nids")){$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$child->id}") . ";;comment_count::" . comment_3nids::count($child) . ";;" ;} ?>
-		<a href="<?=$child->file_url()?>" rel="fancygroup" class="fancyclass" title="<?= $child->parent()->title ?>, <?=$child->parent()->description?>" name="<?=$fancymodule  ?>">
-    <? else: ?>
-      <a href="<?= $child->url() ?>">
-    <? endif ?>
-	      <img id="g-photo-id-<?= $child->id ?>" class="g-thumbnail"
-		   alt="photo" src="<?= $child->thumb_url() ?>"
-		   width="<?= $child->thumb_width ?>"
-		   height="<?= $child->thumb_height ?>" />
-       </a>
-    <a href="<?= $child->parent()->url() ?>?show=<?= $child->id?>"><h2><span></span><?= $child->parent()->title ?></h2></a>
-     <? if ($user->admin): ?>
-	<a href="<?=$child->url()?>">view</a>
-     <? endif ?>
-   <? else: ?>
-           <a href="<?= $child->url() ?>">
-	      <img id="g-photo-id-<?= $child->id ?>" class="g-thumbnail"
-		   alt="photo" src="<?= $child->thumb_url() ?>"
-		   width="<?= $child->thumb_width ?>"
-		   height="<?= $child->thumb_height ?>" />
-                <h2><span></span><?= html::clean($child->title) ?></h2>
-	 </a>   
- <? endif ?>
-<?= $theme->thumb_bottom($child) ?>
-<?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
-    <? if ($child->is_photo() && module::is_active("comment") && module::is_active("comment_3nids")) :?>
-	<ul class="gMetadata">
-		<li><a href="<?=url::site("comments_3nids?item_id={$child->id}")?>" class="iframe fancyclass"><?=comment_3nids::count($child) ?> <?=t("comments")?></a></li>   
-	</ul>
-     <? endif ?>
+	<?= $theme->thumb_top($child) ?>
+	<?= theme_3nids::fancylink($child,"dynamic") ?>
+	<?= $theme->thumb_bottom($child) ?>
+	<?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
   </li>
-  <? endforeach ?>
+<? endforeach ?>
 <? for($i=$children_offset+$page_size;$i<$children_count;$i++): ?>
-	  <? $child = $children_all[$i] ?>
-	  <? if ($child->is_photo()): ?>
-		<? $fancymodule = ""; ?>
-		<? if (module::is_active("exif")){$fancymodule .= "exif::" . url::site("exif/show/{$child->id}") . ";;";} ?>
-		<? if (module::is_active("comment") && module::is_active("comment_3nids")){$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$child->id}") . ";;comment_count::" . comment_3nids::count($child) . ";;" ;} ?>
-		<a href="<?=$child->file_url()?>" rel="fancygroup" class="fancyclass" title="<?= $child->parent()->title ?>, <?=$child->parent()->description?>" name="<?=$fancymodule  ?>"></a>
-	  <? endif	 ?>
+	 <? $child = $children_all[$i] ?>
+	<?= theme_3nids::fancylink($child,"header") ?>
 <? endfor ?>
 </ul>
   <?= $theme->pager() ?>

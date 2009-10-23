@@ -133,7 +133,7 @@
 	<? endif ?>
 	
 	<? if (module::is_active("tagsmap")): ?>
-	  <ul class="gHeadMap">
+	  <ul class="g-map-head">
 	    <a href="<?= url::site("tagsmap/googlemap") ?>"><img src="<?= $theme->url("images/map.png") ?>"></a>
 	  </ul>
 	<? endif ?>

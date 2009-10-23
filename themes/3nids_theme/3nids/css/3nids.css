@@ -1,19 +1,23 @@
 /* 3nids specific */
-.gHeadMap img {
+.g-movie {
+	padding-top: 10px;
+}
+
+.g-map-head img {
   display: block;
   margin: 3px;
 }
 
-.gHeadMap a {
+.g-map-head a {
 	float: right;
 }
 
-.gCommentThumb{
+.g-comment-thumb{
     padding: 5px;
 	text-align: left;
 }
 
-.modcontent{
+.g-fancy-iframe-body{
   background-color: #333333;
 }
 

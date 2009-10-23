@@ -1,1 +1,1 @@
-Updated CSS classes
+Added video view within lightbox, Comments box fixed, updated CSS classes
