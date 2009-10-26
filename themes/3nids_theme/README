@@ -8,7 +8,7 @@ Demo @ http://gallery.3nids.ch
 Requirements:
 - Gallery 3 last experimental version @ http://github.com/gallery/gallery3 
 - Tag module activated (if want to use tagsmap)
-- theme_3nids module must be activated to display movies, comments and exif into lightbox.
+- theme_3nids module must be activated to display properly the theme.
 
 *********
 Installation:
