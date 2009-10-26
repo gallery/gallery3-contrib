@@ -26,41 +26,12 @@
      <?= $theme->script("jquery.easing.js") ?>
     <?= $theme->script("jquery.fancybox.js") ?>
     <?= $theme->script("ui.init.js") ?>
-    <?= $theme->script("flowplayer.js") ?>
 <?= $theme->head() ?>
 </head>
 <body class="g-fancy-iframe-body">
-<center>
-<div id="g-item-box" width="<?=20+($item->width)?>" height="<?=50+($item->height)?>">
-
-<?= html::anchor($item->file_url(true), "", $attrs) ?>
-<script>
-  flowplayer(
-    "<?= $attrs["id"] ?>",
-    {
-      src: "<?= url::abs_file("lib/flowplayer.swf") ?>",
-      wmode: "transparent"
-    },
-    {
-      plugins: {
-        h264streaming: {
-          url: "<?= url::abs_file("lib/flowplayer.h264streaming.swf") ?>"
-        },
-        controls: {
-          autoHide: 'always',
-          hideDelay: 2000
-        }
-      }
-    }
-  )
-</script>
-
-  <?= $theme->context_menu($item, "#g-movie-id-{$item->id}") ?>
-
-  <div id="g-info">
-    <h1><?= html::purify($item->title) ?></h1>
-       <div><?= nl2br(html::purify($item->description)) ?></div>
-  </div>
+<div id="g-item-box">
+<img src="<?=$item->file_url()?>" id="g-item-img">
+<?= $theme->context_menu($item, "#g-item-id-{$item->id}") ?>
 
 </div>
 </body>

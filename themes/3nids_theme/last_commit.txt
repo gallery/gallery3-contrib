@@ -1,1 +1,1 @@
-updated README
+Context menu of videos and photos inside the Lightbox theme!

@@ -17,8 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Movie_3nids_Controller extends REST_Controller {
-  protected $resource_type = "movie_3nids";
+class Photo_3nids_Controller extends REST_Controller {
+  protected $resource_type = "photo_3nids";
 
 
   /**
@@ -26,12 +26,11 @@ class Movie_3nids_Controller extends REST_Controller {
    *  @see REST_Controller::_index()
    */
   public function show($item_id) {
-	$item = ORM::factory("item", $item_id);
+    $item = ORM::factory("item", $item_id);
     access::required("view", $item);
 
-     $view = new Theme_View("movie_3nids.html", "page");
+     $view = new Theme_View("photo_3nids.html", "page");
       $view->item = $item;
-      $view->attrs = array("class" => "g-movie", "id" => "g-movie-id-{$item->id}", "style" => "display:block;width:{$item->width}px;height:{$item->height}px");
       print $view;
       break;
     }

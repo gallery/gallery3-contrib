@@ -91,6 +91,12 @@ $(document).ready(function() {
      }
     );
   }
+  
+  // Photo/Item item view lightbox
+  if ($("#g-item-box").length) {
+	  $(this).gallery_context_menu();
+  }
+  
 
   // Photo/Item item view
   if ($("#g-item").length) {

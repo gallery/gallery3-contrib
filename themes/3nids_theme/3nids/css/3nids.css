@@ -19,6 +19,7 @@
 
 .g-fancy-iframe-body{
   background-color: #333333;
+  height: auto;
 }
 
 #mod_frame{
