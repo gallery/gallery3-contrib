@@ -25,12 +25,13 @@
  */
 class theme_3nids_Core {
 
-	public function fancylink($item, $viewtype="album") {
+	public function fancylink($item, $viewtype="album", $groupImg = true, $displayComment = true, $parentTitleClass = "h2") {
 		//viewtype = album || dynamic || header
 		$link = "";
 		access::required("view", $item);
 		
-
+		$rel = "";
+		if ($groupImg == true) {$rel = " rel=\"fancygroup\" ";}
 		
 		if ($item->is_photo() || ($item->is_movie()) && module::is_active("theme_3nids")){
 			$fancymodule = ""; 
@@ -39,9 +40,9 @@ class theme_3nids_Core {
 			if (module::is_active("comment") && module::is_active("theme_3nids")){
 				$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$item->id}") . ";;comment_count::" . comment_3nids::count($item) . ";;" ;} 
 			if ($item->is_photo()){
-				$link .= "<a href=\"" . url::site("photo_3nids/show/{$item->id}") ."/?w=" . $item->width . "xewx&h=" . $item->height . "xehx\" rel=\"fancygroup\" class=\"fancyclass iframe\" title=\"" . $item->parent()->title .", " . $item->parent()->description ."\" name=\"" . $fancymodule  . " \">";
+				$link .= "<a href=\"" . url::site("photo_3nids/show/{$item->id}") ."/?w=" . $item->width . "xewx&h=" . $item->height . "xehx\" " . $rel . " class=\"fancyclass iframe\" title=\"" . $item->parent()->title .", " . $item->parent()->description ."\" name=\"" . $fancymodule  . " \">";
 			}else{
-				$link .= "<a href=\"" . url::site("movie_3nids/show/{$item->id}") . "/?w=" . strval(20+($item->width)) . "xewx&h=" . strval(50+($item->height)) . "xehx\" rel=\"fancygroup\" class=\"fancyclass iframe\" title=\"" . $item->parent()->title .", " . $item->parent()->description ."\" name=\"" . $fancymodule  . " \">";
+				$link .= "<a href=\"" . url::site("movie_3nids/show/{$item->id}") . "/?w=" . strval(20+($item->width)) . "xewx&h=" . strval(50+($item->height)) . "xehx\" " . $rel . " class=\"fancyclass iframe\" title=\"" . $item->parent()->title .", " . $item->parent()->description ."\" name=\"" . $fancymodule  . " \">";
 			}
 		} elseif( $item->is_album()  && $viewtype != "header"){
 			$link .= "<a href=\"" . $item->url() . "\">";
@@ -50,13 +51,13 @@ class theme_3nids_Core {
 		if($viewtype != "header"){
 			$link .= $item->thumb_img(array("class" => "g-thumbnail")) . "</a>";
 			if( $item->is_album()  && $viewtype == "album" ){
-				$link .= "<a href=\"" . $item->url() . "?show=" . $item->id . "\"><h2><span></span>" . html::clean($item->title) . "</h2></a>";
+				$link .= "<a href=\"" . $item->url() . "?show=" . $item->id . "\"><$parentTitleClass><span></span>" . html::clean($item->title) . "</$parentTitleClass></a>";
 			} elseif ( !($item->is_album()) &&  $viewtype == "dynamic")  {
-				$link .= "<a href=\"" . $item->parent()->url() . "?show=" . $item->id . "\"><h2><span></span>" . html::clean($item->parent()->title) . "</h2></a>";
+				$link .= "<a href=\"" . $item->parent()->url() . "?show=" . $item->id . "\" class=\"g-parent-album\"><$parentTitleClass><span></span>" . html::clean($item->parent()->title) . "</$parentTitleClass></a>";
 			}
 			
-			if (($item->is_photo() || $item->is_movie()) && module::is_active("comment") && module::is_active("theme_3nids")) {
-				$link .= "<ul class=\"g-metadata\"><li><a href=\"" . url::site("comments_3nids?item_id={$item->id}") ."\" class=\"iframe fancyclass\">" . comment_3nids::count($item) . t("comments") . "</a></li></ul>";
+			if (($item->is_photo() || $item->is_movie()) && $displayComment==true && module::is_active("comment") && module::is_active("theme_3nids")) {
+				$link .= "<ul class=\"g-metadata\"><li><a href=\"" . url::site("comments_3nids?item_id={$item->id}") ."\" class=\"iframe fancyclass\">" . comment_3nids::count($item) . " " . t("comments") . "</a></li></ul>";
 			}
 		}else{
 			$link .= "</a>";

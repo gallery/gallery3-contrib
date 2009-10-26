@@ -43,3 +43,12 @@
 	text-align: left;
 	margin-top: 30px;
 }
+
+.g-block-content .g-parent-album h4 span {
+  background: transparent url('../images/ico-album.png') no-repeat top left;
+  display: inline-block;
+  height: 16px;
+  margin-right: 5px;
+  width: 16px;
+}
+

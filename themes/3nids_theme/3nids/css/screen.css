@@ -370,14 +370,6 @@ li.g-error select {
   background-color: #484848;
 }
 
-#g-image-block .g-parent-album h4 span {
-  background: transparent url('../images/ico-album.png') no-repeat top left;
-  display: inline-block;
-  height: 16px;
-  margin-right: 5px;
-  width: 16px;
-}
-
 #g-content #g-album-grid .g-album h2 span {
   background: transparent url('../images/ico-album.png') no-repeat top left;
   display: inline-block;
