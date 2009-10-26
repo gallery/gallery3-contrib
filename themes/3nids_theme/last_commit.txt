@@ -1,1 +1,1 @@
-Update to last git version of G3
+Removed padding from fancybox
