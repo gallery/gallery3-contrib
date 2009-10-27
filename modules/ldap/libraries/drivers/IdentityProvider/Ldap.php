@@ -51,6 +51,13 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   }
 
   /**
+   * @see IdentityProvider_Driver::admin_user.
+   */
+  public function admin_user() {
+    return self::lookup_user_by_name(self::$_params["admins"][0];);
+  }
+
+  /**
    * @see IdentityProvider_Driver::create_user.
    */
   public function create_user($name, $full_name, $password) {
@@ -89,9 +96,6 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * specified by the "admins" driver params
    */
   public function lookup_user_by_name($name) {
-    if ($name == "admin") {
-      $name = self::$_params["admins"][0];
-    }
     $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uid=$name");
     $entries = ldap_get_entries(self::$_connection, $result);
     if ($entries["count"] > 0) {
