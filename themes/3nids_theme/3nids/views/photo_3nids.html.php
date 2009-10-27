@@ -30,7 +30,7 @@
 </head>
 <body class="g-fancy-iframe-body">
 <div id="g-item-box">
-<img src="<?=$item->file_url()?>" id="g-item-img">
+<img src="<?=$item_url?>" id="g-item-img">
 <?= $theme->context_menu($item, "#g-item-id-{$item->id}") ?>
 
 </div>

@@ -1,1 +1,1 @@
-Display item description if available
+Added adim configuration for item description and image size.
