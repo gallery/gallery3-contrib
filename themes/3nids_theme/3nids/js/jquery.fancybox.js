@@ -165,18 +165,12 @@
 		function _preload_neighbor_images() {
 			if ((opts.itemArray.length -1) > opts.itemCurrent) {
 				var href = opts.itemArray[opts.itemCurrent + 1].href;
-
-				if (href.match(imageRegExp)) {
-					$("<img>").attr("src", href);
-				}
+					$("<iframe>").attr("src", href);
 			}
 
 			if (opts.itemCurrent > 0) {
 				var href = opts.itemArray[opts.itemCurrent -1].href;
-
-				if (href.match(imageRegExp)) {
-					$("<img>").attr("src", href);
-				}
+					$("<iframe>").attr("src", href);
 			}
 		};
 
@@ -363,22 +357,23 @@
 				$('#fancy_modules').hide();
 				$('#fancy_title').hide();
 				var modules = opts.itemArray[ opts.itemCurrent ].modules;
-				var modtxt = '|';
+				var modtxt = '';
 				var pex = modules.search('exif::');
 				if (pex != -1){
 					var exifsrc = modules.substring(pex+6);
 					var exifsrc = exifsrc.split(';;',1);
-					modtxt += " <a href=\"" + exifsrc + "\" class=\"modclass\">EXIF</a> |";
+					modtxt += " <a href=\"" + exifsrc + "\" class=\"modclass\">EXIF</a>";
 				}
 				var pco = modules.search('comment::');
 				if (pco != -1){
+					if (modtxt != ''){modtxt += ' | ';}
 					var commentsrc = modules.substring(pco+9);
 					var commentsrc = commentsrc.split(';;',1);
 					var commentcount = modules.substring(modules.search('comment_count::')+15);
 					var commentcount = commentcount.split(';;',1);
-					modtxt += " <a href=\"" + commentsrc + "\" class=\"iframe modclass\">Comments (" + commentcount + ")</a> |";
+					modtxt += " <a href=\"" + commentsrc + "\" class=\"iframe modclass\">Comments (" + commentcount + ")</a>";
 				}
-				if (modtxt != '|'){
+				if (modtxt != ''){
 					$('#fancy_modules div').html(modtxt);
 					$('#fancy_modules').show();
 					$(document).ready(function() { $(".modclass").modbox(); });

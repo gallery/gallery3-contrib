@@ -45,9 +45,9 @@ class theme_3nids_Core {
 		if(count($tags) && $desriptionMode == "tags"){
 			$description =  " || " . implode(", ", $tags);
 		}elseif($desriptionMode == "item" && $item->description != ""){
-			$description = " || " . $item->description;
+			$description = " || " . str_replace("\"","&quot;",$item->description);
 		}elseif (($desriptionMode == "parent" || $desriptionMode == "item") && $item->parent()->description != ""){
-			$description = " || " . $item->parent()->description;
+			$description = " || " . str_replace("\"","&quot;",$item->parent()->description);
 		}
 		
 		$rel = "";

@@ -1,1 +1,1 @@
-Added adim configuration for item description and image size.
+Fixed quotes probelems and remove | around "modules | exif"

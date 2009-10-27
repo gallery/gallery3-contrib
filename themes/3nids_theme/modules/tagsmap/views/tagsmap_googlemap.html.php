@@ -91,12 +91,7 @@ var map;
 	
 	<? //$tagitems = $oneGPS->tagitems(); ?>
 	<? $html_thumb = "<div id=\"g-map-div-$counter\" class=\"g-map-thumb-link\"></div><div class=\"g-map-thumb-img\"><table class=\"g-map-thumb-table\"><tr>"; 
-	$tagitems = ORM::factory("item")
-		      ->viewable()
-		      ->join("items_tags", "items.id", "items_tags.item_id")
-		      ->where("items_tags.tag_id", $oneGPS->tag_id)
-		      ->orderby("items.name", "DESC")
-		      ->find_all();
+	$tagitems = tagsmap::tagitems($oneGPS);
 	foreach ($tagitems as $tagchild){	
 	      $html_thumb .= "<td class=\"g-map-thumb-td\"><a href=\"" . $tagchild->url() . "\" onMouseOver=\"ThumbLink('g-map-div-$counter','" . html::purify($tagchild->title) . "')\" onMouseOut=\"ThumbLink('g-map-div-$counter','')\"><img src=\"" . $tagchild->thumb_url() . "\" class=\"gMapThumbnail\"></a></td>";
 		}
