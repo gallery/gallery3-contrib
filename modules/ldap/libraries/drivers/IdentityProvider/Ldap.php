@@ -54,7 +54,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * @see IdentityProvider_Driver::admin_user.
    */
   public function admin_user() {
-    return self::lookup_user_by_name(self::$_params["admins"][0];);
+    return self::lookup_user_by_name(self::$_params["admins"][0]);
   }
 
   /**

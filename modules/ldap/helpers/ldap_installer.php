@@ -26,8 +26,8 @@ class ldap_installer {
       access::allow($group, "view", $root);
       access::allow($group, "view_full", $root);
     }
-
-    $admin = identity::lookup_user_by_name("admin");
+    // Let the admin own everything
+    $admin = identity::admin_user();
     Database::instance()->query("UPDATE {items} SET owner_id = {$admin->id}");
   }
 
