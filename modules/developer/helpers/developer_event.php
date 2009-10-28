@@ -43,13 +43,13 @@ class developer_event_Core {
       $developer_menu->append(
         Menu::factory("link")
         ->id("scaffold_profiler")
-        ->label("Profiling off")
+        ->label(t("Profiling off"))
         ->url(url::site("admin/developer/session/profiler?value=0&csrf=$csrf")));
     } else {
       $developer_menu->append(
         Menu::factory("link")
         ->id("scaffold_profiler")
-        ->label("Profiling on")
+        ->label(t("Profiling on"))
         ->url(url::site("admin/developer/session/profiler?value=1&csrf=$csrf")));
     }
 
@@ -57,13 +57,13 @@ class developer_event_Core {
       $developer_menu->append(
         Menu::factory("link")
         ->id("scaffold_debugger")
-        ->label("Debugging off")
+        ->label(t("Debugging off"))
         ->url(url::site("admin/developer/session/debug?value=0&csrf=$csrf")));
     } else {
       $developer_menu->append(
         Menu::factory("link")
         ->id("scaffold_debugger")
-        ->label("Debugging on")
+        ->label(t("Debugging on"))
         ->url(url::site("admin/developer/session/debug?value=1&csrf=$csrf")));
     }
   }
