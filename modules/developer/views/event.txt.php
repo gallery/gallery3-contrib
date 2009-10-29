@@ -29,11 +29,6 @@ class <?= $module ?>_event {
   }
 
 <? endif ?>
-<? if (!empty($callbacks["admin_menu"])): ?>
-  static function admin_menu($menu, $theme) {
-  }
-
-<? endif ?>
 <? if (!empty($callbacks["batch_complete"])): ?>
   static function batch_complete() {
   }
