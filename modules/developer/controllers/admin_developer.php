@@ -49,6 +49,7 @@ class Admin_Developer_Controller extends Admin_Controller {
 
     $post = new Validation($_POST);
     $post->add_rules("name", "required");
+    $post->add_rules("display_name", "required");
     $post->add_rules("description", "required");
     $post->add_callbacks("name", array($this, "_is_module_defined"));
 
@@ -216,7 +217,7 @@ class Admin_Developer_Controller extends Admin_Controller {
   }
 
   private function _get_module_form() {
-    $form = array("name" => "", "description" => "", "theme[]" => array(), "menu[]" => array(),
+    $form = array("name" => "", "display_name" => "", "description" => "", "theme[]" => array(),
                   "event[]" => array());
     $errors = array_fill_keys(array_keys($form), "");
 
@@ -231,7 +232,6 @@ class Admin_Developer_Controller extends Admin_Controller {
     $v->hidden = array("csrf" => access::csrf_token());
     $v->theme = $config["theme"];
     $v->event = $config["event"];
-    $v->menu = $config["menu"];
     $v->form = $form;
     $v->errors = $errors;
     return $v;

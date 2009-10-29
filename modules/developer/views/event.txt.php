@@ -19,75 +19,100 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class <?= $module ?>_event {
+<? if (!empty($callbacks["admin_menu"])): ?>
+  static function admin_menu($menu, $theme) {
+  }
+
+<? endif ?>
+<? if (!empty($callbacks["album_menu"])): ?>
+  static function album_menu($menu, $theme) {
+  }
+
+<? endif ?>
+<? if (!empty($callbacks["admin_menu"])): ?>
+  static function admin_menu($menu, $theme) {
+  }
+
+<? endif ?>
 <? if (!empty($callbacks["batch_complete"])): ?>
   static function batch_complete() {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["comment_add_form"])): ?>
   static function comment_add_form($form) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["comment_created"])): ?>
   static function comment_created($theme, $args) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["comment_updated"])): ?>
   static function comment_updated($old, $new) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["group_before_delete"])): ?>
   static function group_before_delete($group) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["group_created"])): ?>
   static function group_created($group) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["item_before_delete"])): ?>
   static function item_before_delete($item) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["item_created"])): ?>
   static function item_created($item) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["item_related_update"])): ?>
   static function item_related_update($item) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["item_related_update_batch"])): ?>
   static function item_related_update_batch($sql) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["item_updated"])): ?>
   static function item_updated($old, $new) {
   }
-    
+
+<? endif ?>
+<? if (!empty($callbacks["photo_menu"])): ?>
+  static function photo_menu($menu, $theme) {
+  }
+
+<? endif ?>
+<? if (!empty($callbacks["site_menu"])): ?>
+  static function site_menu($menu, $theme) {
+  }
+
 <? endif ?>
 <? if (!empty($callbacks["user_before_delete"])): ?>
   static function user_before_delete($user) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["user_created"])): ?>
   static function user_created($user) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["user_login"])): ?>
   static function user_login($user) {
   }
-    
+
 <? endif ?>
 <? if (!empty($callbacks["user_logout"])): ?>
   static function user_logout($user) {
