@@ -197,6 +197,20 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
     }
     return $groups;
   }
+
+  /**
+   * @see IdentityProvider_Driver::add_user_to_group.
+   */
+  static function add_user_to_group($user, $group_id) {
+    throw new Exception("@todo INVALID OPERATION");
+  }
+
+  /**
+   * @see IdentityProvider_Driver::remove_user_to_group.
+   */
+  static function remove_user_from_group($user, $group_id) {
+    throw new Exception("@todo INVALID OPERATION");
+  }
 } // End Identity Gallery Driver
 
 class Ldap_User implements User_Definition {

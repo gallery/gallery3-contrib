@@ -54,14 +54,10 @@ class developer_task_Core {
       $context["block"] = array();
       self::_render_helper_file($context, "block");
       break;
-    case 4:               // Generate menu helper
-      $context["menu"] = !isset($context["menu"]) ? array() : $context["menu"];
-      self::_render_helper_file($context, "menu");
-      break;
-    case 5:               // Generate event helper
+    case 4:               // Generate event helper
       self::_render_helper_file($context, "event");
       break;
-    case 6:               // Generate admin controller
+    case 5:               // Generate admin controller
       $file = "{$context['module_path']}/controllers/admin_{$context['module']}.php";
       ob_start();
       $v = new View("admin_controller.txt");
@@ -72,7 +68,7 @@ class developer_task_Core {
       file_put_contents($file, ob_get_contents());
       ob_end_clean();
       break;
-    case 7:               // Generate admin form
+    case 6:               // Generate admin form
       $file = "{$context['module_path']}/views/admin_{$context['module']}.html.php";
       ob_start();
       $v = new View("admin_html.txt");
@@ -83,7 +79,7 @@ class developer_task_Core {
       file_put_contents($file, ob_get_contents());
       ob_end_clean();
       break;
-    case 8:               // Generate controller
+    case 7:               // Generate controller
       $file = "{$context['module_path']}/controllers/{$context['module']}.php";
       ob_start();
       $v = new View("controller.txt");
@@ -95,7 +91,7 @@ class developer_task_Core {
       file_put_contents($file, ob_get_contents());
       ob_end_clean();
       break;
-    case 9:               // Generate sidebar block view
+    case 8:               // Generate sidebar block view
       $file = "{$context['module_path']}/views/{$context['module']}_block.html.php";
       ob_start();
       $v = new View("block_html.txt");
@@ -107,11 +103,11 @@ class developer_task_Core {
       file_put_contents($file, ob_get_contents());
       ob_end_clean();
       break;
-    case 10:              // Generate module.info (do last)
+    case 9:              // Generate module.info (do last)
       $file = "{$context["module_path"]}/module.info";
       ob_start();
       $v = new View("module_info.txt");
-      $v->module_name = $context["name"];
+      $v->module_name = $context["display_name"];
       $v->module_description = $context["description"];
       print $v->render();
       file_put_contents($file, ob_get_contents());
