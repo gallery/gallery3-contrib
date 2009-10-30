@@ -13,6 +13,13 @@
           <p class="g-error"><?= t("Module is already implemented") ?></p>
         <? endif ?>
       </li>
+      <li <? if (!empty($errors["display_name"])): ?> class="g-error"<? endif ?>>
+        <?= form::label("display_name", t("Display name")) ?>
+        <?= form::input("display_name", $form["display_name"]) ?>
+        <? if (!empty($errors["display_name"]) && $errors["display_name"] == "required"): ?>
+          <p class="g-error"><?= t("Module display_name is required")?></p>
+        <? endif ?>
+      </li>
       <li <? if (!empty($errors["description"])): ?> class="g-error"<? endif ?>>
         <?= form::label("description", t("Description")) ?>
         <?= form::input("description", $form["description"]) ?>
@@ -23,15 +30,11 @@
       <li>
         <ul>
           <li>
-            <?= form::label("theme[]", t("Theme Callbacks")) ?>
+            <?= form::label("theme[]", t("Theme callbacks")) ?>
             <?= form::dropdown(array("name" => "theme[]", "multiple" => true, "size" => 6), $theme, $form["theme[]"]) ?>
           </li>
           <li>
-            <?= form::label("menu[]", t("Menu Callback")) ?>
-            <?= form::dropdown(array("name" => "menu[]", "multiple" => true, "size" => 6), $menu, $form["menu[]"]) ?>
-          </li>
-          <li>
-            <?= form::label("event[]", t("Gallery Event Handlers")) ?>
+            <?= form::label("event[]", t("Gallery event handlers")) ?>
             <?= form::dropdown(array("name" => "event[]", "multiple" => true, "size" => 6), $event, $form["event[]"]) ?>
           </li>
         </ul>
