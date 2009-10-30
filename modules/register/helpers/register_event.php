@@ -18,17 +18,18 @@
  */
 class register_event {
   static function admin_menu($menu, $theme) {
-    $menu->get("identity_menu")
+    $menu->get("settings_menu")
       ->append( Menu::factory("link")
       ->id("register_users")
-      ->label(t("Self registration"))
+      ->label(t("User registration"))
       ->url(url::site("admin/register")));
 
     return $menu;
   }
 
   static function site_menu($menu, $theme) {
-    if (identity::active_user()->guest) {
+    if (identity::active_user()->guest &&
+        module::get_var("registration", "policy") != "admin_only") {
       $menu->append( Menu::factory("dialog")
                  ->id("register_users")
                  ->label(t("Register"))

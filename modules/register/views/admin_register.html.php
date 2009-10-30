@@ -1,55 +1,70 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<style>
+#g-registration-admin li input[type=radio],
+#g-registration-admin li input[type=checkbox] {
+  float: left;
+  margin-right: .5em;
+}
+
+#g-registration-admin li label {
+  float: left;
+}
+
+#g-registration-admin li h3 {
+  clear: both;
+}
+</style>
+<script type="text/javascript">
+    $("#g-active-pending-users").ready(function() {
+                                                     $
+                                                   });
+</script>
 <div id="g-admin-register">
-  <div id="g-registration-admin" style="float: left">
+  <div id="g-registration-admin">
   <h2><?= t("Registration adminstration") ?></h2>
   <?= form::open($action, array("method" => "post"), $hidden) ?>
-     <ul>
+  <?= form::open_fieldset() ?>
+    <ul>
       <li>
         <h3><?= t("Confirmation policy") ?></h3>
-        <p><?= t("The Gallery3 can accept new user registrations instantly, require the user to click a confirmation link in an email that is sent by the module, or require account activation by a site administrator.") ?><p/>
-          <?= form::label("policy", t("Choose policy")) ?>
-          <?= form::dropdown(array("name" => "policy"), $policy_list, $form["policy"]) ?>
+      </li>
+        <? foreach ($policy_list as $policy => $text): ?>
+      <li>
+        <?= form::radio("policy", $policy, $policy == $form["policy"]) ?>
+        <?= form::label("policy", $text) ?>
+      </li>
+        <? endforeach ?>
+      <li>
+        <?= form::checkbox("email_verification", "true", !empty($form["email_verification"]), $no_admin) ?>
+        <?= form::label("email_verification", t("Require e-mail verification when a visitor creates an account")) ?>
       </li>
       <li>
-        <h3><?= t("Default Group") ?></h3>
-        <?= form::label("group", t("Set default group")) ?>
+        <h3><?= t("Default group") ?></h3>
+      </li>
+      <li>
         <?= form::dropdown(array("name" => "group"), $group_list, $form["default_group"]) ?>
       </li>
-      <li>
-        <h3><?= t("Send email policy") ?></h3>
-      </li>
-      <li>
-      <? if (empty($no_admin)): ?>
-        <?= form::label("email_admin", t("Email administrator for all new registrations")) ?>
-        <?= form::checkbox("email_admin", "true", !empty($form["email_admin"])) ?>
-      </li>
-      <li>
-        <?= form::label("email_user", t("Send confirmation email on account activation")) ?>
-        <?= form::checkbox("email_user", "true", !empty($form["email_user"])) ?>
-     <? else: ?>
-        <span <? if (!empty($errors["email_admin"])): ?> class="g-error"<? endif ?>>
-          <?= form::hidden(array("name" => "email_admin", "value" => "")) ?>
-          <?= form::hidden(array("name" => "email_user", "value" => "")) ?>
-          <p class="g-error"><?= t("Unable to set email policies as the administrator email has not been set.") ?></p>
-        </span>
-      <?endif ?>
-      </li>
-       <li>
+        <li>
         <?= form::submit(array("id" => "g-registration-admin", "name" => "save", "class" => "submit", "style" => "clear:both!important"), t("Update")) ?>
       </li>
     </ul>
+  <?= form::close_fieldset() ?>
   <?= form::close() ?>
   </div>
   <? if (count($pending)): ?>
-    <div id="g-activate-pending-users" style="float: left; margin-top: .5em">
-      <h2><?= t("Pending account activations") ?></h2>
+    <div id="g-activate-pending-users" style="margin-top: .5em">
       <?= form::open($activate, array("method" => "post"), $hidden) ?>
-     <ul>
+      <?= form::open_fieldset() ?>
+    <ul>
+      <li>
+        <h3><?= t("Pending account activations") ?></h3>
+      </li>
       <li>
         <table>
           <thead>
             <tr>
               <td><?= t("Activate") ?></td>
+              <td><?= t("Confirmed") ?></td>
               <td><?= t("User name") ?></td>
               <td><?= t("Full name") ?></td>
               <td><?= t("Email") ?></td>
@@ -58,6 +73,7 @@
           <? foreach ($pending as $user): ?>
           <tr>
             <td><?= form::checkbox("activate[]", $user->id) ?>
+            <td><?= form::checkbox("confirmed[$user->id]", "checked", $user->confirmed, "disabled") ?></td>
             <td><?= t($user->name) ?></td>
             <td><?= t($user->full_name) ?></td>
             <td><?= t($user->email) ?></td>
@@ -69,6 +85,7 @@
         <?= form::submit(array("id" => "g-registration-activate", "name" => "activate_users", "class" => "submit", "style" => "clear:both!important"), t("Activate")) ?>
       </li>
     </ul>
+      <?= form::close_fieldset() ?>
       <?= form::close() ?>
     </div>
   <? endif ?>

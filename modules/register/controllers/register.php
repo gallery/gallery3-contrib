@@ -27,7 +27,6 @@ class register_Controller extends Controller {
     $form = $this->_get_form();
     $valid = $form->validate();
 
-    // @todo create a user event "user_exists" which checks for name clashes
     $name = $form->register_user->inputs["name"]->value;
     $user_exists_data = (object)array("name" => $name);
     module::event("check_username_exists", $user_exists_data);
@@ -36,26 +35,23 @@ class register_Controller extends Controller {
       $valid = false;
     }
     if ($valid) {
-      switch (module::get_var("registration", "policy")) {
-      case "immediate":
-        message::success(t("Your registration request has been processed"));
-        break;
-      case "admin":
-        $this->_create_pending_request($form);
-        message::success(t("Your registration request is awaiting administrator approval"));
+      $pending_user = register::create_pending_request($form);
+      $policy = module::get_var("registration", "policy");
+      if ($policy == "visitor" && $pending_user->confirmed) {
+        // @todo create and logon
+        // set the form to the one similiar to the admin logon
+      } else if (empty($pending_user->confirmed) &&
+                 ($policy == "admin_approval" || $policy == "visitor")) {
+        register::send_confirmation($pending_user);
+      } else {
         site_status::warning(
           t("There are pending user registration. <a href=\"%url\">Review now!</a>",
             array("url" => html::mark_clean(url::site("admin/register")))),
           "pending_user_registrations");
-
-        break;
-      case "email":
-        message::success(t("A confirmation email has been sent to the email address you provided."));
-        break;
+        message::success(t("Your registration request is awaiting administrator approval"));
       }
 
-      print json_encode(
-        array("result" => "success"));
+      print json_encode(array("result" => "success"));
     } else {
       print json_encode(
         array("result" => "error",
@@ -63,16 +59,29 @@ class register_Controller extends Controller {
     }
   }
 
-  private function _create_pending_request($form) {
-    $user = ORM::factory("pending_user");
-    $user->name = $form->register_user->inputs["name"]->value;
-    $user->full_name = $form->register_user->inputs["full_name"]->value;
-    // @todo call identity to hash the password
-    $user->password = $form->register_user->inputs["password"]->value;
-    $user->email = $form->register_user->inputs["email"]->value;
-    $user->url = $form->register_user->inputs["url"]->value;
-    $user->hash = md5(rand());
-    $user->save();
+  public function confirm($hash) {
+    $pending_user = ORM::factory("pending_user")
+      ->where("hash", $hash)
+      ->find();
+    if ($pending_user->loaded) {
+      // @todo add a request date to the pending user table and check that it hasn't expired
+      $policy = module::get_var("registration", "policy");
+      $pending_user->confirmed = true;
+      $pending_user->save();
+      if ($policy == "vistor") {
+        // @todo create and logon
+        // set the form to the one similiar to the admin logon
+      } else {
+        site_status::warning(
+          t("There are pending user registration. <a href=\"%url\">Review now!</a>",
+            array("url" => html::mark_clean(url::site("admin/register")))),
+          "pending_user_registrations");
+        message::success(t("Your registration request is awaiting administrator approval"));
+      }
+    } else {
+      message::error(t("Your registration request is no longer valid, Please re-register."));
+    }
+    url::redirect(item::root()->abs_url());
   }
 
   private function _get_form() {
@@ -84,12 +93,8 @@ class register_Controller extends Controller {
       ->error_messages("in_use", t("There is already a user with that username"));
     $group->input("full_name")->label(t("Full Name"))->id("g-fullname")
       ->rules("length[0, 255]");
-    $group->password("password")->label(t("Password"))->id("g-password")
-      ->rules("required|length[{$minimum_length}, 40]");
-    $group->password("password2")->label(t("Confirm Password"))->id("g-password2")
-      ->matches($group->password);
     $group->input("email")->label(t("Email"))->id("g-email")
-      ->rules("valid_email|length[1,255]");
+      ->rules("required|valid_email|length[1,255]");
     $group->input("email2")->label(t("Confirm email"))->id("g-email2")
       ->matches($group->email);
     $group->input("url")->label(t("URL"))->id("g-url")

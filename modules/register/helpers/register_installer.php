@@ -23,8 +23,8 @@ class register_installer {
     $db->query("CREATE TABLE IF NOT EXISTS {pending_users} (
                  `id` int(9) NOT NULL auto_increment,
                  `name` varchar(32) NOT NULL,
+                 `confirmed` boolean NOT NULL DEFAULT false,
                  `full_name` varchar(255) NOT NULL,
-                 `password` varchar(64) NOT NULL,
                  `email` varchar(64) default NULL,
                  `hash` char(32) default NULL,
                  `url` varchar(255) default NULL,
@@ -33,10 +33,9 @@ class register_installer {
                  UNIQUE KEY(`name`))
                DEFAULT CHARSET=utf8;");
 
-    module::set_var("registration", "policy", "admin");
+    module::set_var("registration", "policy", "admin_only");
     module::set_var("registration", "default_group", "");
-    module::set_var("registration", "email_admin", true);
-    module::set_var("registration", "email_user", true);
+    module::set_var("registration", "email_verification", true);
 
     module::set_version("register", 1);
   }
