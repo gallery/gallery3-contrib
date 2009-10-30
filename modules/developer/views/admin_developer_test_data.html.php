@@ -1,5 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<script>
+<script type="text/javascript">
   $("#g-generate-test-data").ready(function() {
     $(".g-generate-checkbox").click(function() {
       var buttons = $(this).val();
