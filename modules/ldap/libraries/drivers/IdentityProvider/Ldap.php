@@ -83,7 +83,6 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
     $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uidNumber=$id");
     $entries = ldap_get_entries(self::$_connection, $result);
     if ($entries["count"] > 0) {
-      $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
       return new Ldap_User($entries[0]);
     }
     return null;
@@ -247,6 +246,9 @@ class Ldap_User implements User_Definition {
 
       case "dn":
         return $this->ldap_entry["dn"];
+
+      case "url":  // @todo
+        return null;
 
       default:
         throw new Exception("@todo UNKNOWN_KEY ($key)");
