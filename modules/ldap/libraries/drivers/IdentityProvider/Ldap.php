@@ -71,7 +71,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   public function is_correct_password($user, $password) {
     $connection = ldap_connect(self::$_params["url"]);
     ldap_set_option($connection, LDAP_OPT_PROTOCOL_VERSION, 3);
-    $lbind = ldap_bind($connection, $user->dn, $password);
+    $lbind = @ldap_bind($connection, $user->dn, $password);
     ldap_unbind($connection);
 
     return ($lbind) ? true : false;
