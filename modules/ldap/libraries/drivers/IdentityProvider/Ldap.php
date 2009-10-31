@@ -45,6 +45,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
       self::$_guest_user->guest = true;
       self::$_guest_user->admin = false;
       self::$_guest_user->locale = null;
+      self::$_guest_user->email = null;
       self::$_guest_user->groups = array($this->everybody());
     }
     return self::$_guest_user;
@@ -80,6 +81,9 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * @see IdentityProvider_Driver::lookup_user.
    */
   public function lookup_user($id) {
+    if ($id == 0) {
+      return $this->guest();
+    }
     $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uidNumber=$id");
     $entries = ldap_get_entries(self::$_connection, $result);
     if ($entries["count"] > 0) {
@@ -225,34 +229,42 @@ class Ldap_User implements User_Definition {
 
   public function __get($key) {
     switch($key) {
-      case "name":
-        return $this->ldap_entry["uid"][0];
+    case "name":
+      return $this->ldap_entry["uid"][0];
 
-      case "guest":
-        return false;
+    case "guest":
+      return false;
 
-      case "id":
-        return $this->ldap_entry["uidnumber"][0];
+    case "id":
+      return $this->ldap_entry["uidnumber"][0];
 
-      case "groups":
-        return IdentityProvider_Ldap_Driver::groups_for($this);
+    case "groups":
+      return IdentityProvider_Ldap_Driver::groups_for($this);
 
-      case "locale":  // @todo
-        return null;
+    case "locale":  // @todo
+      return null;
 
-      case "admin":
-        return in_array($this->ldap_entry["uid"][0],
-                        IdentityProvider_Ldap_Driver::$_params["admins"]);
+    case "admin":
+      return in_array($this->ldap_entry["uid"][0],
+                      IdentityProvider_Ldap_Driver::$_params["admins"]);
 
-      case "dn":
-        return $this->ldap_entry["dn"];
+    case "email":
+      return $this->ldap_entry["mail"];
 
-      case "url":  // @todo
-        return null;
+    case "dn":
+      return $this->ldap_entry["dn"];
 
-      default:
-        throw new Exception("@todo UNKNOWN_KEY ($key)");
+    case "url":  // @todo
+      return null;
+
+    default:
+      throw new Exception("@todo UNKNOWN_KEY ($key)");
     }
+  }
+
+  public function avatar_url($size=80, $default=null) {
+    return sprintf("http://www.gravatar.com/avatar/%s.jpg?s=%d&r=pg%s",
+                   md5($this->email), $size, $default ? "&d=" . urlencode($default) : "");
   }
 }
 
