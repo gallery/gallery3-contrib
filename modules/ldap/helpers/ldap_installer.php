@@ -21,19 +21,18 @@ class ldap_installer {
   static function install() {
     module::set_version("ldap", 1);
     $root = item::root();
-    foreach (identity::groups() as $group) {
+    $ldap_provider = new IdentityProvider("ldap");
+    foreach ($ldap_provider->groups() as $group) {
       module::event("group_created", $group);
       access::allow($group, "view", $root);
       access::allow($group, "view_full", $root);
     }
-    // Let the admin own everything
-    $admin = identity::admin_user();
-    Database::instance()->query("UPDATE {items} SET owner_id = {$admin->id}");
   }
 
   static function uninstall() {
     // Delete all groups so that we give other modules an opportunity to clean up
-    foreach (identity::groups() as $group) {
+    $ldap_provider = new IdentityProvider("ldap");
+    foreach ($ldap_provider->groups() as $group) {
       module::event("group_deleted", $group);
     }
   }
