@@ -42,6 +42,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
       self::$_guest_user = new Ldap_User();
       self::$_guest_user->id = 0;
       self::$_guest_user->name = "Guest";
+      self::$_guest_user->full_name = "Guest";
       self::$_guest_user->guest = true;
       self::$_guest_user->admin = false;
       self::$_guest_user->locale = null;
@@ -249,7 +250,10 @@ class Ldap_User implements User_Definition {
                       IdentityProvider_Ldap_Driver::$_params["admins"]);
 
     case "email":
-      return $this->ldap_entry["mail"];
+      return $this->ldap_entry["mail"][0];
+
+    case "full_name":
+      return $this->ldap_entry["cn"][0];
 
     case "dn":
       return $this->ldap_entry["dn"];
