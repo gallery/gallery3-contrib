@@ -15,9 +15,15 @@
 }
 </style>
 <script type="text/javascript">
-    $("#g-active-pending-users").ready(function() {
-                                                     $
-                                                   });
+  $("#g-active-pending-users").ready(function() {
+    $(":radio[name='policy']").click(function (event) {
+      if ($(this).val() == "admin_only") {
+        $(":checkbox[name=email_verification]").attr("disabled", "disabled");
+      } else {
+        $(":checkbox[name=email_verification]").removeAttr("disabled");
+      }
+    });
+  });
 </script>
 <div id="g-admin-register">
   <div id="g-registration-admin">
@@ -35,18 +41,20 @@
       </li>
         <? endforeach ?>
       <li>
-        <?= form::checkbox("email_verification", "true", !empty($form["email_verification"]), $no_admin) ?>
+        <?= form::checkbox("email_verification", "true", !empty($form["email_verification"]), $disable_email) ?>
         <?= form::label("email_verification", t("Require e-mail verification when a visitor creates an account")) ?>
       </li>
+      <? if (!empty($group_list)): ?>
       <li>
         <h3><?= t("Default group") ?></h3>
       </li>
       <li>
-        <?= form::dropdown(array("name" => "group"), $group_list, $form["default_group"]) ?>
+        <?= form::dropdown(array("name" => "group"), $group_list, $form["group"]) ?>
       </li>
         <li>
         <?= form::submit(array("id" => "g-registration-admin", "name" => "save", "class" => "submit", "style" => "clear:both!important"), t("Update")) ?>
       </li>
+      <? endif ?>
     </ul>
   <?= form::close_fieldset() ?>
   <?= form::close() ?>
@@ -64,18 +72,26 @@
           <thead>
             <tr>
               <td><?= t("Activate") ?></td>
-              <td><?= t("Confirmed") ?></td>
+              <td><?= t("State") ?></td>
               <td><?= t("User name") ?></td>
               <td><?= t("Full name") ?></td>
+              <td><?= t("Requested") ?></td>
               <td><?= t("Email") ?></td>
             </tr>
           </thead>
           <? foreach ($pending as $user): ?>
           <tr>
-            <td><?= form::checkbox("activate[]", $user->id) ?>
-            <td><?= form::checkbox("confirmed[$user->id]", "checked", $user->confirmed, "disabled") ?></td>
+            <td>
+              <? if ($user->state != 2): ?>
+              <?= form::checkbox("activate[]", $user->id) ?>
+              <? else: ?>
+              &nbsp;
+              <? endif ?>
+            </td>
+            <td><?= register::format_registration_state($user->state) ?></td>
             <td><?= t($user->name) ?></td>
             <td><?= t($user->full_name) ?></td>
+            <td><?= t(gallery::date_time($user->request_date)) ?></td>
             <td><?= t($user->email) ?></td>
           </tr>
           <? endforeach ?>

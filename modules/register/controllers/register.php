@@ -28,27 +28,33 @@ class register_Controller extends Controller {
     $valid = $form->validate();
 
     $name = $form->register_user->inputs["name"]->value;
-    $user_exists_data = (object)array("name" => $name);
-    module::event("check_username_exists", $user_exists_data);
-    if ($user_exists_data->exists) {
+    if (register::check_user_name($name)) {
       $form->register_user->inputs["name"]->add_error("in_use", 1);
       $valid = false;
     }
     if ($valid) {
       $pending_user = register::create_pending_request($form);
       $policy = module::get_var("registration", "policy");
-      if ($policy == "visitor" && $pending_user->confirmed) {
-        // @todo create and logon
-        // set the form to the one similiar to the admin logon
-      } else if (empty($pending_user->confirmed) &&
-                 ($policy == "admin_approval" || $policy == "visitor")) {
-        register::send_confirmation($pending_user);
-      } else {
+      if ($policy == "visitor") {
+        if ($pending_user->state == 1) {
+          Session::instance()->set("registration_first_usage");
+          $user = register::create_new_user($pending_user->id);
+          auth::login($user);
+          Session::instance()->set("registration_first_usage", true);
+          $pending_user->delete();
+        } else {
+          register::send_confirmation($pending_user);
+          message::success(t("A confirmation email has been sent to your email address."));
+        }
+      } else if ($pending_user->state == 1) {
         site_status::warning(
           t("There are pending user registration. <a href=\"%url\">Review now!</a>",
             array("url" => html::mark_clean(url::site("admin/register")))),
           "pending_user_registrations");
         message::success(t("Your registration request is awaiting administrator approval"));
+      } else {
+        register::send_confirmation($pending_user);
+        message::success(t("A confirmation email has been sent to your email address."));
       }
 
       print json_encode(array("result" => "success"));
@@ -62,15 +68,19 @@ class register_Controller extends Controller {
   public function confirm($hash) {
     $pending_user = ORM::factory("pending_user")
       ->where("hash", $hash)
+      ->where("state", 0)
       ->find();
     if ($pending_user->loaded) {
       // @todo add a request date to the pending user table and check that it hasn't expired
       $policy = module::get_var("registration", "policy");
-      $pending_user->confirmed = true;
+      $pending_user->state = 1;
       $pending_user->save();
       if ($policy == "vistor") {
-        // @todo create and logon
-        // set the form to the one similiar to the admin logon
+        $user = register::create_new_user($pending_user->id);
+        message::success(t("Your registration request has been approved"));
+        auth::login($user);
+        Session::instance()->set("registration_first_usage", true);
+        $pending_user->delete();
       } else {
         site_status::warning(
           t("There are pending user registration. <a href=\"%url\">Review now!</a>",
@@ -84,10 +94,42 @@ class register_Controller extends Controller {
     url::redirect(item::root()->abs_url());
   }
 
+  public function first($hash) {
+    $pending_user = ORM::factory("pending_user")
+      ->where("hash", $hash)
+      ->where("state", 2)
+      ->find();
+    if ($pending_user->loaded) {
+      // @todo add a request date to the pending user table and check that it hasn't expired
+      $user = identity::lookup_user_by_name($pending_user->name);
+      if (!empty($user)) {
+        auth::login($user);
+        Session::instance()->set("registration_first_usage", true);
+        $pending_user->delete();
+      }
+      url::redirect(item::root()->abs_url());
+    } else {
+      message::warning(t("Your account is ready to use so please login."));
+    }
+    url::redirect(item::root()->abs_url());
+  }
+
+  public function welcome_message() {
+    $user = identity::active_user();
+    $password = substr(md5(rand()), 0, 8);
+    $user->password = $password;
+    $user->save();
+
+    $v = new View("register_welcome_message.html");
+    $v->user = $user;
+    $v->password = $password;
+    print $v;
+  }
+
   private function _get_form() {
     $minimum_length = module::get_var("user", "mininum_password_length", 5);
     $form = new Forge("register/handler", "", "post", array("id" => "g-register-form"));
-    $group = $form->group("register_user")->label(t("register User"));
+    $group = $form->group("register_user")->label(t("Register user"));
     $group->input("name")->label(t("Username"))->id("g-username")
       ->rules("required|length[1,32]")
       ->error_messages("in_use", t("There is already a user with that username"));
@@ -100,7 +142,7 @@ class register_Controller extends Controller {
     $group->input("url")->label(t("URL"))->id("g-url")
       ->rules("valid_url");
 
-    module::event("recaptcha_add", $group);
+    module::event("register_add_form", $form);
     $group->submit("")->value(t("Register"));
     return $form;
   }

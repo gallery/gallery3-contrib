@@ -18,6 +18,12 @@
  */
 class Admin_register_Controller extends Admin_Controller {
   public function index() {
+    $count = ORM::factory("pending_user")
+      ->where("state !=", 2)
+      ->count_all();
+    if ($count == 0) {
+      site_status::clear("pending_user_registrations");
+    }
     list ($form, $errors) = $this->_get_form();
     print $this->_get_admin_view($form, $errors);
   }
@@ -26,10 +32,8 @@ class Admin_register_Controller extends Admin_Controller {
     access::verify_csrf();
 
     $post = new Validation($_POST);
-    $post->add_rules("policy", "required");
-    $post->add_rules("group", "required");
+    $group_list = array();
     if ($post->validate()) {
-      Kohana::log("alert", Kohana::debug($post));
       module::set_var("registration", "policy", $post->policy);
       module::set_var("registration", "default_group", $post->group);
       module::set_var("registration", "email_verification", !empty($post->email_verification));
@@ -39,8 +43,8 @@ class Admin_register_Controller extends Admin_Controller {
       url::redirect("admin/register");
     } else {
       list ($form, $errors) = $this->_get_form();
-      arr::overwrite($form, $post->as_array());
-      arr::overwrite($errors, $post->errors());
+      $form = array_merge($form, $post->as_array());
+      $errors = array_merge($errors, $post->errors());
       print $this->_get_admin_view($form, $errors);
     }
   }
@@ -52,30 +56,19 @@ class Admin_register_Controller extends Admin_Controller {
     $post->add_rules("activate_users", "required");
     if ($post->validate()) {
       $names = array();
-      foreach ($post->activate as $id) {
-        $user = ORM::factory("pending_user", $id);
-        Kohana::log("alert", Kohana::debug($user->as_array()));
+      if (!empty($post->activate)) {
+        foreach ($post->activate as $id) {
+          $user = register::create_new_user($id);
+          $names[] = $user->name;
+        }
 
-        $password = md5(rand());
-        $new_user = identity::create_user($user->name, $user->full_name, $password);
-        $new_user->email = $user->email;
-        $new_user->url = $user->url;
-        $new_user->admin = false;
-        $new_user->guest = false;
-        $new_user->save();
-
-        identity::add_user_to_group($new_user, module::get_var("registration", "default_group"));
-
-        register::send_user_created_confirmation($new_user, $password);
-        $names[] = $user->name;
-        $user->delete();
+        message::success(t("Activated %users.", array("users" => implode(", ", $names))));
       }
 
-      message::success(t("Activated %users.", implode(", ", $names)));
+      $count = ORM::factory("pending_user")
+        ->where("state != ", 2)
+        ->count_all();
 
-      $count = Database::instance()
-        ->query("select count(id) as pending_count from {pending_users}")
-        ->current()->pending_count;
       if ($count == 0) {
         site_status::clear("pending_user_registrations");
       }
@@ -83,8 +76,8 @@ class Admin_register_Controller extends Admin_Controller {
     }
 
     list ($form, $errors) = $this->_get_form();
-    arr::overwrite($form, $post->as_array());
-    arr::overwrite($errors, $post->errors());
+    $form = array_merge($form, $post->as_array());
+    $errors = array_merge($errors, $post->errors());
     print $this->_get_admin_view($form, $errors);
   }
 
@@ -94,12 +87,13 @@ class Admin_register_Controller extends Admin_Controller {
     $v->content->action = "admin/register/update";
     $v->content->policy_list =
       array("admin_only" => t("Only site administrators can create new user accounts."),
-            "vistor" =>
+            "visitor" =>
                t("Visitors can create accounts and no administrator approval is required."),
             "admin_approval" =>
                t("Visitors can create accounts but administrator approval is required."));
     $admin = identity::admin_user();
-    $v->content->no_admin = empty($admin->email) ? "disabled" : "";
+    $v->content->disable_email =
+      empty($admin->email) || $form["policy"] == "admin_only" ? "disabled" : "";
     if (empty($admin->email)) {
       module::set_var("registration", "email_verification", false);
     }
@@ -111,11 +105,14 @@ class Admin_register_Controller extends Admin_Controller {
         $v->content->group_list[$group->id] = $group->name;
       }
     }
+    $hidden = array("csrf" => access::csrf_token());
     if (count($v->content->group_list)) {
       $v->content->group_list =
         array("" => t("Choose the default group")) + $v->content->group_list;
+    } else {
+      $hidden["group"] = "";
     }
-    $v->content->hidden = array("csrf" => access::csrf_token());
+    $v->content->hidden = $hidden;
     $v->content->pending = ORM::factory("pending_user")->find_all();
     $v->content->activate = "admin/register/activate";
     $v->content->form = $form;
@@ -125,7 +122,7 @@ class Admin_register_Controller extends Admin_Controller {
 
   private function _get_form() {
     $form = array("policy" => module::get_var("registration", "policy"),
-                  "default_group" => module::get_var("registration", "default_group"),
+                  "group" => module::get_var("registration", "default_group"),
                   "email_verification" => module::get_var("registration", "email_verification"));
     $errors = array_fill_keys(array_keys($form), "");
 

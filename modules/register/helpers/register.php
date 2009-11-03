@@ -18,10 +18,29 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class register_Core {
-  static function send_user_created_confirmation($user, $password) {
+  private static $_states;
+
+  static function format_registration_state($state) {
+    if (empty(self::$_state)) {
+      self::$_states = array(t("Unconfirmed"), t("Confirmed"), t("Activated"));
+    }
+    return self::$_states[$state];
+  }
+
+  static function check_user_name($user_name) {
+    if (identity::lookup_user_by_name($user_name)) {
+      return true;
+    }
+    $user = ORM::factory("pending_user")
+      ->where("name", $user_name)
+      ->find();
+    return $user->loaded;
+  }
+
+  static function send_user_created_confirmation($user) {
     $message = new View("register_welcome.html");
     $message->user = $user;
-    $message->password = $password;
+    $message->site_url = url::abs_site("register/first/{$user->hash}");
     self::_sendemail($user->email, t("Your userid has been created"), $message);
   }
 
@@ -40,12 +59,35 @@ class register_Core {
     $user->full_name = $form->register_user->inputs["full_name"]->value;
     $user->email = $form->register_user->inputs["email"]->value;
     $user->url = $form->register_user->inputs["url"]->value;
+    $user->request_date = time();
+
     if (!$email_verification) {
-      $user->confirmed = true;
+      $user->state = 1;
     }
     $user->hash = md5(rand());
     $user->save();
     return $user;
+  }
+
+  static function create_new_user($id) {
+    $user = ORM::factory("pending_user", $id);
+
+    $password = md5(rand());
+    $new_user = identity::create_user($user->name, $user->full_name, $password);
+    $new_user->email = $user->email;
+    $new_user->url = $user->url;
+    $new_user->admin = false;
+    $new_user->guest = false;
+    $new_user->save();
+
+    identity::add_user_to_group($new_user, module::get_var("registration", "default_group"));
+
+    $user->hash =  md5(rand());
+    $user->state = 2;
+    $user->save();
+    self::send_user_created_confirmation($user, $password);
+
+    return $new_user;
   }
 
   private static function _sendemail($email, $subject, $message) {

@@ -1,4 +1,5 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -16,26 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class register_event {
-  static function admin_menu($menu, $theme) {
-    $menu->get("settings_menu")
-      ->append( Menu::factory("link")
-      ->id("register_users")
-      ->label(t("User registration"))
-      ->url(url::site("admin/register")));
-
-    return $menu;
-  }
-
-  static function site_menu($menu, $theme) {
-    if (identity::active_user()->guest &&
-        module::get_var("registration", "policy") != "admin_only") {
-      $menu->append( Menu::factory("dialog")
-                 ->id("register_users")
-                 ->label(t("Register"))
-                 ->url(url::site("register")));
+class register_theme_Core {
+  static function page_bottom($theme) {
+    $session = Session::instance();
+    if ($session->get("registration_first_usage")) {
+      $session->delete("registration_first_usage");
+      return new View("register_welcome_message_loader.html");
     }
-
-    return $menu;
   }
 }
