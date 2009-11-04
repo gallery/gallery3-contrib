@@ -51,10 +51,10 @@
       <li>
         <?= form::dropdown(array("name" => "group"), $group_list, $form["group"]) ?>
       </li>
+      <? endif ?>
         <li>
         <?= form::submit(array("id" => "g-registration-admin", "name" => "save", "class" => "submit", "style" => "clear:both!important"), t("Update")) ?>
       </li>
-      <? endif ?>
     </ul>
   <?= form::close_fieldset() ?>
   <?= form::close() ?>

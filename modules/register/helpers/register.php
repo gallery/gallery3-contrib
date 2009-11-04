@@ -80,7 +80,10 @@ class register_Core {
     $new_user->guest = false;
     $new_user->save();
 
-    identity::add_user_to_group($new_user, module::get_var("registration", "default_group"));
+    $default_group = module::get_var("registration", "default_group");
+    if (!empty($default_group)) {
+      identity::add_user_to_group($new_user, $default_group);
+    }
 
     $user->hash =  md5(rand());
     $user->state = 2;
