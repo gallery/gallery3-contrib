@@ -23,19 +23,16 @@ class register_event {
       ->id("register_users")
       ->label(t("User registration"))
       ->url(url::site("admin/register")));
-
-    return $menu;
   }
 
-  static function site_menu($menu, $theme) {
-    if (identity::active_user()->guest &&
-        module::get_var("registration", "policy") != "admin_only") {
-      $menu->append( Menu::factory("dialog")
-                 ->id("register_users")
-                 ->label(t("Register"))
-                 ->url(url::site("register")));
+  static function user_menu($menu, $theme) {
+    $user = identity::active_user();
+    if ($theme->page_type != "login" && $user->guest) {
+      $menu->append(Menu::factory("dialog")
+                    ->id("user_menu_register")
+                    ->css_id("g-register-menu")
+                    ->url(url::site("register"))
+                    ->label(t("Register")));
     }
-
-    return $menu;
   }
 }
