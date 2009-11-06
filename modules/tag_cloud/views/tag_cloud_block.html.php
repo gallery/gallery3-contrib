@@ -9,8 +9,10 @@
     });
   });
 </script>
-<div id="g-tag-cloud" title="<?= url::site("tags") ?>">
-  <?= $cloud ?>
+<div id="g-tag-cloud" ref="<?= url::site("tags") ?>">
+  <div id="g-tag-cloud-movie">
+    <?= $cloud ?>
+  </div>
 </div>
 <?= $form ?>
 

@@ -8,7 +8,7 @@
      },
 
      _autocomplete: function() {
-       var url = $("#g-tag-cloud").attr("title") + "/autocomplete";
+       var url = $("#g-tag-cloud").attr("ref") + "/autocomplete";
        $("#g-add-tag-form input:text").autocomplete(
          url, {
            max: 30,
@@ -25,12 +25,14 @@
          dataType: "json",
          success: function(data) {
            if (data.result == "success") {
-             $.get($("#g-tag-cloud").attr("title"), function(data, textStatus) {
-               $("#g-tag-cloud").html(data);
+             $.get($("#g-tag-cloud").attr("ref"), function(data, textStatus) {
+               swfobject.removeSWF("g-tag-cloud-movie");
+               $("#g-tag-cloud").append("<div id='g-tag-cloud-movie'>" + data + "</div>");
                self._set_tag_cloud();
 	     });
            }
            form.resetForm();
+           $("#g-add-tag-form :text").blur();
          }
        });
      },
@@ -60,7 +62,7 @@
          allowscriptaccess: self.options.scriptAccess
        };
 
-       swfobject.embedSWF(self.options.movie, "g-tag-cloud", width, .60 * width, "9", false,
+       swfobject.embedSWF(self.options.movie, "g-tag-cloud-movie", width, .60 * width, "9", false,
                           flashvars, params);
      }
   });
