@@ -46,6 +46,9 @@
       <?= form::open_fieldset() ?>
       <legend><?= t("Pending registrations") ?></legend>
       <table>
+      <caption>
+        <?= t("To delete an unconfirmed registration, first activate it, then delete it from Users/Groups.") ?>
+      </caption>
         <tr>
           <th><?= t("Activate") ?></th>
           <th><?= t("State") ?></th>
