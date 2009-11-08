@@ -1,5 +1,4 @@
-<?php defined("SYSPATH") or die("No direct script access.");
-/**
+<?php defined("SYSPATH") or die("No direct script access.");/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -17,12 +16,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-$config = array(
-  "groups" => array("eng", "google", "prebuild", "guest"),
-  "everybody_group" => "guest",
-  "registered_users_group" => "google",
-  "admins" => array("mediratta"),
-  "url" => "ldaps://ldap.corp.google.com/",
-  "group_domain" => "ou=Posix,ou=Groups,dc=google,dc=com",
-  "user_domain" => "ou=People,dc=google,dc=com",
-);
+class register_event {
+  static function admin_menu($menu, $theme) {
+    $menu->get("settings_menu")
+      ->append( Menu::factory("link")
+      ->id("register_users")
+      ->label(t("User registration"))
+      ->url(url::site("admin/register")));
+  }
+
+  static function user_menu($menu, $theme) {
+    $user = identity::active_user();
+    if ($theme->page_type != "login" && $user->guest) {
+      $menu->append(Menu::factory("dialog")
+                    ->id("user_menu_register")
+                    ->css_id("g-register-menu")
+                    ->url(url::site("register"))
+                    ->label(t("Register")));
+    }
+  }
+}

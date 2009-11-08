@@ -17,23 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class ldap_installer {
-  static function install() {
-    module::set_version("ldap", 1);
-    $root = item::root();
-    $ldap_provider = new IdentityProvider("ldap");
-    foreach ($ldap_provider->groups() as $group) {
-      module::event("group_created", $group);
-      access::allow($group, "view", $root);
-      access::allow($group, "view_full", $root);
-    }
-  }
-
-  static function uninstall() {
-    // Delete all groups so that we give other modules an opportunity to clean up
-    $ldap_provider = new IdentityProvider("ldap");
-    foreach ($ldap_provider->groups() as $group) {
-      module::event("group_deleted", $group);
+class register_theme_Core {
+  static function page_bottom($theme) {
+    $session = Session::instance();
+    if ($session->get("registration_first_usage")) {
+      $session->delete("registration_first_usage");
+      return new View("register_welcome_message_loader.html");
     }
   }
 }

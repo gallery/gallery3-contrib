@@ -17,23 +17,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class ldap_installer {
-  static function install() {
-    module::set_version("ldap", 1);
-    $root = item::root();
-    $ldap_provider = new IdentityProvider("ldap");
-    foreach ($ldap_provider->groups() as $group) {
-      module::event("group_created", $group);
-      access::allow($group, "view", $root);
-      access::allow($group, "view_full", $root);
-    }
-  }
-
-  static function uninstall() {
-    // Delete all groups so that we give other modules an opportunity to clean up
-    $ldap_provider = new IdentityProvider("ldap");
-    foreach ($ldap_provider->groups() as $group) {
-      module::event("group_deleted", $group);
-    }
-  }
+<<<<<<< HEAD:modules/ldap/config/ldap.php
+$config = array(
+  "groups" => array("eng", "google", "prebuild", "guest"),
+  "everybody_group" => "guest",
+  "registered_users_group" => "google",
+  "admins" => array("mediratta"),
+  "url" => "ldaps://ldap.corp.google.com/",
+  "group_domain" => "ou=Posix,ou=Groups,dc=google,dc=com",
+  "user_domain" => "ou=People,dc=google,dc=com",
+);
+=======
+class Pending_user_Model extends ORM {
 }
+>>>>>>> gallery3-contrib/master:modules/register/models/pending_user.php

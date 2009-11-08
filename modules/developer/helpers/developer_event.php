@@ -21,21 +21,21 @@ class developer_event_Core {
   static function admin_menu($menu, $theme) {
     $developer_menu = Menu::factory("submenu")
         ->id("developer_menu")
-      ->label(t("Developer Tools"));
+      ->label(t("Developer tools"));
     $menu->append($developer_menu);
 
     $developer_menu
       ->append(Menu::factory("link")
           ->id("generate_menu")
-          ->label(t("Generate Module"))
+          ->label(t("Generate module"))
           ->url(url::site("admin/developer/module")))
       ->append(Menu::factory("link")
           ->id("generate_data")
-          ->label(t("Generate Test Data"))
+          ->label(t("Generate test data"))
           ->url(url::site("admin/developer/test_data")))
       ->append(Menu::factory("link")
           ->id("mptt_tree_menu")
-          ->label(t("MPTT Tree"))
+          ->label(t("MPTT tree"))
           ->url(url::site("admin/developer/mptt")));
 
     $csrf = access::csrf_token();
