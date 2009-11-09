@@ -57,7 +57,7 @@
   </td>
 
 
-    <td class="g-actions">
+    <td>
       <a href="<?= url::site("admin/product_lines/edit_product_form/$product->id") ?>"
           open_text="<?= t("close") ?>"
           class="g-panel-link g-button ui-state-default ui-corner-all ui-icon-left">
