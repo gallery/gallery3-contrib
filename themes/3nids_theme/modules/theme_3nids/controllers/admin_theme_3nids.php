@@ -39,6 +39,9 @@ class Admin_theme_3nids_Controller extends Admin_Controller {
                       array("id" => "gTagsMapAdminForm"));
 
     // Input box for the Maps API Key
+    $form->input("title")
+                 ->label(t("item title : parent or item."))
+                 ->value(module::get_var("theme_3nids", "title"));
     $form->input("description")
                  ->label(t("item description : tags or item or parent or nothing. If item description chosen and not available, then parent description is used."))
                  ->value(module::get_var("theme_3nids", "description"));
@@ -61,10 +64,12 @@ class Admin_theme_3nids_Controller extends Admin_Controller {
 
     // Figure out the values of the text boxes
     $description = Input::instance()->post("description");
+    $title = Input::instance()->post("title");
     $photo_size = Input::instance()->post("photo_size");
     
     // Save Settings.
     module::set_var("theme_3nids", "description", $description);
+    module::set_var("theme_3nids", "title", $title);
     module::set_var("theme_3nids", "photo_size", $photo_size);
 
     // Display a success message and redirect back to the TagsMap admin page.

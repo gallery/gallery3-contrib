@@ -50,6 +50,13 @@ class theme_3nids_Core {
 			$description = " || " . str_replace("\"","&quot;",$item->parent()->description);
 		}
 		
+		$titleMode = module::get_var("theme_3nids", "title");
+		if ($titleMode == "parent"){
+			$title = html::clean($item->parent()->title);
+		}else{
+			$title = html::clean($item->title);
+		}
+		
 		$rel = "";
 		if ($groupImg == true) {$rel = " rel=\"fancygroup\" ";}
 		
@@ -60,7 +67,7 @@ class theme_3nids_Core {
 			if (module::is_active("comment") && module::is_active("theme_3nids")){
 				$fancymodule .= "comment::" . url::site("comments_3nids?item_id={$item->id}") . ";;comment_count::" . comment_3nids::count($item) . ";;" ;} 
 			if ($item->is_photo()){
-				$link .= "<a href=\"" . url::site("photo_3nids/show/{$item->id}") ."/?w=" . $width . "xewx&h=" . $height . "xehx\" " . $rel . " class=\"fancyclass iframe\" title=\"" . $item->parent()->title . $description ."\" name=\"" . $fancymodule  . " \">";
+				$link .= "<a href=\"" . url::site("photo_3nids/show/{$item->id}") ."/?w=" . $width . "xewx&h=" . $height . "xehx\" " . $rel . " class=\"fancyclass iframe\" title=\"" . $title . $description ."\" name=\"" . $fancymodule  . " \">";
 			}else{
 				$link .= "<a href=\"" . url::site("movie_3nids/show/{$item->id}") . "/?w=" . strval(20+($width)) . "xewx&h=" . strval(50+($height)) . "xehx\" " . $rel . " class=\"fancyclass iframe\" title=\"" . $item->parent()->title . $description ."\" name=\"" . $fancymodule  . " \">";
 			}
