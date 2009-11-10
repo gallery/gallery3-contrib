@@ -467,6 +467,11 @@ li.g-error select {
   padding-top: 1em;
 }
 
+/* In-line editing  ~~~~~~~~~~~~~~~~~~~~~ */
+#g-in-place-edit-message {
+  background-color: #FFF;
+}
+
 /** *******************************************************************
  * 5) Navigation and menus
  *********************************************************************/

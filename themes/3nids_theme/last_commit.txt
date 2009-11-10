@@ -1,1 +1,1 @@
-Fixed quotes probelems and remove | around "modules | exif"
+Update to last github version

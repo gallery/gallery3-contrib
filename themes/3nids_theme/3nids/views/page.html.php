@@ -81,6 +81,7 @@
       <?= $theme->site_status() ?>
       <div id="g-header" class="ui-helper-clearfix">
         <div id="g-banner">
+	<?= $theme->user_menu() ?>
           <?= $theme->header_top() ?>
           <? if ($header_text = module::get_var("gallery", "header_text")): ?>
           <?= $header_text ?>
