@@ -17,23 +17,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class latestupdates_theme_Core {
-		
-  static function sidebar_blocks($theme) {
-    if (!$theme->item()) {
-      return;
-    }
-    $albumID = $theme->item->is_album() ? $theme->item->id : $theme->item->parent_id;
-    
-    $block = new Block();
-    $block->css_id = "g-updates-block";
-    $block->title = t("Updates");
-    $block->content = new View("latestupdates_block.html");
-    $block->content->update_links = array(
-      "Entire Gallery" => url::site("latestupdates/updates"),
-      "This Album" => url::site("latestupdates/albums/$albumID")
-    );
+class latestupdates_block_Core {
+  static function get_site_list() {
+    return array("latestupdates" => t("Latest Updates"));
+  }
 
+  static function get($block_id, $theme) {
+    $block = "";
+	
+    switch ($block_id) {
+    case "latestupdates":
+      // Determine the ID# of the current album.
+      $albumID = $theme->item->is_album() ? $theme->item->id : $theme->item->parent_id;
+
+      // Make a new sidebar block.
+      $block = new Block();
+      $block->css_id = "g-latest-updates";
+      $block->title = t("Latest Updates");
+      $block->content = new View("latestupdates_block.html");
+      $block->content->batch_tag_form = $form;
+      $block->content->update_links = array(
+        "Entire Gallery" => url::site("latestupdates/updates"),
+        "This Album" => url::site("latestupdates/albums/$albumID")
+      );
+      break;  
+    }
     return $block;
   }
 }
