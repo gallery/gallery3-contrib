@@ -1,0 +1,38 @@
+This is a theme for gallery3.
+It uses jquery lightbox slideshow (fancybox) to display images, and includes a tagsmap module (originally from rWatcher).
+
+*********
+Demo @ http://gallery.3nids.ch	
+
+*********
+Requirements:
+- Gallery 3 last experimental version @ http://github.com/gallery/gallery3 
+- Tag module activated (if want to use tagsmap)
+- theme_3nids module must be activated to display properly the theme.
+
+*********
+Installation:
+
+1. Copy the theme folder (3nids) into gallery3/themes directory.
+2. Copy modules folder into gallery3 directory. It includes tagsmap and theme_3nids modules.
+3. Activate tagsmap and theme_3nids module.
+	
+*********
+Configuration:
+Go to admin -> content -> Theme 3nids settings to configure the theme properly.
+
+*********
+Use:
+This theme displays full size images. So be carefull to upload not too large images!
+The theme uses the tagsmap module which has been enhanced. 
+
+For advanced users:
+If you want to separate geotag from others, name those with the "map." prefix., the "map." prefix will not be displayed on the map.
+If you want to remove the prefix in the tag cloud sidebar, wou will have to update in gallery3/modules/tag/helpers/tag.php the popular_tags function:
+  static function popular_tags($count) {
+    return ORM::factory("tag")
+      ->orderby("count", "DESC")
+      ->notregex("name","map\.")
+     ->limit($count)
+      ->find_all();
+  }
