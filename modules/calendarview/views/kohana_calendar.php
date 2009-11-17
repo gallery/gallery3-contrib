@@ -43,7 +43,11 @@ else
 }
 
 ?>
+<? if ($day[1] == true) { ?>
 <td class="<?php echo implode(' ', $classes) ?>"><span class="day"><?php echo $day[0] ?></span><?php echo $output ?></td>
+<? } else { ?>
+<td></td>
+<? } ?>
 <?php endforeach ?>
 </tr>
 <?php endforeach ?>
