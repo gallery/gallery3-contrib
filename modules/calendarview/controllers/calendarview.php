@@ -31,7 +31,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Draw the page.
-    $template = new Theme_View("page.html", "CalendarView");
+    $template = new Theme_View("page.html", "other", "CalendarView");
     $template->page_title = t("Gallery :: Calendar");
     $template->content = new View("calendarview_year.html");
     $template->content->calendar_year = $display_year;
@@ -75,7 +75,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Set up the page.
-    $template = new Theme_View("page.html", "CalendarDayView");
+    $template = new Theme_View("page.html", "other", "CalendarDayView");
     $template->page_title = t("Gallery :: Calendar");
     $template->set_global("page_size", $page_size);
 

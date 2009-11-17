@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 ?>
-  <? if ($theme->page_type != 'basket'): ?>
+  <? if ($theme->page_subtype != 'basket'): ?>
   <? if (isset($basket) && isset($basket->contents) && ($basket->size() > 0)): ?>
 <div id="basket">
     <a href="<?= url::site("basket/view_basket") ?>"

@@ -24,13 +24,13 @@ class batchtag_block_Core {
 
   static function get($block_id, $theme) {
     $block = "";
-	
-	// Only display on album pages that the user can edit.
-	$item = $theme->item();
-	if (!$item->is_album() || !access::can("edit", $item)) {
-	  return;
-	}
-	
+
+    // Only display on album pages that the user can edit.
+    $item = $theme->item();
+    if (!$item || !$item->is_album() || !access::can("edit", $item)) {
+      return;
+    }
+
     switch ($block_id) {
     case "batch_tag":
       // Make a new sidebar block.
@@ -54,7 +54,7 @@ class batchtag_block_Core {
       $group->submit("")->value(t("Add Tag"));
       $block->content->batch_tag_form = $form;
 
-      break;  
+      break;
 	}
     return $block;
   }

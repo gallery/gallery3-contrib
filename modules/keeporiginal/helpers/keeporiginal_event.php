@@ -108,23 +108,23 @@ class keeporiginal_event_Core {
           @rename($old_original, $new_original);
         }
       }
-    }  
+    }
   }
-  
-  static function site_menu($menu, $theme) {  
+
+  static function site_menu($menu, $theme) {
     // Create a menu option to restore the original photo.
-    $item = $theme->item();
+    if ($item = $theme->item()) {
+      if ((access::can("view", $item)) && (access::can("edit", $item))) {
+        $original_image = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item->file_path());
 
-    if ((access::can("view", $item)) && (access::can("edit", $item))) {
-      $original_image = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $item->file_path());
-
-      if ($item->is_photo() && file_exists($original_image)) {        
-        $menu->get("options_menu")
-             ->append(Menu::factory("link")
-             ->id("restore")
-             ->label(t("Restore original"))
-             ->css_id("g-keep-originals-link")
-             ->url(url::site("keeporiginal/restore/" . $item->id)));
+        if ($item->is_photo() && file_exists($original_image)) {
+          $menu->get("options_menu")
+            ->append(Menu::factory("link")
+                     ->id("restore")
+                     ->label(t("Restore original"))
+                     ->css_id("g-keep-originals-link")
+                     ->url(url::site("keeporiginal/restore/" . $item->id)));
+        }
       }
     }
   }

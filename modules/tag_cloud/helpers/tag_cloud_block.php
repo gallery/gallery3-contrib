@@ -58,7 +58,7 @@ class tag_cloud_block {
       $block->content->cloud = tag::cloud(30);
       $block->content->options = $options;
 
-      if ($theme->item() && $theme->page_type() != "tag" && access::can("edit", $theme->item())) {
+      if ($theme->item() && $theme->page_subtype() != "tag" && access::can("edit", $theme->item())) {
         $controller = new Tags_Controller();
         $block->content->form = tag::get_add_form($theme->item());
       } else {

@@ -27,10 +27,11 @@ class tagfaces_Controller extends Controller {
     access::required("edit", $item);
     
     // Create the page.
-    $template = new Theme_View("page.html", "drawfaces");
+    $template = new Theme_View("page.html", "other", "drawfaces");
     $template->set_global("item_id", $id);
     $template->set_global("page_title", t("Draw Faces"));
-    $template->set_global("page_type", "photoface");
+    $template->set_global("page_type", "other");
+    $template->set_global("page_subtype", "photoface");
     $template->content = new View("drawfaces.html");
     $template->content->title = t("Tag Faces");
     $template->content->form = $this->_get_faces_form($id);

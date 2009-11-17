@@ -2,13 +2,13 @@
 <?= $theme->sidebar_top() ?>
 <div class="g-toolbar">
   <div id="g-view-menu" class="g-buttonset ui-helper-clearfix">
-    <? if ($page_type == "album"):?>
+    <? if ($page_subtype == "album"):?>
       <?= $theme->album_menu() ?>
-    <? elseif ($page_type == "photo") : ?>
+    <? elseif ($page_subtype == "photo") : ?>
       <?= $theme->photo_menu() ?>
-    <? elseif ($page_type == "movie") : ?>
+    <? elseif ($page_subtype == "movie") : ?>
       <?= $theme->movie_menu() ?>
-    <? elseif ($page_type == "tag") : ?>
+    <? elseif ($page_subtype == "tag") : ?>
       <?= $theme->tag_menu() ?>
     <? endif ?>
   </div>

@@ -29,7 +29,7 @@ class Photo_3nids_Controller extends REST_Controller {
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
 
-	$view = new Theme_View("photo_3nids.html", "page");
+        $view = new Theme_View("photo_3nids.html", "other", "page");
 	$view->item = $item;
 	$photo_size = module::get_var("theme_3nids","photo_size");
 	if ($photo_size == "full"){

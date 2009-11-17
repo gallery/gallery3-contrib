@@ -25,6 +25,10 @@ class latestupdates_block_Core {
   static function get($block_id, $theme) {
     $block = "";
 
+    if (!$theme->item()) {
+      return;
+    }
+
     switch ($block_id) {
     case "latestupdates":
       // Determine the ID# of the current album.
