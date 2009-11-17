@@ -1,15 +1,4 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<style type="text/css"> 
-table.calendar { text-align: center; width:100px; }
-table.calendar caption { font-size: 1.5em; padding: 0.2em; }
-table.calendar th, table.calendar td { padding: 0.2em; background: #fff; border: 0; }
-table.calendar td:hover { background: #ddf; }
-table.calendar td.prev-next { background: #ccc; color: #999; }
-table.calendar td.today { color: #800; }
-select, li {
-  display: inline;
-}
-</style> 
 
 <h1 align="center"><?=$calendar_year ?></h1>
 <?= $calendar_user_year_form ?>
