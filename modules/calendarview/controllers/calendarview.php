@@ -33,6 +33,7 @@ class CalendarView_Controller extends Controller {
     // Draw the page.
     $template = new Theme_View("page.html", "other", "CalendarView");
     $template->css("calendarview_calendar.css");
+	$template->set_global("calendar_user", $display_user);
     $template->page_title = t("Gallery :: Calendar");
     $template->content = new View("calendarview_year.html");
     $template->content->calendar_year = $display_year;
@@ -45,6 +46,7 @@ class CalendarView_Controller extends Controller {
     // Display all images for the specified day.
 
     // Figure out the total number of photos to display.
+    $day_count = 0;
     if ($display_user == "-1") {
       $day_count = ORM::factory("item")
         ->viewable()
@@ -66,19 +68,25 @@ class CalendarView_Controller extends Controller {
 
     // Figure out paging stuff.
     $page_size = module::get_var("gallery", "page_size", 9);
-    $page = $this->input->get("page", "1");
+    $page = (int) $this->input->get("page", "1");
     $offset = ($page-1) * $page_size;
-    $max_pages = ceil($day_count / $page_size);
+    $max_pages = max(ceil($day_count / $page_size), 1);
 
     // Make sure that the page references a valid offset
-    if ($page < 1 || ($day_count && $page > ceil($day_count / $page_size))) {
+    if (($page < 1) || ($page > $max_pages)) {
       Kohana::show_404();
     }
 
     // Set up the page.
-    $template = new Theme_View("page.html", "other", "CalendarDayView");
-    $template->page_title = t("Gallery :: Calendar");
+    $template = new Theme_View("page.html", "collection", "CalendarDayView");
+    $template->set_global("page", $page);
+    $template->set_global("max_pages", $max_pages);
     $template->set_global("page_size", $page_size);
+    $template->page_title = t("Gallery :: Calendar");
+
+	$template->set_global("first_visible_position", $offset+1);
+    $template->set_global("last_visible_position", $offset+$page_size);
+   // $template->set_global("total", $day_count);
 
     // Figure out which photos go on this page.
     if ($display_user == "-1") {
@@ -102,8 +110,100 @@ class CalendarView_Controller extends Controller {
 
     // Finish setting up and then display the page.
     $template->set_global("children_count", $day_count);
+
+    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
+    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb(date("F", mktime(0, 0, 0, $display_month, $display_day, $display_year)), url::site("calendarview/month/" . $display_year . "/" . $display_user . "/" . $display_month));
+    $fake_item = new Calendar_Breadcrumb($display_day, "");
+	
+    //$photo = ORM::factory("item", "3");
+    $template->set_global("item", $fake_item);
+    $template->set_global("parents", $calendar_breadcrumbs);
+
+
     $template->content = new View("dynamic.html");
     $template->content->title = t("Photos From ") . date("d F Y", mktime(0, 0, 0, $display_month, $display_day, $display_year));
+    print $template;
+  }
+
+  public function month($display_year, $display_user, $display_month) {
+    // Display all images for the specified month.
+
+    // Figure out the total number of photos to display.
+    $day_count = 0;
+    if ($display_user == "-1") {
+      $day_count = ORM::factory("item")
+        ->viewable()
+        ->where("type !=", "album")
+        ->where("captured >=", mktime(0, 0, 0, $display_month, 1, $display_year))
+        ->where("captured <", mktime(0, 0, 0, $display_month+1, 1, $display_year))
+        ->find_all()
+        ->count();
+    } else {
+      $day_count = ORM::factory("item")
+        ->viewable()
+        ->where("owner_id", $display_user)
+        ->where("type !=", "album")
+        ->where("captured >=", mktime(0, 0, 0, $display_month, 1, $display_year))
+        ->where("captured <", mktime(0, 0, 0, $display_month+1, 1, $display_year))
+        ->find_all()
+        ->count();
+    }
+
+    // Figure out paging stuff.
+    $page_size = module::get_var("gallery", "page_size", 9);
+    $page = (int) $this->input->get("page", "1");
+    $offset = ($page-1) * $page_size;
+    $max_pages = max(ceil($day_count / $page_size), 1);
+
+    // Make sure that the page references a valid offset
+    if (($page < 1) || ($page > $max_pages)) {
+      Kohana::show_404();
+    }
+
+    // Set up the page.
+    $template = new Theme_View("page.html", "collection", "CalendarMonthView");
+    $template->set_global("page", $page);
+    $template->set_global("max_pages", $max_pages);
+    $template->set_global("page_size", $page_size);
+    $template->page_title = t("Gallery :: Calendar");
+
+	$template->set_global("first_visible_position", $offset+1);
+    $template->set_global("last_visible_position", $offset+$page_size);
+   // $template->set_global("total", $day_count);
+
+    // Figure out which photos go on this page.
+    if ($display_user == "-1") {
+      $template->set_global("children", ORM::factory("item")
+                            ->viewable()
+                            ->where("type !=", "album")
+                            ->where("captured >=", mktime(0, 0, 0, $display_month, 1, $display_year))
+                            ->where("captured <", mktime(0, 0, 0, $display_month+1, 1, $display_year))
+                            ->orderby("captured", "ASC")
+                            ->find_all($page_size, $offset));
+    } else {
+      $template->set_global("children", ORM::factory("item")
+                            ->viewable()
+                            ->where("owner_id", $display_user)
+                            ->where("type !=", "album")
+                            ->where("captured >=", mktime(0, 0, 0, $display_month, 1, $display_year))
+                            ->where("captured <", mktime(0, 0, 0, $display_month+1, 1, $display_year))
+                            ->orderby("captured", "ASC")
+                            ->find_all($page_size, $offset));
+    }
+
+    // Finish setting up and then display the page.
+    $template->set_global("children_count", $day_count);
+
+    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
+    $fake_item = new Calendar_Breadcrumb(date("F", mktime(0, 0, 0, $display_month, 1, $display_year)), "");
+	
+    //$photo = ORM::factory("item", "3");
+    $template->set_global("item", $fake_item);
+    $template->set_global("parents", $calendar_breadcrumbs);
+
+
+    $template->content = new View("dynamic.html");
+    $template->content->title = t("Photos From ") . date("F Y", mktime(0, 0, 0, $display_month, 1, $display_year));
     print $template;
   }
 
