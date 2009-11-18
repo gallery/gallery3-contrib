@@ -1,6 +1,0 @@
-modules/tag_cloud/views/admin_tag_cloud.html.php             6   DIRTY    $form
-modules/tag_cloud/views/tag_cloud_block.html.php             5   DIRTY_JS url::file("modules/tag_cloud/lib/tagcloud.swf")
-modules/tag_cloud/views/tag_cloud_block.html.php             7   DIRTY_JS $option
-modules/tag_cloud/views/tag_cloud_block.html.php             7   DIRTY_JS $value
-modules/tag_cloud/views/tag_cloud_block.html.php             14  DIRTY    $cloud
-modules/tag_cloud/views/tag_cloud_block.html.php             17  DIRTY    $form
