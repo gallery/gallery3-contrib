@@ -19,12 +19,12 @@ $next = Router::$current_uri.'?'.http_build_query(array_merge($qs, array('month'
 <table class="calendar">
 <tr class="controls">
 <td class="title" colspan="7" align="center">
-<a href="<? print url::site("calendarview/month/" . $year . "/" . $calendar_user . "/" . $month ) ?>"><?php echo strftime('%B %Y', mktime(0, 0, 0, $month, 1, $year)) ?></a>
+<a href="<? print url::site("calendarview/month/" . $year . "/" . $calendar_user . "/" . $month ) ?>"><?php print t(strftime('%B', mktime(0, 0, 0, $month, 1, $year))) . " " . t(strftime('%Y', mktime(0, 0, 0, $month, 1, $year))) ?></a>
 </td>
 </tr>
 <tr>
 <?php foreach ($days as $day): ?>
-<th><?php echo $day ?></th>
+<th><?php echo t($day) ?></th>
 <?php endforeach ?>
 </tr>
 <?php foreach ($weeks as $week): ?>
