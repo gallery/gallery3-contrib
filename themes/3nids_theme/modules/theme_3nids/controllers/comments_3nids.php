@@ -49,7 +49,7 @@ class Comments_3nids_Controller extends REST_Controller {
       break;
 
     case "html":
-      $view = new Theme_View("comments.html", "page");
+      $view = new Theme_View("comments.html", "other", "page");
       $view->comments = $comments;
       $view->item_id = $item_id;
       $view->thumb = $item->thumb_url();
@@ -122,7 +122,7 @@ class Comments_3nids_Controller extends REST_Controller {
                 "created" => $comment->created,
                 "text" => nl2br(html::purify($comment->text)))));
     } else {
-      $view = new Theme_View("comment.html", "fragment");
+      $view = new Theme_View("comment.html", "other", "fragment");
       $view->comment = $comment;
       print $view;
     }

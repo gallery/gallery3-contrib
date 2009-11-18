@@ -24,7 +24,11 @@ class latestupdates_block_Core {
 
   static function get($block_id, $theme) {
     $block = "";
-	
+
+    if (!$theme->item()) {
+      return;
+    }
+
     switch ($block_id) {
     case "latestupdates":
       // Determine the ID# of the current album.
@@ -35,12 +39,11 @@ class latestupdates_block_Core {
       $block->css_id = "g-latest-updates";
       $block->title = t("Latest Updates");
       $block->content = new View("latestupdates_block.html");
-      $block->content->batch_tag_form = $form;
       $block->content->update_links = array(
         "Entire Gallery" => url::site("latestupdates/updates"),
         "This Album" => url::site("latestupdates/albums/$albumID")
       );
-      break;  
+      break;
     }
     return $block;
   }

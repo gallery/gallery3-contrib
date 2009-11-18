@@ -41,7 +41,7 @@ class TagsMap_Controller extends Controller {
     
       print $view;
     } else {
-      $template = new Theme_View("page.html", "TagsMap");
+      $template = new Theme_View("page.html", "other", "TagsMap");
       $template->page_title = t("Gallery :: Map");
       $template->content = new View("tagsmap_googlemap.html");
 

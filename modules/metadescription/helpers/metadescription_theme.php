@@ -26,7 +26,7 @@ class metadescription_theme_Core {
       ->where("id", $theme->tag())
       ->find_all();
 
-    }elseif ($theme->item()) {
+    } elseif ($theme->item()) {
       // If the current page belongs to an item (album, photo, etc.),
       //   look up any tags that have been applied to that item.
       $tagsItem = ORM::factory("tag")
@@ -40,8 +40,12 @@ class metadescription_theme_Core {
     }
 
     // Load the meta tags into the top of the page.
-    $metaView = new View("metadescription_block.html");
-    $metaView->tags = $tagsItem;
-    return $metaView; 
+    // @todo: metadescription_block.html requires an item so for now, don't render it unless we
+    // have one.
+    if ($theme->item()) {
+      $metaView = new View("metadescription_block.html");
+      $metaView->tags = $tagsItem;
+      return $metaView;
+    }
   }
 }

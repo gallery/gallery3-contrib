@@ -31,7 +31,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Draw the page.
-    $template = new Theme_View("page.html", "CalendarView");
+    $template = new Theme_View("page.html", "other", "CalendarView");
     $template->css("calendarview_calendar.css");
     $template->page_title = t("Gallery :: Calendar");
     $template->content = new View("calendarview_year.html");
@@ -63,7 +63,7 @@ class CalendarView_Controller extends Controller {
         ->find_all()
         ->count();
     }
-	
+
     // Figure out paging stuff.
     $page_size = module::get_var("gallery", "page_size", 9);
     $page = $this->input->get("page", "1");
@@ -76,7 +76,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Set up the page.
-    $template = new Theme_View("page.html", "CalendarDayView");
+    $template = new Theme_View("page.html", "other", "CalendarDayView");
     $template->page_title = t("Gallery :: Calendar");
     $template->set_global("page_size", $page_size);
 
@@ -99,7 +99,7 @@ class CalendarView_Controller extends Controller {
                             ->orderby("captured", "ASC")
                             ->find_all($page_size, $offset));
     }
-	
+
     // Finish setting up and then display the page.
     $template->set_global("children_count", $day_count);
     $template->content = new View("dynamic.html");
@@ -125,7 +125,7 @@ class CalendarView_Controller extends Controller {
                ->count();
       if ($count > 0) {
         $valid_users[$one_user->id] = $one_user->full_name;
-      } 
+      }
     }
 
     // Generate a list of years, starting with the year the earliest photo was
@@ -161,19 +161,19 @@ class CalendarView_Controller extends Controller {
     // Return the newly generated form.
     return $form;
   }
-  
+
   public function setprefs() {
     // Change the calendar year and / or user.
-     
+
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
     // Get user specified settings.
-    $str_user_id = Input::instance()->post("cal_user");    
+    $str_user_id = Input::instance()->post("cal_user");
     $str_year_id = Input::instance()->post("cal_year");
 
     // redirect to the currect page.
-    url::redirect(url::site("calendarview/calendar/" . $str_year_id . "/" . $str_user_id));      
+    url::redirect(url::site("calendarview/calendar/" . $str_year_id . "/" . $str_user_id));
 
   }
 }

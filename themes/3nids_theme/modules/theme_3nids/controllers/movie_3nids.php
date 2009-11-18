@@ -29,7 +29,7 @@ class Movie_3nids_Controller extends REST_Controller {
 	$item = ORM::factory("item", $item_id);
     access::required("view", $item);
 
-     $view = new Theme_View("movie_3nids.html", "page");
+    $view = new Theme_View("movie_3nids.html", "other", "page");
       $view->item = $item;
       $view->attrs = array("class" => "g-movie", "id" => "g-movie-id-{$item->id}", "style" => "display:block;width:{$item->width}px;height:{$item->height}px");
       print $view;

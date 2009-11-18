@@ -24,19 +24,23 @@ class embedlinks_block_Core {
 
   static function get($block_id, $theme) {
     $block = "";
-	
+
+    if (!$theme->item()) {
+      return;
+    }
+
     switch ($block_id) {
     case "embed_links_dialog":
-      // If displaying links in a dialog box is enabled then 
+      // If displaying links in a dialog box is enabled then
       //   insert buttons into the bottom of the side bar
-      //   to open up the dialog window.  
+      //   to open up the dialog window.
       if (module::get_var("embedlinks", "DialogLinks") && $theme->item()) {
         $block = new Block();
         $block->css_id = "g-embed-links-sidebar";
         $block->title = t("Link To This Page");
         $block->content = new View("embedlinks_sidebar.html");
       }
-      break;  
+      break;
 
     case "embed_links_album":
       // If the current item is an album and if "In Page" links are enabled then
@@ -46,10 +50,10 @@ class embedlinks_block_Core {
         $block->css_id = "g-embed-links-album-sidebar";
         $block->title = t("Links");
         $block->content = new View("embedlinks_album_block.html");
-      }    
+      }
 	  break;
     }
-	
+
     return $block;
   }
 }

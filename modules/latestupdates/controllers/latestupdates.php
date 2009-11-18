@@ -70,7 +70,7 @@ class latestupdates_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "LatestUpdates");
+    $template = new Theme_View("page.html", "other", "LatestUpdates");
     $template->page_title = t("Gallery :: Latest Updates");
     $template->set_global("page_size", $itemsPerPage);
     $template->set_global("children", $children);
@@ -128,7 +128,7 @@ class latestupdates_Controller extends Controller {
     }
     
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "LatestUpdates");
+    $template = new Theme_View("page.html", "other", "LatestUpdates");
     $template->page_title = t("Gallery :: Latest Updates");
     $template->set_global("page_size", $itemsPerPage);
     $template->set_global("children", $items);

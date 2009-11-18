@@ -41,7 +41,7 @@ class ContactOwner_Controller extends Controller {
     $sendmail_fields->submit("SendMessage")->value(t("Send"));
 
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "Contact");
+    $template = new Theme_View("page.html", "other", "Contact");
     $template->content = new View("contactowner_emailform.html");
     $template->content->sendmail_form = $form;
     print $template;
@@ -75,7 +75,7 @@ class ContactOwner_Controller extends Controller {
     $sendmail_fields->submit("SendMessage")->value(t("Send"));
 
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "Contact");
+    $template = new Theme_View("page.html", "other", "Contact");
     $template->content = new View("contactowner_emailform.html");
     $template->content->sendmail_form = $form;
     print $template;
@@ -122,7 +122,7 @@ class ContactOwner_Controller extends Controller {
       ->send();
 
     // Display a message telling the visitor that their email has been sent.
-    $template = new Theme_View("page.html", "Contact");
+    $template = new Theme_View("page.html", "other", "Contact");
     $template->content = new View("contactowner_emailform.html");
     $template->content->sendmail_form = t("Your Message Has Been Sent.");
     print $template;
