@@ -70,12 +70,13 @@ class latestupdates_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "updates");
+    $template = new Theme_View("page.html", "other", "LatestUpdates");
+    $template->page_title = t("Gallery :: Latest Updates");
     $template->set_global("page_size", $itemsPerPage);
+    $template->set_global("children", $children);
     $template->set_global("children_count", $count);
-    $template->content = new View("updates.html");
-    $template->content->items = $children;
-    $template->content->q = count($children);
+    $template->content = new View("dynamic.html");
+    $template->content->title = t("Latest Updates");
     print $template;
   }
 
@@ -127,12 +128,13 @@ class latestupdates_Controller extends Controller {
     }
     
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "updates");
+    $template = new Theme_View("page.html", "other", "LatestUpdates");
+    $template->page_title = t("Gallery :: Latest Updates");
     $template->set_global("page_size", $itemsPerPage);
+    $template->set_global("children", $items);
     $template->set_global("children_count", $count);
-    $template->content = new View("updates.html");
-    $template->content->items = $items;
-    $template->content->q = count($items);
+    $template->content = new View ("dynamic.html");
+    $template->content->title = t("Latest Updates");
     print $template;
   }
 

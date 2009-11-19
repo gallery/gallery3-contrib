@@ -1,0 +1,8 @@
+table.calendar { text-align: center; width:100px; }
+table.calendar caption { font-size: 1.5em; padding: 0.2em; }
+table.calendar th, table.calendar td { padding: 0.2em; background: #fff; border: 0; }
+table.calendar td:hover { background: #ddf; }
+table.calendar td.prev-next { background: #ccc; color: #999; }
+table.calendar td.today { color: #800; }
+#cal_user, #cal_year, #g-view-calendar-form li { display: inline; }
+#SaveSettings { float: right; }

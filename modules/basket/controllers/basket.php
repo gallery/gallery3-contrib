@@ -21,7 +21,7 @@ class Basket_Controller extends Controller {
 
   public function view_basket() {
 
-    $template = new Theme_View("page.html", "basket");
+    $template = new Theme_View("page.html", "other", "basket");
 
     $view = new View("view_basket.html");
     $view->basket = Session_Basket::get();
@@ -48,7 +48,7 @@ class Basket_Controller extends Controller {
 
   public function checkout () {
 
-    $template = new Theme_View("page.html", "basket");
+    $template = new Theme_View("page.html", "other", "basket");
 
     $view = new View("checkout.html");
 
@@ -89,7 +89,7 @@ class Basket_Controller extends Controller {
       $basket->email = $form->contact->email->value;
       $basket->phone = $form->contact->phone->value;
 
-      $template = new Theme_View("page.html", "basket");
+      $template = new Theme_View("page.html", "other", "basket");
 
       $form = new Forge("basket/complete", "", "post", array("id" => "confirm", "name" =>"confirm"));
       $view = new View("confirm_order.html");
@@ -149,7 +149,7 @@ Items Ordered:
 
     $basket->clear();
 
-    $template = new Theme_View("page.html", "basket");
+    $template = new Theme_View("page.html", "other", "basket");
     $view = new View("order_complete.html");
     $template->content = $view;
     print $template;

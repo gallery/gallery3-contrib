@@ -22,7 +22,7 @@
 <?= form::open($action, array("method" => "post", "id" => "g-generate-test-data"), $hidden) ?>
   <? if (!empty($album_count)): ?>
     <p><?= t("Currently:") ?><br />
-       
+
     <i>(<?= $album_count ?>, <?= $photo_count ?>, <?= $comment_count ?>, <?= $tag_count ?>)</i>
     </p>
   <? endif ?>
@@ -54,7 +54,7 @@
       <? if (!empty($errors["photos"]) && $errors["photos"] == "numeric"): ?>
         <p class="g-error"><?= t("Number to create must be numeric") ?></p>
       <? endif ?>
-    </li
+    </li>
     <? if(!empty($comment_installed)): ?>
     <li <? if (!empty($errors["comments"])): ?> class="g-error"<? endif ?>>
       <fieldset>
