@@ -33,7 +33,7 @@ class CalendarView_Controller extends Controller {
     // Draw the page.
     $template = new Theme_View("page.html", "other", "CalendarView");
     $template->css("calendarview_calendar.css");
-	$template->set_global("calendar_user", $display_user);
+    $template->set_global("calendar_user", $display_user);
     $template->page_title = t("Gallery :: Calendar");
     $template->content = new View("calendarview_year.html");
     $template->content->calendar_year = $display_year;
@@ -84,10 +84,6 @@ class CalendarView_Controller extends Controller {
     $template->set_global("page_size", $page_size);
     $template->page_title = t("Gallery :: Calendar");
 
-	$template->set_global("first_visible_position", $offset+1);
-    $template->set_global("last_visible_position", $offset+$page_size);
-   // $template->set_global("total", $day_count);
-
     // Figure out which photos go on this page.
     if ($display_user == "-1") {
       $template->set_global("children", ORM::factory("item")
@@ -108,18 +104,15 @@ class CalendarView_Controller extends Controller {
                             ->find_all($page_size, $offset));
     }
 
-    // Finish setting up and then display the page.
-    $template->set_global("children_count", $day_count);
-
+    // Set up breadcrumbs
     $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
     $calendar_breadcrumbs[1] = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, $display_day, $display_year))), url::site("calendarview/month/" . $display_year . "/" . $display_user . "/" . $display_month));
     $fake_item = new Calendar_Breadcrumb($display_day, "");
-	
-    //$photo = ORM::factory("item", "3");
     $template->set_global("item", $fake_item);
     $template->set_global("parents", $calendar_breadcrumbs);
 
-
+    // Finish setting up and then display the page.
+    $template->set_global("children_count", $day_count);
     $template->content = new View("dynamic.html");
     $template->content->title = t("Photos From ") . date("d", mktime(0, 0, 0, $display_month, $display_day, $display_year)) . " " . t(date("F", mktime(0, 0, 0, $display_month, $display_day, $display_year))) . " " . date("Y", mktime(0, 0, 0, $display_month, $display_day, $display_year));
     print $template;
@@ -167,10 +160,6 @@ class CalendarView_Controller extends Controller {
     $template->set_global("page_size", $page_size);
     $template->page_title = t("Gallery :: Calendar");
 
-    $template->set_global("first_visible_position", $offset+1);
-    $template->set_global("last_visible_position", $offset+$page_size);
-   // $template->set_global("total", $day_count);
-
     // Figure out which photos go on this page.
     if ($display_user == "-1") {
       $template->set_global("children", ORM::factory("item")
@@ -191,17 +180,14 @@ class CalendarView_Controller extends Controller {
                             ->find_all($page_size, $offset));
     }
 
-    // Finish setting up and then display the page.
-    $template->set_global("children_count", $day_count);
-
+    // Set up breadcrumbs for this page.
     $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
     $fake_item = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, 1, $display_year))), "");
-	
-    //$photo = ORM::factory("item", "3");
     $template->set_global("item", $fake_item);
     $template->set_global("parents", $calendar_breadcrumbs);
 
-
+    // Finish setting up and then display the page.
+    $template->set_global("children_count", $day_count);
     $template->content = new View("dynamic.html");
     $template->content->title = t("Photos From ") . t(date("F", mktime(0, 0, 0, $display_month, 1, $display_year))) . " " . date("Y", mktime(0, 0, 0, $display_month, 1, $display_year));
     print $template;

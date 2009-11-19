@@ -18,27 +18,23 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class Calendar_Breadcrumb_Core {
-  public $title = "the_title";
+  // Creates a class to maintain a single breadcrumb.
+  //   Multiple breadcrumbs can be achieved by createing an array of this class type.
+  public $title = "";
   public $id = 0;
-  //public $crumb_url = "asdf";
-  public $url = "asdf";
-  public $crumb_parent = null;
+  public $url = "";
 
   public function __construct($new_title, $new_url) {
     $this->title = $new_title;
     $this->url = $new_url;
-    //$this->crumb_url = $new_url;
   }
 
   public function url($query=null) {
-    //return $crumb_url;
-    //print $this->url;
-    //return "http://the.url/";
     return $this->url;
   }
 
   public function parent() {
-    return $crumb_parent;
+    return null;
   }
 
   public function is_album() {
