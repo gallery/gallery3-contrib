@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 
-<h1 align="center"><?=$calendar_year ?></h1>
+<h1 align="center"><?=t($calendar_year) ?></h1>
 <?= $calendar_user_year_form ?>
 
 <?
