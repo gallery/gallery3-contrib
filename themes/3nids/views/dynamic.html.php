@@ -18,7 +18,7 @@
 <? endfor ?>
 
   <? foreach ($children as $i => $child): ?>
-  
+
   <!--<li class="g-Item <?= $child->is_album() ? "g-album" : "" ?>">!-->
   <li id="g-item-id-<?= $child->id ?>" class="g-item g-album">
 	<?= $theme->thumb_top($child) ?>
@@ -34,4 +34,4 @@
 <? endfor ?>
 <?= $theme->dynamic_bottom() ?>
 
-<?= $theme->pager() ?>
+<?= $theme->paginator() ?>

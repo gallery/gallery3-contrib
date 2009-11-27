@@ -17,14 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Comments_3nids_Controller extends REST_Controller {
-  protected $resource_type = "comment";
+class Comments_3nids_Controller extends Items_Controller {
 
-
-  /**
-   * Display comments based on criteria.
-   *  @see REST_Controller::_index()
-   */
   public function _index() {
      $item_id = $this->input->get('item_id');
     $item = ORM::factory("item", $item_id);

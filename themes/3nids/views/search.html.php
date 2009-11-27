@@ -28,7 +28,7 @@
 	<?= theme_3nids::fancylink($child,"header") ?>
 <? endfor ?>
 </ul>
-  <?= $theme->pager() ?>
+  <?= $theme->paginator() ?>
 
   <? else: ?>
   <p>
