@@ -32,7 +32,7 @@ $children_offset = ($theme->pagination->current_page -1) * $page_size ;
       </li>
     <? endforeach ?>
 
-    <? for($i=$children_offset+$page_size;$i<$children_count;$i++): ?>
+    <? for($i= $children_offset + $page_size; $i < $children_count; $i++): ?>
        <? $child = $children_all[$i] ?>
        <?= theme_3nids::fancylink($child, "header") ?>
     <? endfor ?>
