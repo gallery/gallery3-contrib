@@ -30,7 +30,12 @@
   </head>
   <body class="g-fancy-iframe-body">
     <div id="g-item-box">
-      <img src="<?=$item_url?>" id="g-item-img"/>
+      <? if (module::get_var("3nids", "photo_size") == "full"): ?>
+      <img src="<?= $item->file_url() ?>" id="g-item-img"/>
+      <? else: ?>
+      <img src="<?= $item->resize_url() ?>" id="g-item-img"/>
+      <? endif ?>
+
       <?= $theme->context_menu($item, "#g-item-id-{$item->id}") ?>
     </div>
   </body>

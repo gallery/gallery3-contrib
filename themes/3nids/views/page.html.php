@@ -1,4 +1,9 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<? if ($page_subtype == "photo"): ?>
+<? print new View("photo.html") ?>
+<? return ?>
+<? endif ?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -28,7 +33,7 @@
     <?= $theme->css("superfish/css/superfish.css") ?>
     <?= $theme->css("themeroller/ui.base.css") ?>
     <?= $theme->css("gallery.common.css") ?>
-    <?= $theme->css("jquery.fancybox.css") ?> 
+    <?= $theme->css("jquery.fancybox.css") ?>
     <?= $theme->css("screen.css") ?>
     <?= $theme->css("3nids.css") ?>
     <!--[if lt IE 8]>
@@ -39,7 +44,7 @@
       <? if ($thumb_proportion != 1): ?>
         <? $new_width = $thumb_proportion * 180 ?>
         <? $new_height = $thumb_proportion * 230 ?>
-    <style type="text/css">    
+    <style type="text/css">
      /*#g-content #g-album-grid .g-item {
       width: <?= $new_width ?>px;
       height: <?= $new_height ?>px;*/
@@ -91,7 +96,7 @@
           </a>
           <? endif ?>
           <div id="g-site-menu">
-	 <? if ($user->admin): ?> 
+	 <? if ($user->admin): ?>
               <?= $theme->site_menu() ?>
 	 <? endif ?>
           </div>
@@ -132,7 +137,7 @@
 	 </li>
 	</ul>
 	<? endif ?>
-	
+
 	<? if (module::is_active("tagsmap")): ?>
 	  <ul class="g-map-head">
 	    <a href="<?= url::site("tagsmap/googlemap") ?>"><img src="<?= $theme->url("images/map.png") ?>"></a>
