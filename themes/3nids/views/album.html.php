@@ -16,7 +16,7 @@ $children_offset = ($theme->pagination->current_page -1) * $page_size ;
   <? if (count($children)): ?>
     <? for ($i = 0; $i < $children_offset; $i++): ?>
        <? $child = $children_all[$i] ?>
-       <?= theme_3nids::fancylink($child,  "header") ?>
+       <?= theme_3nids::fancylink($child, "header") ?>
     <? endfor ?>
 
     <? foreach ($children as $i => $child): ?>
