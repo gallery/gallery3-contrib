@@ -41,13 +41,13 @@ class Admin_theme_3nids_Controller extends Admin_Controller {
     // Input box for the Maps API Key
     $form->input("title")
                  ->label(t("item title : parent or item."))
-                 ->value(module::get_var("theme_3nids", "title"));
+                 ->value(module::get_var("3nids", "title"));
     $form->input("description")
                  ->label(t("item description : tags or item or parent or nothing. If item description chosen and not available, then parent description is used."))
-                 ->value(module::get_var("theme_3nids", "description"));
+                 ->value(module::get_var("3nids", "description"));
     $form->input("photo_size")
                  ->label(t("Photo size: resize or full."))
-                 ->value(module::get_var("theme_3nids", "photo_size"));
+                 ->value(module::get_var("3nids", "photo_size"));
 
     // Add a save button to the form.
     $form->submit("SaveSettings")->value(t("Save"));
@@ -68,9 +68,9 @@ class Admin_theme_3nids_Controller extends Admin_Controller {
     $photo_size = Input::instance()->post("photo_size");
     
     // Save Settings.
-    module::set_var("theme_3nids", "description", $description);
-    module::set_var("theme_3nids", "title", $title);
-    module::set_var("theme_3nids", "photo_size", $photo_size);
+    module::set_var("3nids", "description", $description);
+    module::set_var("3nids", "title", $title);
+    module::set_var("3nids", "photo_size", $photo_size);
 
     // Display a success message and redirect back to the TagsMap admin page.
     message::success(t("Your Settings Have Been Saved."));
