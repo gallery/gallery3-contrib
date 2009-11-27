@@ -68,11 +68,11 @@ class theme_3nids_Core {
           ";;comment_count::" . comment_3nids::count($item) . ";;";
       }
       if ($item->is_photo()){
-        $link .= "<a href=\"" . url::site("photo_3nids/show/{$item->id}") ."/?w=" . $width .
+        $link .= "<a href=\"" . url::site("photos/{$item->id}") ."/?w=" . $width .
           "xewx&h=" . $height . "xehx\" " . $rel . " class=\"fancyclass iframe\" title=\"" .
           $title . $description ."\" name=\"" . $fancymodule  . " \">";
       } else {
-        $link .= "<a href=\"" . url::site("movie_3nids/show/{$item->id}") . "/?w=" .
+        $link .= "<a href=\"" . url::site("movies/{$item->id}") . "/?w=" .
           strval(20 + $width) . "xewx&h=" . strval(50 + $height) . "xehx\" " . $rel .
           " class=\"fancyclass iframe\" title=\"" . $item->parent()->title . $description .
           "\" name=\"" . $fancymodule  . " \">";
