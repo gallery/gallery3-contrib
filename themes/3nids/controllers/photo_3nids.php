@@ -25,7 +25,7 @@ class Photo_3nids_Controller extends Items_Controller {
 
     $view = new Theme_View("photo_3nids.html", "other", "page");
     $view->item = $item;
-    $photo_size = module::get_var("3nids","photo_size");
+    $photo_size = module::get_var("theme_3nids","photo_size");
     if ($photo_size == "full"){
       $view->item_url = $item->file_url();
     } else {

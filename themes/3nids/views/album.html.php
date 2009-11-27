@@ -16,7 +16,7 @@ $children_offset = ($theme->pagination->current_page -1) * $page_size ;
   <? if (count($children)): ?>
     <? for ($i = 0; $i < $children_offset; $i++): ?>
        <? $child = $children_all[$i] ?>
-       <?= 3nids::fancylink($child, "header") ?>
+       <?= theme_3nids::fancylink($child,  "header") ?>
     <? endfor ?>
 
     <? foreach ($children as $i => $child): ?>
@@ -26,7 +26,7 @@ $children_offset = ($theme->pagination->current_page -1) * $page_size ;
       <? endif ?>
       <li id="g-item-id-<?= $child->id ?>" class="g-item <?= $item_class ?>">
         <?= $theme->thumb_top($child) ?>
-        <?= 3nids::fancylink($child, "album") ?>
+        <?= theme_3nids::fancylink($child, "album") ?>
         <?= $theme->thumb_bottom($child) ?>
         <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
       </li>
@@ -34,7 +34,7 @@ $children_offset = ($theme->pagination->current_page -1) * $page_size ;
 
     <? for($i=$children_offset+$page_size;$i<$children_count;$i++): ?>
        <? $child = $children_all[$i] ?>
-       <?= 3nids::fancylink($child, "header") ?>
+       <?= theme_3nids::fancylink($child, "header") ?>
     <? endfor ?>
   <? else: ?>
     <? if ($user->admin || access::can("add", $item)): ?>

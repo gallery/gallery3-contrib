@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class 3nids_theme {  
+class theme_3nids_theme {  
 
   static function credits($theme) {
 	return "<a href=\"http://codex.gallery2.org/Gallery3:Themes:3nids\">3nids theme</a>";

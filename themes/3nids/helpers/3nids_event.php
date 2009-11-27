@@ -17,13 +17,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class 3nids_event_Core {
+class theme_3nids_event_Core {
   static function admin_menu($menu, $theme) {
     // Add a link to the TagsMap admin page to the Content menu.
     $menu->get("content_menu")
       ->append(Menu::factory("link")
-               ->id("3nids")
+               ->id("theme_3nids")
                ->label(t("Theme 3nids Settings"))
-               ->url(url::site("admin/3nids")));
+               ->url(url::site("admin/theme_3nids")));
   }
 }

@@ -14,7 +14,7 @@
 <ul id="g-album-grid" class="ui-helper-clearfix">
 <? for($i=0;$i<$children_offset;$i++): ?>
 	<? $child = $children_all[$i] ?>
-	<?= 3nids::fancylink($child,"header") ?>
+	<?= theme_3nids::fancylink($child,"header") ?>
 <? endfor ?>
 
   <? foreach ($children as $i => $child): ?>
@@ -22,7 +22,7 @@
   <!--<li class="g-Item <?= $child->is_album() ? "g-album" : "" ?>">!-->
   <li id="g-item-id-<?= $child->id ?>" class="g-item g-album">
 	<?= $theme->thumb_top($child) ?>
-	<?= 3nids::fancylink($child,"dynamic") ?>
+	<?= theme_3nids::fancylink($child,"dynamic") ?>
 	<?= $theme->thumb_bottom($child) ?>
 	<?= $theme->context_menu($child, "#g-ItemId-{$child->id} .g-Thumbnail") ?>
   </li>
@@ -30,7 +30,7 @@
 </ul>
 <? for($i=$children_offset+$page_size;$i<$children_count;$i++): ?>
 	 <? $child = $children_all[$i] ?>
-	<?= 3nids::fancylink($child,"header") ?>
+	<?= theme_3nids::fancylink($child,"header") ?>
 <? endfor ?>
 <?= $theme->dynamic_bottom() ?>
 
