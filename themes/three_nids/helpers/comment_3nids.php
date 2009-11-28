@@ -23,7 +23,7 @@
  *
  * Note: by design, this class does not do any permission checking.
  */
-class comment_3nids_Core {
+class comment_three_nids_Core {
 
   public function count($item) {
       access::required("view", $item);
@@ -78,7 +78,7 @@ class comment_3nids_Core {
   }
 
   static function get_add_form($item) {
-    $form = new Forge("comments_3nids?item_id=".$item->id, "", "post", array("id" => "gAddCommentForm"));
+    $form = new Forge("comments_three_nids?item_id=".$item->id, "", "post", array("id" => "gAddCommentForm"));
     $group = $form->group("add_comment")->label(t("Add comment"));
     $group->input("name")   ->label(t("Name"))            ->id("gAuthor");
     $group->input("email")  ->label(t("Email (hidden)"))  ->id("gEmail");

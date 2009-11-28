@@ -4,7 +4,7 @@
   </h2>
 <div class="g-block">
   <h3>
-    <?= t("3nids theme Settings") ?>
+    <?= t("three_nids theme Settings") ?>
   </h3>
   <?= $theme_form ?>
 </div>

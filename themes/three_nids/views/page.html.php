@@ -36,7 +36,7 @@
     <?= $theme->css("gallery.common.css") ?>
     <?= $theme->css("jquery.fancybox.css") ?>
     <?= $theme->css("screen.css") ?>
-    <?= $theme->css("3nids.css") ?>
+    <?= $theme->css("three_nids.css") ?>
     <!--[if lt IE 8]>
     <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
           media="screen,print,projection" />

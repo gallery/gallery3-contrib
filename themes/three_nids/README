@@ -12,9 +12,9 @@ Requirements:
 *********
 Installation:
 
-1. Copy the theme folder (3nids) into gallery3/themes directory.
+1. Copy the theme folder (three_nids) into gallery3/themes directory.
 2. Copy the tagsmap module into the gallery3/modules folder.
-3. Activate tagsmap module and 3nids theme.
+3. Activate tagsmap module and three_nids theme.
 
 *********
 Configuration:

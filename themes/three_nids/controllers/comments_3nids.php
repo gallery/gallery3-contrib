@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Comments_3nids_Controller extends Items_Controller {
+class Comments_three_nids_Controller extends Items_Controller {
 
   public function _index() {
      $item_id = $this->input->get('item_id');
@@ -60,7 +60,7 @@ class Comments_3nids_Controller extends Items_Controller {
     $item = ORM::factory("item", $this->input->post("item_id"));
     access::required("view", $item);
 
-    $form = comment_3nids::get_add_form($item);
+    $form = comment_three_nids::get_add_form($item);
     $valid = $form->validate();
     if ($valid) {
       if (user::active()->guest && !$form->add_comment->inputs["name"]->value) {
@@ -93,7 +93,7 @@ class Comments_3nids_Controller extends Items_Controller {
         $form->add_comment->url->value($active->url);
       }
     }
-    url::redirect(url::site("comments_3nids?item_id=".$item->id));
+    url::redirect(url::site("comments_three_nids?item_id=".$item->id));
 }
   /**
    * Display an existing comment.
@@ -131,7 +131,7 @@ class Comments_3nids_Controller extends Items_Controller {
     access::required("view", $item);
     access::required("edit", $item);
 
-    $form = comment_3nids::get_edit_form($comment);
+    $form = comment_three_nids::get_edit_form($comment);
     if ($form->validate()) {
       $comment->guest_name = $form->edit_comment->inputs["name"]->value;
       $comment->guest_email = $form->edit_comment->email->value;
@@ -170,7 +170,7 @@ class Comments_3nids_Controller extends Items_Controller {
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
 
-    print comment_3nids::get_add_form($item);
+    print comment_three_nids::get_add_form($item);
   }
 
   /**
@@ -181,6 +181,6 @@ class Comments_3nids_Controller extends Items_Controller {
     if (!user::active()->admin) {
       access::forbidden();
     }
-    print comment_3nids::get_edit_form($comment);
+    print comment_three_nids::get_edit_form($comment);
   }
 }

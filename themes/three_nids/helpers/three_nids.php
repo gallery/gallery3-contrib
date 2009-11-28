@@ -18,14 +18,14 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-class theme_3nids_Core {
+class theme_three_nids_Core {
   public function fancylink($item, $view_type="album", $group_img = true,
                             $display_comment = true, $parent_title_class = "h2") {
     // view_type = album || dynamic || header
     $link = "";
     access::required("view", $item);
 
-    $photo_size = module::get_var("3nids", "photo_size");
+    $photo_size = module::get_var("three_nids", "photo_size");
     if ($photo_size == "full" || $item->is_movie()){
       $width = $item->width;
       $height = $item->height;
@@ -34,7 +34,7 @@ class theme_3nids_Core {
       $height = $item->resize_height;
     }
 
-    $description_mode = module::get_var("3nids", "description");
+    $description_mode = module::get_var("three_nids", "description");
     $description = "";
     $tags = tag::item_tags($item);
     if(count($tags) && $description_mode == "tags"){
@@ -46,7 +46,7 @@ class theme_3nids_Core {
       $description = " || " . str_replace("\"", "&quot;", $item->parent()->description);
     }
 
-    $title_mode = module::get_var("3nids", "title");
+    $title_mode = module::get_var("three_nids", "title");
     if ($title_mode == "parent"){
       $title = html::clean($item->parent()->title);
     } else {
@@ -64,8 +64,8 @@ class theme_3nids_Core {
         $fancymodule .= "exif::" . url::site("exif/show/{$item->id}") . ";;";
       }
       if (module::is_active("comment")) {
-        $fancymodule .= "comment::" . url::site("comments_3nids?item_id={$item->id}") .
-          ";;comment_count::" . comment_3nids::count($item) . ";;";
+        $fancymodule .= "comment::" . url::site("comments_three_nids?item_id={$item->id}") .
+          ";;comment_count::" . comment_three_nids::count($item) . ";;";
       }
       if ($item->is_photo()){
         $link .= "<a href=\"" . url::site("photos/{$item->id}") ."/?w=" . $width .
@@ -102,8 +102,8 @@ class theme_3nids_Core {
       if (($item->is_photo() || $item->is_movie()) && $display_comment &&
           module::is_active("comment")) {
         $link .= "<ul class=\"g-metadata\"><li><a href=\"" .
-          url::site("comments_3nids?item_id={$item->id}") .
-          "\" class=\"iframe fancyclass g-hidden\">" . comment_3nids::count($item) .
+          url::site("comments_three_nids?item_id={$item->id}") .
+          "\" class=\"iframe fancyclass g-hidden\">" . comment_three_nids::count($item) .
           " " . t("comments") . "</a></li></ul>";
       }
     } else {

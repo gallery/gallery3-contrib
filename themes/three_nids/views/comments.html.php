@@ -10,7 +10,7 @@
     <?= $theme->css("gallery.common.css") ?>
     <?= $theme->css("jquery.fancybox.css") ?> 
     <?= $theme->css("screen.css") ?>
-    <?= $theme->css("3nids.css") ?>
+    <?= $theme->css("three_nids.css") ?>
     <?= $theme->script("jquery.js") ?>
     <?= $theme->script("jquery.form.js") ?>
     <?= $theme->script("jquery-ui.js") ?>
@@ -30,7 +30,7 @@
 </head>
 <body class="g-fancy-iframe-body">
 	<div class="g-comment-thumb">	<img src="<?=$thumb?>"></div>
-	  <a href="<?= url::site("form/add/comments_3nids/{$item_id}") ?>" id="g-admin-comment-button"
+	  <a href="<?= url::site("form/add/comments_three_nids/{$item_id}") ?>" id="g-admin-comment-button"
 	   class="g-button ui-corner-all ui-icon-left ui-state-default right">
 	  <span class="ui-icon ui-icon-comment"></span>
 	  <?= t("Add a comment") ?>

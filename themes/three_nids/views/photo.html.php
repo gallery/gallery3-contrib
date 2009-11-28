@@ -10,7 +10,7 @@
     <?= $theme->css("gallery.common.css") ?>
     <?= $theme->css("jquery.fancybox.css") ?>
     <?= $theme->css("screen.css") ?>
-    <?= $theme->css("3nids.css") ?>
+    <?= $theme->css("three_nids.css") ?>
     <?= $theme->script("jquery.js") ?>
     <?= $theme->script("jquery.form.js") ?>
     <?= $theme->script("jquery-ui.js") ?>
@@ -26,20 +26,17 @@
     <?= $theme->script("jquery.easing.js") ?>
     <?= $theme->script("jquery.fancybox.js") ?>
     <?= $theme->script("ui.init.js") ?>
-    <?= $theme->script("flowplayer.js") ?>
     <?= $theme->head() ?>
   </head>
   <body class="g-fancy-iframe-body">
-    <center>
-      <div id="g-item-box" width="<?=20+($item->width)?>" height="<?=50+($item->height)?>">
-        <?= $item->movie_img(
-              array("class" => "g-movie", "id" => "g-movie-id-{$item->id}",
-                    "style" => "display:block;width:{$item->width}px;height:{$item->height}px")) ?>
-        <?= $theme->context_menu($item, "#g-movie-id-{$item->id}") ?>
-        <div id="g-info">
-          <h1><?= html::purify($item->title) ?></h1>
-          <div><?= nl2br(html::purify($item->description)) ?></div>
-        </div>
-      </div>
-    </body>
-  </html>
+    <div id="g-item-box">
+      <? if (module::get_var("three_nids", "photo_size") == "full"): ?>
+      <img src="<?= $item->file_url() ?>" id="g-item-img"/>
+      <? else: ?>
+      <img src="<?= $item->resize_url() ?>" id="g-item-img"/>
+      <? endif ?>
+
+      <?= $theme->context_menu($item, "#g-item-id-{$item->id}") ?>
+    </div>
+  </body>
+</html>
