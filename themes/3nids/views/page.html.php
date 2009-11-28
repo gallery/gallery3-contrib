@@ -1,6 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<? if ($page_subtype == "photo"): ?>
-<? print new View("photo.html") ?>
+<? /* Don't show the extra chrome for photo and movie pages */ ?>
+<? if ($page_subtype == "photo" || $page_subtype == "movie"): ?>
+<?= $content ?>
 <? return ?>
 <? endif ?>
 

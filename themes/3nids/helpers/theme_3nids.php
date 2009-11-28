@@ -26,7 +26,7 @@ class theme_3nids_Core {
     access::required("view", $item);
 
     $photo_size = module::get_var("3nids", "photo_size");
-    if ($photo_size == "full"){
+    if ($photo_size == "full" || $item->is_movie()){
       $width = $item->width;
       $height = $item->height;
     }else{
@@ -78,6 +78,12 @@ class theme_3nids_Core {
           "\" name=\"" . $fancymodule  . " \">";
       }
     } else if ($item->is_album() && $view_type != "header") {
+      $link .= "<a href=\"" . $item->url() . "\">";
+    } else {
+      // NOTE: we don't want to open an <a> here because $view_type is "header", but lower down
+      // we're going to close one, so that's going to generate a mismatch.  For now, just open a
+      // link anyway.
+      // @todo: figure out what we really should be doing here.
       $link .= "<a href=\"" . $item->url() . "\">";
     }
 
