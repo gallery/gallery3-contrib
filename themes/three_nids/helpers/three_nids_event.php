@@ -20,10 +20,10 @@
 class three_nids_event_Core {
   static function admin_menu($menu, $theme) {
     // Add a link to the three_nids admin page to the Content menu.
-    $menu->get("content_menu")
+    $menu->get("appearance_menu")
       ->append(Menu::factory("link")
                ->id("three_nids")
-               ->label(t("three_nids Settings"))
+               ->label(t("3nids settings"))
                ->url(url::site("admin/three_nids")));
   }
 }
