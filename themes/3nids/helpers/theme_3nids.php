@@ -58,12 +58,12 @@ class theme_3nids_Core {
       $rel = " rel=\"fancygroup\" ";
     }
 
-    if ($item->is_photo() || ($item->is_movie()) && module::is_active("3nids")){
+    if ($item->is_photo() || $item->is_movie()){
       $fancymodule = "";
       if (module::is_active("exif")) {
         $fancymodule .= "exif::" . url::site("exif/show/{$item->id}") . ";;";
       }
-      if (module::is_active("comment") && module::is_active("3nids")) {
+      if (module::is_active("comment")) {
         $fancymodule .= "comment::" . url::site("comments_3nids?item_id={$item->id}") .
           ";;comment_count::" . comment_3nids::count($item) . ";;";
       }
