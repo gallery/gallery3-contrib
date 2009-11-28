@@ -64,8 +64,8 @@ class three_nids_Core {
         $fancymodule .= "exif::" . url::site("exif/show/{$item->id}") . ";;";
       }
       if (module::is_active("comment")) {
-        $fancymodule .= "comment::" . url::site("comments_three_nids?item_id={$item->id}") .
-          ";;comment_count::" . comment_three_nids::count($item) . ";;";
+        $fancymodule .= "comment::" . url::site("three_nids/show_comments/{$item->id}") .
+          ";;comment_count::" . three_nids::comment_count($item) . ";;";
       }
       if ($item->is_photo()){
         $link .= "<a href=\"" . url::site("photos/{$item->id}") ."/?w=" . $width .
@@ -102,14 +102,24 @@ class three_nids_Core {
       if (($item->is_photo() || $item->is_movie()) && $display_comment &&
           module::is_active("comment")) {
         $link .= "<ul class=\"g-metadata\"><li><a href=\"" .
-          url::site("comments_three_nids?item_id={$item->id}") .
-          "\" class=\"iframe fancyclass g-hidden\">" . comment_three_nids::count($item) .
+          url::site("three_nids/show_comments/{$item->id}") .
+          "\" class=\"iframe fancyclass g-hidden\">" . three_nids::comment_count($item) .
           " " . t("comments") . "</a></li></ul>";
       }
     } else {
       $link .= "</a>";
     }
     return $link;
+  }
+
+  public function comment_count($item) {
+    access::required("view", $item);
+
+    return ORM::factory("comment")
+      ->where("item_id", $item->id)
+      ->where("state", "published")
+      ->orderby("created", "DESC")
+      ->count_all();
   }
 }
 ?>

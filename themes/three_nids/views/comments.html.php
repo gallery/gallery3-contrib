@@ -30,9 +30,9 @@
   </head>
   <body class="g-fancy-iframe-body">
     <div class="g-comment-thumb">
-      <img src="<?=$thumb?>"/>
+      <?= $item->thumb_img() ?>
     </div>
-    <a href="<?= url::site("form/add/comments_three_nids/{$item_id}") ?>" id="g-admin-comment-button"
+    <a href="<?= url::site("form/add/comments/{$item->id}") ?>" id="g-admin-comment-button"
        class="g-button ui-corner-all ui-icon-left ui-state-default right">
       <span class="ui-icon ui-icon-comment"></span>
       <?= t("Add a comment") ?>
