@@ -38,7 +38,7 @@ class three_nids_Core {
     $description = "";
     $tags = tag::item_tags($item);
     if(count($tags) && $description_mode == "tags"){
-      $description =  " || " . implode(", ", $tags);
+      $description = " || " . implode(", ", $tags);
     } else if ($description_mode == "item" && $item->description != ""){
       $description = " || " . str_replace("\"","&quot;",$item->description);
     } else if (($description_mode == "parent" ||
@@ -70,12 +70,12 @@ class three_nids_Core {
       if ($item->is_photo()){
         $link .= "<a href=\"" . url::site("photos/{$item->id}") ."/?w=" . $width .
           "xewx&h=" . $height . "xehx\" " . $rel . " class=\"fancyclass iframe\" title=\"" .
-          $title . $description ."\" name=\"" . $fancymodule  . " \">";
+          $title . $description ."\" name=\"" . $fancymodule . " \">";
       } else {
         $link .= "<a href=\"" . url::site("movies/{$item->id}") . "/?w=" .
           strval(20 + $width) . "xewx&h=" . strval(50 + $height) . "xehx\" " . $rel .
           " class=\"fancyclass iframe\" title=\"" . $item->parent()->title . $description .
-          "\" name=\"" . $fancymodule  . " \">";
+          "\" name=\"" . $fancymodule . " \">";
       }
     } else if ($item->is_album() && $view_type != "header") {
       $link .= "<a href=\"" . $item->url() . "\">";
@@ -89,11 +89,11 @@ class three_nids_Core {
 
     if ($view_type != "header") {
       $link .= $item->thumb_img(array("class" => "g-thumbnail")) . "</a>";
-      if ($item->is_album()  && $view_type == "album") {
+      if ($item->is_album() && $view_type == "album") {
         $link .= "<a href=\"" . $item->url() . "?show=" . $item->id .
           "\"><$parent_title_class><span></span>" . html::clean($item->title) .
           "</$parent_title_class></a>";
-      } else if (!($item->is_album()) &&  $view_type == "dynamic")  {
+      } else if (!($item->is_album()) && $view_type == "dynamic") {
         $link .= "<a href=\"" . $item->parent()->url() . "?show=" . $item->id .
           "\" class=\"g-parent-album\"><$parent_title_class><span></span>" .
           html::clean($item->parent()->title) . "</$parent_title_class></a>";
