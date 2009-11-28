@@ -18,11 +18,11 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-class Admin_theme_three_nids_Controller extends Admin_Controller {
+class Admin_three_nids_Controller extends Admin_Controller {
   public function index() {
     // Generate a new admin page.
     $view = new Admin_View("admin.html");
-    $view->content = new View("admin_theme_three_nids.html");
+    $view->content = new View("admin_three_nids.html");
 
     // Generate a form for Google Maps Settings.
     $view->content->theme_form = $this->_get_three_nids_form();
@@ -35,7 +35,7 @@ class Admin_theme_three_nids_Controller extends Admin_Controller {
 
   private function _get_three_nids_form() {
     // Make a new form for inputing information associated with google maps.
-    $form = new Forge("admin/theme_three_nids/savethree_nidsprefs", "", "post",
+    $form = new Forge("admin/three_nids/savethree_nidsprefs", "", "post",
                       array("id" => "gTagsMapAdminForm"));
 
     // Input box for the Maps API Key
@@ -74,6 +74,6 @@ class Admin_theme_three_nids_Controller extends Admin_Controller {
 
     // Display a success message and redirect back to the TagsMap admin page.
     message::success(t("Your Settings Have Been Saved."));
-    url::redirect("admin/theme_three_nids");
+    url::redirect("admin/three_nids");
   }
 }

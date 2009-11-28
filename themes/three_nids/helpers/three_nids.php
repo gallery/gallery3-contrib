@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-class theme_three_nids_Core {
+class three_nids_Core {
   public function fancylink($item, $view_type="album", $group_img = true,
                             $display_comment = true, $parent_title_class = "h2") {
     // view_type = album || dynamic || header
