@@ -18,28 +18,6 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class rwinfo_theme_Core {
-  static function sidebar_blocks($theme) {
-    if ($theme->item()) {
-      if ($theme->item->id == 1) {
-        return ;
-      }
-
-      $block = new Block();
-      $block->css_id = "gMetadata";
-      $block_title = "";
-      if ($theme->item->is_album()) {
-        $block_title = t("Album Info");
-      } else if ($theme->item->is_movie()) {
-        $block_title = t("Movie Info");
-      } else {
-        $block_title = t("Photo Info");
-      }
-      $block->title = $block_title;
-      $block->content = new View("rwinfo_block.html");
-      return $block;
-    }
-  }
-
   static function thumb_info($theme, $item) {
     $results = "";
     if ($item->view_count) {
@@ -48,6 +26,7 @@ class rwinfo_theme_Core {
       $results .= "</li>";
     }
 
+    // rWatcher Edit:  Display Tags
     if (module::is_active("tag")) {
       $tagsItem = ORM::factory("tag")
                   ->join("items_tags", "tags.id", "items_tags.tag_id")
@@ -66,13 +45,16 @@ class rwinfo_theme_Core {
       $results .= "</li>";
       }
     }
+    // rWatcher End Edit
 
     if ($item->owner) {
       $results .= "<li>";
       if ($item->owner->url) {
-        $results .= t("By: %owner_name", array("owner_name" => "<a href=\"{$item->owner->url}\">{$item->owner->full_name}</a>"));
+        $results .= t("By: <a href=\"%owner_url\">%owner_name</a>",
+                      array("owner_name" => $item->owner->display_name(),
+                            "owner_url" => $item->owner->url));
       } else {
-        $results .= t("By: %owner_name", array("owner_name" => "{$item->owner->full_name}"));
+        $results .= t("By: %owner_name", array("owner_name" => $item->owner->display_name()));
       }
       $results .= "</li>";
     }

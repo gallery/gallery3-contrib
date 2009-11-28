@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
   <head> 
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
-    <title>Gallery: Map</title> 
+    <title><?= t("Gallery :: Map") ?></title> 
   </head>
   <body>
 <? } ?>
@@ -20,6 +20,7 @@
       map.addMapType(G_SATELLITE_3D_MAP);
       var mapControl = new GMapTypeControl();
       map.addControl(mapControl);
+      map.enableScrollWheelZoom();
 
       // Set map defaults.
       map.setCenter(new GLatLng(<?=$google_map_latitude ?>, 

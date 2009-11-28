@@ -9,14 +9,14 @@
       } else {
         $metaTags = $metaTags . html::clean($tags[$counter]->name);
       }
-    }  
+    }
   }
 
   // If $metaTags is empty, use the item's title instead.
   if ($metaTags == "") {
     $metaTags = html::clean($item->title);
   }
-  
+
   $metaDescription = "";
   $metaDescription = trim(nl2br(html::purify($item->description)));
   // If description is empty, use title instead.

@@ -49,9 +49,9 @@ $config["methods"] = array(
                    "thumb_bottom" => t("Bottom of thumbnail"),
                    "thumb_info" => t("Thumbnail information"),
                    "thumb_top" => t("Top of thumbnail display")),
-  "menu" => array("album" => t("Add an album menu element"),
-                  "photo" => t("Add an photo menu element")),
-  "event" => array("batch_complete" => t("Batch completion"),
+  "event" => array("admin_menu" => t("Add an admin menu element"),
+                   "album_menu" => t("Add an album menu element"),
+                   "batch_complete" => t("Batch completion"),
                    "comment_add_form" => t("Comment add form creation"),
                    "comment_created" => t("Comment created"),
                    "comment_updated" => t("Comment updated"),
@@ -62,8 +62,9 @@ $config["methods"] = array(
                    "item_related_update" => t("Photo meta data update"),
                    "item_related_update_batch" => t("Photo meta data update"),
                    "item_updated" => t("Album or photo update"),
+                   "photo_menu" => t("Add a photo menu element"),
+                   "site_menu" => t("Add a site menu element"),
                    "user_before_delete" => t("Before user deletion"),
                    "user_created" => t("User created"),
                    "user_login" => t("User login"),
                    "user_logout" => t("User logout")));
-   

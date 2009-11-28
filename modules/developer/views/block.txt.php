@@ -1,5 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <?= "<?php defined(\"SYSPATH\") or die(\"No direct script access.\");" ?>
+
 /**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
@@ -19,20 +20,34 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class <?= $module ?>_block {
-  static function get($block_id) {
+  static function get_site_list() {
+    return array(
+      "<?= "{$module}_site" ?>" => t("<?= $name ?> Sidebar Block"));
+  }
+
+  static function get_admin_list() {
+    return array(
+      "<?= "{$module}_admin" ?>" => t("<?= $name ?> Dashboard Block"));
+  }
+
+  static function get($block_id, $theme) {
     $block = new Block();
-    if ($block_id == "<?= $module ?>") {
-      $block->css_id = "g<?= $css_id ?>Admin";
+    switch ($block_id) {
+    case "<?= "{$module}_admin" ?>":
+      $block->css_id = "g-<?= $css_id ?>-admin";
       $block->title = t("<?= $module ?> Dashboard Block");
-      $block->content = new View("<?= $module ?>block.html");
+      $block->content = new View("admin_<?= $module ?>_block.html");
 
       $block->content->item = ORM::factory("item", 1);
+      break;
+    case "<?= "{$module}_site" ?>":
+      $block->css_id = "g-<?= $css_id ?>-site";
+      $block->title = t("<?= $module ?> Sidebar Block");
+      $block->content = new View("<?= $module ?>_block.html");
+
+      $block->content->item = ORM::factory("item", 1);
+      break;
     }
     return $block;
-  }
-  
-  static function get_list() {
-    return array(
-      "<?= $module ?>" => t("<?= $name ?> Dashboard Block"));
   }
 }

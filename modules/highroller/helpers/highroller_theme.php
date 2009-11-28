@@ -20,7 +20,7 @@
 class highroller_theme_Core {
   static function head($theme) {
     $theme->script("highroller.js");
-    printf("<script>var PICK_THEME_URL = '%s'</script>", url::site("highroller/pick_theme"));
+    printf("<script type=\"text/javascript\"> var PICK_THEME_URL = '%s'; </script>", url::site("highroller/pick_theme"));
   }
 
   static function header_top($theme) {

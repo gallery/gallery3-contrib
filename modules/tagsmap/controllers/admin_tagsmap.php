@@ -111,7 +111,7 @@ class Admin_TagsMap_Controller extends Admin_Controller {
   private function _get_tagsgpsedit_form($tag_id) {
     // Make a new form for editing GPS data associated with a tag ($tag_id).
     $form = new Forge("admin/tagsmap/savegps", "", "post",
-                      array("id" => "gTagsMapAdminForm"));
+                      array("id" => "g-tags-map-admin-form"));
 
     // Add a few input boxes for GPS and Description
     $tagsgps_group = $form->group("TagsMapGPS");
@@ -181,7 +181,7 @@ class Admin_TagsMap_Controller extends Admin_Controller {
   private function _get_googlemaps_form() {
     // Make a new form for inputing information associated with google maps.
     $form = new Forge("admin/tagsmap/savemapprefs", "", "post",
-                      array("id" => "gTagsMapAdminForm"));
+                      array("id" => "g-tags-map-admin-form"));
 
     // Input box for the Maps API Key
     $googlemap_group = $form->group("GoogleMapsKey");

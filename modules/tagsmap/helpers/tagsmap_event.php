@@ -40,4 +40,28 @@ class tagsmap_event_Core {
                ->label(t("TagsMap Settings"))
                ->url(url::site("admin/tagsmap")));
   }
+
+  static function photo_menu($menu, $theme) {
+    $menu->append(Menu::factory("link")
+         ->id("tagsmap")
+         ->label(t("View Map"))
+         ->url(url::site("tagsmap/googlemap/"))
+         ->css_id("g-tagsmap-link"));
+  }
+
+  static function movie_menu($menu, $theme) {
+    $menu->append(Menu::factory("link")
+         ->id("tagsmap")
+         ->label(t("View Map"))
+         ->url(url::site("tagsmap/googlemap/"))
+         ->css_id("g-tagsmap-link"));
+  }
+  
+  static function album_menu($menu, $theme) {
+    $menu->append(Menu::factory("link")
+         ->id("tagsmap")
+         ->label(t("View Map"))
+         ->url(url::site("tagsmap/googlemap/"))
+         ->css_id("g-tagsmap-link"));
+  }
 }

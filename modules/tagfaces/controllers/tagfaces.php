@@ -27,10 +27,11 @@ class tagfaces_Controller extends Controller {
     access::required("edit", $item);
     
     // Create the page.
-    $template = new Theme_View("page.html", "drawfaces");
+    $template = new Theme_View("page.html", "other", "drawfaces");
     $template->set_global("item_id", $id);
     $template->set_global("page_title", t("Draw Faces"));
-    $template->set_global("page_type", "photoface");
+    $template->set_global("page_type", "other");
+    $template->set_global("page_subtype", "photoface");
     $template->content = new View("drawfaces.html");
     $template->content->title = t("Tag Faces");
     $template->content->form = $this->_get_faces_form($id);
@@ -158,7 +159,7 @@ class tagfaces_Controller extends Controller {
     
     // Make a new Form.
     $form = new Forge("tagfaces/saveface", "", "post",
-                      array("id" => "gTagFacesForm"));
+                      array("id" => "g-tag-faces-form"));
 
     // Create an array of all the tags for the current item.
     $all_tags = ORM::factory("tag")
@@ -214,7 +215,7 @@ class tagfaces_Controller extends Controller {
     
     // Make a new Form.
     $form = new Forge("tagfaces/delface", "", "post",
-                      array("id" => "gTagDelFacesForm"));
+                      array("id" => "g-tag-del-faces-form"));
 
     // Create an array of all the tags that already have faces.
     $existing_faces = ORM::factory("items_face")

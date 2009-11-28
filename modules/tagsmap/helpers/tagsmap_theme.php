@@ -19,20 +19,7 @@
  */
 class tagsmap_theme_Core {
 		
-  static function sidebar_blocks($theme) {
-    // Display a link to the map in the Gallery sidebar
-    
-    // Make sure the current page belongs to an item.
-    if (!$theme->item()) {
-      return;
-    }
-    
-    // Create a new block to display the link in.
-    $block = new Block();
-    $block->css_id = "gTagsMap";
-    $block->title = t("Map:");
-    $block->content = new View("tagsmap_block.html");
-    
-    return $block;
+  static function head($theme) {
+    $theme->css("tagsmap_menu.css");
   }
 }

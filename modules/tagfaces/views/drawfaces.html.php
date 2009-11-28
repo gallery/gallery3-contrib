@@ -44,7 +44,7 @@
   // Remember to invoke within jQuery(window).load(...)
   // If you don't, Jcrop may not initialize properly
   jQuery(document).ready(function(){
-    jQuery('#gPhotoId-<?=$item->id ?>').Jcrop({
+    jQuery('#g-photo-id-<?=$item->id ?>').Jcrop({
       onChange: showCoords,
       onSelect: showCoords
     });
@@ -60,8 +60,8 @@
   };
 </script>
 
-<div id="gAlbumHeader">
-  <div id="gAlbumHeaderButtons">
+<div id="g-album-header">
+  <div id="g-album-header-buttons">
     <?= $theme->dynamic_top() ?>
   </div>
   <h1><?= html::clean($title) ?></h1>
@@ -69,12 +69,12 @@
   <p><?=t("Use the mouse to select a face on the image below."); ?></p>
 
 <fieldset> 
-  <div id="gItem">
-    <div id="gInfo">
+  <div id="g-item">
+    <div id="g-info">
       <h2><?= html::purify($item->title) ?></h2>
     </div>
-    <div id="gPhoto">
-      <?= $item->resize_img(array("id" => "gPhotoId-{$item->id}", "class" => "gResize")) ?>
+    <div id="g-photo">
+      <?= $item->resize_img(array("id" => "g-photo-id-{$item->id}", "class" => "g-resize")) ?>
     </div>
   </div>
 </fieldset> 
@@ -107,14 +107,14 @@ li {
 }
 </style>
 
-<div id="gCoordinates">
+<div id="g-coordinates">
   <?= $form ?>
 </div>
 
 <br/><br/><br/>
 
 <fieldset>
-<div id="gDeleteFaces">
+<div id="g-delete-faces">
   <h2><?= t("Delete Faces") ?></h2>
   <p><?=t("The following tags already have faces associated with them."); ?></p>
   <?= $delete_form ?>
@@ -123,10 +123,8 @@ li {
 
 <br/>
 
-<div id="gExitFaces">
+<div id="g-exit-faces">
 <p><a href="<?= url::abs_site("{$item->type}s/{$item->id}") ?>"><?= t("Return to photo") ?></a></p>
 </div>
 
 <?= $theme->dynamic_bottom() ?>
-
-

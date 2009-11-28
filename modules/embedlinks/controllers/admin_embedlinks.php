@@ -79,7 +79,7 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
   private function _get_admin_form() {
     // Make a new Form.
     $form = new Forge("admin/embedlinks/saveprefs", "", "post",
-                      array("id" => "gEmbedLinksAdminForm"));
+                      array("id" => "g-embed-links-adminForm"));
 
     // Make an array for the different types of link codes.
     $linkCodes["HTMLCode"] = array(t("Show HTML Links"), module::get_var("embedlinks", "HTMLCode"));

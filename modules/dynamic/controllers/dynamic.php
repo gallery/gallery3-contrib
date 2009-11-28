@@ -47,7 +47,7 @@ class Dynamic_Controller extends Controller {
       Kohana::show_404();
     }
 
-    $template = new Theme_View("page.html", "dynamic");
+    $template = new Theme_View("page.html", "other", "dynamic");
     $template->set_global("page_size", $page_size);
     $template->set_global("children", ORM::factory("item")
                           ->viewable()

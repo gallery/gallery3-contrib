@@ -42,9 +42,9 @@ class basket_Core {
   static $format= array(
     "AUD" => "$",
     "CAD" => "$",
-    "EUR" => "€",
-    "GBP" => "£",
-    "JPY" => "¥",
+    "EUR" => "&euro;",
+    "GBP" => "&pound;",
+    "JPY" => "&yen;",
     "USD" => "$",
     "NZD" => "$",
     "CHF" => "",
@@ -61,15 +61,15 @@ class basket_Core {
 
 
  static function get_configure_form() {
-    $form = new Forge("admin/configure", "", "post", array("id" => "gConfigureForm"));
+    $form = new Forge("admin/configure", "", "post", array("id" => "g-configure-form"));
     $group = $form->group("configure")->label(t("Configure Basket"));
-    $group->input("email")->label(t("Offline Paying Email Address"))->id("gOrderEmailAddress");
+    $group->input("email")->label(t("Offline Paying Email Address"))->id("g-order-email-address");
     $group->dropdown("currency")
       ->label(t("Currency"))
       ->options(self::$currencies);
 
-    $group->checkbox("paypal")->label(t("Use Paypal"))->id("gPaypal");
-    $group->input("paypal_account")->label(t("Paypal E-Mail Address"))->id("gPaypalAddress");
+    $group->checkbox("paypal")->label(t("Use Paypal"))->id("g-paypal");
+    $group->input("paypal_account")->label(t("Paypal E-Mail Address"))->id("g-paypal-address");
     $group->submit("")->value(t("Save"));
     return $form;
   }
@@ -114,7 +114,7 @@ class basket_Core {
   }
 
   static function formatMoney($money){
-    return self::$format[self::getCurrency()].number_format($money);
+    return self::$format[self::getCurrency()].number_format($money,2);
   }
 
   static function setEmailAddress($email){
@@ -141,6 +141,12 @@ class basket_Core {
 <input type=\"hidden\" name=\"currency_code\" value=\"".self::getCurrency()."\">
 <input type=\"hidden\" name=\"business\" value=\"".self::getPaypalAccount()."\"/>";
 
+    $postage = $session_basket->postage_cost();
+    if ($postage > 0) {
+      $form = $form."
+<input type=\"hidden\" name=\"shipping_1\" value=\"".$postage."\">";
+    }
+
     $id = 1;
     foreach ($session_basket->contents as $key => $basket_item){
       $form = $form."
@@ -149,6 +155,7 @@ class basket_Core {
 <input type=\"hidden\" name=\"quantity_$id\" value=\"$basket_item->quantity\"/>";
       $id++;
     }
+
     $form = $form."</form>";
 
     return $form;
