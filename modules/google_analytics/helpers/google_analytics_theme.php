@@ -19,6 +19,11 @@
  */
 class google_analytics_theme {
   static function page_bottom($theme) {
+    $code = module::get_var("google_analytics", "code");
+    if (!$code) {
+      return;
+    }
+
     $google_code = '
   	<!-- Begin Google Analytics -->
 	<script type="text/javascript">
@@ -29,7 +34,7 @@ class google_analytics_theme {
 	<script type="text/javascript">
 		try
 		{
-			var pageTracker = _gat._getTracker("'.module::get_var("google_analytics", "code").'");
+			var pageTracker = _gat._getTracker("' . $code . '");
 			pageTracker._trackPageview();
 		}
 		catch(err){}
