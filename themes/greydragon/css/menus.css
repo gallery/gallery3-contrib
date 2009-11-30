@@ -1,0 +1,27 @@
+#g-site-menu                   { position: absolute; bottom: 0px; left: 310px; }
+#g-site-menu ul                { float: left; padding: 0px; margin: 0px; width: 100%; border: #000000 0px solid; white-space: nowrap; z-index: 100; }
+#g-site-menu a                 { display: block; padding: 3px 5px 4px 5px; text-align: center; width: auto; letter-spacing: 0px; cursor: pointer; }
+#g-site-menu li                { float: left; padding: 0px; background-color: transparent; border: transparent 1px solid; }
+#g-site-menu li a:hover        { color: #000000; cursor: pointer; background-color: #303030; }
+#g-site-menu li:hover,
+#g-site-menu li.iemhover       { border: #303030 1px solid; background-color: #303030; border-bottom: #000000 1px solid; }
+#g-site-menu li ul a           { text-align: left; padding: 4px 0px; text-indent: 8px; letter-spacing: 0px; cursor: pointer; }
+#g-site-menu li ul a:hover     { background-image: none; cursor: pointer; }
+#g-site-menu li ul             { border: #000000 1px solid; position: absolute; margin: 0px 0px 0px -1px; width: 135px; height: auto; left: -999em; }
+#g-site-menu li ul li          { border: #C0C0C0 0px solid; background-color: #212121; }
+#g-site-menu li ul li:hover,
+#g-site-menu li ul li.iemhover { border: #C0C0C0 0px solid; background-color: #303030; }
+
+#g-site-menu li li             { width: 135px; padding-right: 0px; }
+#g-site-menu li ul a           { width: 135px; }
+#g-site-menu li ul ul          { margin: -21px 0px 0px 135px; }
+#g-site-menu li:hover ul ul,
+#g-site-menu li:hover ul ul ul,
+#g-site-menu li.iemhover ul ul,
+#g-site-menu li.iemhover ul ul ul { left: -999em; }
+#g-site-menu li:hover ul,
+#g-site-menu li li:hover ul,
+#g-site-menu li li li:hover ul,
+#g-site-menu li.iemhover ul,
+#g-site-menu li li.iemhover ul,
+#g-site-menu li li li.iemhover ul { left: auto; }
