@@ -1,0 +1,33 @@
+Grey Dragon Theme Changelog
+
+version 1.5.7
+- Status message has been moved into header as popup to prevent obstruction of the main view.
+  jQuery is used to fade it out in 10 sec.
+- Improved logic for dialogs on submit
+- Theme related JS has been moved out of the page.html.php
+
+version 1.5.6
+- Fixed issue with tollbar buttons not properly aligned/shown when page is resized.
+- Copyright info moved into DB. To change default settings add [th_greydragon/copyright] into VARS table.
+
+version 1.5.5
+- CSS fixes.
+- Theme adjusted to be compatible with latest Git.
+- Login links are moved into footer.
+- Pagination module redesigned to support new structure of paging data.
+
+version 1.5.4
+- CSS fixes.
+- Added support for Comments block.
+- Improved support for Modal dialogs.
+
+version 1.5.3
+- Sync to git.
+- Exif menu customization is now part of the theme.
+- Sidebar management button is disabled for current mode.
+
+version 1.5.2
+- Code, layout, css cleanup.
+- New thumbs for buttons.
+- First set of Ajax dialogs is ready and now operational: Login, user info, edit album, exit info.
+- Fixed some browser related issues.

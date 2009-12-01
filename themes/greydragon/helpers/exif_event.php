@@ -17,30 +17,24 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class google_analytics_theme {
-  static function page_bottom($theme) {
-    $code = module::get_var("google_analytics", "code");
-    if (!$code) {
-      return;
+class exif_event_Core {
+  static function item_created($item) {
+    if (!$item->is_album()) {
+      exif::extract($item);
     }
+  }
 
-    $google_code = '
-  	<!-- Begin Google Analytics -->
-	<script type="text/javascript">
-		var gaJsHost = (("https:" == document.location.protocol) ?
-		"https://ssl." : "http://www.");
-		document.write(unescape("%3Cscript src=\'" + gaJsHost + "google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));
-	</script>
-	<script type="text/javascript">
-		try
-		{
-			var pageTracker = _gat._getTracker("' . $code . '");
-			pageTracker._trackPageview();
-		}
-		catch(err){}
-	</script>
-	<!-- End Google Analytics -->';
+  static function item_deleted($item) {
+    Database::instance()->delete("exif_records", array("item_id" => $item->id));
+  }
 
-    return $google_code;
+  static function photo_menu($menu, $theme) {
+    $item = $theme->item();
+    $menu->append(
+      Menu::factory("link")
+      ->id("exifdata-link")
+      ->label(t("Photo Details"))
+      ->url(url::site("exif/show/$item->id"))
+      ->css_id("g-exifdata-link"));
   }
 }
