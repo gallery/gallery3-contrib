@@ -1,0 +1,118 @@
+#header {
+  background-color: #E8E8E8;
+  left: 0px;
+  min-height: 90px;
+  padding: 0 20px;
+  position: fixed;
+  right: 0px;
+  height: 90px;
+}
+
+#header div {
+  background-image: url(g3_web.png);
+  background-repeat: no-repeat;
+  height: 90px;
+}
+
+#body {
+  background-color: #E8E8E8;
+  bottom: 40px;
+  left: 0px;
+  position: fixed;
+  right: 0px;
+  top: 90px;
+}
+
+#body #content {
+  background-color: #FFFFFF;
+  border: 1px solid #CCCCCC;
+  padding: 10px 20px;
+  height: 100%;
+}
+
+form li {
+  padding-top: .4em;
+}
+
+form legend {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+span.error {
+  color: #FF0000;
+}
+
+#footer {
+  background-color: #E8E8E8;
+  bottom: 0px;
+  left: 0px;
+  min-height: 40px;
+  padding: 10px 20px;
+  position: fixed;
+  right: 0px;
+}
+
+.copyright {
+  font-size: 0.9em;
+  text-transform: uppercase;
+  color: #557d10;
+}
+
+#body #left {
+  background-color: #FFFFFF;
+  border: 2px inset;
+  bottom: 20px;
+  left: 20px;
+  margin: 0;
+  padding: 5px;
+  position: absolute;
+  top: 11px;
+  width: 191px;
+}
+
+#body #left #album_tree {
+  height: 100%;
+  overflow: auto;
+  font-size: 1.1em;
+}
+
+#body #left #album_tree ul li {
+  padding: 0 0 .2em 1.2em;
+}
+
+#body #center {
+  background-color: #FFFFFF;
+  border: 2px inset;
+  bottom: 20px;
+  left: 225px;
+  overflow: auto;
+  padding: 5px;
+  position: absolute;
+  right: 20px;
+  top: 11px;
+}
+
+.tree-title {
+  cursor: pointer;
+}
+
+#body #center .thumb-grid-cell {
+  float: left;
+  margin-right: 10px;
+}
+
+.ui-icon-left .ui-icon {
+  float: left;
+  margin-right: 0.2em;
+}
+
+.ui-icon-left .ui-icon-none {
+  float: left;
+  padding-left: 15px;
+}
+
+.ui-selected {
+  background-color: #E8E8E8;
+  color: #FF9933;
+}
