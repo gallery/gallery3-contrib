@@ -47,20 +47,42 @@
           $(parent).replaceWith(data);
         });
       }
+      return false;
     });
+
     $(".ui-icon-minus", obj).live("click", function (event) {
       $("~ ul", this).hide();
       $(this).removeClass("ui-icon-minus");
       $(this).addClass("ui-icon-plus");
+      return false;
     });
+
+    $("#center a.child-link").live("click", function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var path = $(this).parent("li").attr("ref");
+      var url = $(this).attr("href");
+
+      $.get("/g3_client/index.php/g3_client/detail", {path: path}, function(data, textStatus) {
+        $("#center").html(data);
+        var album = $("#album_tree [ref='" + path + "']");
+        if (album.length > 0) {
+          $(".ui-selected").removeClass("ui-selected");
+          $(".tree-title", album).addClass("ui-selected");
+        }
+      });
+      return false;
+    });
+
     $(".tree-title", obj).click(function (event) {
-        $.get("/g3_client/index.php/g3_client/detail",
-              {path:  $(this).parent("li").attr("ref")},
-              function(data, textStatus) {
+      $.get("/g3_client/index.php/g3_client/detail",
+            {path:  $(this).parent("li").attr("ref")},
+            function(data, textStatus) {
           $("#center").html(data);
-        });
+      });
       $(".ui-selected").removeClass("ui-selected");
       $(this).addClass("ui-selected");
+      return false;
     });
     $("#album_tree [ref=''] .tree-title:first").addClass("ui-selected");
   };
