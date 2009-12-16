@@ -99,7 +99,7 @@ span.error {
   bottom: 20px;
   left: 225px;
   overflow: auto;
-  padding: 5px;
+  padding: 10px;
   position: absolute;
   right: 20px;
   top: 11px;
@@ -111,7 +111,17 @@ span.error {
 
 #body #center .thumb-grid-cell {
   float: left;
+  height: 200px;
+  line-height: 200px;
+  margin-bottom: 10px;
   margin-right: 10px;
+  text-align: center;
+  width: 200px;
+}
+
+#body #center .thumb-grid-cell img,
+#body #center .thumb-grid-cell span {
+  vertical-align: middle;
 }
 
 .ui-icon-left .ui-icon {
