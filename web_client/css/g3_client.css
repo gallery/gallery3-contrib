@@ -59,6 +59,18 @@ span.error {
   color: #557d10;
 }
 
+#body #login {
+  background-color: #FFFFFF;
+  border: 2px inset;
+  bottom: 20px;
+  left: 20px;
+  margin: 0;
+  padding: 5px;
+  position: absolute;
+  right: 20px;
+  top: 11px;
+}
+
 #body #left {
   background-color: #FFFFFF;
   border: 2px inset;

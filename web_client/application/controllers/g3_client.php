@@ -26,8 +26,7 @@ class G3_Client_Controller extends Template_Controller {
 
     if (Session::instance()->get("g3_client_access_token")) {
       $resource = G3Remote::instance()->get_resource("gallery");
-      $this->template->album_tree = $this->_get_album_tree($resource);
-      $this->template->detail = $this->_get_detail($resource);
+      $this->template->content = $this->_get_main_view($resource);
     } else {
       $this->template->content = new View('login.html');
       $this->template->content->errors = $this->template->content->form =
@@ -45,9 +44,8 @@ class G3_Client_Controller extends Template_Controller {
         $token = G3Remote::instance()->get_access_token($post["user"], $post["password"]);
         Session::instance()->set("g3_client_access_token", $token);
         $resource = G3Remote::instance()->get_resource("gallery");
-        $content = array(
-          "album_tree" => $this->_get_album_tree($resource),
-          "detail" => $this->_get_detail($resource));
+        $valid = true;
+        $content = $this->_get_main_view($resource);
       } catch (Exception $e) {
         Kohana_Log::add("error", Kohana_Exception::text($e));
         $valid = false;
@@ -61,7 +59,7 @@ class G3_Client_Controller extends Template_Controller {
     }
 
     $this->auto_render = false;
-    print json_encode(array("status" => $valid ? "ok" : "error", "content" => $content));
+    print json_encode(array("status" => $valid ? "ok" : "error", "content" => (string)$content));
   }
 
   public function albums() {
@@ -88,6 +86,13 @@ class G3_Client_Controller extends Template_Controller {
       }
       $v->element->children[] = $child;
     }
+    return $v;
+  }
+
+  private function _get_main_view($resource) {
+    $v = new View("main.html");
+    $v->album_tree = $this->_get_album_tree($resource);
+    $v->detail = $this->_get_detail($resource);
     return $v;
   }
 

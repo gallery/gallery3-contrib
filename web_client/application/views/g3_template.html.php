@@ -18,10 +18,11 @@
   <?= html::script("js/jquery.js") ?>
   <?= html::script("js/jquery.form.js") ?>
   <?= html::script("js/jquery-ui.js") ?>
+  <?= html::script("lib/flowplayer.js") ?>
   <?= html::script("js/g3_client.js") ?>
   <script type="text/javascript">
     $(document).ready(function () {
-      $("#body div").gallery3_client();
+      $("#body").gallery3_client();
     });
   </script>
 </head>
@@ -31,12 +32,7 @@
       <div>&nbsp;</div>
     </div>
     <div id="body">
-      <div id="left">
-        <ul id="album_tree"><?= $album_tree ?></ul>
-      </div>
-      <div id="center">
-        <?= $detail ?>
-      </div>
+      <?= $content ?>
     </div>
     <div id="footer" class="ui-helper-clearfix">
       <p class="copyright">
