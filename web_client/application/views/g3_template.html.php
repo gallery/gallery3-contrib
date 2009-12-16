@@ -22,20 +22,20 @@
   <?= html::script("js/g3_client.js") ?>
   <script type="text/javascript">
     $(document).ready(function () {
-      $("#body").gallery3_client();
+      $("#wc-body").gallery3_client();
     });
   </script>
 </head>
 <body>
   <div id="doc4" class="yui-t5">
-    <div id="header" class="ui-helper-clearfix">
+    <div id="wc-header" class="ui-helper-clearfix">
       <div>&nbsp;</div>
     </div>
-    <div id="body">
+    <div id="wc-body">
       <?= $content ?>
     </div>
-    <div id="footer" class="ui-helper-clearfix">
-      <p class="copyright">
+    <div id="wc-footer" class="ui-helper-clearfix">
+      <p class="wc-copyright">
       <?= __('Rendered in {execution_time} seconds, using {memory_usage} of memory')?><br />
       Copyright ©2009–2010 Gallery Team
       </p>

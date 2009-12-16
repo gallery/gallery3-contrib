@@ -1,4 +1,4 @@
-#header {
+#wc-header {
   background-color: #E8E8E8;
   left: 0px;
   min-height: 90px;
@@ -8,13 +8,13 @@
   height: 90px;
 }
 
-#header div {
+#wc-header div {
   background-image: url(g3_web.png);
   background-repeat: no-repeat;
   height: 90px;
 }
 
-#body {
+#wc-body {
   background-color: #E8E8E8;
   bottom: 40px;
   left: 0px;
@@ -23,7 +23,7 @@
   top: 90px;
 }
 
-#body #content {
+#wc-body #content {
   background-color: #FFFFFF;
   border: 1px solid #CCCCCC;
   padding: 10px 20px;
@@ -43,7 +43,7 @@ span.error {
   color: #FF0000;
 }
 
-#footer {
+#wc-footer {
   background-color: #E8E8E8;
   bottom: 0px;
   left: 0px;
@@ -53,13 +53,13 @@ span.error {
   right: 0px;
 }
 
-.copyright {
+.wc-copyright {
   font-size: 0.9em;
   text-transform: uppercase;
   color: #557d10;
 }
 
-#body #login {
+#wc-body #login {
   background-color: #FFFFFF;
   border: 2px inset;
   bottom: 20px;
@@ -71,7 +71,7 @@ span.error {
   top: 11px;
 }
 
-#body #left {
+#wc-body #left {
   background-color: #FFFFFF;
   border: 2px inset;
   bottom: 20px;
@@ -83,17 +83,22 @@ span.error {
   width: 191px;
 }
 
-#body #left #album_tree {
+#wc-body #left #album_tree {
   height: 100%;
   overflow: auto;
   font-size: 1.1em;
 }
 
-#body #left #album_tree ul li {
+#wc-body #left #album_tree ul li {
   padding: 0 0 .2em 1.2em;
 }
 
-#body #center {
+#wc-body #left #album_tree div {
+  border: none !important;
+  background: none !important;
+}
+
+#wc-body #center {
   background-color: #FFFFFF;
   border: 2px inset;
   bottom: 20px;
@@ -109,18 +114,22 @@ span.error {
   cursor: pointer;
 }
 
-#body #center .thumb-grid-cell {
+#wc-body #center .thumb-grid-cell {
   float: left;
   height: 200px;
-  line-height: 200px;
-  margin-bottom: 10px;
-  margin-right: 10px;
+  line-height: 220px;
+  margin: 10px;
   text-align: center;
   width: 200px;
 }
 
-#body #center .thumb-grid-cell img,
-#body #center .thumb-grid-cell span {
+#wc-body #center .thumb-grid-cell.ui-selected {
+  margin: 2px;
+  padding: 7px;
+}
+
+#wc-body #center .thumb-grid-cell img,
+#wc-body #center .thumb-grid-cell span {
   vertical-align: middle;
 }
 
@@ -135,6 +144,90 @@ span.error {
 }
 
 .ui-selected {
-  background-color: #E8E8E8;
+  background: #F6F6F6 url(images/ui-bg_glass_100_f6f6f6_1x400png) repeat-x scroll 50% 50%;
+  border: 1px solid #CCCCCC;
+  //background-color: #E8E8E8;
   color: #FF9933;
+  padding: 0 5px;
+}
+
+.wc-button {
+  outline: 0;
+  margin:0 4px 0 0;
+  padding: .4em 1em;
+  text-decoration:none !important;
+  cursor:pointer;
+  position: relative;
+  text-align: center;
+  zoom: 1;
+}
+
+.wc-button .ui-icon {
+  position: absolute;
+  top: 50%;
+  margin-top: -8px;
+  left: 50%;
+  margin-left: -8px;
+}
+
+a.wc-button {
+  float:left;
+}
+
+/* remove extra button width in IE */
+button.wc-button {
+  width:auto;
+  overflow:visible;
+}
+
+.wc-button-icon-left {
+  padding-left: 2.1em;
+}
+.wc-button-icon-right {
+  padding-right: 2.1em;
+}
+
+.wc-button-icon-left .ui-icon {
+  right: auto;
+  left: .2em;
+  margin-left: 0;
+}
+
+.wc-button-icon-right .ui-icon {
+  left: auto;
+  right: .2em;
+  margin-left: 0;
+}
+
+.wc-button-icon-solo {  /* solo icon buttons must have block properties for the text-indent to work */
+   display: block;
+   width: 8px;
+   text-indent: -9999px;
+}
+
+.wc-buttonset {
+  float: left;
+}
+
+.wc-buttonset .wc-button {
+  float: left;
+}
+
+.wc-buttonset-single .wc-button,
+.wc-buttonset-multi .wc-button {
+  margin-right: -1px;
+}
+
+.wc-toolbar {
+  padding: .5em;
+  margin: 0;
+}
+
+.wc-toolbar .wc-buttonset {
+  margin-right:1.5em;
+  padding-left: 1px;
+}
+
+.wc-toolbar .wc-button {
+  font-size: 1em;
 }
