@@ -1,6 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <div id="movie">
-  <a id="movie-link" href="<?= $resource->url ?>" title="<?= $resource->title ?>" />
+  <a id="movie-link" href="<?= $resource->url ?>" title="<?= $resource->title ?>"
+   style="display: block; height: <?= $resource->size->height ?>px; width: <?= $resource->size->width ?>px;" />
 </div>
 <script type="text/javascript">
   flowplayer(
