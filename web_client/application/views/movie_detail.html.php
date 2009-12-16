@@ -6,13 +6,13 @@
   flowplayer(
     "movie-link",
     {
-      src: "http://sandbox.timalmdal.com/g3_client/lib/flowplayer.swf",
+      src: "<?= url::file("lib/flowplayer.swf") ?>",
       wmode: "transparent"
     },
     {
       plugins: {
         h264streaming: {
-          url: "http://sandbox.timalmdal.com/g3_client/lib/flowplayer.h264streaming.swf"
+          url: "<?= url::file("lib/flowplayer.h264streaming.swf") ?>"
         },
         controls: {
           autoHide: 'always',
