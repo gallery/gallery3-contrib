@@ -1,6 +1,5 @@
 (function($) {
   var _paths = [];
-   var _current_path = "";
 
   $.fn.gallery3_client = function() {
     return this.each(function(i) {
@@ -23,7 +22,7 @@
           $(obj).html(data.content);
           if (data.status == "ok") {
             initializeDetail(obj);
-            save_paths(".tree-title.ui-selected");
+            save_paths($(".tree-title.ui-selected").parents("li:first").attr("ref"));
           } else {
             ajaxifyLoginForm(obj);
           }
@@ -70,7 +69,7 @@
       get_detail(path, function(path) {
         var album = $("#album_tree [ref='" + path + "']");
         if (album.length > 0) {
-          $(".ui-selected").removeClass("ui-selected");
+          $(".tree-title.ui-selected").removeClass("ui-selected");
           $(".tree-title", album).addClass("ui-selected");
         }
       });
@@ -80,6 +79,7 @@
     $("#center a.child-link").live("click", function(event) {
       $(".thumb-grid-cell.ui-selected").removeClass("ui-selected");
       $(this).parents("li:first").addClass("ui-selected");
+      _set_navigation_buttons($(".thumb-grid-cell.ui-selected").attr("ref"));
       return false;
     });
 
@@ -87,8 +87,41 @@
       if ($(this).parent("a").hasClass("ui-state-disabled")) {
         return false;
       }
-      if ($("span", this).hasClass("ui-icon-eject")) {
+      var selected = $(".thumb-grid-cell.ui-selected");
+      switch ($(this).attr("ref")) {
+      case "parent":
         get_detail($("span", this).attr("ref"));
+        break;
+      case "first":
+      case "previous":
+      case "next":
+      case "last":
+        if (selected.length == 0) {
+          get_detail($("span", this).attr("ref"));
+        } else {
+          selected.removeClass("ui-selected");
+          switch ($(this).attr("ref")) {
+          case "first":
+            $(".thumb-grid-cell:first").addClass("ui-selected");
+            break;
+          case "previous":
+            selected.prev().addClass("ui-selected");
+            break;
+          case "next":
+            selected.next().addClass("ui-selected");
+            break;
+          case "last":
+            $(".thumb-grid-cell:last").addClass("ui-selected");
+            _set_navigation_buttons();
+            break;
+          }
+          _set_navigation_buttons();
+        }
+        break;
+      default:
+        console.group("process toolbar button click: " + $(this).attr("ref"));
+        console.log(($("span", this).attr("ref")));
+        console.groupEnd();
       }
       return false;
     });
@@ -96,9 +129,9 @@
     $(".tree-title", obj).live("click", function (event) {
       get_detail($(this).parents("li:first").attr("ref"));
       $(".ui-selected").removeClass("ui-selected");
-        $(this).addClass("ui-selected");
-        return false;
-      });
+      $(this).addClass("ui-selected");
+      return false;
+    });
 
     $("#album_tree [ref=''] .tree-title:first").addClass("ui-selected");
     set_selected_thumb();
@@ -116,10 +149,9 @@
       $("#wc-detail").html(data);
       set_selected_thumb();
       save_paths(path);
-      if (callback != undefined) {
+      if (callback) {
         callback(path);
       }
-      _current_path = path;
       console.groupEnd();
     });
   }
@@ -127,9 +159,7 @@
   function save_paths(path) {
     _paths[path] = [];
     $(".thumb-grid-cell").each(function(i) {
-      var item_path = $(this).attr("ref");
-      var idx = item_path.lastIndexOf("/");
-      _paths[path][i] = idx != -1 ? item_path.substr(idx + 1) : item_path;
+      _paths[path][i] = $(this).attr("ref");
     });
 
     console.dir(_paths);
@@ -137,17 +167,67 @@
   }
 
   function enable_toolbar_buttons(path) {
-    var idx = path.lastIndexOf("/");
-    var parent_path = "";
-    if (idx != -1) {
-      parent_path = path.substring (0, idx);
-    }
-    console.log("path: " + path + "; parent_path: " + parent_path);
     if (path != "") {
       $(".wc-toolbar .ui-icon-eject").parent("a").removeClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-trash").parent("a").removeClass("ui-state-disabled");
     } else {
       $(".wc-toolbar .ui-icon-eject").parent("a").addClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-trash").parent("a").addClass("ui-state-disabled");
     }
-    $(".wc-toolbar .ui-icon-eject").attr("ref", parent_path);
+    $(".wc-toolbar .ui-icon-eject").attr("ref", _get_parent_path(path));
+    $(".wc-toolbar .ui-icon-pencil").attr("ref", path);
+
+    _set_navigation_buttons();
+  }
+
+  function _get_parent_path(path) {
+    var idx = path.lastIndexOf("/");
+    return idx != -1 ? path.substring(0, idx) : "";
+  }
+
+  function _set_navigation_buttons() {
+    var selected_path = $(".thumb-grid-cell.ui-selected").attr("ref");
+    if (selected_path == undefined) { // not found must be photo or movie
+      selected_path = $("#wc-detail div:first").attr("ref");
+    }
+    var parent_path = _get_parent_path(selected_path);
+    console.log("path: " + selected_path + "; parent_path: " + parent_path);
+    var paths = _paths[parent_path];
+    console.group("parent path");
+    console.dir(paths);
+    console.groupEnd();
+
+    if (paths.length > 0) {
+      $(".wc-toolbar .ui-icon-seek-first").parent("a").removeClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-seek-end").parent("a").removeClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-seek-first").attr("ref", paths[0]);
+      $(".wc-toolbar .ui-icon-seek-end").attr("ref", paths[paths.length - 1]);
+    } else {
+      $(".wc-toolbar .ui-icon-seek-first").parent("a").addClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-seek-end").parent("a").addClass("ui-state-disabled");
+    }
+
+    var i = 0;
+    for (; i < paths.length; i++) {
+      if (paths[i] == selected_path) {
+        break;
+      }
+    }
+
+    if (i > 0) {
+      $(".wc-toolbar .ui-icon-seek-prev").parent("a").removeClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-seek-prev").attr("ref", paths[i - 1]);
+    } else {
+      $(".wc-toolbar .ui-icon-seek-first").parent("a").addClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-seek-prev").parent("a").addClass("ui-state-disabled");
+    }
+    if (i < paths.length - 1) {
+      $(".wc-toolbar .ui-icon-seek-next").parent("a").removeClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-seek-next").attr("ref", paths[i + 1]);
+    } else {
+      $(".wc-toolbar .ui-icon-seek-next").parent("a").addClass("ui-state-disabled");
+      $(".wc-toolbar .ui-icon-seek-end").parent("a").addClass("ui-state-disabled");
+    }
+    console.log("found path: " + paths[i]);
   }
  })(jQuery);

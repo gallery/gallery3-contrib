@@ -103,29 +103,33 @@ span.error {
   border: 2px inset;
   bottom: 20px;
   left: 225px;
-  overflow: auto;
   padding: 10px;
   position: absolute;
   right: 20px;
   top: 11px;
 }
 
+#wc-body #wc-detail {
+  bottom: 0;
+  left: 10px;
+  overflow-y: auto;
+  position: absolute;
+  right: 10px;
+  top: 60px;
+}
 .tree-title {
   cursor: pointer;
 }
 
 #wc-body #center .thumb-grid-cell {
+  border: 1px solid transparent;
   float: left;
   height: 200px;
   line-height: 220px;
-  margin: 10px;
-  text-align: center;
-  width: 200px;
-}
-
-#wc-body #center .thumb-grid-cell.ui-selected {
   margin: 2px;
   padding: 7px;
+  text-align: center;
+  width: 200px;
 }
 
 #wc-body #center .thumb-grid-cell img,
@@ -145,8 +149,7 @@ span.error {
 
 .ui-selected {
   background: #F6F6F6 url(images/ui-bg_glass_100_f6f6f6_1x400png) repeat-x scroll 50% 50%;
-  border: 1px solid #CCCCCC;
-  //background-color: #E8E8E8;
+  border: 1px solid #CCCCCC !important;
   color: #FF9933;
   padding: 0 5px;
 }
