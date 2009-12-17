@@ -1,5 +1,10 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<div id="photo" ref="<?= $resource->path ?>">
+<script>
+  var parent_path = "<?= $parent_path ?>";
+  var current_path = "<?= $resource->path ?>";
+  var resource_type = "photo";
+</script>
+<div id="photo">
   <img src="<?= $resource->resize_url ?>" title="<?= $resource->title ?>" />
 </div>
 <div id="photo-info">

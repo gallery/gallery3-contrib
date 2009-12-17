@@ -99,6 +99,10 @@ class G3_Client_Controller extends Template_Controller {
   private function _get_detail($resource) {
     $v = new View("{$resource->type}_detail.html");
     $v->resource = $resource;
+    $v->parent_path = substr($resource->path, 0, -strlen($resource->internet_address));
+    if (strrpos($v->parent_path, "/") == strlen($v->parent_path) - 1) {
+      $v->parent_path = substr($v->parent_path, 0, -1);
+    }
     return $v;
   }
 } // End G3 Client Controller

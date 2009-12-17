@@ -87,6 +87,7 @@ span.error {
   height: 100%;
   overflow: auto;
   font-size: 1.1em;
+  padding-top: 5px;
 }
 
 #wc-body #left #album_tree ul li {
@@ -121,7 +122,12 @@ span.error {
   cursor: pointer;
 }
 
-#wc-body #center .thumb-grid-cell {
+#wc-body #center #wc-thumb-grid {
+  width: 100%;
+  list-style: none;
+}
+
+#wc-body #center .wc-thumb-grid-cell {
   border: 1px solid transparent;
   float: left;
   height: 200px;
@@ -132,8 +138,15 @@ span.error {
   width: 200px;
 }
 
-#wc-body #center .thumb-grid-cell img,
-#wc-body #center .thumb-grid-cell span {
+#wc-body #center .wc-thumb-grid-cell img {
+  display: block;
+  margin: 0 auto;
+  padding: 5%;
+  width: 89%;
+  -ms-interpolation-mode: bicubic;
+}
+
+#wc-body #center .wc-thumb-grid-cell span {
   vertical-align: middle;
 }
 
@@ -175,6 +188,14 @@ span.error {
 
 a.wc-button {
   float:left;
+}
+
+a.ui-state-active {
+  color: #EB8F00 !important;
+}
+
+a.ui-state-default {
+  background: #FFFFFF;
 }
 
 /* remove extra button width in IE */

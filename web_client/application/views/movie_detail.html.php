@@ -1,5 +1,10 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<div id="movie" ref="<?= $resource->path ?>">
+<script>
+  var parent_path = "<?= $parent_path ?>";
+  var current_path = "<?= $resource->path ?>";
+  var resource_type = "movie";
+</script>
+<div id="movie">
   <a id="movie-link" href="<?= $resource->url ?>" title="<?= $resource->title ?>"
    style="display: block; height: <?= $resource->size->height ?>px; width: <?= $resource->size->width ?>px;" />
 </div>
