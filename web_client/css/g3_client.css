@@ -1,5 +1,5 @@
 #wc-header {
-  background-color: #E8E8E8;
+  background-color: #666666;
   left: 0px;
   min-height: 90px;
   padding: 0 20px;
@@ -15,7 +15,7 @@
 }
 
 #wc-body {
-  background-color: #E8E8E8;
+  background-color: #666666;
   bottom: 40px;
   left: 0px;
   position: fixed;
@@ -44,8 +44,9 @@ span.error {
 }
 
 #wc-footer {
-  background-color: #E8E8E8;
+  background-color: #666666;
   bottom: 0px;
+  color: #FF9933;
   left: 0px;
   min-height: 40px;
   padding: 10px 20px;
@@ -56,12 +57,12 @@ span.error {
 .wc-copyright {
   font-size: 0.9em;
   text-transform: uppercase;
-  color: #557d10;
 }
 
 #wc-body #login {
-  background-color: #FFFFFF;
-  border: 2px inset;
+  background-color: #222222;
+  color: #FF9933;
+  border: 3px inset;
   bottom: 20px;
   left: 20px;
   margin: 0;
@@ -72,8 +73,8 @@ span.error {
 }
 
 #wc-body #left {
-  background-color: #FFFFFF;
-  border: 2px inset;
+  background-color: #222222;
+  border: 3px inset;
   bottom: 20px;
   left: 20px;
   margin: 0;
@@ -100,10 +101,10 @@ span.error {
 }
 
 #wc-body #center {
-  background-color: #FFFFFF;
-  border: 2px inset;
+  background-color: #222222;
+  border: 3px inset;
   bottom: 20px;
-  left: 225px;
+  left: 230px;
   padding: 10px;
   position: absolute;
   right: 20px;
@@ -161,7 +162,7 @@ span.error {
 }
 
 .ui-selected {
-  background: #F6F6F6 url(images/ui-bg_glass_100_f6f6f6_1x400png) repeat-x scroll 50% 50%;
+  background: #222222 url(images/ui-bg_glass_100_f6f6f6_1x400png) repeat-x scroll 50% 50%;
   border: 1px solid #CCCCCC !important;
   color: #FF9933;
   padding: 0 5px;
