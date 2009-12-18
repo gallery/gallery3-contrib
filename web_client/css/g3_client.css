@@ -30,11 +30,30 @@
   height: 100%;
 }
 
+#g-dialog {
+  background-color: #666666;
+  color: #FF9933;
+}
+
 form li {
   padding-top: .4em;
+  text-align: left;
+}
+
+form li input[type=text],
+form li input[type=file],
+form li textarea {
+  width: 100%;
+}
+
+form li input[readonly=readonly],
+form li textarea[readonly=readonly] {
+  background-color: #999999;
+  color: #FF9933;
 }
 
 form legend {
+  color: #FF9933;
   font-size: 1.2em;
   font-weight: bold;
 }
@@ -201,8 +220,8 @@ a.ui-state-default {
 
 /* remove extra button width in IE */
 button.wc-button {
-  width:auto;
-  overflow:visible;
+  width: auto;
+  overflow: visible;
 }
 
 .wc-button-icon-left {
@@ -255,4 +274,22 @@ button.wc-button {
 
 .wc-toolbar .wc-button {
   font-size: 1em;
+}
+
+#wc-resource-list {
+  border-style: solid;
+  border-width: 0px 1px 1px 1px;
+  background: #FFFFFF;
+  color: #F6A828;
+  display: none;
+  float: left;
+  position: absolute;
+  z-index: 200;
+}
+
+#wc-resource-list li {
+  border-top-style: solid;
+  border-top-width: 1px;
+  cursor: pointer;
+  padding: 3px;
 }

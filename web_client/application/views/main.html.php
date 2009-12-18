@@ -20,8 +20,17 @@
     </div>
 
     <div class="wc-buttonset wc-buttonset-single ui-helper-clearfix">
-      <a href="#" id="add-resource" ref="add_album" class="wc-button ui-state-active ui-corner-left" ><span>Add Album<span></a>
-      <a href="#" class="wc-button ui-state-active wc-button-icon-solo ui-corner-right" title="Resources"><span class="ui-icon ui-icon-triangle-1-s"></span>&nbsp</a>
+      <a href="#" id="wc-add-resource" ref="add_album" class="wc-button ui-state-active ui-corner-left" ><span>Add Album</span></a>
+      <a href="#" id="wc-choose-resource" class="wc-button ui-state-active wc-button-icon-solo ui-corner-right" title="Resources">
+        <span class="ui-icon ui-icon-triangle-1-s"></span>
+        &nbsp;
+      </a>
+      <div id="wc-resource-list">
+        <ul>
+          <li ref="add_album">Add Album</li>
+          <li ref="add_photo">Add Photo</li>
+        </ul>
+      </div>
     </div>
   </div>
   <div id="wc-detail">

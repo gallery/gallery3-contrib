@@ -66,6 +66,34 @@
       return false;
     });
 
+    $("#wc-choose-resource").live("click", function(event){
+      event.preventDefault();
+      event.stopPropagation();
+      if ($("#wc-resource-list:visible").length) {
+        $("#wc-resource-list").hide();
+      } else {
+        var parent = $(this).parent("div");
+        var width = parent.width();
+        var height = parent.height();
+        var top = parent.position().top;
+        var current_path = $("#wc-add-resource").attr("ref");
+        $("#wc-resource-list li[ref='" + current_path + "']").addClass("ui-selected");
+        $("#wc-resource-list")
+          .css({"top": (top + height - 5) + "px", "width": width + "px"})
+          .show();
+      }
+      return false;
+    });
+
+    $("#wc-resource-list").live("click", function(event) {
+      var ref = $(event.originalTarget).attr("ref");
+      var text = $(event.originalTarget).text();
+      $("#wc-add-resource span").text(text);
+      $("#wc-add-resource").attr("ref", ref);
+      $("#wc-resource-list").hide();
+      $("#wc-resource-list li.ui-selected").removeClass("ui-selected");
+    });
+
     $("#center a.wc-child-link").live("click", function(event) {
       $(".wc-thumb-grid-cell.ui-selected").removeClass("ui-selected");
       $(this).parents("li:first").addClass("ui-selected");
@@ -77,7 +105,9 @@
       if ($(this).hasClass("ui-state-disabled")) {
         return false;
       }
-      switch ($(this).attr("ref")) {
+
+      var action = $(this).attr("ref");
+      switch (action) {
       case "parent":
         get_detail($("span", this).attr("ref"), _set_active_album);
         break;
@@ -106,6 +136,13 @@
           }
           _set_navigation_buttons();
         }
+        break;
+      case "edit":
+      case "delete":
+      case "add_album":
+      case "add_photo":
+        var url = /^add_.*/.test(action) ? action : action + "_" + resource_type;
+        _open_dialog(url, $("span", this).attr("ref"));
         break;
       default:
         console.group("process toolbar button click: " + $(this).attr("ref"));
@@ -141,6 +178,55 @@
      }
   }
 
+  function _open_dialog(dialog, resource_path) {
+    console.group("_open_dialog(" + dialog + ")");
+    console.log(resource_path);
+    console.groupEnd();
+    $("body").append('<div id="g-dialog"></div>');
+    $("#g-dialog").dialog({
+      model: true,
+      resizable: false,
+      position: "center",
+      close: function() {
+        $("#g-dialog").dialog("destroy").remove();
+      }
+    });
+    $.get("/g3_client/index.php/g3_client/" + dialog, {path: resource_path}, function(data) {
+      $("#g-dialog").html(data);
+
+      $("#g-dialog").dialog("open");
+      if ($("#g-dialog fieldset legend").length) {
+        $("#g-dialog").dialog('option', 'title', $("#g-dialog fieldset legend:eq(0)").html());
+      }
+
+      if ($("#g-dialog form").length) {
+        $("#g-dialog form").ajaxForm({
+          dataType: "json",
+          beforeSubmit: function(formData, form, options) {
+            form.find(":submit")
+              .addClass("ui-state-disabled")
+              .attr("disabled", "disabled");
+            return true;
+          },
+          success: function(data) {
+            if (data.form) {
+              $("#g-dialog form").replaceWith(data.form);
+              $("#g-dialog form :submit").removeClass("ui-state-disabled")
+                .attr("disabled", null);
+              self._ajaxify_dialog();
+              self.form_loaded(null, $("#g-dialog form"));
+              if (typeof data.reset == 'function') {
+                eval(data.reset + '()');
+              }
+            }
+            if (data.result == "success") {
+            }
+          }
+        });
+      }
+    });
+  }
+
   function get_detail(path, callback) {
     $.get("/g3_client/index.php/g3_client/detail", {path: path}, function(data, textStatus) {
       $("#wc-detail").html(data);
@@ -172,7 +258,7 @@
     $(".wc-toolbar .ui-icon-eject").attr("ref", parent_path);
     $(".wc-toolbar .ui-icon-pencil").attr("ref", current_path);
     $(".wc-toolbar .ui-icon-trash").attr("ref", current_path);
-    $(".wc-toolbar #add-resource span")
+    $(".wc-toolbar #wc-add-resource span")
       .attr("ref", resource_type == "album" ? current_path : parent_path);
 
     var paths = _paths[resource_type == "album" ?  current_path : parent_path];

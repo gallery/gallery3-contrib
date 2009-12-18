@@ -76,6 +76,67 @@ class G3_Client_Controller extends Template_Controller {
     print $this->_get_detail($resource);
   }
 
+  public function __call($function, $args) {
+    $path = $this->input->get("path");
+    $resource = G3Remote::instance()->get_resource("gallery/$path");
+
+    $this->auto_render = false;
+    switch ($function) {
+    case "edit_album":
+    case "edit_photo":
+      $readonly = empty($resource->path) ? "readonly" : "";
+      $form = array("name" => array("value" => $resource->name, "readonly" => $readonly),
+                    "description" => array("value" => $resource->description,
+                                           "readonly" => $readonly),
+                    "slug" => array("value" => $resource->internet_address,
+                                    "readonly" => $readonly),
+                    "title" => array("value" => $resource->title, "readonly" => $readonly));
+      $errors = array_fill_keys(array_keys($form), "");
+
+      if ($_POST) {
+      } else {
+        $v = new View("edit.html");
+        $v->form = $form;
+        $v->errors = $errors;
+        $v->path = "g3_client/$function/?path=$path";
+        $v->type = $resource->type;
+      }
+      break;
+    case "add_album":
+    case "add_photo":
+      $errors = $form = array(
+        "name" => "",
+        "description" => "",
+        "slug" => "",
+        "image_file" => "",
+        "title" => "");
+      if ($_POST) {
+      } else {
+        $v = new View("add.html");
+        $v->form = $form;
+        $v->errors = $errors;
+        $v->path = "g3_client/$function/?path=$path";
+        $v->function = $function;
+        $function_parts = explode("_", $function);
+        $v->type = $function_parts[1];
+      }
+      break;
+    case "delete_album":
+    case "delete_photo":
+      if ($_POST) {
+      } else {
+        $v = new View("delete.html");
+        $v->title = $resource->title;
+        $v->path = "g3_client/$function/?path=$path";
+      }
+      break;
+    default:
+      throw new Kohana_404_Exception();
+    }
+
+    print $v;
+  }
+
   private function _get_album_tree($resource) {
     $v = new View("tree_part.html");
     $v->element = (object)array("title" => $resource->title, "path" => $resource->path);
@@ -105,4 +166,9 @@ class G3_Client_Controller extends Template_Controller {
     }
     return $v;
   }
+
+  private function _extract_form_data($resource) {
+    return $form;
+  }
+
 } // End G3 Client Controller
