@@ -25,20 +25,14 @@ class url_connection {
     $extra_headers['Content-Length'] = strlen($_data_raw);
 
     /* Read the web page into a buffer */
-    list ($response_status, $response_headers, $response_body) =
-      self::do_request($url, 'POST', $extra_headers, $post_data_raw);
-
-    return array($response_body, $response_status, $response_headers);
+    return self::do_request($url, 'POST', $extra_headers, $_data_raw);
   }
 
   static function get($url, $_data_array=array(), $extra_headers=array()) {
     $_data_raw = self::_encode_data($_data_array, $extra_headers);
 
     /* Read the web page into a buffer */
-    list ($response_status, $response_headers, $response_body) =
-      self::do_request("{$url}?$_data_raw", "GET", $extra_headers);
-
-    return array($response_body, $response_status, $response_headers);
+    return self::do_request("{$url}?$_data_raw", "GET", $extra_headers);
   }
 
   static function success($response_status) {
@@ -79,7 +73,6 @@ class url_connection {
     $handle = fsockopen(
       $url_components['fsockhost'], $url_components['port'], $errno, $errstr, 5);
     if (empty($handle)) {
-      // log "Error $errno: '$errstr' requesting $url";
       return array(null, null, null);
     }
 
@@ -181,7 +174,6 @@ class G3Remote {
 
   private $_resources;
   private $_access_token;
-  private $_identity;
 
   public static function instance($access_token=null) {
     if (!isset(G3Remote::$_instance)) {
@@ -204,22 +196,19 @@ class G3Remote {
   }
 
   public function get_access_token($user, $password) {
-    $identity = md5("$user/$password");
-    if (empty($this->_identity) || $this->_identity != $identity) {
-      $request = "{$this->_config["gallery3_site"]}/access_key";
-      list ($response_body, $response_status, $response_headers) =
-        url_connection::get($request, array("user" => $user, "password" => $password));
-      if (url_connection::success($response_status)) {
-        $response = json_decode($response_body);
-        if ($response->status == "OK") {
-          $this->_access_token = $response->token;
-          $this->_identity = $identity;
-        } else {
-          throw new Exception("Remote host failure: {$response->message}");
-        }
+    $request = "{$this->_config["gallery3_site"]}/access_key";
+    list ($response_status, $response_headers, $response_body) =
+      url_connection::get($request, array("user" => $user, "password" => $password));
+    if (url_connection::success($response_status)) {
+      $response = json_decode($response_body);
+      if ($response->status == "OK") {
+        $this->_access_token = $response->token;
+        $this->_identity = $identity;
       } else {
-        throw new Exception("Remote host failure: $response_status");
+        throw new Exception("Remote host failure: {$response->message}");
       }
+    } else {
+      throw new Exception("Remote host failure: $response_status");
     }
     return $this->_access_token;
   }
@@ -237,8 +226,12 @@ class G3Remote {
       $param["limit"] = $limit;
     }
 
-    list ($response_body, $response_status, $response_headers) =
-      url_connection::get($request, $params);
+    $headers = array();
+    if (!empty($this->_access_token)) {
+      $headers["X_GALLERY_REQUEST_KEY"] = $this->_access_token;
+    }
+    list ($response_status, $response_headers, $response_body) =
+      url_connection::get($request, $params, $headers);
     if (url_connection::success($response_status)) {
       $response = json_decode($response_body);
       if ($response->status != "OK") {
@@ -249,4 +242,25 @@ class G3Remote {
     }
     return $response->resource;
    }
+
+  public function delete_resource($path) {
+    $request = "{$this->_config["gallery3_site"]}/$path";
+    $headers["X_GALLERY_REQUEST_METHOD"] = "DELETE";
+    Kohana_Log::add("error", "access_token: " . $this->_access_token);
+    if (!empty($this->_access_token)) {
+      $headers["X_GALLERY_REQUEST_KEY"] = $this->_access_token;
+    }
+    list ($response_status, $response_headers, $response_body) =
+      url_connection::post($request, array(), $headers);
+    if (url_connection::success($response_status)) {
+      $response = json_decode($response_body);
+      if ($response->status != "OK") {
+        throw new Exception("Remote host failure: {$response->message}");
+      }
+    } else {
+      throw new Exception("Remote host failure: $response_status");
+    }
+    return "success";
+  }
+
 }

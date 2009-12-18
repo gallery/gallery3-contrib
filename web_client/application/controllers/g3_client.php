@@ -124,6 +124,13 @@ class G3_Client_Controller extends Template_Controller {
     case "delete_album":
     case "delete_photo":
       if ($_POST) {
+        try {
+          $result = G3Remote::instance()->delete_resource("gallery/$path");
+          print json_encode(array("result" => $result, "path" => $resource->parent_path));
+        } catch (Exception $e) {
+          print json_encode(array("result" => "fail", "message" => $e->getMessage()));
+        }
+        return;
       } else {
         $v = new View("delete.html");
         $v->title = $resource->title;

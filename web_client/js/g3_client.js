@@ -179,9 +179,6 @@
   }
 
   function _open_dialog(dialog, resource_path) {
-    console.group("_open_dialog(" + dialog + ")");
-    console.log(resource_path);
-    console.groupEnd();
     $("body").append('<div id="g-dialog"></div>');
     $("#g-dialog").dialog({
       model: true,
@@ -220,6 +217,11 @@
               }
             }
             if (data.result == "success") {
+              $("#g-dialog").dialog('close');
+              get_detail(data.path, _set_active_album);
+            } else if (data.result == "fail") {
+              $("#g-dialog").dialog('close');
+              alert(data.message);
             }
           }
         });
@@ -250,18 +252,17 @@
   function _set_navigation_buttons() {
     if (current_path != "") {
       $(".wc-toolbar .ui-icon-eject").parent("a").removeClass("ui-state-disabled");
-      $(".wc-toolbar .ui-icon-trash").parent("a").removeClass("ui-state-disabled");
+      //$(".wc-toolbar .ui-icon-trash").parent("a").removeClass("ui-state-disabled");
     } else {
       $(".wc-toolbar .ui-icon-eject").parent("a").addClass("ui-state-disabled");
-      $(".wc-toolbar .ui-icon-trash").parent("a").addClass("ui-state-disabled");
+      //$(".wc-toolbar .ui-icon-trash").parent("a").addClass("ui-state-disabled");
     }
     $(".wc-toolbar .ui-icon-eject").attr("ref", parent_path);
     $(".wc-toolbar .ui-icon-pencil").attr("ref", current_path);
-    $(".wc-toolbar .ui-icon-trash").attr("ref", current_path);
     $(".wc-toolbar #wc-add-resource span")
       .attr("ref", resource_type == "album" ? current_path : parent_path);
 
-    var paths = _paths[resource_type == "album" ?  current_path : parent_path];
+    var paths = _paths[resource_type == "album" ? current_path : parent_path];
 
     $(".wc-toolbar .ui-icon-pencil").attr("ref", current_path);
     if (paths.length > 0) {
@@ -282,6 +283,8 @@
         break;
       }
     }
+
+    $(".wc-toolbar .ui-icon-trash").attr("ref", selected_path);
 
     if (i > 0) {
       $(".wc-toolbar .ui-icon-seek-prev").parent("a").removeClass("ui-state-disabled");

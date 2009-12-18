@@ -72,7 +72,7 @@ $config['global_xss_filtering'] = FALSE;
 /**
  * Enable or disable hooks.
  */
-$config['enable_hooks'] = FALSE;
+$config['enable_hooks'] = true;
 /**
  * Enable or disable displaying of Kohana error pages. This will not affect
  * logging. Turning this off will disable ALL error pages.

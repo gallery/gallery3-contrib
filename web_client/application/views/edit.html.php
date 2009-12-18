@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <div id="wc-edit">
-      <?= form::open("<?= $path ?>") ?>
+      <?= form::open($path) ?>
       <fieldset>
       <legend style="display: none">Update Resource</legend>
         <ul>

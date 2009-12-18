@@ -16,7 +16,7 @@
 
     <div class="wc-buttonset ui-helper-clearfix">
       <a href="#" ref="edit" class="wc-button ui-state-default wc-button-icon-solo ui-corner-all" title="Edit"><span class="ui-icon ui-icon-pencil"></span>Edit</a>
-      <a href="#" ref="delete" class="wc-button ui-state-default ui-state-disabled wc-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span>Delete</a>
+      <a href="#" ref="delete" class="wc-button ui-state-default wc-button-icon-solo  ui-corner-all" title="Delete"><span class="ui-icon ui-icon-trash"></span>Delete</a>
     </div>
 
     <div class="wc-buttonset wc-buttonset-single ui-helper-clearfix">

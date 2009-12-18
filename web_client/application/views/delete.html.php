@@ -8,7 +8,7 @@
   });
 </script>
 <div id="wc-edit">
-  <?= form::open("<?= $path ?>") ?>
+  <?= form::open($path) ?>
   <fieldset>
     <legend style="display: none">Confirm Delete</legend>
     <ul>

@@ -40,9 +40,9 @@ form li {
   text-align: left;
 }
 
-form li input[type=text],
-form li input[type=file],
-form li textarea {
+#g-dialog form li input[type=text],
+#g-dialog form li input[type=file],
+#g-dialog form li textarea {
   width: 100%;
 }
 
