@@ -203,7 +203,6 @@ class G3Remote {
       $response = json_decode($response_body);
       if ($response->status == "OK") {
         $this->_access_token = $response->token;
-        $this->_identity = $identity;
       } else {
         throw new Exception("Remote host failure: {$response->message}");
       }
@@ -246,7 +245,6 @@ class G3Remote {
   public function delete_resource($path) {
     $request = "{$this->_config["gallery3_site"]}/$path";
     $headers["X_GALLERY_REQUEST_METHOD"] = "DELETE";
-    Kohana_Log::add("error", "access_token: " . $this->_access_token);
     if (!empty($this->_access_token)) {
       $headers["X_GALLERY_REQUEST_KEY"] = $this->_access_token;
     }
@@ -262,5 +260,4 @@ class G3Remote {
     }
     return "success";
   }
-
 }

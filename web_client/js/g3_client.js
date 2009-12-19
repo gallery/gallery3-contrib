@@ -219,6 +219,14 @@
             if (data.result == "success") {
               $("#g-dialog").dialog('close');
               get_detail(data.path, _set_active_album);
+              if (dialog == "delete_album") {
+                var parent = $("#album_tree li[ref=" + resource_path + "]").parents("li:first");
+                $.get("/g3_client/index.php/g3_client/albums",
+                  {path: $(parent).attr("ref")},
+                  function(data, textStatus) {
+                    $(parent).replaceWith(data);
+                  });
+              }
             } else if (data.result == "fail") {
               $("#g-dialog").dialog('close');
               alert(data.message);
