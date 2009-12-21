@@ -74,11 +74,12 @@ class G3_Handlers_Controller extends Controller {
       } catch (Exception $e) {
         print json_encode(array("result" => "fail", "message" => $e->getMessage()));
       }
+      return;
     } else {
       $response = G3Remote::instance()->get_resource("gallery/$path");
       $v = new View("delete.html");
       $v->title = $response->resource->title;
-      $v->path = "g3_client/delete_album/?path=$path";
+      $v->path = "delete_album/?path=$path";
     }
 
     print json_encode(array("form" => (string)$v));
