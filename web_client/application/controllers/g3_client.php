@@ -25,8 +25,8 @@ class G3_Client_Controller extends Template_Controller {
     $this->template->title = 'G3 Web Client';
 
     if (Session::instance()->get("g3_client_access_token")) {
-      $resource = G3Remote::instance()->get_resource("gallery");
-      $this->template->content = $this->_get_main_view($resource);
+      $response = G3Remote::instance()->get_resource("gallery");
+      $this->template->content = $this->_get_main_view($response->resource);
     } else {
       $this->template->content = new View('login.html');
       $this->template->content->errors = $this->template->content->form =
@@ -64,84 +64,16 @@ class G3_Client_Controller extends Template_Controller {
 
   public function albums() {
     $path = $this->input->get("path");
-    $resource = G3Remote::instance()->get_resource("gallery/$path", "album");
+    $response = G3Remote::instance()->get_resource("gallery/$path", "album");
     $this->auto_render = false;
-    print $this->_get_album_tree($resource);
+    print $this->_get_album_tree($response->resource);
   }
 
   public function detail() {
     $path = $this->input->get("path");
-    $resource = G3Remote::instance()->get_resource("gallery/$path");
+    $response = G3Remote::instance()->get_resource("gallery/$path");
     $this->auto_render = false;
-    print $this->_get_detail($resource);
-  }
-
-  public function __call($function, $args) {
-    $path = $this->input->get("path");
-    $resource = G3Remote::instance()->get_resource("gallery/$path");
-
-    $this->auto_render = false;
-    switch ($function) {
-    case "edit_album":
-    case "edit_photo":
-      $readonly = empty($resource->path) ? "readonly" : "";
-      $form = array("name" => array("value" => $resource->name, "readonly" => $readonly),
-                    "description" => array("value" => $resource->description,
-                                           "readonly" => $readonly),
-                    "slug" => array("value" => $resource->internet_address,
-                                    "readonly" => $readonly),
-                    "title" => array("value" => $resource->title, "readonly" => $readonly));
-      $errors = array_fill_keys(array_keys($form), "");
-
-      if ($_POST) {
-      } else {
-        $v = new View("edit.html");
-        $v->form = $form;
-        $v->errors = $errors;
-        $v->path = "g3_client/$function/?path=$path";
-        $v->type = $resource->type;
-      }
-      break;
-    case "add_album":
-    case "add_photo":
-      $errors = $form = array(
-        "name" => "",
-        "description" => "",
-        "slug" => "",
-        "image_file" => "",
-        "title" => "");
-      if ($_POST) {
-      } else {
-        $v = new View("add.html");
-        $v->form = $form;
-        $v->errors = $errors;
-        $v->path = "g3_client/$function/?path=$path";
-        $v->function = $function;
-        $function_parts = explode("_", $function);
-        $v->type = $function_parts[1];
-      }
-      break;
-    case "delete_album":
-    case "delete_photo":
-      if ($_POST) {
-        try {
-          $result = G3Remote::instance()->delete_resource("gallery/$path");
-          print json_encode(array("result" => $result, "path" => $resource->parent_path));
-        } catch (Exception $e) {
-          print json_encode(array("result" => "fail", "message" => $e->getMessage()));
-        }
-        return;
-      } else {
-        $v = new View("delete.html");
-        $v->title = $resource->title;
-        $v->path = "g3_client/$function/?path=$path";
-      }
-      break;
-    default:
-      throw new Kohana_404_Exception();
-    }
-
-    print $v;
+    print $this->_get_detail($response->resource);
   }
 
   private function _get_album_tree($resource) {
@@ -167,15 +99,10 @@ class G3_Client_Controller extends Template_Controller {
   private function _get_detail($resource) {
     $v = new View("{$resource->type}_detail.html");
     $v->resource = $resource;
-    $v->parent_path = substr($resource->path, 0, -strlen($resource->internet_address));
+    $v->parent_path = substr($resource->path, 0, -strlen($resource->slug));
     if (strrpos($v->parent_path, "/") == strlen($v->parent_path) - 1) {
       $v->parent_path = substr($v->parent_path, 0, -1);
     }
     return $v;
   }
-
-  private function _extract_form_data($resource) {
-    return $form;
-  }
-
 } // End G3 Client Controller

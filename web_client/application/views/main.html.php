@@ -29,6 +29,7 @@
         <ul>
           <li ref="add_album">Add Album</li>
           <li ref="add_photo">Add Photo</li>
+          <li ref="add_movie">Add Movie</li>
         </ul>
       </div>
     </div>

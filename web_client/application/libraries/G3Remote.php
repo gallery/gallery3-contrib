@@ -225,39 +225,46 @@ class G3Remote {
       $param["limit"] = $limit;
     }
 
-    $headers = array();
-    if (!empty($this->_access_token)) {
-      $headers["X_GALLERY_REQUEST_KEY"] = $this->_access_token;
-    }
-    list ($response_status, $response_headers, $response_body) =
-      url_connection::get($request, $params, $headers);
-    if (url_connection::success($response_status)) {
-      $response = json_decode($response_body);
-      if ($response->status != "OK") {
-        throw new Exception("Remote host failure: {$response->message}");
-      }
-    } else {
-      throw new Exception("Remote host failure: $response_status");
-    }
-    return $response->resource;
+    return $this->_do_request("get", $path, $params);
    }
 
   public function delete_resource($path) {
-    $request = "{$this->_config["gallery3_site"]}/$path";
-    $headers["X_GALLERY_REQUEST_METHOD"] = "DELETE";
+    return $this->_do_request("delete", $path);
+  }
+
+  public function update_resource($path, $params) {
+    return $this->_do_request("put", $path, $params);
+  }
+
+  public function add_resource($path, $params) {
+    return $this->_do_request("post", $path, $params);
+  }
+
+  private function _do_request($method, $path, $params=array()) {
+    $request_path = "{$this->_config["gallery3_site"]}/$path";
+    $headers = array();
+    if ($method == "put" || $method == "delete") {
+      $headers["X_GALLERY_REQUEST_METHOD"] = $method;
+      $method = "post";
+    }
     if (!empty($this->_access_token)) {
       $headers["X_GALLERY_REQUEST_KEY"] = $this->_access_token;
     }
+
     list ($response_status, $response_headers, $response_body) =
-      url_connection::post($request, array(), $headers);
+      call_user_func("url_connection::$method", $request_path, $params, $headers);
+
     if (url_connection::success($response_status)) {
       $response = json_decode($response_body);
-      if ($response->status != "OK") {
+      switch ($response->status) {
+      case "OK":
+      case "VALIDATE_ERROR":
+        return $response;
+      default:
         throw new Exception("Remote host failure: {$response->message}");
       }
     } else {
       throw new Exception("Remote host failure: $response_status");
     }
-    return "success";
   }
 }

@@ -59,7 +59,8 @@ form legend {
 }
 
 span.error {
-  color: #FF0000;
+  color: #FF9933;
+  background-color: #880000;
 }
 
 #wc-footer {
@@ -181,7 +182,7 @@ span.error {
 }
 
 .ui-selected {
-  background: #222222 url(images/ui-bg_glass_100_f6f6f6_1x400png) repeat-x scroll 50% 50%;
+  background: #222222;
   border: 1px solid #CCCCCC !important;
   color: #FF9933;
   padding: 0 5px;

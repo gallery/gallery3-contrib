@@ -139,15 +139,16 @@
         break;
       case "edit":
       case "delete":
-      case "add_album":
-      case "add_photo":
-        var url = /^add_.*/.test(action) ? action : action + "_" + resource_type;
-        _open_dialog(url, $("span", this).attr("ref"));
+        _open_dialog(action + "_" + resource_type, $("span", this).attr("ref"));
         break;
       default:
-        console.group("process toolbar button click: " + $(this).attr("ref"));
-        console.log(($("span", this).attr("ref")));
-        console.groupEnd();
+        if (/^add_.*/.test(action)) {
+          _open_dialog(action, $("span", this).attr("ref"));
+        } else {
+          console.group("process toolbar button click: " + $(this).attr("ref"));
+          console.log(($("span", this).attr("ref")));
+          console.groupEnd();
+        }
       }
       return false;
     });
@@ -188,53 +189,55 @@
         $("#g-dialog").dialog("destroy").remove();
       }
     });
-    $.get("/g3_client/index.php/g3_client/" + dialog, {path: resource_path}, function(data) {
-      $("#g-dialog").html(data);
+    $.getJSON("/g3_client/index.php/" + dialog, {path: resource_path}, function(data) {
+      $("#g-dialog").html(data.form);
 
       $("#g-dialog").dialog("open");
       if ($("#g-dialog fieldset legend").length) {
         $("#g-dialog").dialog('option', 'title', $("#g-dialog fieldset legend:eq(0)").html());
       }
+      _ajaxifyDialog();
 
-      if ($("#g-dialog form").length) {
-        $("#g-dialog form").ajaxForm({
-          dataType: "json",
-          beforeSubmit: function(formData, form, options) {
-            form.find(":submit")
-              .addClass("ui-state-disabled")
-              .attr("disabled", "disabled");
-            return true;
-          },
-          success: function(data) {
-            if (data.form) {
-              $("#g-dialog form").replaceWith(data.form);
-              $("#g-dialog form :submit").removeClass("ui-state-disabled")
-                .attr("disabled", null);
-              self._ajaxify_dialog();
-              self.form_loaded(null, $("#g-dialog form"));
-              if (typeof data.reset == 'function') {
-                eval(data.reset + '()');
-              }
-            }
-            if (data.result == "success") {
-              $("#g-dialog").dialog('close');
-              get_detail(data.path, _set_active_album);
-              if (dialog == "delete_album") {
-                var parent = $("#album_tree li[ref=" + resource_path + "]").parents("li:first");
-                $.get("/g3_client/index.php/g3_client/albums",
-                  {path: $(parent).attr("ref")},
-                  function(data, textStatus) {
-                    $(parent).replaceWith(data);
-                  });
-              }
-            } else if (data.result == "fail") {
-              $("#g-dialog").dialog('close');
-              alert(data.message);
-            }
-          }
-        });
-      }
     });
+  }
+
+  function _ajaxifyDialog() {
+    if ($("#g-dialog form").length) {
+      $("#g-dialog form").ajaxForm({
+        dataType: "json",
+        beforeSubmit: function(formData, form, options) {
+          form.find(":submit")
+            .addClass("ui-state-disabled")
+            .attr("disabled", "disabled");
+          return true;
+        },
+        success: function(data) {
+          if (data.form) {
+            $("#g-dialog form").replaceWith(data.form);
+            $("#g-dialog form :submit").removeClass("ui-state-disabled")
+              .attr("disabled", null);
+            _ajaxifyDialog();
+          }
+          if (data.result == "success") {
+            $("#g-dialog").dialog('close');
+            get_detail(data.path, _set_active_album);
+            if (data.type == "album") {
+              var path = data.path;
+              $.get("/g3_client/index.php/g3_client/albums",
+                {path: path},
+                 function(data, textStatus) {
+                   var selector = "#album_tree li[ref=" + path + "]";
+                   $(selector).replaceWith(data);
+                   $(selector + " .tree-title:first").addClass("ui-selected");
+                 });
+            }
+          } else if (data.result == "fail") {
+            $("#g-dialog").dialog('close');
+            alert(data.message);
+          }
+        }
+      });
+    }
   }
 
   function get_detail(path, callback) {
