@@ -52,12 +52,27 @@ class G3_Handlers_Controller extends Controller {
 
   public function add($type) {
     $path = $this->input->get("path");
-    $form = g3_client::get_form($type, true);
-    $result = array();
     if ($_POST) {
-      $form->errors["form_error"] = "Add $type not implemented.";
-      $result = "error";
+        unset($_POST["submit"]);
+        $_POST["name"] = empty($_POST["name"]) ? $_POST["title"] : $_POST["name"];
+        $_POST["name"] = g3_client::sanitize_filename($_POST["name"]);
+        $_POST["slug"] = empty($_POST["slug"]) ? $_POST["title"] : $_POST["slug"];
+        $_POST["slug"] = g3_client::sanitize_slug($_POST["slug"]);
+        $result = G3Remote::instance()->add_resource("gallery/$path/{$_POST['slug']}", $_POST);
+        if ($result->status == "OK") {
+          $form = null;
+          $result = "success";
+        } else {
+          $form = g3_client::get_form($type, true, $path, (object)$_POST);
+          foreach (array_keys($_POST) as $field) {
+            if (isset($result->fields->$field)) {
+              $form->errors[$field] = $result->fields->$field;
+            }
+          }
+          $result = "display";
+        }
     } else {
+      $form = g3_client::get_form($type, true, $path);
       $result = "display";
     }
 

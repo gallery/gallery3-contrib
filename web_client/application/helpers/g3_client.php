@@ -20,6 +20,7 @@
 class g3_client_Core {
   static function get_form($type, $add_form, $path, $data=null) {
     $form = new stdClass();
+    $form->adding = $add_form;
     $form->form = array("title" => (object)array("value" => "", "label" => "Title"),
                         "name" =>  (object)array("value" => "", "label" => "Name"),
                         "description" => (object)array("value" => "", "label" => "Description"),
@@ -49,7 +50,8 @@ class g3_client_Core {
     $json = (object)array("result" => $result);
     if ($result != "success") {
       $json->form = new View("edit.html");
-      $json->form->title = "Update " . ucwords($type);
+      $json->form->title = ($form->adding ? "Add " : "Update ") . ucwords($type);
+      $json->form->url = $form->adding ? "add" : "edit";
       $json->form->path = $path;
       $json->form->type = $type;
       $json->form->form = (object)$form->form;
@@ -61,5 +63,26 @@ class g3_client_Core {
     }
 
     return json_encode($json);
+  }
+
+  /**
+   * Sanitize a filename into something safe
+   * @param string $filename
+   * @return string sanitized filename
+   */
+  static function sanitize_filename($filename) {
+    $filename = empty($filename) ? $title : $filename;
+    $filename = strtr($filename, " ", "_");
+    $filename = preg_replace("/\..*?$/", "", $filename);
+    return preg_replace("/ +/", " ", $filename);
+  }
+
+  /**
+   * Santize the input url into something safe we can us as the url component.
+   * @param string $filename
+   */
+  static function sanitize_slug($uri) {
+    $result = preg_replace("/[^A-Za-z0-9-_]+/", "-", $uri);
+    return trim($result, "-");
   }
 }

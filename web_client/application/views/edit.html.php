@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <div id="wc-edit">
-  <?= form::open("edit_{$type}?path=$path") ?>
+  <?= form::open("{$url}_{$type}?path=$path") ?>
   <fieldset>
     <legend style="display: none"><?= $title ?></legend>
     <ul>
