@@ -19,4 +19,5 @@
  */
 
 $access_token = Session::instance()->get("g3_client_access_token");
-G3Remote::instance($access_token);
+$site = Kohana::config("core.gallery3_site");
+G3Remote::instance($site, $access_token);

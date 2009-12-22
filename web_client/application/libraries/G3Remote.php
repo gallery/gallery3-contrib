@@ -17,9 +17,109 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class url_connection {
-  static function post($url, $post_data_array, $extra_headers=array()) {
-    //$_data_raw = self::_encode_data($post_data_array, $extra_headers);
+// This class does not depend on any Kohana services so that it can be used in non-Kohana
+// applications.
+class G3Remote {
+  protected static $_instance;
+
+  private $_gallery3_site;
+  private $_access_token;
+
+  public static function instance($site=null, $access_token=null) {
+    if (!isset(G3Remote::$_instance)) {
+      G3Remote::$_instance = new G3Remote($site, $access_token);
+    }
+
+    return G3Remote::$_instance;
+  }
+
+  /**
+   * Constructs a new G3Remote object
+   *
+   * @param   array  Database config array
+   * @return  G3Remote
+   */
+  protected function __construct($site, $access_token) {
+    // Store the config locally
+    $this->_gallery3_site = $site;
+    $this->_access_token = $access_token;
+  }
+
+  public function get_access_token($user, $password) {
+    $request = "{$this->_gallery3_site}/access_key";
+    list ($response_status, $response_headers, $response_body) =
+      url_connection::get($request, array("user" => $user, "password" => $password));
+    if (url_connection::success($response_status)) {
+      $response = json_decode($response_body);
+      if ($response->status == "OK") {
+        $this->_access_token = $response->token;
+      } else {
+        throw new Exception("Remote host failure: {$response->message}");
+      }
+    } else {
+      throw new Exception("Remote host failure: $response_status");
+    }
+    return $this->_access_token;
+  }
+
+  public function get_resource($path, $filter=false, $offset=false, $limit=false) {
+    $request = "{$this->_gallery3_site}/$path";
+    $params = array();
+    if ($filter) {
+      $param["filter"] = $filter;
+    }
+    if ($offset) {
+      $param["offset"] = $offset;
+    }
+    if ($limit) {
+      $param["limit"] = $limit;
+    }
+
+    return $this->_do_request("get", $path, $params);
+  }
+
+  public function delete_resource($path) {
+    return $this->_do_request("delete", $path);
+  }
+
+  public function update_resource($path, $params) {
+    return $this->_do_request("put", $path, $params);
+  }
+
+  public function add_resource($path, $params) {
+    return $this->_do_request("post", $path, $params);
+  }
+
+  private function _do_request($method, $path, $params=array()) {
+    $request_path = "{$this->_gallery3_site}/$path";
+    $headers = array();
+    if ($method == "put" || $method == "delete") {
+      $headers["X_GALLERY_REQUEST_METHOD"] = $method;
+      $method = "post";
+    }
+    if (!empty($this->_access_token)) {
+      $headers["X_GALLERY_REQUEST_KEY"] = $this->_access_token;
+    }
+
+    list ($response_status, $response_headers, $response_body) =
+      $method == "get" ? G3Remote::_get($request_path, $params, $headers) :
+                         G3Remote::_post($request_path, $params, $headers);
+
+    if (G3Remote::_success($response_status)) {
+      $response = json_decode($response_body);
+      switch ($response->status) {
+      case "OK":
+      case "VALIDATE_ERROR":
+        return $response;
+      default:
+        throw new Exception("Remote host failure: {$response->message}");
+      }
+    } else {
+      throw new Exception("Remote host failure: $response_status");
+    }
+  }
+
+  private static function post($url, $post_data_array, $extra_headers=array()) {
     $boundary = str_repeat("-", 9) . md5(microtime());
     $boundary_length = strlen($boundary);
 
@@ -46,7 +146,7 @@ class url_connection {
     $length += $boundary_length + 6;  // boundary terminator and last crlf
     $extra_headers['Content-Length'] = $length;
 
-    $socket = url_connection::_open_socket($url, 'POST', $extra_headers);
+    $socket = G3Remote::_open_socket($url, 'POST', $extra_headers);
 
     $sent_length = 0;
     foreach ($fields as $field => $value) {
@@ -69,19 +169,19 @@ class url_connection {
     fflush($socket);
 
     /* Read the web page into a buffer */
-    return url_connection::_get_response($socket);
+    return G3Remote::_get_response($socket);
   }
 
-  static function get($url, $_data_array=array(), $extra_headers=array()) {
+  private static function _get($url, $_data_array=array(), $extra_headers=array()) {
     $_data_raw = self::_encode_data($_data_array, $extra_headers);
 
-    $handle = url_connection::_open_socket("{$url}?$_data_raw", "GET", $extra_headers);
+    $handle = G3Remote::_open_socket("{$url}?$_data_raw", "GET", $extra_headers);
 
     /* Read the web page into a buffer */
-    return url_connection::_get_response($handle);
+    return G3Remote::_get_response($handle);
   }
 
-  static function success($response_status) {
+  private static function _success($response_status) {
     return preg_match("/^HTTP\/\d+\.\d+\s2\d{2}(\s|$)/", trim($response_status));
   }
 
@@ -206,109 +306,5 @@ class url_connection {
     $url_components['uri'] = str_replace('&amp;', '&', $uri);
 
     return $url_components;
-  }
-}
-
-// This class does not depend on any Kohana services so that it can be used in non-Kohana
-// applications.
-class G3Remote {
-  protected static $_instance;
-
-  protected $_config;
-
-  private $_resources;
-  private $_access_token;
-
-  public static function instance($access_token=null) {
-    if (!isset(G3Remote::$_instance)) {
-      G3Remote::$_instance = new G3Remote($access_token);
-    }
-
-    return G3Remote::$_instance;
-  }
-
-  /**
-   * Constructs a new G3Remote object
-   *
-   * @param   array  Database config array
-   * @return  G3Remote
-   */
-  protected function __construct($access_token) {
-    // Store the config locally
-    $this->_config = Kohana::config("g3_remote");
-    $this->_access_token = $access_token;
-  }
-
-  public function get_access_token($user, $password) {
-    $request = "{$this->_config["gallery3_site"]}/access_key";
-    list ($response_status, $response_headers, $response_body) =
-      url_connection::get($request, array("user" => $user, "password" => $password));
-    if (url_connection::success($response_status)) {
-      $response = json_decode($response_body);
-      if ($response->status == "OK") {
-        $this->_access_token = $response->token;
-      } else {
-        throw new Exception("Remote host failure: {$response->message}");
-      }
-    } else {
-      throw new Exception("Remote host failure: $response_status");
-    }
-    return $this->_access_token;
-  }
-
-  public function get_resource($path, $filter=false, $offset=false, $limit=false) {
-    $request = "{$this->_config["gallery3_site"]}/$path";
-    $params = array();
-    if ($filter) {
-      $param["filter"] = $filter;
-    }
-    if ($offset) {
-      $param["offset"] = $offset;
-    }
-    if ($limit) {
-      $param["limit"] = $limit;
-    }
-
-    return $this->_do_request("get", $path, $params);
-   }
-
-  public function delete_resource($path) {
-    return $this->_do_request("delete", $path);
-  }
-
-  public function update_resource($path, $params) {
-    return $this->_do_request("put", $path, $params);
-  }
-
-  public function add_resource($path, $params) {
-    return $this->_do_request("post", $path, $params);
-  }
-
-  private function _do_request($method, $path, $params=array()) {
-    $request_path = "{$this->_config["gallery3_site"]}/$path";
-    $headers = array();
-    if ($method == "put" || $method == "delete") {
-      $headers["X_GALLERY_REQUEST_METHOD"] = $method;
-      $method = "post";
-    }
-    if (!empty($this->_access_token)) {
-      $headers["X_GALLERY_REQUEST_KEY"] = $this->_access_token;
-    }
-
-    list ($response_status, $response_headers, $response_body) =
-      call_user_func("url_connection::$method", $request_path, $params, $headers);
-
-    if (url_connection::success($response_status)) {
-      $response = json_decode($response_body);
-      switch ($response->status) {
-      case "OK":
-      case "VALIDATE_ERROR":
-        return $response;
-      default:
-        throw new Exception("Remote host failure: {$response->message}");
-      }
-    } else {
-      throw new Exception("Remote host failure: $response_status");
-    }
   }
 }

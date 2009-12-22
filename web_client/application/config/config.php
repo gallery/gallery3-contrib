@@ -116,3 +116,8 @@ $config['modules'] = array
 	// MODPATH.'unit_test', // Unit testing
 	// MODPATH.'object_db', // New OOP Database library (testing only!)
 );
+
+/**
+ * Base path of the gallery3 restFULL API
+ */
+$config["gallery3_site"] = "http://sandbox.timalmdal.com/gallery3/index.php/rest";
