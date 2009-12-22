@@ -28,8 +28,8 @@ class g3_client_Core {
     // @todo add sort column sort order fields
     $form->errors = array("title" => "", "name" => "", "description" => "", "slug" => "");
     if ($type != "album" && $add_form) {
-      $form->form["image_file"] = (object)array("value" => "", "label" => "Image File");
-      $form->errors["image_file"] = "";
+      $form->form["image"] = (object)array("value" => "", "label" => "Image File");
+      $form->errors["image"] = "";
     }
 
     if (empty($path) && !$add_form) {
@@ -52,6 +52,7 @@ class g3_client_Core {
       $json->form = new View("edit.html");
       $json->form->title = ($form->adding ? "Add " : "Update ") . ucwords($type);
       $json->form->url = $form->adding ? "add" : "edit";
+      $json->form->button_text = $form->adding ? "Add" : "Update";
       $json->form->path = $path;
       $json->form->type = $type;
       $json->form->form = (object)$form->form;
@@ -70,19 +71,8 @@ class g3_client_Core {
    * @param string $filename
    * @return string sanitized filename
    */
-  static function sanitize_filename($filename) {
-    $filename = empty($filename) ? $title : $filename;
-    $filename = strtr($filename, " ", "_");
-    $filename = preg_replace("/\..*?$/", "", $filename);
-    return preg_replace("/ +/", " ", $filename);
-  }
-
-  /**
-   * Santize the input url into something safe we can us as the url component.
-   * @param string $filename
-   */
-  static function sanitize_slug($uri) {
-    $result = preg_replace("/[^A-Za-z0-9-_]+/", "-", $uri);
+  static function sanitize_title($field, $title) {
+    $result = preg_replace("/[^A-Za-z0-9-_]+/", "-", empty($field) ? $title : $field);
     return trim($result, "-");
   }
 }

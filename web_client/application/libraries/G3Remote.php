@@ -19,20 +19,66 @@
  */
 class url_connection {
   static function post($url, $post_data_array, $extra_headers=array()) {
-    $_data_raw = self::_encode_data($post_data_array, $extra_headers);
+    //$_data_raw = self::_encode_data($post_data_array, $extra_headers);
+    $boundary = str_repeat("-", 9) . md5(microtime());
+    $boundary_length = strlen($boundary);
 
-    $extra_headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    $extra_headers['Content-Length'] = strlen($_data_raw);
+    $extra_headers['Content-Type'] = "multipart/form-data; boundary=$boundary";
+    $length = 0;
+    $fields = array();
+    foreach ($post_data_array as $field => $value) {
+      $fields[$field] = array();
+      if (is_string($value)) {
+        $fields[$field]["disposition"] = "Content-Disposition: form-data; name=\"$field\"\r\n\r\n";
+        $fields[$field]["type"] = "";
+        $fields[$field]["value"] = "$value\r\n";
+      } else {
+        $fields[$field]["disposition"] =
+          "Content-Disposition: form-data; name=\"$field\"; filename=\"{$value->name}\"\r\n";
+        $fields[$field]["type"] = "Content-Type: {$value->type}\r\n\r\n";
+        $fields[$field]["value"] = "\r\n";
+        $fields[$field]["local_file"] = $value->tmp_name;
+        $length += $value->size;
+      }
+      $length += strlen($fields[$field]["disposition"]) + strlen($fields[$field]["value"]) +
+        strlen($fields[$field]["type"]) + $boundary_length + 4;
+    }
+    $length += $boundary_length + 6;  // boundary terminator and last crlf
+    $extra_headers['Content-Length'] = $length;
+
+    $socket = url_connection::_open_socket($url, 'POST', $extra_headers);
+
+    $sent_length = 0;
+    foreach ($fields as $field => $value) {
+      $sent_length += fwrite($socket, "--$boundary\r\n");
+      $sent_length += fwrite($socket, $value["disposition"]);
+      if (!empty($value["type"])) {
+        $sent_length += fwrite($socket, $value["type"]);
+        $file = fopen($value["local_file"], "rb");
+        while (!feof($file)) {
+          $buffer = fread($file, 8192);
+          $sent_length += fwrite($socket, $buffer);
+          fflush($socket);
+        }
+      }
+      $sent_length += fwrite($socket, $value["value"]);
+      fflush($socket);
+    }
+
+    $sent_length += fwrite($socket, "--$boundary--\r\n");
+    fflush($socket);
 
     /* Read the web page into a buffer */
-    return self::do_request($url, 'POST', $extra_headers, $_data_raw);
+    return url_connection::_get_response($socket);
   }
 
   static function get($url, $_data_array=array(), $extra_headers=array()) {
     $_data_raw = self::_encode_data($_data_array, $extra_headers);
 
+    $handle = url_connection::_open_socket("{$url}?$_data_raw", "GET", $extra_headers);
+
     /* Read the web page into a buffer */
-    return self::do_request("{$url}?$_data_raw", "GET", $extra_headers);
+    return url_connection::_get_response($handle);
   }
 
   static function success($response_status) {
@@ -60,12 +106,9 @@ class url_connection {
   }
 
   /**
-   * A single request, without following redirects
-   *
-   * @todo: Handle redirects? If so, only for GET (i.e. not for POST), and use G2's
-   * WebHelper_simple::_parseLocation logic.
+   * Open the socket to server
    */
-  static function do_request($url, $method='GET', $headers=array(), $body='') {
+  static function _open_socket($url, $method='GET', $headers=array()) {
     /* Convert illegal characters */
     $url = str_replace(' ', '%20', $url);
 
@@ -81,18 +124,19 @@ class url_connection {
       $header_lines[] = $key . ': ' . $value;
     }
 
-    $success = fwrite($handle, sprintf("%s %s HTTP/1.0\r\n%s\r\n\r\n%s",
+    $success = fwrite($handle, sprintf("%s %s HTTP/1.0\r\n%s\r\n\r\n",
                                        $method,
                                        $url_components['uri'],
-                                       implode("\r\n", $header_lines),
-                                       $body));
-    if (!$success) {
-      // Zero bytes written or false was returned
-      // log "fwrite failed in requestWebPage($url)" . ($success === false ? ' - false' : ''
-      return array(null, null, null);
-    }
+                                       implode("\r\n", $header_lines)));
     fflush($handle);
 
+    return $handle;
+  }
+
+  /**
+   * Read the http response
+   */
+  static function _get_response($handle) {
     /*
      * Read the status line.  fgets stops after newlines.  The first line is the protocol
      * version followed by a numeric status code and its associated textual phrase.

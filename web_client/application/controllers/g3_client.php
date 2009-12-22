@@ -43,9 +43,9 @@ class G3_Client_Controller extends Template_Controller {
       try {
         $token = G3Remote::instance()->get_access_token($post["user"], $post["password"]);
         Session::instance()->set("g3_client_access_token", $token);
-        $resource = G3Remote::instance()->get_resource("gallery");
+        $response = G3Remote::instance()->get_resource("gallery");
         $valid = true;
-        $content = $this->_get_main_view($resource);
+        $content = $this->_get_main_view($response->resource);
       } catch (Exception $e) {
         Kohana_Log::add("error", Kohana_Exception::text($e));
         $valid = false;

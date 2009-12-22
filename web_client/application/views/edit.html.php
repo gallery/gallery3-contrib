@@ -27,11 +27,11 @@
             empty($form->slug->readonly) ? "" : "readonly={$form->slug->readonly}") ?>
         <?= empty($errors->slug) ? "" : "<span class=\"error\">{$errors->slug}</span>" ?>
       </li>
-      <? if (!empty($form->image_file)): ?>
+      <? if (!empty($form->image)): ?>
       <li>
-        <?= form::label("image_file", "{$form->image_file->label}:") ?><br/>
-        <?= form::upload("image_file") ?>
-        <?= empty($errors->image_file) ? "" : "<span class=\"error\">{$errors->image_file}</span>" ?>
+        <?= form::label("image", "{$form->image->label}:") ?><br/>
+        <?= form::upload("image") ?>
+        <?= empty($errors->image) ? "" : "<span class=\"error\">{$errors->image}</span>" ?>
       </li>
       <? endif ?>
       <? if (!empty($errors->form_error)): ?>
@@ -40,7 +40,7 @@
       </li>
       <? endif ?>
       <li style="text-align: center">
-         <?= form::submit("submit", "Update") ?>
+         <?= form::submit("do_edit", $button_text) ?>
          <?= form::input(array('type'=>'reset','name'=>'reset'), "Reset") ?>
       </li>
     </ul>

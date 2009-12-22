@@ -22,7 +22,7 @@ class G3_Handlers_Controller extends Controller {
     $path = $this->input->get("path");
     if ($_POST) {
       try {
-        unset($_POST["submit"]);
+        unset($_POST["do_edit"]);
         $result = G3Remote::instance()->update_resource("gallery/$path", $_POST);
         if ($result->status == "OK") {
           $form = null;
@@ -53,12 +53,25 @@ class G3_Handlers_Controller extends Controller {
   public function add($type) {
     $path = $this->input->get("path");
     if ($_POST) {
-        unset($_POST["submit"]);
-        $_POST["name"] = empty($_POST["name"]) ? $_POST["title"] : $_POST["name"];
-        $_POST["name"] = g3_client::sanitize_filename($_POST["name"]);
-        $_POST["slug"] = empty($_POST["slug"]) ? $_POST["title"] : $_POST["slug"];
-        $_POST["slug"] = g3_client::sanitize_slug($_POST["slug"]);
-        $result = G3Remote::instance()->add_resource("gallery/$path/{$_POST['slug']}", $_POST);
+      try {
+        unset($_POST["do_edit"]);
+        $data = array(
+          "title" => $_POST["title"],
+          "name" => g3_client::sanitize_title($_POST["name"], $_POST["title"]),
+          "slug" => g3_client::sanitize_title($_POST["slug"], $_POST["title"]),
+          "description" => $_POST["description"]);
+
+        if ($_FILES) {
+          if (empty($_FILES["image"]["error"])) {
+            unset($_FILES["image"]["error"]);
+            $data["image"] = (object)$_FILES["image"];
+          } else {
+            throw new Exception("File upload failed for reason: {$_FILES['image']['error']}");
+          }
+        }
+
+        $path = !empty($path) ? $path . "/" : $path;
+        $result = G3Remote::instance()->add_resource("gallery/$path{$data['slug']}", $data);
         if ($result->status == "OK") {
           $form = null;
           $result = "success";
@@ -71,6 +84,12 @@ class G3_Handlers_Controller extends Controller {
           }
           $result = "display";
         }
+      } catch (Exception $e) {
+        Kohana_Log::add("error", (string)$e);
+        $form = g3_client::get_form($type, true, $path, (object)$_POST);
+        $form->errors["form_error"] = $e->getMessage();
+        $result = "error";
+      }
     } else {
       $form = g3_client::get_form($type, true, $path);
       $result = "display";

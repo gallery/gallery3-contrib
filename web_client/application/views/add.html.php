@@ -26,9 +26,9 @@
           </li>
           <? if ($function == "add_photo"): ?>
           <li>
-            <?= form::label("image_file", "Image File:") ?><br/>
-            <?= form::upload("image_file", $form["image_file"]) ?>
-            <?= empty($errors["image_file"]) ? "" : "<span class=\"error\">{$errors["image_file"]}</span>" ?>
+            <?= form::label("image", "Image File:") ?><br/>
+            <?= form::upload("image", $form["image_file"]) ?>
+            <?= empty($errors["image"]) ? "" : "<span class=\"error\">{$errors["image"]}</span>" ?>
           </li>
           <? endif ?>
           <li style="text-align: center">

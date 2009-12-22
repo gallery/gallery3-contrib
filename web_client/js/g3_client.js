@@ -192,11 +192,12 @@
     $.getJSON("/g3_client/index.php/" + dialog, {path: resource_path}, function(data) {
       $("#g-dialog").html(data.form);
 
-      $("#g-dialog").dialog("open");
       if ($("#g-dialog fieldset legend").length) {
         $("#g-dialog").dialog('option', 'title', $("#g-dialog fieldset legend:eq(0)").html());
       }
       _ajaxifyDialog();
+
+      $("#g-dialog").dialog("open");
 
     });
   }
@@ -206,7 +207,7 @@
       $("#g-dialog form").ajaxForm({
         dataType: "json",
         beforeSubmit: function(formData, form, options) {
-          form.find(":submit")
+          form.find(":submit, :reset")
             .addClass("ui-state-disabled")
             .attr("disabled", "disabled");
           return true;
