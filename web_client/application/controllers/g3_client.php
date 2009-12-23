@@ -76,6 +76,17 @@ class G3_Client_Controller extends Template_Controller {
     print $this->_get_detail($response->resource);
   }
 
+  public function block($type) {
+    switch ($type) {
+    case "random":
+      print $this->_get_image_block();
+      break;
+    default:
+      print "";
+    }
+    $this->auto_render = false;
+  }
+
   private function _get_album_tree($resource) {
     $v = new View("tree_part.html");
     $v->element = (object)array("title" => $resource->title, "path" => $resource->path);
@@ -93,6 +104,8 @@ class G3_Client_Controller extends Template_Controller {
     $v = new View("main.html");
     $v->album_tree = $this->_get_album_tree($resource);
     $v->detail = $this->_get_detail($resource);
+    $v->image_block = $this->_get_image_block();
+    $v->tag_block = "&nbsp;";
     return $v;
   }
 
@@ -102,6 +115,19 @@ class G3_Client_Controller extends Template_Controller {
     $v->parent_path = substr($resource->path, 0, -strlen($resource->slug));
     if (strrpos($v->parent_path, "/") == strlen($v->parent_path) - 1) {
       $v->parent_path = substr($v->parent_path, 0, -1);
+    }
+    return $v;
+  }
+
+  private function _get_image_block() {
+    $response = G3Remote::instance()->get_resource("image_block/random");
+    if ($response->status == "OK") {
+      $v = new View("image_block.html");
+      $v->path = $response->resource->path;
+      $v->src = $response->resource->thumb_url;
+      $v->title = $response->resource->title;
+    } else {
+      $v = "";
     }
     return $v;
   }

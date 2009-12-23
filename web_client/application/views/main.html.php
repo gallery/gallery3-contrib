@@ -38,3 +38,12 @@
     <?= $detail ?>
   </div>
 </div>
+<div id="right">
+  <div id="image_block">
+    <?= $image_block ?>
+  </div>
+  <div id="tag_block">
+    <?= $tag_block ?>
+  </div>
+</div>
+

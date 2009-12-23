@@ -9,7 +9,7 @@
 }
 
 #wc-header div {
-  background-image: url(g3_web.png);
+  background-image: url(images/g3_web.png);
   background-repeat: no-repeat;
   height: 90px;
 }
@@ -127,7 +127,7 @@ span.error {
   left: 230px;
   padding: 10px;
   position: absolute;
-  right: 20px;
+  right: 229px;
   top: 11px;
 }
 
@@ -151,12 +151,12 @@ span.error {
 #wc-body #center .wc-thumb-grid-cell {
   border: 1px solid transparent;
   float: left;
-  height: 200px;
-  line-height: 220px;
+  height: 150px;
+  line-height: 170px;
   margin: 2px;
   padding: 7px;
   text-align: center;
-  width: 200px;
+  width: 150px;
 }
 
 #wc-body #center .wc-thumb-grid-cell img {
@@ -169,6 +169,29 @@ span.error {
 
 #wc-body #center .wc-thumb-grid-cell span {
   vertical-align: middle;
+}
+
+#wc-body #right {
+  background-color: #222222;
+  border: 3px inset;
+  bottom: 20px;
+  margin: 0;
+  padding: 5px;
+  position: absolute;
+  right: 20px;
+  top: 11px;
+  width: 191px;
+}
+
+#wc-body #right #image_block img {
+  padding: 5px 7px;
+  width: 175px;
+}
+
+#wc-body #right #image_block p,
+#wc-body #right #image_block h3 {
+  color: #FF9933;
+  text-align: center;
 }
 
 .ui-icon-left .ui-icon {

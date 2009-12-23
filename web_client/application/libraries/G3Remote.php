@@ -48,8 +48,8 @@ class G3Remote {
   public function get_access_token($user, $password) {
     $request = "{$this->_gallery3_site}/access_key";
     list ($response_status, $response_headers, $response_body) =
-      url_connection::get($request, array("user" => $user, "password" => $password));
-    if (url_connection::success($response_status)) {
+      G3Remote::_get($request, array("user" => $user, "password" => $password));
+    if (G3Remote::_success($response_status)) {
       $response = json_decode($response_body);
       if ($response->status == "OK") {
         $this->_access_token = $response->token;
