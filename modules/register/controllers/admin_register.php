@@ -54,6 +54,7 @@ class Admin_register_Controller extends Admin_Controller {
 
     $post = new Validation($_POST);
     $post->add_rules("activate_users", "required");
+    $post->add_rules("activate", "alpha_numeric");
     if ($post->validate()) {
       $names = array();
       if (!empty($post->activate)) {
