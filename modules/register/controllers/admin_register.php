@@ -105,7 +105,7 @@ class Admin_register_Controller extends Admin_Controller {
         $v->content->group_list[$group->id] = $group->name;
       }
     }
-    $hidden = array("csrf" => access::csrf_token());
+    $hidden = array("name" => "csrf", "value" => access::csrf_token());
     if (count($v->content->group_list)) {
       $v->content->group_list =
         array("" => t("Choose the default group")) + $v->content->group_list;
