@@ -19,7 +19,7 @@
 class Admin_register_Controller extends Admin_Controller {
   public function index() {
     $count = ORM::factory("pending_user")
-      ->where("state !=", 2)
+      ->where("state", "!=", 2)
       ->count_all();
     if ($count == 0) {
       site_status::clear("pending_user_registrations");
@@ -66,7 +66,7 @@ class Admin_register_Controller extends Admin_Controller {
       }
 
       $count = ORM::factory("pending_user")
-        ->where("state != ", 2)
+        ->where("state", "!=", 2)
         ->count_all();
 
       if ($count == 0) {

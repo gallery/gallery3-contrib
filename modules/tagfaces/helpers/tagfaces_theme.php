@@ -24,12 +24,12 @@ class tagfaces_theme_Core {
     $item = $theme->item;
 
     $existingFaces = ORM::factory("items_face")
-                          ->where("item_id", $item->id)
+                          ->where("item_id", "=", $item->id)
                           ->find_all();
     $existingNotes = ORM::factory("items_note")
-                          ->where("item_id", $item->id)
+                          ->where("item_id", "=", $item->id)
                           ->find_all();
-      
+
     // If it does, add an image map to the page to display them.
     if ((count($existingFaces) > 0) || (count($existingNotes) > 0)) {
       return new View("drawfaces_highlight_block.html");

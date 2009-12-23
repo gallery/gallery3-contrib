@@ -42,7 +42,7 @@ class rescue_task_Core {
 
     $total = $task->get("total");
     if (empty($total)) {
-      $task->set("total", $total = Database::instance()->count_records("items"));
+      $task->set("total", $total = db::build()->count_records("items"));
       $task->set("stack", "1:" . self::LEFT);
       $task->set("ptr", 1);
       $task->set("completed", 0);
@@ -92,7 +92,7 @@ class rescue_task_Core {
 
     $total = $task->get("total");
     if (empty($total)) {
-      $task->set("total", $total = Database::instance()->count_records("items"));
+      $task->set("total", $total = db::build()->count_records("items"));
       $task->set("last_id", 0);
       $task->set("completed", 0);
     }
@@ -101,7 +101,7 @@ class rescue_task_Core {
     $completed = $task->get("completed");
 
     foreach (ORM::factory("item")
-             ->where("id >", $last_id)
+             ->where("id", ">", $last_id)
              ->find_all(100) as $item) {
       $item->slug = item::convert_filename_to_slug($item->slug);
       $item->save();
@@ -120,8 +120,11 @@ class rescue_task_Core {
       $task->done = true;
       $task->state = "success";
       $task->percent_complete = 100;
-      Database::instance()
-        ->query("UPDATE {items} SET `relative_path_cache` = NULL, `relative_url_cache` = NULL");
+      db::build()
+        ->update("items")
+        ->set("relative_path_cache", null)
+        ->set("relative_url_cache", null)
+        ->execute();
     } else {
       $task->percent_complete = round(100 * $completed / $total);
     }
@@ -130,19 +133,27 @@ class rescue_task_Core {
   }
 
   static function children($parent_id) {
-    return Database::instance()
+    return db::build()
       ->select("id")
       ->from("items")
-      ->where("parent_id", $parent_id)
-      ->orderby("left_ptr", "ASC")
-      ->get();
+      ->where("parent_id", "=", $parent_id)
+      ->order_by("left_ptr", "ASC")
+      ->execute();
   }
 
   static function set_left($id, $value) {
-    Database::instance()->update("items", array("left_ptr" => $value), array("id" => $id));
+    db::build()
+      ->update("items")
+      ->set("left_ptr", $value)
+      ->where("id", "=", $id)
+      ->execute();
   }
 
   static function set_right($id, $value) {
-    Database::instance()->update("items", array("right_ptr" => $value), array("id" => $id));
+    db::build()
+      ->update("items")
+      ->set("right_ptr", $value)
+      ->where("id", "=", $id)
+      ->execute();
   }
 }

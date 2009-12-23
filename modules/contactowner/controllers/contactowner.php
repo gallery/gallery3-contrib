@@ -20,7 +20,7 @@
 class ContactOwner_Controller extends Controller {
   public function emailowner() {
     // Display a form that a vistor can use to contact the site owner.
-    
+
     // If this page is disabled, show a 404 error.
     if (module::get_var("contactowner", "contact_owner_link") != true) {
       kohana::show_404();
@@ -49,16 +49,16 @@ class ContactOwner_Controller extends Controller {
 
   public function emailid($user_id) {
     // Display a form that a vistor can use to contact a registered user.
-  
+
     // If this page is disabled, show a 404 error.
     if (module::get_var("contactowner", "contact_user_link") != true) {
       kohana::show_404();
     }
-        
+
     // Locate the record for the user specified by $user_id,
     //   use this to determine the user's name.
     $userDetails = ORM::factory("user")
-      ->where("id", $user_id)
+      ->where("id", "=", $user_id)
       ->find_all();
 
     // Make a new form with a couple of text boxes.
@@ -84,16 +84,16 @@ class ContactOwner_Controller extends Controller {
   public function sendemail() {
     // Process the data from the form into an email,
     //   then send the email.
-    
+
     // Copy the data from the email from into a couple of variables.
     $str_emailsubject = Input::instance()->post("email_subject");
     $str_emailtoid = Input::instance()->post("email_to_id");
     $str_emailfrom = Input::instance()->post("email_from");
     $str_emailbody = Input::instance()->post("email_body");
-    
+
     // Add in some <br> tags to the message body where ever there are line breaks.
     $str_emailbody = str_replace("\n", "\n<br/>", $str_emailbody);
-    
+
     // Gallery's Sendmail library doesn't allow for custom from addresses,
     //   so add the from email to the beginning of the message body instead.
     $str_emailbody = "Message Sent From " . $str_emailfrom . "\r\n\r\n<br/><br/>" . $str_emailbody;
@@ -101,17 +101,17 @@ class ContactOwner_Controller extends Controller {
     // Figure out where the email is going to.
     $str_emailto = "";
     if ($str_emailtoid == -1) {
-      // If the email id is "-1" send the message to a pre-determined 
+      // If the email id is "-1" send the message to a pre-determined
       //   owner email address.
       $str_emailto = module::get_var("contactowner", "contact_owner_email");
     } else {
       // or else grab the email from the user table.
     $userDetails = ORM::factory("user")
-      ->where("id", $str_emailtoid)
+      ->where("id", "=", $str_emailtoid)
       ->find_all();
       $str_emailto = $userDetails[0]->email;
     }
-    
+
     // Send the email message.
     Sendmail::factory()
       ->to($str_emailto)

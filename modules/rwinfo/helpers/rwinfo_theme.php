@@ -30,7 +30,7 @@ class rwinfo_theme_Core {
     if (module::is_active("tag")) {
       $tagsItem = ORM::factory("tag")
                   ->join("items_tags", "tags.id", "items_tags.tag_id")
-                  ->where("items_tags.item_id", $item->id)
+                  ->where("items_tags.item_id", "=", $item->id)
                   ->find_all();
       if (count($tagsItem) > 0) {
         $results .= "<li>";

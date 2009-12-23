@@ -34,7 +34,7 @@ class Dynamic_Controller extends Controller {
     if (empty($children_count)) {
       $children_count = ORM::factory("item")
         ->viewable()
-        ->where("type !=", "album")
+        ->where("type", "!=", "album")
         ->count_all();
     }
 
@@ -51,8 +51,8 @@ class Dynamic_Controller extends Controller {
     $template->set_global("page_size", $page_size);
     $template->set_global("children", ORM::factory("item")
                           ->viewable()
-                          ->where("type !=", "album")
-                          ->orderby($album_defn->key_field, "DESC")
+                          ->where("type", "!=", "album")
+                          ->order_by($album_defn->key_field, "DESC")
                           ->find_all($page_size, $offset));
     $template->set_global("children_count", $children_count);
     $template->content = new View("dynamic.html");

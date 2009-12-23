@@ -24,19 +24,19 @@ class contactowner_block_Core {
 
   static function get($block_id, $theme) {
     $block = "";
-    
+
     switch ($block_id) {
     case "contact_owner":
-      
+
       // Create a new block to display the links in.
       $block = new Block();
       $block->css_id = "g-contact-owner";
       $block->title = t("Contact");
       $block->content = new View("contactowner_block.html");
-    
+
       // if $displayBlock is true, this block will be displayed,
       //  if there aren't any links to put in the block for whatever reason
-      //  then $displayBlock will rename set to false and the 
+      //  then $displayBlock will rename set to false and the
       //  block will not be displayed.
       $displayBlock = false;
 
@@ -44,29 +44,29 @@ class contactowner_block_Core {
         // Locate the record for the user that created the current item.
         //   Their name will be displayed as part of the contact link.
         $userDetails = ORM::factory("user")
-          ->where("id", $theme->item->owner_id)
+          ->where("id", "=", $theme->item->owner_id)
           ->find_all();
-        
+
         // Figure out if the contact item owner email link should be displayed.
         //   only display it if the current owner has an email address and
         //   the option for allowing item owners to be contacted is set to true.
-        if ((count($userDetails) > 0) && ($userDetails[0]->email != "") && 
+        if ((count($userDetails) > 0) && ($userDetails[0]->email != "") &&
             (module::get_var("contactowner", "contact_user_link") == true)) {
-          $block->content->userLink = "<a href=\"" . url::site("contactowner/emailid/" . 
-                                      $theme->item->owner_id) . "\">" . t("Contact") . " " . 
+          $block->content->userLink = "<a href=\"" . url::site("contactowner/emailid/" .
+                                      $theme->item->owner_id) . "\">" . t("Contact") . " " .
                                       $userDetails[0]->name . "</a>";
           $displayBlock = true;
         }
       }
-      
+
       // Figure out if the contact site owner link should be displayed.
       if (module::get_var("contactowner", "contact_owner_link")) {
-        $block->content->ownerLink = "<a href=\"" . url::site("contactowner/emailowner") . 
+        $block->content->ownerLink = "<a href=\"" . url::site("contactowner/emailowner") .
                                      "\">" . t(module::get_var("contactowner", "contact_button_text")) . "</a>";
         $displayBlock = true;
       }
-      
-      break;  
+
+      break;
     }
 
     if ($displayBlock) {
