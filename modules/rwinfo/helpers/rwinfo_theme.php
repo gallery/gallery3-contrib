@@ -28,21 +28,18 @@ class rwinfo_theme_Core {
 
     // rWatcher Edit:  Display Tags
     if (module::is_active("tag")) {
-      $tagsItem = ORM::factory("tag")
+      $tags = ORM::factory("tag")
                   ->join("items_tags", "tags.id", "items_tags.tag_id")
                   ->where("items_tags.item_id", "=", $item->id)
                   ->find_all();
-      if (count($tagsItem) > 0) {
+      if (count($tags) > 0) {
         $results .= "<li>";
         $results .= t("Tags:") . " ";
-        for ($counter=0; $counter<count($tagsItem); $counter++) {
-          if ($counter < count($tagsItem)-1) {
-            $results .= "<a href=" . url::site("tags/$tagsItem[$counter]") . ">" . html::clean($tagsItem[$counter]->name) . "</a>, ";
-          } else {
-            $results .= "<a href=" . url::site("tags/$tagsItem[$counter]") . ">" . html::clean($tagsItem[$counter]->name) . "</a>";
-          }
+        $anchors = array();
+        foreach ($tags as $tag) {
+          $anchors[] = "<a href=" . url::site("tags/{$tag->id}") . ">" . html::clean($tag->name) . "</a>";
         }
-      $results .= "</li>";
+        $results .= join(", ", $anchors) . "</li>";
       }
     }
     // rWatcher End Edit
