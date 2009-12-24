@@ -74,7 +74,7 @@ class CalendarView_Controller extends Controller {
 
     // Make sure that the page references a valid offset
     if (($page < 1) || ($page > $max_pages)) {
-      Kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     // Set up the page.
@@ -150,7 +150,7 @@ class CalendarView_Controller extends Controller {
 
     // Make sure that the page references a valid offset
     if (($page < 1) || ($page > $max_pages)) {
-      Kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     // Set up the page.
