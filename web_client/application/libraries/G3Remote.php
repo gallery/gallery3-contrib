@@ -62,19 +62,7 @@ class G3Remote {
     return $this->_access_token;
   }
 
-  public function get_resource($path, $filter=false, $offset=false, $limit=false) {
-    $request = "{$this->_gallery3_site}/$path";
-    $params = array();
-    if ($filter) {
-      $param["filter"] = $filter;
-    }
-    if ($offset) {
-      $param["offset"] = $offset;
-    }
-    if ($limit) {
-      $param["limit"] = $limit;
-    }
-
+  public function get_resource($path, $params=array()) {
     return $this->_do_request("get", $path, $params);
   }
 

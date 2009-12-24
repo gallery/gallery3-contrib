@@ -64,7 +64,7 @@ class G3_Client_Controller extends Template_Controller {
 
   public function albums() {
     $path = $this->input->get("path");
-    $response = G3Remote::instance()->get_resource("gallery/$path", "album");
+    $response = G3Remote::instance()->get_resource("gallery/$path", array("filter" => "album"));
     $this->auto_render = false;
     print $this->_get_album_tree($response->resource);
   }
@@ -120,7 +120,7 @@ class G3_Client_Controller extends Template_Controller {
   }
 
   private function _get_image_block() {
-    $response = G3Remote::instance()->get_resource("image_block/random");
+    $response = G3Remote::instance()->get_resource("image_block", array("type" => "random"));
     if ($response->status == "OK") {
       $v = new View("image_block.html");
       $v->path = $response->resource->path;
