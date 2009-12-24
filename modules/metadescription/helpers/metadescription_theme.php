@@ -23,7 +23,7 @@ class metadescription_theme_Core {
       // If the current page belongs to a tag, look up
       //   the information for that tag.
       $tagsItem = ORM::factory("tag")
-      ->where("id", "=", $theme->tag())
+      ->where("id", "=", $theme->tag()->id)
       ->find_all();
 
     } elseif ($theme->item()) {
