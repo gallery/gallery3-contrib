@@ -23,7 +23,7 @@ class ContactOwner_Controller extends Controller {
 
     // If this page is disabled, show a 404 error.
     if (module::get_var("contactowner", "contact_owner_link") != true) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     // Make a new form with a couple of text boxes.
@@ -52,7 +52,7 @@ class ContactOwner_Controller extends Controller {
 
     // If this page is disabled, show a 404 error.
     if (module::get_var("contactowner", "contact_user_link") != true) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     // Locate the record for the user specified by $user_id,

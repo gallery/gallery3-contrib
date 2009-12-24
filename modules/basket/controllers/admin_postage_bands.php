@@ -69,7 +69,7 @@ class Admin_Postage_Bands_Controller extends Controller
   public function delete_postage_band_form($id) {
     $postage = ORM::factory("postage_band", $id);
     if (!$postage->loaded()) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
     print postage_band::get_delete_form_admin($postage);
   }
@@ -83,7 +83,7 @@ class Admin_Postage_Bands_Controller extends Controller
 
     $postage  = ORM::factory("postage_band", $id);
     if (!$postage->loaded()) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     $form = postage_band::get_delete_form_admin($postage);
@@ -106,7 +106,7 @@ class Admin_Postage_Bands_Controller extends Controller
 
     $postage = ORM::factory("postage_band", $id);
     if (!$postage->loaded()) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     $form = postage_band::get_edit_form_admin($postage);
@@ -143,7 +143,7 @@ class Admin_Postage_Bands_Controller extends Controller
   public function edit_postage_band_form($id) {
     $postage = ORM::factory("postage_band", $id);
     if (!$postage->loaded()) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     $form = postage_band::get_edit_form_admin($postage);

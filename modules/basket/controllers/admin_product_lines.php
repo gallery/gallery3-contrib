@@ -70,7 +70,7 @@ class Admin_Product_Lines_Controller extends Controller
   public function delete_product_form($id) {
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
     print product::get_delete_form_admin($product);
   }
@@ -84,7 +84,7 @@ class Admin_Product_Lines_Controller extends Controller
 
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     $form = product::get_delete_form_admin($product);
@@ -107,7 +107,7 @@ class Admin_Product_Lines_Controller extends Controller
 
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     $form = product::get_edit_form_admin($product);
@@ -145,7 +145,7 @@ class Admin_Product_Lines_Controller extends Controller
   public function edit_product_form($id) {
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
-      kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     $form = product::get_edit_form_admin($product);
