@@ -27,7 +27,7 @@ class Dynamic_Controller extends Controller {
 
   private function _show($album) {
     $page_size = module::get_var("gallery", "page_size", 9);
-    $page = $this->input->get("page", "1");
+    $page = Input::instance()->get("page", "1");
 
     $album_defn = unserialize(module::get_var("dynamic", $album));
     $children_count = $album_defn->limit;

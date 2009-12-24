@@ -25,7 +25,7 @@ class latestupdates_Controller extends Controller {
 
     // Figure out which page # the visitor is on and
     //	don't allow the visitor to go below page 1.
-    $page = $this->input->get("page", 1);
+    $page = Input::instance()->get("page", 1);
     if ($page < 1) {
       url::redirect("latestupdates/albums/{$item->id}");
     }
@@ -86,7 +86,7 @@ class latestupdates_Controller extends Controller {
 
    // Figure out which page # the visitor is on and
    //	don't allow the visitor to go below page 1.
-   $page = $this->input->get("page", 1);
+   $page = Input::instance()->get("page", 1);
     if ($page < 1) {
       url::redirect("latestupdates/updates");
     }

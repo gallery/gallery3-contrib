@@ -68,7 +68,7 @@ class CalendarView_Controller extends Controller {
 
     // Figure out paging stuff.
     $page_size = module::get_var("gallery", "page_size", 9);
-    $page = (int) $this->input->get("page", "1");
+    $page = (int) Input::instance()->get("page", "1");
     $offset = ($page-1) * $page_size;
     $max_pages = max(ceil($day_count / $page_size), 1);
 
@@ -144,7 +144,7 @@ class CalendarView_Controller extends Controller {
 
     // Figure out paging stuff.
     $page_size = module::get_var("gallery", "page_size", 9);
-    $page = (int) $this->input->get("page", "1");
+    $page = (int) Input::instance()->get("page", "1");
     $offset = ($page-1) * $page_size;
     $max_pages = max(ceil($day_count / $page_size), 1);
 
