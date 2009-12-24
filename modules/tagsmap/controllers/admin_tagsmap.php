@@ -48,6 +48,7 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     $view->content = new View("admin_tagsmap_edit.html");
     $view->content->tagsmapedit_form = $this->_get_tagsgpsedit_form($tag_id);
     $view->content->tag_name = $tagName[0]->name;
+    $view->content->zoom = module::get_var("tagsmap", "googlemap_zoom");
     print $view;
   }
 
@@ -123,8 +124,10 @@ class Admin_TagsMap_Controller extends Admin_Controller {
       ->where("tag_id", "=", $tag_id)
       ->find_all();
     if (count($existingGPS) == 0) {
-      $tagsgps_group->input("gps_latitude")->label(t("Latitude"))->value("");
-      $tagsgps_group->input("gps_longitude")->label(t("Longitude"))->value("");
+      $tagsgps_group->input("gps_latitude")
+        ->label(t("Latitude"))->value(module::get_var("tagsmap", "googlemap_latitude"));
+      $tagsgps_group->input("gps_longitude")
+        ->label(t("Longitude"))->value(module::get_var("tagsmap", "googlemap_longitude"));
       $tagsgps_group->textarea("gps_description")->label(t("Description"))->value("");
     } else {
       $tagsgps_group->input("gps_latitude")->label(t("Latitude"))->value($existingGPS[0]->latitude);
@@ -186,23 +189,29 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     // Input box for the Maps API Key
     $googlemap_group = $form->group("GoogleMapsKey");
     $googlemap_group->input("google_api_key")
-                 ->label(t("Google Maps API Key"))
-                 ->value(module::get_var("tagsmap", "googlemap_api_key"));
+      ->label(t("Google Maps API Key"))
+      ->value(module::get_var("tagsmap", "googlemap_api_key"))
+      ->rules("required");
 
     // Input boxes for the Maps starting location map type and zoom.
     $startingmap_group = $form->group("GoogleMapsPos");
     $startingmap_group->input("google_starting_latitude")
-                 ->label(t("Starting Latitude"))
-                 ->value(module::get_var("tagsmap", "googlemap_latitude"));
+      ->label(t("Starting Latitude"))
+      ->value(module::get_var("tagsmap", "googlemap_latitude"))
+      ->rules("required");
     $startingmap_group->input("google_starting_longitude")
-                 ->label(t("Starting Longitude"))
-                 ->value(module::get_var("tagsmap", "googlemap_longitude"));
+      ->label(t("Starting Longitude"))
+      ->value(module::get_var("tagsmap", "googlemap_longitude"))
+      ->rules("required");
     $startingmap_group->input("google_default_zoom")
-                 ->label(t("Default Zoom Level"))
-                 ->value(module::get_var("tagsmap", "googlemap_zoom"));
-    $startingmap_group->input("google_default_type")
-                 ->label(t("Default Map Type") . " (G_NORMAL_MAP, G_SATELLITE_MAP, G_HYBRID_MAP, G_PHYSICAL_MAP, G_SATELLITE_3D_MAP)")
-                 ->value(module::get_var("tagsmap", "googlemap_type"));
+      ->label(t("Default Zoom Level"))
+      ->value(module::get_var("tagsmap", "googlemap_zoom"))
+      ->rules("required");
+    $startingmap_group->dropdown("google_default_type")
+      ->label(t("Default Map Type"))
+      ->options(
+        array("G_NORMAL_MAP", "G_SATELLITE_MAP", "G_HYBRID_MAP",
+              "G_PHYSICAL_MAP", "G_SATELLITE_3D_MAP"));
 
     // Add a save button to the form.
     $form->submit("SaveSettings")->value(t("Save"));
@@ -217,22 +226,25 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
-    // Figure out the values of the text boxes
-    $str_googlekey = Input::instance()->post("google_api_key");
-    $str_googlelatitude = Input::instance()->post("google_starting_latitude");
-    $str_googlelongitude = Input::instance()->post("google_starting_longitude");
-    $str_googlezoom = Input::instance()->post("google_default_zoom");
-    $str_googlemaptype = Input::instance()->post("google_default_type");
+    $form = $this->_get_googlemaps_form();
+    if ($form->validate()) {
+      Kohana_Log::add("error",print_r($form,1));
+      module::set_var("tagsmap", "googlemap_api_key", $form->GoogleMapsKey->google_api_key->value);
+      module::set_var("tagsmap", "googlemap_latitude", $form->GoogleMapsPos->google_starting_latitude->value);
+      module::set_var("tagsmap", "googlemap_longitude", $form->GoogleMapsPos->google_starting_longitude->value);
+      module::set_var("tagsmap", "googlemap_zoom", $form->GoogleMapsPos->google_default_zoom->value);
+      module::set_var("tagsmap", "googlemap_type", $form->GoogleMapsPos->google_default_type->value);
 
-    // Save Settings.
-    module::set_var("tagsmap", "googlemap_api_key", $str_googlekey);
-    module::set_var("tagsmap", "googlemap_latitude", $str_googlelatitude);
-    module::set_var("tagsmap", "googlemap_longitude", $str_googlelongitude);
-    module::set_var("tagsmap", "googlemap_zoom", $str_googlezoom);
-    module::set_var("tagsmap", "googlemap_type", $str_googlemaptype);
+      // Display a success message and redirect back to the TagsMap admin page.
+      message::success(t("Your settings have been saved."));
+      url::redirect("admin/tagsmap");
+    }
 
-    // Display a success message and redirect back to the TagsMap admin page.
-    message::success(t("Your Settings Have Been Saved."));
-    url::redirect("admin/tagsmap");
+    // Else show the page with errors
+    $view = new Admin_View("admin.html");
+    $view->content = new View("admin_tagsmap.html");
+    $view->content->googlemaps_form = $form;
+    $view->content->tags = ORM::factory("tag")->order_by("name", "ASC")->find_all();
+    print $view;
   }
 }
