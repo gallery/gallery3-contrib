@@ -16,22 +16,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class dynamic_theme {
-  static function sidebar_blocks($theme) {
-    $albums = array();
-    foreach (array("updates", "popular") as $album) {
-      $album_defn = unserialize(module::get_var("dynamic", $album));
-      if ($album_defn->enabled) {
-        $albums[$album] = $album_defn->title;
+class dynamic_block_Core {
+  static function get_site_list() {
+    return array("dynamic" => t("Dynamic Albums"));
+  }
+
+  static function get($block_id) {
+    switch ($block_id) {
+    case "dynamic":
+      $albums = array();
+      foreach (array("updates", "popular") as $album) {
+        $album_defn = unserialize(module::get_var("dynamic", $album));
+        if ($album_defn->enabled) {
+          $albums[$album] = $album_defn->title;
+        }
       }
-    }
-    if (!empty($albums)) {
-      $block = new Block();
-      $block->css_id = "g-dynamic";
-      $block->title = t("Dynamic Albums");
-      $block->content = new View("dynamic_block.html");
-      $block->content->albums = $albums;
-      return $block;
+
+      if (!empty($albums)) {
+        $block = new Block();
+        $block->css_id = "g-dynamic";
+        $block->title = t("Dynamic Albums");
+        $block->content = new View("dynamic_block.html");
+        $block->content->albums = $albums;
+        return $block;
+      }
     }
     return "";
   }
