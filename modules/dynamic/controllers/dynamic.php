@@ -18,11 +18,11 @@
  */
 class Dynamic_Controller extends Controller {
   public function updates() {
-    print $this->_show("updates");
+    print $this->_show("updates", t("Recent changes"));
   }
 
   public function popular() {
-    print $this->_show("popular");
+    print $this->_show("popular", t("Most viewed"));
   }
 
   private function _show($album) {
@@ -44,11 +44,13 @@ class Dynamic_Controller extends Controller {
 
     // Make sure that the page references a valid offset
     if ($page < 1 || ($children_count && $page > ceil($children_count / $page_size))) {
-      Kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
-    $template = new Theme_View("page.html", "other", "dynamic");
+    $template = new Theme_View("page.html", "collection", "dynamic");
+    $template->set_global("page", $page);
     $template->set_global("page_size", $page_size);
+    $template->set_global("max_pages", $max_pages);
     $template->set_global("children", ORM::factory("item")
                           ->viewable()
                           ->where("type", "!=", "album")
