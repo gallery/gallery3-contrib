@@ -21,7 +21,7 @@
 <div class="gBlock">
 
   <a href="<?= url::site("admin/postage_bands/add_postage_band_form") ?>"
-     class="gDialogLink gButtonLink right ui-icon-left ui-state-default ui-corner-all"
+     class="g-dialog-link g-button-link right ui-icon-left ui-state-default ui-corner-all"
      title="<?= t("Create a new Postage Band") ?>">
     <span class="ui-icon ui-icon-circle-plus"></span>
     <?= t("Add a new Postage Band") ?>
@@ -54,12 +54,16 @@
         <td class="gActions">
           <a href="<?= url::site("admin/postage_bands/edit_postage_band_form/$postage_band->id") ?>"
             open_text="<?= t("close") ?>"
-            class="gPanelLink gButtonLink ui-state-default ui-corner-all ui-icon-left">
-            <span class="ui-icon ui-icon-pencil"></span><span class="gButtonText"><?= t("edit") ?></span></a>
+            class="g-panel-link g-button-link ui-state-default ui-corner-all ui-icon-left">
+            <span class="ui-icon ui-icon-pencil"></span>
+            <?= t("edit") ?>
+          </a>
 
           <a href="<?= url::site("admin/postage_bands/delete_postage_band_form/$postage_band->id") ?>"
-            class="gDialogLink gButtonLink ui-state-default ui-corner-all ui-icon-left">
-            <span class="ui-icon ui-icon-trash"></span><?= t("delete") ?></a>
+            class="g-dialog-link g-button-link ui-state-default ui-corner-all ui-icon-left">
+            <span class="ui-icon ui-icon-trash"></span>
+            <?= t("delete") ?>
+          </a>
         </td>
 
       </tr>
