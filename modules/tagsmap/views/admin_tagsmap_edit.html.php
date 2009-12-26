@@ -10,10 +10,10 @@
 
 
 <script src="http://www.google.com/jsapi?key=<?= module::get_var("tagsmap", "googlemap_api_key") ?>" type="text/javascript"></script>
-<script type="text/javascript"> 
+<script type="text/javascript">
   google.load("maps", "2.160");
-  var lat = document.getElementById("gps_latitude").value;
-  var lon = document.getElementById("gps_longitude").value;
+  var lat = $("input[name=gps_latitude]");
+  var lon = $("input[name=gps_longitude]");
 
   var map;
 
@@ -23,36 +23,36 @@
       map.addMapType(G_PHYSICAL_MAP);
       map.setMapType(G_PHYSICAL_MAP);
       map.enableScrollWheelZoom();
-      map.setCenter(new GLatLng(<?=module::get_var("tagsmap", "googlemap_latitude"); ?>, <?=module::get_var("tagsmap", "googlemap_longitude"); ?>));
-      map.setZoom(<?=module::get_var("tagsmap", "googlemap_zoom"); ?>);
-      map.addControl(new GSmallMapControl()); // affiche le curseur de zoom
-      map.addControl(new GMapTypeControl()); // affiche le curseur de déplacement
-      map.addControl(new GScaleControl()); // affiche lechelle
-	  
+      map.setCenter(new GLatLng(lat.attr("value"), lon.attr("value")));
+      map.setZoom(<?=$zoom ?>);
+      map.addControl(new GSmallMapControl());
+      map.addControl(new GMapTypeControl());
+      map.addControl(new GScaleControl());
+
       GEvent.addListener(map,"dblclick",function(overlay, latlng) {
-        document.getElementById("gps_longitude").value = latlng.x;
-        document.getElementById("gps_latitude").value = latlng.y;
+        lon.attr("value", latlng.x);
+        lat.attr("value", latlng.y);
         var markeri = new GMarker(latlng, {draggable: true});
         map.addOverlay(markeri);
         GEvent.addListener(markeri, "dragend", function(point){
-          document.getElementById("gps_longitude").value = point.x;
-          document.getElementById("gps_latitude").value = point.y;
+          lon.attr("value", point.x);
+          lat.attr("value", point.y);
         });
       });
     }
-				
-    if (lon != '' && lat != ''){
-      var point = new GLatLng(lat,lon);
-      map.setCenter(point, 8);
+
+    if (lon.attr("value") && lat.attr("value")){
+      var point = new GLatLng(lat.attr("value"), lon.attr("value"));
+      map.setCenter(point, 4);
       var marker = new GMarker(point, {draggable: true});
       map.addOverlay(marker);
       GEvent.addListener(marker, "dragend", function(point){
-        document.getElementById("gps_longitude").value = point.x;
-        document.getElementById("gps_latitude").value = point.y;
+        lon.attr("value", point.x);
+        lat.attr("value", point.y);
       });
     }
   }
-			
+
   google.setOnLoadCallback(Gload);
 </script>
 

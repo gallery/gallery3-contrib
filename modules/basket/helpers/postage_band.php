@@ -67,8 +67,8 @@ class postage_band_Core {
    * @return User_Model
    */
   static function create($name, $flatrate, $peritemcost) {
-    $postage = ORM::factory("postage_band")->where("name", $name)->find();
-    if ($postage->loaded) {
+    $postage = ORM::factory("postage_band")->where("name", "=", $name)->find();
+    if ($postage->loaded()) {
       throw new Exception("@todo postage already EXISTS $name");
     }
 

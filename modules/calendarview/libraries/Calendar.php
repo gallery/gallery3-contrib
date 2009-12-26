@@ -59,7 +59,7 @@ class Calendar_Core extends Event_Subject {
 			foreach ($days as $i => $day)
 			{
 				// Shorten the days to the expected length
-				$days[$i] = utf8::substr($day, 0, $length);
+				$days[$i] = mb_substr($day, 0, $length);
 			}
 		}
 

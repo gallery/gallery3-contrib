@@ -24,22 +24,24 @@ class BatchTag_Controller extends Controller {
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
+    $input = Input::instance();
+
     // Figure out if the contents of sub-albums should also be tagged
-    $str_tag_subitems = Input::instance()->post("tag_subitems");
+    $str_tag_subitems = $input->post("tag_subitems");
 
     $children = "";
     if ($str_tag_subitems == false) {
       // Generate an array of all non-album items in the current album.
       $children = ORM::factory("item")
-                  ->where("parent_id", $this->input->post("item_id"))
-                  ->where("type !=", "album")
-                  ->find_all();
+        ->where("parent_id", "=", $input->post("item_id"))
+        ->where("type", "!=", "album")
+        ->find_all();
     } else {
       // Generate an array of all non-album items in the current album
       //   and any sub albums.
-      $children = ORM::factory("item", $this->input->post("item_id"))
-               ->where("type !=", "album")
-               ->descendants();
+      $children = ORM::factory("item", $input->post("item_id"))
+        ->where("type", "!=", "album")
+        ->descendants();
     }
 
     // Loop through each item in the album and make sure the user has
@@ -50,7 +52,7 @@ class BatchTag_Controller extends Controller {
         // Assuming the user can view/edit the current item, loop
         //   through each tag that was submitted and apply it to
         //   the current item.
-        foreach (split(",", $this->input->post("name")) as $tag_name) {
+        foreach (split(",", $input->post("name")) as $tag_name) {
           $tag_name = trim($tag_name);
           if ($tag_name) {
             tag::add($child, $tag_name);
@@ -60,7 +62,7 @@ class BatchTag_Controller extends Controller {
     }
 
     // Redirect back to the album.
-    $item = ORM::factory("item", $this->input->post("item_id"));
+    $item = ORM::factory("item", $input->post("item_id"));
     url::redirect(url::abs_site("{$item->type}s/{$item->id}"));
   }
 }

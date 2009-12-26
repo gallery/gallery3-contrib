@@ -50,7 +50,7 @@
             <?
               // Check and see if this ID already has GPS data, display a delete button if it does.
               $existingGPS = ORM::factory("tags_gps")
-                             ->where("tag_id", $tag->id)
+                             ->where("tag_id", "=", $tag->id)
                              ->find_all();
               if (count($existingGPS) > 0) {
               ?>
@@ -69,7 +69,7 @@
   </table>
 </div>
 
-<div class="g-block">  
+<div class="g-block">
   <h3>
     <?= t("Remove Orphaned GPS Data") ?>
   </h3>

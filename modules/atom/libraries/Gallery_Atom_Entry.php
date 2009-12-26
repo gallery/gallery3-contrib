@@ -27,7 +27,7 @@ class Gallery_Atom_Entry_Core extends Atom_Entry {
     parent::__construct("entry");
 
     /* Set feed ID and self link. */
-    $this->id(html::specialchars(url::abs_current()));
+    $this->id(html::chars(url::abs_current()));
     $this->link()
       ->rel("self")
       ->href(url::abs_current());

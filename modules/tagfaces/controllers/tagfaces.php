@@ -20,12 +20,12 @@
 class tagfaces_Controller extends Controller {
   public function drawfaces($id) {
     // Generate the page that allows the user to draw boxes over a photo.
-      
+
     // Make sure user has access to view and edit the photo.
     $item = ORM::factory("item", $id);
     access::required("view", $item);
     access::required("edit", $item);
-    
+
     // Create the page.
     $template = new Theme_View("page.html", "other", "drawfaces");
     $template->set_global("item_id", $id);
@@ -46,11 +46,11 @@ class tagfaces_Controller extends Controller {
 
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
-    
+
     // Convert submitted data to local variables.
     $tag_data = Input::instance()->post("facesList");
     $item_data = Input::instance()->post("item_id");
-    
+
     // If the user didn't select a tag, display and error and abort.
     if (count($tag_data) == 0) {
       message::error(t("Please select a tag."));
@@ -61,22 +61,22 @@ class tagfaces_Controller extends Controller {
     // Delete the face(s) from the database.
     foreach ($tag_data as $one_tag) {
       ORM::factory("items_face")
-        ->where("id", $one_tag)
+        ->where("id", "=", $one_tag)
         ->delete_all();
     }
-    
+
     // Display a success message.
     if (count($tag_data) == 1) {
       message::success(t("One face deleted."));
     } else {
       message::success(count($tag_data) . t(" faces deleted."));
-    }    
+    }
     url::redirect("tagfaces/drawfaces/$item_data");
   }
-  
+
   public function saveface() {
     // Save the face coordinates to the specified tag.
-    
+
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
@@ -89,7 +89,7 @@ class tagfaces_Controller extends Controller {
     $str_y1 = Input::instance()->post("y");
     $str_x2 = Input::instance()->post("x2");
     $str_y2 = Input::instance()->post("y2");
-    
+
     // If the user didn't select a face, display an error and abort.
     if (($str_x1 == "") || ($str_x2 == "") || ($str_y1 == "") || ($str_y2 == "")) {
       message::error(t("Please select a face."));
@@ -105,7 +105,7 @@ class tagfaces_Controller extends Controller {
         url::redirect("tagfaces/drawfaces/$item_data");
         return;
       }
-      
+
       // Save a new Note to the database.
       $newnote = ORM::factory("items_note");
       $newnote->item_id = $item_data;
@@ -116,12 +116,12 @@ class tagfaces_Controller extends Controller {
       $newnote->title = $str_face_title;
       $newnote->description = $str_face_description;
       $newnote->save();
-        
+
     } else {
       // Check to see if the tag already has a face associated with it.
       $existingFace = ORM::factory("items_face")
-                           ->where("tag_id", $tag_data)
-                           ->where("item_id", $item_data)
+                           ->where("tag_id", "=", $tag_data)
+                           ->where("item_id", "=", $item_data)
                            ->find_all();
 
       if (count($existingFace) == 0) {
@@ -156,7 +156,7 @@ class tagfaces_Controller extends Controller {
     // Generate the form that allows the user to select a tag to
     //   save the face too.  Also displays the coordinates of the face
     //   and the "Save face" button.
-    
+
     // Make a new Form.
     $form = new Forge("tagfaces/saveface", "", "post",
                       array("id" => "g-tag-faces-form"));
@@ -164,7 +164,7 @@ class tagfaces_Controller extends Controller {
     // Create an array of all the tags for the current item.
     $all_tags = ORM::factory("tag")
       ->join("items_tags", "tags.id", "items_tags.tag_id")
-      ->where("items_tags.item_id", $id)
+      ->where("items_tags.item_id", "=", $id)
       ->find_all();
 
     // Generate an array of tags to use as checkboxes.
@@ -177,18 +177,18 @@ class tagfaces_Controller extends Controller {
     // Make a checklist of tags on the form.
     $tags_group = $form->group("FaceTag")
                        ->label(t("Select a tag or enter in a title:"));
-        
+
     $tags_group->dropdown('tagsList')
                ->label(t("Select a tag:"))
                ->options($array_tags);
 
     $tags_group->input("face_title")
                ->label(t("Title"));
-               
+
     $tags_description = $form->group("TagsDescription")
                              ->label(t("Description (optional):"));
     $tags_description->input("face_description");
-                      
+
     // Generate input boxes to hold the coordinates of the face.
     $coordinates_group = $form->group("FaceCoordinates")
                               ->label(t("Coordinates:"));
@@ -212,21 +212,21 @@ class tagfaces_Controller extends Controller {
   private function _get_delfaces_form($id) {
     // Generate a form to allow the user to remove face data
     //   from a photo.
-    
+
     // Make a new Form.
     $form = new Forge("tagfaces/delface", "", "post",
                       array("id" => "g-tag-del-faces-form"));
 
     // Create an array of all the tags that already have faces.
     $existing_faces = ORM::factory("items_face")
-      ->where("item_id", $id)
+      ->where("item_id", "=", $id)
       ->find_all();
 
     // turn the $existing_faces array into an array that can be used
     //   for a checklist.
     $array_faces = "";
     foreach ($existing_faces as $oneFace) {
-      $array_faces[$oneFace->id] = array(ORM::factory("tag", 
+      $array_faces[$oneFace->id] = array(ORM::factory("tag",
                                      $oneFace->tag_id)->name, false);
     }
 
@@ -238,7 +238,7 @@ class tagfaces_Controller extends Controller {
                  ->options($array_faces)
                  ->label(t("Select the tag(s) that correspond(s) to the face(s) you wish to delete:"));
     }
-    
+
     // Add the id# of the photo and a delete button to the form.
     $form->hidden("item_id")->value($id);
     $form->submit("DeleteFace")->value(t("Delete face(s)"));

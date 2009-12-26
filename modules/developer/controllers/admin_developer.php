@@ -174,7 +174,7 @@ class Admin_Developer_Controller extends Admin_Controller {
   }
 
   function mptt_graph() {
-    $items = ORM::factory("item")->orderby("id")->find_all();
+    $items = ORM::factory("item")->order_by("id")->find_all();
     $data = $this->_build_tree();
 
     $proc = proc_open("/usr/bin/dot -Tsvg",
@@ -192,7 +192,7 @@ class Admin_Developer_Controller extends Admin_Controller {
   }
 
   private function _build_tree() {
-    $items = ORM::factory("item")->orderby("id")->find_all();
+    $items = ORM::factory("item")->order_by("id")->find_all();
     $data = "digraph G {\n";
     foreach ($items as $item) {
       $data .= "  $item->parent_id -> $item->id\n";
@@ -249,8 +249,8 @@ class Admin_Developer_Controller extends Admin_Controller {
     $v = new View("admin_developer_test_data.html");
     $v->action = "admin/developer/test_data_create";
     $v->hidden = array("csrf" => access::csrf_token());
-    $album_count = ORM::factory("item")->where("type", "album")->count_all();
-    $photo_count = ORM::factory("item")->where("type", "photo")->count_all();
+    $album_count = ORM::factory("item")->where("type", "=", "album")->count_all();
+    $photo_count = ORM::factory("item")->where("type", "=", "photo")->count_all();
 
     $v->comment_installed = module::is_active("comment");
     $comment_count = empty($v->comment_installed) ? 0 : ORM::factory("comment")->count_all();
