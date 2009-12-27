@@ -107,7 +107,7 @@ class G3Remote {
     }
   }
 
-  private static function post($url, $post_data_array, $extra_headers=array()) {
+  private static function _post($url, $post_data_array, $extra_headers=array()) {
     $boundary = str_repeat("-", 9) . md5(microtime());
     $boundary_length = strlen($boundary);
 
