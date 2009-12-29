@@ -39,7 +39,7 @@ class G3_Client_Controller extends Template_Controller {
     $post = new Validation($_POST);
     $post->add_rules("user", "required");
     $post->add_rules("password", "required");
-    if ($valid =$post->validate()) {
+    if ($valid = $post->validate()) {
       try {
         $token = G3Remote::instance()->get_access_token($post["user"], $post["password"]);
         Session::instance()->set("g3_client_access_token", $token);
@@ -76,10 +76,20 @@ class G3_Client_Controller extends Template_Controller {
     print $this->_get_detail($response->resource);
   }
 
+  public function tagged_album() {
+    $tags = $this->input->get("tags", "");
+    $response = G3Remote::instance()->get_resource("tag/$tags");
+    $this->auto_render = false;
+    print $this->_get_detail($response->resource);
+  }
+
   public function block($type) {
     switch ($type) {
     case "random":
       print $this->_get_image_block();
+      break;
+    case "tags":
+      print "";
       break;
     default:
       print "";
@@ -105,7 +115,7 @@ class G3_Client_Controller extends Template_Controller {
     $v->album_tree = $this->_get_album_tree($resource);
     $v->detail = $this->_get_detail($resource);
     $v->image_block = $this->_get_image_block();
-    $v->tag_block = "&nbsp;";
+    $v->tag_block = $this->_get_tag_block();
     return $v;
   }
 
@@ -126,6 +136,18 @@ class G3_Client_Controller extends Template_Controller {
       $v->path = $response->resource->path;
       $v->src = $response->resource->thumb_url;
       $v->title = $response->resource->title;
+    } else {
+      $v = "";
+    }
+    return $v;
+  }
+
+  private function _get_tag_block() {
+    $response = G3Remote::instance()->get_resource("tag", array("limit" => "15"));
+    if ($response->status == "OK") {
+      $v = new View("tag_block.html");
+      $v->tags = $response->tags;
+      $v->max_count = $response->tags[0]->count;;
     } else {
       $v = "";
     }
