@@ -76,11 +76,12 @@ class G3_Client_Controller extends Template_Controller {
     print $this->_get_detail($response->resource);
   }
 
-  public function tagged_album() {
-    $tags = $this->input->get("tags", "");
+  public function tagged_album($tags) {
     $response = G3Remote::instance()->get_resource("tag/$tags");
     $this->auto_render = false;
-    print $this->_get_detail($response->resource);
+    $v = new View("tag_detail.html");
+    $v->resources = $response->resources;
+    print $v;
   }
 
   public function block($type) {

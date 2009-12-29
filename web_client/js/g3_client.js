@@ -161,6 +161,16 @@
     });
 
     $("#album_tree [ref=''] .tree-title:first").addClass("ui-selected");
+
+    $("#wc-tag-cloud li a", obj).live("click", function (event) {
+      $.get($(this).attr("href"), function(data, textStatus) {
+        $("#wc-detail").html(data);
+        set_selected_thumb();
+        save_paths();
+      });
+      return false;
+    });
+
     set_selected_thumb();
     save_paths();
   }
