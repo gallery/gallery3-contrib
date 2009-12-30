@@ -48,13 +48,15 @@ class Admin_ContactOwner_Controller extends Admin_Controller {
     $str_contactbutton = Input::instance()->post("owner_button_text");
     $str_contactemail = Input::instance()->post("owner_email");
     $str_contactname = Input::instance()->post("owner_name");
+    $str_messageheader = Input::instance()->post("message_header");
 
     // Save Settings.
     module::set_var("contactowner", "contact_owner_link", $ownerLink);
     module::set_var("contactowner", "contact_user_link", $userLink);
     module::set_var("contactowner", "contact_button_text", $str_contactbutton);
-    module::set_var("contactowner", "contact_owner_email", $str_contactemail );
-    module::set_var("contactowner", "contact_owner_name", $str_contactname );
+    module::set_var("contactowner", "contact_owner_email", $str_contactemail);
+    module::set_var("contactowner", "contact_owner_name", $str_contactname);
+    module::set_var("contactowner", "contact_owner_header", $str_messageheader);
     message::success(t("Your Settings Have Been Saved."));
 
     // Load Admin page.
@@ -86,9 +88,12 @@ class Admin_ContactOwner_Controller extends Admin_Controller {
     $add_contacts->input("owner_button_text")->label(t("Contact Owner Link Text"))->value(module::get_var("contactowner", "contact_button_text"));
     $add_contacts->input("owner_email")->label(t("Owner Email Address"))->value(module::get_var("contactowner", "contact_owner_email"));
     $add_contacts->input("owner_name")->label(t("Owner Name"))->value(module::get_var("contactowner", "contact_owner_name"));
-      
+
+    $message_prefs = $form->group("messagePrefs");
+    $message_prefs->input("message_header")->label(t("Email Message Header"))->value(module::get_var("contactowner", "contact_owner_header"));      
+
     // Add a save button to the form.
-    $add_contacts->submit("SaveSettings")->value(t("Save"));
+    $form->submit("SaveSettings")->value(t("Save"));
 
     // Return the newly generated form.
     return $form;
