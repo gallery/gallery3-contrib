@@ -17,10 +17,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class downloadfullsize_theme {
-  static function head($theme) {
-    if ($theme->item && access::can("view_full", $theme->item)) {
-      $theme->css("downloadfullsize_menu.css");
-    }
+class contactowner_installer {
+  static function install() {
+    // Set some default values
+    module::set_var("contactowner", "contact_owner_link", false);
+    module::set_var("contactowner", "contact_user_link", true);
+    module::set_var("contactowner", "contact_button_text", "Email The Webmaster");
+    module::set_var("contactowner", "contact_owner_name", "Webmaster");
+    module::set_var("contactowner", "contact_owner_header", "You have received a message through your website:");
+
+    module::set_version("contactowner", 2);
+  }
+
+  static function uninstall() {
+    module::delete("contactowner");
   }
 }
