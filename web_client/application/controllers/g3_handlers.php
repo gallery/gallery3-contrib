@@ -54,11 +54,10 @@ class G3_Handlers_Controller extends Controller {
     $path = $this->input->get("path");
     if ($_POST) {
       try {
-        unset($_POST["do_edit"]);
         $data = array(
           "title" => $_POST["title"],
-          "name" => g3_client::sanitize_title($_POST["name"], $_POST["title"]),
-          "slug" => g3_client::sanitize_title($_POST["slug"], $_POST["title"]),
+          "name" => $_POST["name"],
+          "slug" => g3_client::sanitize_title($_POST["slug"], $_POST["name"]),
           "description" => $_POST["description"]);
 
         if ($_FILES) {
@@ -71,7 +70,7 @@ class G3_Handlers_Controller extends Controller {
         }
 
         $path = !empty($path) ? $path . "/" : $path;
-        $result = G3Remote::instance()->add_resource("gallery/$path{$data['slug']}", $data);
+        $result = G3Remote::instance()->add_resource("gallery/$path{$data['name']}", $data);
         if ($result->status == "OK") {
           $form = null;
           $result = "success";
