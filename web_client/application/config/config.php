@@ -120,4 +120,4 @@ $config['modules'] = array
 /**
  * Base path of the gallery3 restFULL API
  */
-$config["gallery3_site"] = "http://sandbox.timalmdal.com/gallery3/index.php/rest";
+$config["gallery3_site"] = "http://????/gallery3/index.php/rest";
