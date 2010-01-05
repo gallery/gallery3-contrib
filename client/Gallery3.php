@@ -40,7 +40,7 @@ class Gallery3 {
     $response = Gallery3_Helper::request(
       "post", $url, null, array("user" => $user, "password" => $pass));
 
-    return self::factory($url, $response->token, null);
+    return self::factory($url, $response, null);
   }
 
   /**
@@ -92,26 +92,12 @@ class Gallery3 {
   }
 
   /**
-   * Create a new album.  You must specify a name for the album, and call save() before the album
-   * will be created in the remote Gallery 3.
+   * Create a new resource.  You must call save() for it to be created in the remote Gallery 3.
    *
    * @return object  Gallery3
    */
-  public function create_album() {
-    return Gallery3::factory(null, $this->token, $this)
-      ->set_value("type", "album");
-  }
-
-  /**
-   * Create a new photo.  You must specify a name for the photo and use set_file() to attach an
-   * image file.  Finally, you must call save() before the photo will be created in the remote
-   * Gallery 3.
-   *
-   * @return object  Gallery3
-   */
-  public function create_photo() {
-    return Gallery3::factory(null, $this->token, $this)
-      ->set_value("type", "photo");
+  public function create() {
+    return Gallery3::factory(null, $this->token, $this);
   }
 
   /**
@@ -127,7 +113,11 @@ class Gallery3 {
         "post", $this->parent->url, $this->token, $this->data, $this->file);
     }
 
-    return $this->load($response->url);
+    if (!empty($response->url)) {
+      $this->load($response->url);
+    }
+
+    return $this;
   }
 
   /**
