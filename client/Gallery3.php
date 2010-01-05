@@ -81,6 +81,25 @@ class Gallery3 {
   }
 
   /**
+   * Get a value from the remote resource.
+   *
+   * @param string   $key
+   * @return string  value
+   */
+  public function __get($key) {
+    return $this->data->$key;
+  }
+
+  /**
+   * Get the list of members from the remote resource
+   *
+   * @return array  member urls
+   */
+  public function members() {
+    return $this->members;
+  }
+
+  /**
    * Attach a file to the remote resource.
    *
    * @param string   path to a local file (eg: /tmp/foo.jpg)
@@ -92,11 +111,12 @@ class Gallery3 {
   }
 
   /**
-   * Create a new resource.  You must call save() for it to be created in the remote Gallery 3.
+   * Add a new member to a collection.  You must call save() for it to be created in the
+   * remote Gallery 3.
    *
    * @return object  Gallery3
    */
-  public function create() {
+  public function add() {
     return Gallery3::factory(null, $this->token, $this);
   }
 
@@ -111,13 +131,10 @@ class Gallery3 {
     } else {
       $response = Gallery3_Helper::request(
         "post", $this->parent->url, $this->token, $this->data, $this->file);
+      $this->parent->load();
     }
 
-    if (!empty($response->url)) {
-      $this->load($response->url);
-    }
-
-    return $this;
+    return $this->load(!empty($response->url) ? $response->url : null);
   }
 
   /**
@@ -135,6 +152,21 @@ class Gallery3 {
   }
 
   /**
+   * Remove a member from the remote collection.
+   *
+   * @return object  Gallery3
+   */
+  public function remove($url) {
+    if (empty($url)) {
+      throw new Gallery3_Exception("Missing remote resource");
+    }
+
+    Gallery3_Helper::request("delete", $this->url, $this->token, array("url" => $url));
+    $this->load();
+  }
+
+
+  /**
    * Reload the resource from a given url.  This is useful after the remote resource has been
    * modified.
    *
@@ -145,7 +177,10 @@ class Gallery3 {
     if ($url) {
       $this->url = $url;
     }
-    $this->data = Gallery3_Helper::request("get", $this->url, $this->token);
+    $response = Gallery3_Helper::request("get", $this->url, $this->token);
+
+    $this->data = isset($response->resource) ? $response->resource : array();
+    $this->members = isset($response->members) ? $response->members : array();
     return $this;
   }
 
