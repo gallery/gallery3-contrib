@@ -9,59 +9,68 @@ if (file_exists("local_config.php")) {
   include("local_config.php");
 }
 
-print "Connect to $SITE_URL <br/>";
+alert("Connect to $SITE_URL");
 $gallery3 = Gallery3::connect($SITE_URL, $USER, $PASSWORD);
 $root = $gallery3->get("gallery");
 $tags = $gallery3->get("tags");
 
-print "Create a tag <br/>";
+alert("Create a tag");
 $tag = $tags->add()
   ->set_value("name", "My Tag")
   ->save();
 
-print "Create a new album <br/>";
+alert("Create a new album");
 $album = $root->add()
   ->set_value("type", "album")
   ->set_value("name", "Sample Album")
   ->set_value("title", "This is my Sample Album")
   ->save();
 
-print "Upload a photo <br/>";
+alert("Upload a photo");
 $photo = $album->add()
   ->set_value("type", "photo")
   ->set_value("name", "Sample Photo")
   ->set_value("title", "Sample Photo")
   ->set_file("/tmp/foo.jpg")
   ->save();
-print "Added: " . $album->members[0] . " <br/>";
+alert("Added: " . $album->members[0] . "");
 
-print "Tag the album <br/>";
+alert("Search for the photo");
+$photos = $root->get("", array("name" => "Sample"));
+alert("Found: {$photos->members[0]}");
+
+alert("Tag the album");
 $tag->add()
   ->set_value("url", $album->url)
   ->save();
 
-print "Tag the photo <br/>";
+alert("Tag the photo");
 $tag->add()
   ->set_value("url", $photo->url)
   ->save();
-print "Tagged items: " . join($tag->members, " ") . "<br/>";
+alert("Tagged items: " . join($tag->members, " "));
 
-print "Un-tag the photo <br/>";
+alert("Un-tag the photo");
 $tag->remove($photo->url);
-print "Tagged items: " . join($tag->members, " ") . "<br/>";
+alert("Tagged items: " . join($tag->members, " "));
 
-print "Find and modify the album <br/>";
+alert("Find and modify the album");
 $album = $root->get("Sample-Album")
   ->set_value("title", "This is my title")
   ->save();
-print "New title: $album->title <br/>";
+alert("New title: $album->title");
 
 // Now delete the album
-print "Delete the album <br/>";
+alert("Delete the album");
 $album->delete();
 
 // Delete the tag
 $tag->delete();
 
-print "Done! <br/>";
+alert("Done!");
+
+function alert($msg) {
+  print "$msg <br/>";
+  flush();
+}
 ?>
