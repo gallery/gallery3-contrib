@@ -64,8 +64,18 @@ class Gallery3 {
    * @param string   the path relative to the current resource
    * @return object  Gallery3
    */
-  public function get($relative_path) {
-    return self::factory("$this->url/$relative_path", $this->token, $this)->load();
+  public function get($relative_path, $params=array()) {
+    $query = "";
+    if ($params) {
+      foreach ($params as $key => $value) {
+        $query[] = rawurlencode($key) . "=" . rawurlencode($value);
+      }
+      if ($query) {
+        $query = "?" . join("&", $query);
+      }
+    }
+
+    return self::factory("$this->url/$relative_path$query", $this->token, $this)->load();
   }
 
   /**
@@ -143,10 +153,6 @@ class Gallery3 {
    * @return object  Gallery3
    */
   public function delete() {
-    if (empty($this->url)) {
-      throw new Gallery3_Exception("Missing remote resource");
-    }
-
     Gallery3_Helper::request("delete", $this->url, $this->token);
     $this->reset();
   }
@@ -157,14 +163,9 @@ class Gallery3 {
    * @return object  Gallery3
    */
   public function remove($url) {
-    if (empty($url)) {
-      throw new Gallery3_Exception("Missing remote resource");
-    }
-
     Gallery3_Helper::request("delete", $this->url, $this->token, array("url" => $url));
     $this->load();
   }
-
 
   /**
    * Reload the resource from a given url.  This is useful after the remote resource has been
