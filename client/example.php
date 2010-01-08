@@ -39,6 +39,10 @@ alert("Search for the photo");
 $photos = $root->get("", array("name" => "Sample"));
 alert("Found: {$photos->members[0]}");
 
+alert("Grab a random photo");
+$photos = $root->get("", array("random" => "true"));
+alert("Found: {$photos->members[0]}");
+
 alert("Tag the album");
 $tag->add()
   ->set_value("url", $album->url)
