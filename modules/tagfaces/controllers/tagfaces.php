@@ -85,8 +85,8 @@ class tagfaces_Controller extends Controller {
     $str_face_title = str_replace("'", "\'", Input::instance()->post("face_title"));
     $str_face_description = str_replace("'", "\'", Input::instance()->post("face_description"));
     $item_data = Input::instance()->post("item_id");
-    $str_x1 = Input::instance()->post("x");
-    $str_y1 = Input::instance()->post("y");
+    $str_x1 = Input::instance()->post("x1");
+    $str_y1 = Input::instance()->post("y1");
     $str_x2 = Input::instance()->post("x2");
     $str_y2 = Input::instance()->post("y2");
 
@@ -192,13 +192,17 @@ class tagfaces_Controller extends Controller {
     // Generate input boxes to hold the coordinates of the face.
     $coordinates_group = $form->group("FaceCoordinates")
                               ->label(t("Coordinates:"));
-    $coordinates_group->input("x")
+    $coordinates_group->input("x1")
+                      ->id('x1')
                       ->label(t("X1"));
-    $coordinates_group->input("y")
+    $coordinates_group->input("y1")
+                      ->id('y1')
                       ->label(t("Y1"));
     $coordinates_group->input("x2")
+                      ->id('x2')
                       ->label(t("X2"));
     $coordinates_group->input("y2")
+                      ->id('y2')
                       ->label(t("Y2"));
 
     // Add the id# of the photo and a save button to the form.
