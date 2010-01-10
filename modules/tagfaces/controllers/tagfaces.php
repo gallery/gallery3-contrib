@@ -20,7 +20,6 @@
 class tagfaces_Controller extends Controller {
   public function drawfaces($id) {
     // Generate the page that allows the user to draw boxes over a photo.
-
     // Make sure user has access to view and edit the photo.
     $item = ORM::factory("item", $id);
     access::required("view", $item);
@@ -89,7 +88,7 @@ class tagfaces_Controller extends Controller {
     $str_y1 = Input::instance()->post("y1");
     $str_x2 = Input::instance()->post("x2");
     $str_y2 = Input::instance()->post("y2");
-
+	
     // If the user didn't select a face, display an error and abort.
     if (($str_x1 == "") || ($str_x2 == "") || ($str_y1 == "") || ($str_y2 == "")) {
       message::error(t("Please select a face."));
@@ -180,19 +179,22 @@ class tagfaces_Controller extends Controller {
 
     $tags_group->dropdown('tagsList')
                ->label(t("Select a tag:"))
+               ->id('tagsList')
                ->options($array_tags);
 
     $tags_group->input("face_title")
+               ->id('face_title')
                ->label(t("Title"));
 
     $tags_description = $form->group("TagsDescription")
                              ->label(t("Description (optional):"));
-    $tags_description->input("face_description");
+    $tags_description->input("face_description")
+                     ->id('face_description');
 
     // Generate input boxes to hold the coordinates of the face.
     $coordinates_group = $form->group("FaceCoordinates")
                               ->label(t("Coordinates:"));
-    $coordinates_group->input("x1")
+    $coordinates_group->input('x1')
                       ->id('x1')
                       ->label(t("X1"));
     $coordinates_group->input("y1")
@@ -206,7 +208,7 @@ class tagfaces_Controller extends Controller {
                       ->label(t("Y2"));
 
     // Add the id# of the photo and a save button to the form.
-    $form->hidden("item_id")->value($id);
+    $coordinates_group->hidden("item_id")->value($id);
     $form->submit("SaveFace")->value(t("Save face"));
 
     // Return the newly generated form.
@@ -216,7 +218,6 @@ class tagfaces_Controller extends Controller {
   private function _get_delfaces_form($id) {
     // Generate a form to allow the user to remove face data
     //   from a photo.
-
     // Make a new Form.
     $form = new Forge("tagfaces/delface", "", "post",
                       array("id" => "g-tag-del-faces-form"));
@@ -238,13 +239,14 @@ class tagfaces_Controller extends Controller {
       // Add a checklist to the form.
       $tags_group = $form->group("ExistingFaces")
                          ->label(t("Tags with faces:"));
+      // Add the id# of the photo and a delete button to the form.
+      $tags_group->hidden("item_id")->value($id);
+
       $tags_group->checklist("facesList")
                  ->options($array_faces)
                  ->label(t("Select the tag(s) that correspond(s) to the face(s) you wish to delete:"));
     }
 
-    // Add the id# of the photo and a delete button to the form.
-    $form->hidden("item_id")->value($id);
     $form->submit("DeleteFace")->value(t("Delete face(s)"));
 
     // Return the newly generated form.
