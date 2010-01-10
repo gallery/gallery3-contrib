@@ -83,7 +83,7 @@
     foreach ($existingFaces as $oneFace) {
       $oneTag = ORM::factory("tag", $oneFace->tag_id)
 ?>
-      <area shape="rect" coords="<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>" href="<?=url::site("tags/$oneFace->tag_id") ?>" title="<?=html::clean($oneTag->name); ?>" alt="<?=$oneTag->name; ?>" onMouseOver="highlightbox(<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>,'<?=html::clean($oneTag->name); ?>', '<?=html::clean($oneFace->description); ?>', '<?=url::site("tags/$oneFace->tag_id") ?>')" />
+      <area shape="rect" coords="<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>" href="<?=$oneTag->url() ?>" title="<?=html::clean($oneTag->name); ?>" alt="<?=$oneTag->name; ?>" onMouseOver="highlightbox(<?=$oneFace->x1 ?>,<?=$oneFace->y1 ?>,<?=$oneFace->x2 ?>,<?=$oneFace->y2 ?>,'<?=html::clean($oneTag->name); ?>', '<?=html::clean($oneFace->description); ?>', '<?=$oneTag->url() ?>')" />
 <? } ?>
 
 <?
