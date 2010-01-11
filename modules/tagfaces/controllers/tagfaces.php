@@ -47,12 +47,15 @@ class tagfaces_Controller extends Controller {
     access::verify_csrf();
 
     // Convert submitted data to local variables.
+	//   Figure out which tagged faces and notes to delete.
     $tag_data = Input::instance()->post("facesList");
+    $note_data = Input::instance()->post("notesList");
+	// Figure out the item id, in order to reload the correct face tagging page.
     $item_data = Input::instance()->post("item_id");
 
     // If the user didn't select a tag, display and error and abort.
-    if (count($tag_data) == 0) {
-      message::error(t("Please select a tag."));
+    if ((count($tag_data) == 0) && (count($note_data) == 0)) {
+      message::error(t("Please select a tag or note to delete."));
       url::redirect("tagfaces/drawfaces/$item_data");
       return;
     }
@@ -64,12 +67,28 @@ class tagfaces_Controller extends Controller {
         ->delete_all();
     }
 
-    // Display a success message.
+    // Delete the notes(s) from the database.
+    foreach ($note_data as $one_note) {
+      ORM::factory("items_note")
+        ->where("id", "=", $one_note)
+        ->delete_all();
+    }
+
+    // Display a success message for deleted faces.
     if (count($tag_data) == 1) {
       message::success(t("One face deleted."));
-    } else {
+    } elseif (count($tag_data) > 1) {
       message::success(count($tag_data) . t(" faces deleted."));
     }
+
+    // Display a success message for deleted notes.
+    if (count($note_data) == 1) {
+      message::success(t("One note deleted."));
+    } elseif (count($note_data) > 1) {
+      message::success(count($note_data) . t(" notes deleted."));
+    }
+	
+	// Re-load the face tagging page.
     url::redirect("tagfaces/drawfaces/$item_data");
   }
 
@@ -178,13 +197,13 @@ class tagfaces_Controller extends Controller {
                        ->label(t("Select a tag or enter in a title:"));
 
     $tags_group->dropdown('tagsList')
-               ->label(t("Select a tag:"))
+               ->label(t("Tag:"))
                ->id('tagsList')
                ->options($array_tags);
 
     $tags_group->input("face_title")
                ->id('face_title')
-               ->label(t("Title"));
+               ->label(t("Note Title:"));
 
     $tags_description = $form->group("TagsDescription")
                              ->label(t("Description (optional):"));
@@ -247,7 +266,31 @@ class tagfaces_Controller extends Controller {
                  ->label(t("Select the tag(s) that correspond(s) to the face(s) you wish to delete:"));
     }
 
-    $form->submit("DeleteFace")->value(t("Delete face(s)"));
+    // Create an array of all the notes associated with this photo.
+    $existing_notes = ORM::factory("items_note")
+      ->where("item_id", "=", $id)
+      ->find_all();
+
+    // turn the $existing_notes array into an array that can be used
+    //   for a checklist.
+    $array_notes = "";
+    foreach ($existing_notes as $oneNote) {
+      $array_notes[$oneNote->id] = array($oneNote->title, false);
+    }
+
+    if ($array_notes) {
+      // Add a checklist to the form.
+      $notes_group = $form->group("ExistingNotes")
+                         ->label(t("Notes:"));
+      // Add the id# of the photo and a delete button to the form.
+      $notes_group->hidden("item_id")->value($id);
+
+      $notes_group->checklist("notesList")
+                 ->options($array_notes)
+                 ->label(t("Select the notes you wish to delete:"));
+    }
+
+    $form->submit("DeleteFace")->value(t("Delete face(s) / note(s)"));
 
     // Return the newly generated form.
     return $form;
