@@ -27,7 +27,7 @@ class minislideshow_event_Core {
                ->label(t("MiniSlide Show settings"))
                ->url(url::site("admin/minislideshow")));
   }
-  
+
   static function module_change($changes) {
     // Display a warning message if the RSS module is not installed.
     if (!module::is_active("rss") || in_array("rss", $changes->deactivate)) {
@@ -47,7 +47,7 @@ class minislideshow_event_Core {
       ->append(Menu::factory("link")
                ->id("minislideshow")
                ->label(t("View MiniSlide Show"))
-               ->url(url::site("minislideshow/showslideshow/" . $theme->item()))
+               ->url(url::site("minislideshow/showslideshow/" . $theme->item()->id))
                ->css_class("g-dialog-link")
                ->css_id("g-mini-slideshow-link"));
   }
@@ -58,7 +58,7 @@ class minislideshow_event_Core {
       ->append(Menu::factory("link")
                ->id("minislideshow")
                ->label(t("View MiniSlide Show"))
-               ->url(url::site("minislideshow/showslideshow/" . $theme->item()))
+               ->url(url::site("minislideshow/showslideshow/" . $theme->item()->id))
                ->css_class("g-dialog-link")
                ->css_id("g-mini-slideshow-link"));
   }

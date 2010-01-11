@@ -31,8 +31,12 @@ class tagsmap_installer {
                KEY(`tag_id`, `id`))
                DEFAULT CHARSET=utf8;");
 
-    // Set the module's version number.
-    module::set_version("tagsmap", 1);
+    // Set the default to Australia (homage to rWatcher)
+    module::set_var("tagsmap", "googlemap_latitude", -26.11);
+    module::set_var("tagsmap", "googlemap_longitude", 134);
+    module::set_var("tagsmap", "googlemap_zoom", 5);
+    module::set_var("tagsmap", "googlemap_type", "G_NORMAL_MAP");
+    module::set_version("tagsmap", 2);
   }
 
   static function deactivate() {

@@ -32,9 +32,9 @@ class register_Core {
       return true;
     }
     $user = ORM::factory("pending_user")
-      ->where("name", $user_name)
+      ->where("name", "=", $user_name)
       ->find();
-    return $user->loaded;
+    return $user->loaded();
   }
 
   static function send_user_created_confirmation($user) {

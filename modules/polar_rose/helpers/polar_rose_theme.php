@@ -19,7 +19,7 @@
  */
 class polar_rose_theme_Core {
   static function head($theme) {
-    if (module::is_installed("rss")) {
+    if (module::is_installed("rss") && ($theme->item() || $theme->tag())) {
       if ($item = $theme->item()) {
         $url = rss::feed_link("gallery/album/{$item->id}");
       } else if ($tag = $theme->tag()) {

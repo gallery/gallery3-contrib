@@ -18,47 +18,44 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class latestupdates_Controller extends Controller {
-  
+
   public function albums($id) {
     // Figure out how many items to display on each page.
-    $itemsPerPage = module::get_var("gallery", "page_size", 9);
-    
-    // Figure out which page # the visitor is on and 
+    $page_size = module::get_var("gallery", "page_size", 9);
+
+    // Figure out which page # the visitor is on and
     //	don't allow the visitor to go below page 1.
-    $page = $this->input->get("page", 1);
+    $page = Input::instance()->get("page", 1);
     if ($page < 1) {
       url::redirect("latestupdates/albums/{$item->id}");
     }
-    
+
     // First item to display.
-    $offset = ($page - 1) * $itemsPerPage;
-    
+    $offset = ($page - 1) * $page_size;
+
+    $item = ORM::factory("item", $id);
+
     // Determine the total number of items,
-    //	for page numbering purposes.     
-    $count = ORM::factory("item", $id)
+    //	for page numbering purposes.
+    $count = $item
       ->viewable()
-      ->where("type !=", "album")
-      ->orderby("created", "DESC")
-      ->descendants()
-      ->count();
-    
+      ->descendants_count(null, null, array(array("type", "!=", "album")));
+
     // Figure out what the highest page number is.
-    $max_pages = ceil($count / $itemsPerPage);   
-  	
+    $max_pages = ceil($count / $page_size);
+
     // Don't let the visitor go past the last page.
-  	if ($max_pages && $page > $max_pages) {
+    if ($max_pages && $page > $max_pages) {
       url::redirect("latestupdates/albums/{$item->id}?page=$max_pages");
     }
-    
+
     // Figure out which items to display on this page.
-    $children = ORM::factory("item", $id)
+    $children = $item
       ->viewable()
-      ->where("type !=", "album")
-      ->orderby("created", "DESC")
-      ->limit($itemsPerPage)
-      ->offset($offset)
-      ->descendants();      
-              
+      ->where("type", "!=", "album")
+      ->order_by("created", "DESC")
+      ->descendants($page_size, $offset);
+
     // Set up the previous and next page buttons.
     if ($page > 1) {
       $previous_page = $page - 1;
@@ -70,9 +67,11 @@ class latestupdates_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "other", "LatestUpdates");
+    $template = new Theme_View("page.html", "collection", "LatestUpdates");
     $template->page_title = t("Gallery :: Latest Updates");
-    $template->set_global("page_size", $itemsPerPage);
+    $template->set_global("page", $page);
+    $template->set_global("page_size", $page_size);
+    $template->set_global("max_pages", $max_pages);
     $template->set_global("children", $children);
     $template->set_global("children_count", $count);
     $template->content = new View("dynamic.html");
@@ -82,41 +81,41 @@ class latestupdates_Controller extends Controller {
 
   public function updates() {
    // Figure out how many items to display on each page.
-   $itemsPerPage = module::get_var("gallery", "page_size", 9);
+   $page_size = module::get_var("gallery", "page_size", 9);
 
-   // Figure out which page # the visitor is on and 
+   // Figure out which page # the visitor is on and
    //	don't allow the visitor to go below page 1.
-   $page = $this->input->get("page", 1);
+   $page = Input::instance()->get("page", 1);
     if ($page < 1) {
       url::redirect("latestupdates/updates");
     }
-    
+
     // First item to display.
-    $offset = ($page - 1) * $itemsPerPage;
-    
+    $offset = ($page - 1) * $page_size;
+
     // Determine the total number of items,
-    //	for page numbering purposes. 
+    //	for page numbering purposes.
     $count = ORM::factory("item")
       ->viewable()
-      ->where("type !=", "album")
+      ->where("type", "!=", "album")
       ->find_all()
       ->count();
-    
+
     // Figure out what the highest page number is.
-    $max_pages = ceil($count / $itemsPerPage);
-    
+    $max_pages = ceil($count / $page_size);
+
     // Don't let the visitor go past the last page.
     if ($max_pages && $page > $max_pages) {
       url::redirect("latestupdates/updates?page=$max_pages");
     }
-    
+
     // Figure out which items to display on this page.
     $items = ORM::factory("item")
       ->viewable()
-      ->where("type !=", "album")
-      ->orderby("created", "DESC")
-      ->find_all($itemsPerPage, $offset);
-          
+      ->where("type", "!=", "album")
+      ->order_by("created", "DESC")
+      ->find_all($page_size, $offset);
+
     // Set up the previous and next page buttons.
     if ($page > 1) {
       $previous_page = $page - 1;
@@ -126,11 +125,13 @@ class latestupdates_Controller extends Controller {
       $next_page = $page + 1;
       $view->next_page_link = url::site("latestupdates/updates?page={$next_page}");
     }
-    
+
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "other", "LatestUpdates");
+    $template = new Theme_View("page.html", "collection", "LatestUpdates");
     $template->page_title = t("Gallery :: Latest Updates");
-    $template->set_global("page_size", $itemsPerPage);
+    $template->set_global("page", $page);
+    $template->set_global("page_size", $page_size);
+    $template->set_global("max_pages", $max_pages);
     $template->set_global("children", $items);
     $template->set_global("children_count", $count);
     $template->content = new View ("dynamic.html");

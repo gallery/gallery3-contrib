@@ -67,10 +67,10 @@ class register_Controller extends Controller {
 
   public function confirm($hash) {
     $pending_user = ORM::factory("pending_user")
-      ->where("hash", $hash)
-      ->where("state", 0)
+      ->where("hash", "=", $hash)
+      ->where("state", "=", 0)
       ->find();
-    if ($pending_user->loaded) {
+    if ($pending_user->loaded()) {
       // @todo add a request date to the pending user table and check that it hasn't expired
       $policy = module::get_var("registration", "policy");
       $pending_user->state = 1;
@@ -96,10 +96,10 @@ class register_Controller extends Controller {
 
   public function first($hash) {
     $pending_user = ORM::factory("pending_user")
-      ->where("hash", $hash)
-      ->where("state", 2)
+      ->where("hash", "=", $hash)
+      ->where("state", "=", 2)
       ->find();
-    if ($pending_user->loaded) {
+    if ($pending_user->loaded()) {
       // @todo add a request date to the pending user table and check that it hasn't expired
       $user = identity::lookup_user_by_name($pending_user->name);
       if (!empty($user)) {

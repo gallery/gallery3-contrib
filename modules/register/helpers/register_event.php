@@ -27,7 +27,7 @@ class register_event {
 
   static function user_menu($menu, $theme) {
     $user = identity::active_user();
-    if ($theme->page_subtype != "login" && $user->guest) {
+    if ($user->guest) {
       $menu->append(Menu::factory("dialog")
                     ->id("user_menu_register")
                     ->css_id("g-register-menu")

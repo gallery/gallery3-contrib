@@ -27,7 +27,7 @@ class Admin_Product_Lines_Controller extends Controller
   {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_product_lines.html");
-    $view->content->products = ORM::factory("product")->orderby("name")->find_all();
+    $view->content->products = ORM::factory("product")->order_by("name")->find_all();
 
     print $view;
   }
@@ -43,8 +43,8 @@ class Admin_Product_Lines_Controller extends Controller
     $form = product::get_add_form_admin();
     $valid = $form->validate();
     $name = $form->add_product->inputs["name"]->value;
-    $product = ORM::factory("product")->where("name", $name)->find();
-    if ($product->loaded) {
+    $product = ORM::factory("product")->where("name", "=", $name)->find();
+    if ($product->loaded()) {
       $form->add_product->inputs["name"]->add_error("in_use", 1);
       $valid = false;
     }
@@ -69,8 +69,8 @@ class Admin_Product_Lines_Controller extends Controller
 
   public function delete_product_form($id) {
     $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
-      kohana::show_404();
+    if (!$product->loaded()) {
+      throw new Kohana_404_Exception();
     }
     print product::get_delete_form_admin($product);
   }
@@ -83,8 +83,8 @@ class Admin_Product_Lines_Controller extends Controller
     }
 
     $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
-      kohana::show_404();
+    if (!$product->loaded()) {
+      throw new Kohana_404_Exception();
     }
 
     $form = product::get_delete_form_admin($product);
@@ -106,8 +106,8 @@ class Admin_Product_Lines_Controller extends Controller
     access::verify_csrf();
 
     $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
-      kohana::show_404();
+    if (!$product->loaded()) {
+      throw new Kohana_404_Exception();
     }
 
     $form = product::get_edit_form_admin($product);
@@ -116,10 +116,10 @@ class Admin_Product_Lines_Controller extends Controller
       $new_name = $form->edit_product->inputs["name"]->value;
       if ($new_name != $product->name &&
           ORM::factory("product")
-          ->where("name", $new_name)
-          ->where("id !=", $product->id)
+          ->where("name", "=", $new_name)
+          ->where("id", "<>", $product->id)
           ->find()
-          ->loaded) {
+          ->loaded()) {
         $form->edit_product->inputs["name"]->add_error("in_use", 1);
         $valid = false;
       } else {
@@ -144,8 +144,8 @@ class Admin_Product_Lines_Controller extends Controller
 
   public function edit_product_form($id) {
     $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
-      kohana::show_404();
+    if (!$product->loaded()) {
+      throw new Kohana_404_Exception();
     }
 
     $form = product::get_edit_form_admin($product);

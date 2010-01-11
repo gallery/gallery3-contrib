@@ -23,9 +23,9 @@ class Three_Nids_Controller extends Controller {
     access::required("view", $item);
 
     $comments = ORM::factory("comment")
-      ->where("item_id", $item->id)
-      ->where("state", "published")
-      ->orderby("created", "ASC")
+      ->where("item_id", "=", $item->id)
+      ->where("state", "=", "published")
+      ->order_by("created", "ASC")
       ->find_all();
 
     $v = new Theme_View("comments.html", "other", "comment-fragment");

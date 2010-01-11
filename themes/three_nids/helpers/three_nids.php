@@ -116,9 +116,9 @@ class three_nids_Core {
     access::required("view", $item);
 
     return ORM::factory("comment")
-      ->where("item_id", $item->id)
-      ->where("state", "published")
-      ->orderby("created", "DESC")
+      ->where("item_id", "=", $item->id)
+      ->where("state", "=", "published")
+      ->order_by("created", "DESC")
       ->count_all();
   }
 }

@@ -114,6 +114,7 @@
     <ul id="g-viewformat">
     <? if (($sidebarallowed == "left") or ($sidebarallowed == "any")): ?>
       <? $iscurrent = ($sidebarvisible == "left"); ?>
+      <? $url = "" ?>
       <li><?= ($iscurrent) ? null : '<a title="Sidebar Left" href="' . $url . '?sb=left">'; ?><span class="g-viewthumb-left <?= ($iscurrent)? "g-viewthumb-current" : null; ?>">Sidebar Left</span><?= ($iscurrent)? null : "</a>"; ?></li>
     <? endif ?>
     <? if ($sidebarallowed == "any"): ?>

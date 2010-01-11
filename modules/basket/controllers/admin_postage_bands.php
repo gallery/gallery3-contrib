@@ -27,7 +27,7 @@ class Admin_Postage_Bands_Controller extends Controller
   {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_postage_bands.html");
-    $view->content->postage_bands = ORM::factory("postage_band")->orderby("name")->find_all();
+    $view->content->postage_bands = ORM::factory("postage_band")->order_by("name")->find_all();
 
     print $view;
   }
@@ -43,8 +43,8 @@ class Admin_Postage_Bands_Controller extends Controller
     $form = postage_band::get_add_form_admin();
     $valid = $form->validate();
     $name = $form->add_postage->inputs["name"]->value;
-    $postage  = ORM::factory("postage_band")->where("name", $name)->find();
-    if ($postage->loaded) {
+    $postage  = ORM::factory("postage_band")->where("name", "=", $name)->find();
+    if ($postage->loaded()) {
       $form->add_postage->inputs["name"]->add_error("in_use", 1);
       $valid = false;
     }
@@ -68,8 +68,8 @@ class Admin_Postage_Bands_Controller extends Controller
 
   public function delete_postage_band_form($id) {
     $postage = ORM::factory("postage_band", $id);
-    if (!$postage->loaded) {
-      kohana::show_404();
+    if (!$postage->loaded()) {
+      throw new Kohana_404_Exception();
     }
     print postage_band::get_delete_form_admin($postage);
   }
@@ -82,8 +82,8 @@ class Admin_Postage_Bands_Controller extends Controller
     }
 
     $postage  = ORM::factory("postage_band", $id);
-    if (!$postage->loaded) {
-      kohana::show_404();
+    if (!$postage->loaded()) {
+      throw new Kohana_404_Exception();
     }
 
     $form = postage_band::get_delete_form_admin($postage);
@@ -105,8 +105,8 @@ class Admin_Postage_Bands_Controller extends Controller
     access::verify_csrf();
 
     $postage = ORM::factory("postage_band", $id);
-    if (!$postage->loaded) {
-      kohana::show_404();
+    if (!$postage->loaded()) {
+      throw new Kohana_404_Exception();
     }
 
     $form = postage_band::get_edit_form_admin($postage);
@@ -115,10 +115,10 @@ class Admin_Postage_Bands_Controller extends Controller
       $new_name = $form->edit_postage->inputs["name"]->value;
       if ($new_name != $postage->name &&
           ORM::factory("postage_band")
-          ->where("name", $new_name)
-          ->where("id !=", $postage->id)
+          ->where("name", "=", $new_name)
+          ->where("id", "<>", $postage->id)
           ->find()
-          ->loaded) {
+          ->loaded()) {
         $form->edit_postage->inputs["name"]->add_error("in_use", 1);
         $valid = false;
       } else {
@@ -142,8 +142,8 @@ class Admin_Postage_Bands_Controller extends Controller
 
   public function edit_postage_band_form($id) {
     $postage = ORM::factory("postage_band", $id);
-    if (!$postage->loaded) {
-      kohana::show_404();
+    if (!$postage->loaded()) {
+      throw new Kohana_404_Exception();
     }
 
     $form = postage_band::get_edit_form_admin($postage);

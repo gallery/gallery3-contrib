@@ -23,33 +23,4 @@ class downloadfullsize_theme {
       $theme->css("downloadfullsize_menu.css");
     }
   }
-
-  static function sidebar_blocks($theme) {
-    $item = $theme->item();
-    if ($item && $item->is_movie() && access::can("view_full", $item)) {
-      if (module::get_var("downloadfullsize", "tButton")) {
-        $block = new Block();
-        $block->css_id = "g-download-fullsize";
-        $block->title = t("Download");
-        $block->content = new View("downloadfullsize_block.html");
-
-        $block->content->item = ORM::factory("item", 1);
-
-        return $block;
-      }
-    }
-
-    if ($item && $item->is_photo() && access::can("view_full", $item)) {
-      if (module::get_var("downloadfullsize", "tButton")) {
-        $block = new Block();
-        $block->css_id = "g-download-fullsize";
-        $block->title = t("Download");
-        $block->content = new View("downloadfullsize_block.html");
-
-        $block->content->item = ORM::factory("item", 1);
-
-        return $block;
-      }
-    }
-  }
 }

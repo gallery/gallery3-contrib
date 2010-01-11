@@ -26,14 +26,14 @@ class dynamic_installer {
                                 "limit" => null,
                                 "description" => "",
                                 "key_field" => "view_count",
-                                "title" => t("Most Viewed"))));
+                                "title" => t("Most viewed"))));
       module::set_var(
         "dynamic", "updates",
         serialize((object)array("enabled" => false,
                                 "limit" => null,
                                 "description" => "",
                                 "key_field" => "created",
-                                "title" => t("Recent Changes"))));
+                                "title" => t("Recent changes"))));
       module::set_version("dynamic", 1);
     }
   }

@@ -183,7 +183,7 @@ class developer_task_Core {
 
   private static function _add_album_or_photo($desired_type=null) {
     srand(time());
-    $parents = ORM::factory("item")->where("type", "album")->find_all()->as_array();
+    $parents = ORM::factory("item")->where("type", "=", "album")->find_all()->as_array();
     $owner_id = user::active()->id;
 
     $test_images = glob(dirname(dirname(__FILE__)) . "/data/*.[Jj][Pp][Gg]");
@@ -209,7 +209,7 @@ class developer_task_Core {
 
   private static function _add_comment() {
     srand(time());
-    $photos = ORM::factory("item")->where("type", "photo")->find_all()->as_array();
+    $photos = ORM::factory("item")->where("type", "=", "photo")->find_all()->as_array();
     $users = ORM::factory("user")->find_all()->as_array();
 
     if (empty($photos)) {
