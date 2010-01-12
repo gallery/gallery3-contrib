@@ -120,12 +120,6 @@ li {
 </div>
 </fieldset>
 
-
-
-
-
-
-
 <br/>
 
 <div id="g-exit-faces">

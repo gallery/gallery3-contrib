@@ -47,13 +47,13 @@ class tagfaces_Controller extends Controller {
     access::verify_csrf();
 
     // Convert submitted data to local variables.
-	//   Figure out which tagged faces and notes to delete.
+    //   Figure out which tagged faces and notes to delete.
     $tag_data = Input::instance()->post("facesList");
     $note_data = Input::instance()->post("notesList");
-	// Figure out the item id, in order to reload the correct face tagging page.
+    //   Figure out the item id, in order to reload the correct face tagging page.
     $item_data = Input::instance()->post("item_id");
 
-    // If the user didn't select a tag, display and error and abort.
+    // If the user didn't select a tag or note, display and error and abort.
     if ((count($tag_data) == 0) && (count($note_data) == 0)) {
       message::error(t("Please select a tag or note to delete."));
       url::redirect("tagfaces/drawfaces/$item_data");
@@ -62,21 +62,13 @@ class tagfaces_Controller extends Controller {
 
     // Delete the face(s) from the database.
     foreach ($tag_data as $one_tag) {
-      //ORM::factory("items_face")
-      //  ->where("id", "=", $one_tag)
-      //  ->delete();
       db::build()->delete("items_faces")->where("id", "=", $one_tag)->execute();
     }
 
-
     // Delete the notes(s) from the database.
     foreach ($note_data as $one_note) {
-      //ORM::factory("items_note")
-      //  ->where("id", "=", $one_note)
-      //  ->delete();
       db::build()->delete("items_notes")->where("id", "=", $one_note)->execute();
     }
-
 
     // Display a success message for deleted faces.
     if (count($tag_data) == 1) {
@@ -91,8 +83,8 @@ class tagfaces_Controller extends Controller {
     } elseif (count($note_data) > 1) {
       message::success(count($note_data) . t(" notes deleted."));
     }
-	
-	// Re-load the face tagging page.
+
+    // Re-load the face tagging page.
     url::redirect("tagfaces/drawfaces/$item_data");
   }
 
@@ -111,7 +103,7 @@ class tagfaces_Controller extends Controller {
     $str_y1 = Input::instance()->post("y1");
     $str_x2 = Input::instance()->post("x2");
     $str_y2 = Input::instance()->post("y2");
-	
+
     // If the user didn't select a face, display an error and abort.
     if (($str_x1 == "") || ($str_x2 == "") || ($str_y1 == "") || ($str_y2 == "")) {
       message::error(t("Please select a face."));
