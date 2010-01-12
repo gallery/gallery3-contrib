@@ -62,17 +62,21 @@ class tagfaces_Controller extends Controller {
 
     // Delete the face(s) from the database.
     foreach ($tag_data as $one_tag) {
-      ORM::factory("items_face")
-        ->where("id", "=", $one_tag)
-        ->delete_all();
+      //ORM::factory("items_face")
+      //  ->where("id", "=", $one_tag)
+      //  ->delete();
+      db::build()->delete("items_faces")->where("id", "=", $one_tag)->execute();
     }
+
 
     // Delete the notes(s) from the database.
     foreach ($note_data as $one_note) {
-      ORM::factory("items_note")
-        ->where("id", "=", $one_note)
-        ->delete_all();
+      //ORM::factory("items_note")
+      //  ->where("id", "=", $one_note)
+      //  ->delete();
+      db::build()->delete("items_notes")->where("id", "=", $one_note)->execute();
     }
+
 
     // Display a success message for deleted faces.
     if (count($tag_data) == 1) {
