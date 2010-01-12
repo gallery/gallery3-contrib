@@ -34,7 +34,7 @@ class Json_Album_Controller extends Controller {
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
 
-    $children = $item->children(null, 0, $where);
+    $children = $item->children(null, null, $where);
     $encoded = array();
     foreach ($children as $id => $child){
       $encoded[$id] = self::child_json_encode($child);
