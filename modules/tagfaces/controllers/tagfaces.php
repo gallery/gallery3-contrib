@@ -294,7 +294,12 @@ class tagfaces_Controller extends Controller {
                  ->label(t("Select the notes you wish to delete:"));
     }
 
-    $form->submit("DeleteFace")->value(t("Delete face(s) / note(s)"));
+    // Hide the delete button when there's nothing to delete.
+    if (($array_notes) || ($array_faces)) {
+      $form->submit("DeleteFace")->value(t("Delete face(s) / note(s)"));
+    } else {
+      $form->group("NoFacesNotes")->label(t("There is nothing to delete for this photo."));
+    }
 
     // Return the newly generated form.
     return $form;
