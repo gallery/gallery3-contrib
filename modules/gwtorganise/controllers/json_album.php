@@ -54,7 +54,7 @@ class Json_Album_Controller extends Controller {
 
   function albums($item_id) {
 
-    print $this->child_elements($item_id,array("type" => "album"));
+    print $this->child_elements($item_id, array("type", "=", "album"));
   }
 
   function children($item_id){
