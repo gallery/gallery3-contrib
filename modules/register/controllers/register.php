@@ -37,13 +37,13 @@ class register_Controller extends Controller {
       $policy = module::get_var("registration", "policy");
       if ($policy == "visitor") {
         if ($pending_user->state == 1) {
-          Session::instance()->set("registration_first_usage");
           $user = register::create_new_user($pending_user->id);
+          Session::instance()->set("registration_first_usage");
           auth::login($user);
           Session::instance()->set("registration_first_usage", true);
           $pending_user->delete();
         } else {
-          register::send_confirmation($pending_user);
+          $user = register::create_new_user($pending_user->id, true);
           message::success(t("A confirmation email has been sent to your email address."));
         }
       } else if ($pending_user->state == 1) {
