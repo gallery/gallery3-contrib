@@ -44,7 +44,7 @@ class Json_Album_Controller extends Controller {
   }
 
   function is_admin() {
-    if (user::active()->admin) {
+    if (identity::active_user()->admin) {
       print json_encode(array("result" => "success", "csrf" => access::csrf_token()));
       return;
     }
@@ -54,7 +54,7 @@ class Json_Album_Controller extends Controller {
 
   function albums($item_id) {
 
-    print $this->child_elements($item_id, array("type", "=", "album"));
+    print $this->child_elements($item_id, array(array("type", "=", "album")));
   }
 
   function children($item_id){
