@@ -34,7 +34,7 @@ class Gallery3 {
    * @param   string Gallery 3 API url, eg http://example.com/gallery3/index.php/rest
    * @param   string username
    * @param   string password
-   * @return object  Gallery3
+   * @return  object Gallery3
    */
   function connect($url, $user, $pass) {
     $response = Gallery3_Helper::request(
