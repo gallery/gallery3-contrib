@@ -29,7 +29,7 @@ $album = $root->add()
 alert("Upload a photo");
 $photo = $album->add()
   ->set_value("type", "photo")
-  ->set_value("name", "Sample Photo")
+  ->set_value("name", "Sample Photo.jpg")
   ->set_value("title", "Sample Photo")
   ->set_file("/tmp/foo.jpg")
   ->save();
