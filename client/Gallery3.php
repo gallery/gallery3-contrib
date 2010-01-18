@@ -28,6 +28,10 @@ class Gallery3 {
   var $file;
   var $parent;
 
+  public function __construct() {
+    $this->data = new stdClass();
+  }
+
   /**
    * Connect to a remote Gallery3 instance
    *
@@ -36,7 +40,7 @@ class Gallery3 {
    * @param   string password
    * @return  object Gallery3
    */
-  function connect($url, $user, $pass) {
+  static function connect($url, $user, $pass) {
     $response = Gallery3_Helper::request(
       "post", $url, null, array("user" => $user, "password" => $pass));
 
