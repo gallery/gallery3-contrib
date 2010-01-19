@@ -25,11 +25,13 @@ class Gallery3 {
   var $url;
   var $token;
   var $data;
+  var $changed_data;
   var $file;
   var $parent;
 
   public function __construct() {
     $this->data = new stdClass();
+    $this->changed_data = new stdClass();
   }
 
   /**
@@ -90,7 +92,7 @@ class Gallery3 {
    * @return object  Gallery3
    */
   public function set_value($key, $value) {
-    $this->data->$key = $value;
+    $this->changed_data->$key = $value;
     return $this;
   }
 
@@ -101,6 +103,9 @@ class Gallery3 {
    * @return string  value
    */
   public function __get($key) {
+    if (property_exists($this->changed_data, $key)) {
+      return $this->changed_data->$key;
+    }
     return $this->data->$key;
   }
 
@@ -141,10 +146,10 @@ class Gallery3 {
    */
   public function save() {
     if ($this->url) {
-      $response = Gallery3_Helper::request("put", $this->url, $this->token, $this->data);
+      $response = Gallery3_Helper::request("put", $this->url, $this->token, $this->changed_data);
     } else {
       $response = Gallery3_Helper::request(
-        "post", $this->parent->url, $this->token, $this->data, $this->file);
+        "post", $this->parent->url, $this->token, $this->changed_data, $this->file);
       $this->parent->load();
     }
 
@@ -184,8 +189,9 @@ class Gallery3 {
     }
     $response = Gallery3_Helper::request("get", $this->url, $this->token);
 
-    $this->data = isset($response->resource) ? $response->resource : array();
+    $this->data = isset($response->resource) ? $response->resource : new stdClass();
     $this->members = isset($response->members) ? $response->members : array();
+    $chis->changed_data = new stdClass();
     return $this;
   }
 
@@ -196,6 +202,7 @@ class Gallery3 {
    */
   protected function reset() {
     $this->data = array();
+    $this->changed_data = array();
     $this->url = null;
     return $this;
   }
