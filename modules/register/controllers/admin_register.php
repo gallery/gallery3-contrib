@@ -32,6 +32,9 @@ class Admin_register_Controller extends Admin_Controller {
     access::verify_csrf();
 
     $post = new Validation($_POST);
+    $post->add_rules("policy", "required");
+    $post->add_rules("group", array($this, "passthru"));
+    $post->add_rules("email_verification", array($this, "passthru"));
     $group_list = array();
     if ($post->validate()) {
       module::set_var("registration", "policy", $post->policy);
@@ -47,6 +50,12 @@ class Admin_register_Controller extends Admin_Controller {
       $errors = array_merge($errors, $post->errors());
       print $this->_get_admin_view($form, $errors);
     }
+  }
+
+  // We need this validation callback in order to have the optional fields copied to
+  // validation array.
+  public function passthru($field) {
+    return true;
   }
 
   public function activate() {

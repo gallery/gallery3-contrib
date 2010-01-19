@@ -31,6 +31,8 @@
           <? if (!empty($group_list)): ?>
           <label for="group" class="g-left"> <?= t("Default group: ") ?></label>
           <?= form::dropdown(array("name" => "group"), $group_list, $form["group"]) ?></label>
+          <? else: ?>
+          <?= form::hidden("group", $form["group"]) ?></label>
           <? endif ?>
         </li>
         <li>
