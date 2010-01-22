@@ -19,31 +19,18 @@
  */
 class ldap_installer {
   static function check_environment() {
-    return array();
+    $messages = array();
+    if (array_search("ldap", get_loaded_extensions()) === false) {
+      $messages["error"][] =
+        t("Cannot install LDAP identity provider as the PHP LDAP extension module is not enabled.");
+    } else {
+      $messages["warn"][] = IdentityProvider::confirmation_message();
+    }
+    return $messages;
   }
 
   static function install() {
-    $current_provider = module::get_var("gallery", "identity_provider");
-    if (!empty($current_provider)) {
-      module::uninstall($current_provider);
-    }
-
-    IdentityProvider::reset();
-    module::set_var("gallery", "identity_provider", "ldap");
-
-    module::set_version("ldap", 1);
-    $root = item::root();
-    $ldap_provider = IdentityProvider::instance();
-    foreach ($ldap_provider->groups() as $group) {
-      module::event("group_created", $group);
-      access::allow($group, "view", $root);
-      access::allow($group, "view_full", $root);
-    }
-
-    module::event("identity_provider_changed", $current_provider, "ldap");
-
-    auth::login($ldap_provider->admin_user());
-    Session::instance()->regenerate();
+    IdentityProvider::change_provider("ldap");
   }
 
   static function uninstall() {
@@ -51,6 +38,16 @@ class ldap_installer {
     $ldap_provider = new IdentityProvider("ldap");
     foreach ($ldap_provider->groups() as $group) {
       module::event("group_deleted", $group);
+    }
+  }
+
+  static function initialize() {
+    module::set_version("ldap", 1);
+    $root = item::root();
+    foreach (IdentityProvider::instance()->groups() as $group) {
+      module::event("group_created", $group);
+      access::allow($group, "view", $root);
+      access::allow($group, "view_full", $root);
     }
   }
 }
