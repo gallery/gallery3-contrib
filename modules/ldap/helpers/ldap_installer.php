@@ -18,15 +18,32 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ldap_installer {
+  static function check_environment() {
+    return array();
+  }
+
   static function install() {
+    $current_provider = module::get_var("gallery", "identity_provider");
+    if (!empty($current_provider)) {
+      module::uninstall($current_provider);
+    }
+
+    IdentityProvider::reset();
+    module::set_var("gallery", "identity_provider", "ldap");
+
     module::set_version("ldap", 1);
     $root = item::root();
-    $ldap_provider = new IdentityProvider("ldap");
+    $ldap_provider = IdentityProvider::instance();
     foreach ($ldap_provider->groups() as $group) {
       module::event("group_created", $group);
       access::allow($group, "view", $root);
       access::allow($group, "view_full", $root);
     }
+
+    module::event("identity_provider_changed", $current_provider, "ldap");
+
+    auth::login($ldap_provider->admin_user());
+    Session::instance()->regenerate();
   }
 
   static function uninstall() {
