@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ldap_installer {
-  static function check_environment() {
+  static function can_activate() {
     $messages = array();
     if (array_search("ldap", get_loaded_extensions()) === false) {
       $messages["error"][] =
