@@ -7,8 +7,9 @@
     <h1><?= html::purify($item->title) ?></h1>
     <div class="g-hideitem"><?= bb2html(html::purify($item->description), 1) ?></div>
   </div>
-  <?= $theme->paginator() ?>
-  <? // = new View("pager_photo.html") ?>
+<? if (module::get_var("th_greydragon", "photonav_top")): ?>
+<?= $theme->paginator() ?>
+<? endif ?>
 
   <div id="g-photo">
     <?= $theme->resize_top($item) ?>
@@ -22,7 +23,8 @@
     <?= $theme->resize_bottom($item) ?>
   </div>
   
-  <?= $theme->paginator() ?>
-  <?// = new View("pager_photo.html") ?>
+<? if (module::get_var("th_greydragon", "photonav_bottom")): ?>
+<?= $theme->paginator() ?>
+<? endif ?>
   <?= $theme->photo_bottom() ?>
 </div>

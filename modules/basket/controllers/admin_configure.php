@@ -48,7 +48,7 @@ class Admin_Configure_Controller extends Controller
 
 
     $view->content->form = $form;
-    //$view->content->products = ORM::factory("product")->orderby("name")->find_all();
+    //$view->content->products = ORM::factory("product")->order_by("name")->find_all();
 
     print $view;
   }

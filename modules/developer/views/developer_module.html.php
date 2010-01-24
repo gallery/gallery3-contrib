@@ -44,4 +44,5 @@
       </li>
     </ul>
   </fieldset>
-<?= form::close() ?>
+</form>
+

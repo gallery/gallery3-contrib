@@ -53,8 +53,8 @@
   // Our simple event handler, called from onChange and onSelect
   // event handlers, as per the Jcrop invocation above
   function showCoords(c) {
-    jQuery('#x').val(c.x);
-    jQuery('#y').val(c.y);
+    jQuery('#x1').val(c.x);
+    jQuery('#y1').val(c.y);
     jQuery('#x2').val(c.x2);
     jQuery('#y2').val(c.y2);
   };
@@ -87,10 +87,10 @@
 #face_description {
   width: 400px;
 }
-#x {
+#x1 {
   width: 40px;
 }
-#y {
+#y1 {
   width: 40px;
 }
 #x2 {
@@ -108,7 +108,7 @@ li {
 </style>
 
 <div id="g-coordinates">
-  <?= $form ?>
+  <?=$form ?>
 </div>
 
 <br/><br/><br/>
@@ -120,6 +120,12 @@ li {
   <?= $delete_form ?>
 </div>
 </fieldset>
+
+
+
+
+
+
 
 <br/>
 

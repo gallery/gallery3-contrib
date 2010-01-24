@@ -24,7 +24,7 @@ class displaytags_block_Core {
 
   static function get($block_id, $theme) {
     $block = "";
-	
+
     // Make sure the current page belongs to an item.
     if (!$theme->item()) {
       return;
@@ -34,9 +34,9 @@ class displaytags_block_Core {
     case "display_tags":
       // Create an array of all the tags for the current item.
       $tagsItem = ORM::factory("tag")
-                  ->join("items_tags", "tags.id", "items_tags.tag_id")
-                  ->where("items_tags.item_id", $theme->item->id)
-                  ->find_all();
+        ->join("items_tags", "tags.id", "items_tags.tag_id")
+        ->where("items_tags.item_id", "=", $theme->item->id)
+        ->find_all();
 
       // If the current item has at least one tag, display it/them.
       if (count($tagsItem) > 0) {
@@ -47,7 +47,7 @@ class displaytags_block_Core {
         $block->content->tags = $tagsItem;
       }
 
-      break;  
+      break;
     }
     return $block;
   }

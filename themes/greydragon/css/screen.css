@@ -81,7 +81,7 @@ h5   { font-weight: bold; }
 
 /* Pagination ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-.g-paginator         { display: inline-block; width: 100%; padding: 4px 0 6px 0; font-size: 80%; zoom: 1; }
+.g-paginator         { display: inline-block; width: 100%; padding: 4px 0 0 0; font-size: 80%; zoom: 1; }
 .g-paginator li      { display: inline; float: left; margin-left: 0; zoom: 1; }
 .g-paginator a       { padding: 0 0 0 2px; }
 
@@ -91,7 +91,7 @@ h5   { font-weight: bold; }
 /* Album grid ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .g-thumbcrop                { overflow: hidden; position: relative; width: 200px; height: 150px; }
-#g-album-grid               { padding: 0px; width: 100%; }
+#g-album-grid               { padding: 6px 0 0 0; width: 100%; }
 #g-album-grid .g-item       { position: relative; float: left; padding: 10px 9px 0px 9px; width: 30.5%; height: 190px; background: url('../images/image_thumb.gif') no-repeat; }
 #g-album-grid .g-item  p    { text-align: center; }
 #g-album-grid h2            { position: absolute; top: 164px; left: 12px; width: 150px; font: 100%/100% Arial, Helvetica, sans-serif; }
@@ -119,7 +119,7 @@ h5   { font-weight: bold; }
 #g-info h1              { padding-bottom: 1px; border-bottom: 1px solid #888; }
 #g-info .g-description  { display: none; }
 /* #g-info h1:hover .g-description  { position: relative; z-index: 10; top: 10px; left: 0px; width: 90%; display: block; afloat: left; border: 1px solid #888; padding: 6px; }*/
-#g-photo                { padding: 6px 0 0 6px; text-align: center; }
+#g-photo                { padding: 6px 0 6px 6px; text-align: center; }
 #g-albumheader h1       { padding-bottom: 1px; margin-bottom: 6px; border-bottom: 1px solid #888; }
 
 /* Footer section ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

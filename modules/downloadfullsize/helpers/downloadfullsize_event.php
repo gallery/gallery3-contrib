@@ -21,7 +21,7 @@ class downloadfullsize_event_Core {
   static function photo_menu($menu, $theme) {
     if (access::can("view_full", $theme->item)) {
       if (module::get_var("downloadfullsize", "fButton")) {
-        $downloadLink = url::site("downloadfullsize/send/$theme->item");
+        $downloadLink = url::site("downloadfullsize/send/{$theme->item->id}");
         $menu
           ->append(Menu::factory("link")
                ->id("downloadfullsize")
@@ -35,7 +35,7 @@ class downloadfullsize_event_Core {
   static function movie_menu($menu, $theme) {
     if (access::can("view_full", $theme->item)) {
       if (module::get_var("downloadfullsize", "fButton")) {
-        $downloadLink = url::site("downloadfullsize/send/$theme->item");
+        $downloadLink = url::site("downloadfullsize/send/{$theme->item->id}");
         $menu
           ->append(Menu::factory("link")
                ->id("downloadfullsize")

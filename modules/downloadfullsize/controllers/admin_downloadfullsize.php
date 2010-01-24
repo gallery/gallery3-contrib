@@ -33,13 +33,9 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
 
     // Figure out which boxes where checked
     $dlLinks_array = Input::instance()->post("DownloadLinkOptions");
-    $tButton = false;
     $fButton = false;
     $download_original_button = false;
     for ($i = 0; $i < count($dlLinks_array); $i++) {
-      if ($dlLinks_array[$i] == "tButton") {
-        $tButton = true;
-      }
       if ($dlLinks_array[$i] == "fButton") {
         $fButton = true;
       }
@@ -56,7 +52,6 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
     }
 
     // Save Settings.
-    module::set_var("downloadfullsize", "tButton", $tButton);
     module::set_var("downloadfullsize", "fButton", $fButton);
     message::success(t("Your Selection Has Been Saved."));
 
@@ -74,8 +69,7 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
                       array("id" => "g-download-fullsize-adminForm"));
 
     // Make an array for the different types of download links.
-    $linkOptions["fButton"] = array(t("Show Floppy Disk Link"), module::get_var("downloadfullsize", "fButton"));
-    $linkOptions["tButton"] = array(t("Show Text Download Text Link"), module::get_var("downloadfullsize", "tButton"));
+    $linkOptions["fButton"] = array(t("Show Floppy Disk Picture Link"), module::get_var("downloadfullsize", "fButton"));
 
     // Setup a few checkboxes on the form.
     $add_links = $form->group("DownloadLinks");

@@ -32,24 +32,20 @@
   <? endif ?>
 
   <? if (module::is_active("tag")): ?>
-  <?
-    $tagsItem = ORM::factory("tag")
-      ->join("items_tags", "tags.id", "items_tags.tag_id")
-      ->where("items_tags.item_id", $item->id)
-      ->find_all();
+  <? $tags = ORM::factory("tag")
+     ->join("items_tags", "tags.id", "items_tags.tag_id")
+     ->where("items_tags.item_id", "=", $item->id)
+     ->find_all();
   ?>
-    <? if (count($tagsItem) > 0): ?>
-      <li>
-      <strong class="caption"><?= t("Tags:") ?></strong>
-      <? for ($counter=0; $counter<count($tagsItem); $counter++) { ?>
-        <? if ($counter < count($tagsItem)-1) { ?>
-          <a href="<?= url::site("tags/$tagsItem[$counter]") ?>"><?= html::clean($tagsItem[$counter]->name) ?></a>,
-        <? } else {?>
-          <a href="<?= url::site("tags/$tagsItem[$counter]") ?>"><?= html::clean($tagsItem[$counter]->name) ?></a>
-        <? } ?>
-      <? } ?>
-      </li>
-    <? endif ?>
+  <? if (count($tags)): ?>
+  <li>
+    <strong class="caption"><?= t("Tags:") ?></strong>
+    <? $not_first = 0; ?>
+    <? foreach ($tags as $tag): ?>
+    <?= ($not_first++) ? "," : "" ?>
+    <a href="<?= url::site("tags/{$tag->name}") ?>"><?= html::clean($tag->name) ?></a>
+    <? endforeach ?>
+  </li>
   <? endif ?>
-
+  <? endif ?>
 </ul>

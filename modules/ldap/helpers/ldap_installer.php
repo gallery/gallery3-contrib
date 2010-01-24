@@ -18,15 +18,19 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ldap_installer {
-  static function install() {
-    module::set_version("ldap", 1);
-    $root = item::root();
-    $ldap_provider = new IdentityProvider("ldap");
-    foreach ($ldap_provider->groups() as $group) {
-      module::event("group_created", $group);
-      access::allow($group, "view", $root);
-      access::allow($group, "view_full", $root);
+  static function can_activate() {
+    $messages = array();
+    if (array_search("ldap", get_loaded_extensions()) === false) {
+      $messages["error"][] =
+        t("Cannot install LDAP identity provider as the PHP LDAP extension module is not enabled.");
+    } else {
+      $messages["warn"][] = IdentityProvider::confirmation_message();
     }
+    return $messages;
+  }
+
+  static function install() {
+    IdentityProvider::change_provider("ldap");
   }
 
   static function uninstall() {
@@ -34,6 +38,16 @@ class ldap_installer {
     $ldap_provider = new IdentityProvider("ldap");
     foreach ($ldap_provider->groups() as $group) {
       module::event("group_deleted", $group);
+    }
+  }
+
+  static function initialize() {
+    module::set_version("ldap", 1);
+    $root = item::root();
+    foreach (IdentityProvider::instance()->groups() as $group) {
+      module::event("group_created", $group);
+      access::allow($group, "view", $root);
+      access::allow($group, "view_full", $root);
     }
   }
 }

@@ -4,7 +4,11 @@
   <h1><?= t("Search Results for \"%term\"", array("term" => $q)) ?> </h1>
 
   <? if (count($items)): ?>
-  <?= $theme->pager() ?>
+
+<? if (module::get_var("th_greydragon", "photonav_top")): ?>
+<?= $theme->paginator() ?>
+<? endif ?>
+
   <ul id="g-album-grid">
     <? foreach ($items as $item): ?>
       <? $item_class = "g-photo"; ?>
@@ -19,7 +23,10 @@
     </li>
     <? endforeach ?>
   </ul>
-  <?= $theme->pager() ?>
+
+<? if (module::get_var("th_greydragon", "photonav_bottom")): ?>
+<?= $theme->paginator() ?>
+<? endif ?>
 
   <? else: ?>
   <p>&nbsp;</p>

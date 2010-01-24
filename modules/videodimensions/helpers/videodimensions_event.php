@@ -30,8 +30,10 @@ class videodimensions_event_Core {
 
   static function item_edit_form_completed($item, $form) {
     // Save the new height and width to the database.
-    $item->height = $form->edit_item->vidheight->value;
-    $item->width = $form->edit_item->vidwidth->value;
-    $item->save();
+    if ($item->is_movie()) {
+      $item->height = $form->edit_item->vidheight->value;
+      $item->width = $form->edit_item->vidwidth->value;
+      $item->save();
+    }
   }
 }

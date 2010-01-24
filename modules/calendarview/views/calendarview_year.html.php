@@ -15,18 +15,18 @@
     if ($calendar_user == "-1") {
       $month_count = ORM::factory("item")
         ->viewable()
-        ->where("type !=", "album")
-        ->where("captured >=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
-        ->where("captured <", mktime(0, 0, 0, $counter_months+1, 1, $calendar_year))
+        ->where("type", "!=", "album")
+        ->where("captured", ">=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
+        ->where("captured", "<", mktime(0, 0, 0, $counter_months+1, 1, $calendar_year))
         ->find_all()
         ->count();
     } else {
       $month_count = ORM::factory("item")
         ->viewable()
         ->where("owner_id", $calendar_user)
-        ->where("type !=", "album")
-        ->where("captured >=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
-        ->where("captured <", mktime(0, 0, 0, $counter_months+1, 1, $calendar_year))
+        ->where("type", "!=", "album")
+        ->where("captured", ">=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
+        ->where("captured", "<", mktime(0, 0, 0, $counter_months+1, 1, $calendar_year))
         ->find_all()
         ->count();
     }
@@ -39,26 +39,26 @@
         if ($calendar_user == "-1") {
           $day_count = ORM::factory("item")
             ->viewable()
-            ->where("type !=", "album")
-            ->where("captured >=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
-            ->where("captured <", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
+            ->where("type", "!=", "album")
+            ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
+            ->where("captured", "<", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
             ->find_all()
             ->count();
         } else {
           $day_count = ORM::factory("item")
             ->viewable()
             ->where("owner_id", $calendar_user)
-            ->where("type !=", "album")
-            ->where("captured >=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
-            ->where("captured <", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
+            ->where("type", "!=", "album")
+            ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
+            ->where("captured", "<", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
             ->find_all()
             ->count();
         }
         if ($day_count > 0) {
-          $calendar -> attach($calendar -> event() 
-                                       -> condition('year', $calendar_year) 
-                                       -> condition('month', $counter_months) 
-                                       -> condition('day', $curr_day)  
+          $calendar -> attach($calendar -> event()
+                                       -> condition('year', $calendar_year)
+                                       -> condition('month', $counter_months)
+                                       -> condition('day', $curr_day)
                                        -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day), $day_count)));
         }
         $curr_day++;
@@ -68,26 +68,26 @@
       if ($calendar_user == "-1") {
         $day_count = ORM::factory("item")
           ->viewable()
-          ->where("type !=", "album")
-          ->where("captured >=", mktime(0, 0, 0, $counter_months, $MAX_DAYS, $calendar_year))
-          ->where("captured <", mktime(0, 0, 0, ($counter_months + 1), 1, $calendar_year))
+          ->where("type", "!=", "album")
+          ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $MAX_DAYS, $calendar_year))
+          ->where("captured", "<",mktime(0, 0, 0, ($counter_months + 1), 1, $calendar_year))
           ->find_all()
           ->count();
       } else {
         $day_count = ORM::factory("item")
           ->viewable()
-          ->where("owner_id", $calendar_user)
-          ->where("type !=", "album")
-          ->where("captured >=", mktime(0, 0, 0, $counter_months, $MAX_DAYS, $calendar_year))
-          ->where("captured <", mktime(0, 0, 0, ($counter_months + 1), 1, $calendar_year))
+          ->where("owner_id", "=", $calendar_user)
+          ->where("type", "!=", "album")
+          ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $MAX_DAYS, $calendar_year))
+          ->where("captured", "<", mktime(0, 0, 0, ($counter_months + 1), 1, $calendar_year))
           ->find_all()
           ->count();
       }
       if ($day_count > 0) {
-        $calendar -> attach($calendar -> event() 
-                                      -> condition('year', $calendar_year) 
-                                      -> condition('month', $counter_months) 
-                                      -> condition('day', $MAX_DAYS)  
+        $calendar -> attach($calendar -> event()
+                                      -> condition('year', $calendar_year)
+                                      -> condition('month', $counter_months)
+                                      -> condition('day', $MAX_DAYS)
                                       -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS), $day_count)));
       }
     }
@@ -98,27 +98,27 @@
     }
     $counter_months++;
   }
-  
+
   // Do December seperately, because the mktime code is different.
   print "<td>";
   $calendar = new Calendar($counter_months, $calendar_year);
   if ($calendar_user == "-1") {
     $month_count = ORM::factory("item")
       ->viewable()
-      ->where("type !=", "album")
-      ->where("captured >=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
-      ->where("captured <", mktime(0, 0, 0, 1, 1, ($calendar_year + 1)))
+      ->where("type", "!=", "album")
+      ->where("captured", ">=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
+      ->where("captured", "<", mktime(0, 0, 0, 1, 1, ($calendar_year + 1)))
       ->find_all()
       ->count();
   } else {
     $month_count = ORM::factory("item")
       ->viewable()
-      ->where("owner_id", $calendar_user)
-      ->where("type !=", "album")
-      ->where("captured >=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
-      ->where("captured <", mktime(0, 0, 0, 1, 1, ($calendar_year + 1)))
+      ->where("owner_id", "=", $calendar_user)
+      ->where("type", "!=", "album")
+      ->where("captured", ">=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
+      ->where("captured", "<", mktime(0, 0, 0, 1, 1, ($calendar_year + 1)))
       ->find_all()
-      ->count();  
+      ->count();
   }
   if ($month_count > 0) {
     $curr_day = 1;
@@ -127,26 +127,26 @@
       if ($calendar_user == "-1") {
         $day_count = ORM::factory("item")
           ->viewable()
-          ->where("type !=", "album")
-          ->where("captured >=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
-          ->where("captured <", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
+          ->where("type", "!=", "album")
+          ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
+          ->where("captured", "<", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
           ->find_all()
           ->count();
       } else {
         $day_count = ORM::factory("item")
           ->viewable()
-          ->where("owner_id", $calendar_user)
-          ->where("type !=", "album")
-          ->where("captured >=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
-          ->where("captured <", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
+          ->where("owner_id", "=", $calendar_user)
+          ->where("type", "!=", "album")
+          ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
+          ->where("captured", "<", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
           ->find_all()
           ->count();
       }
       if ($day_count > 0) {
-        $calendar -> attach($calendar -> event() 
-                                      -> condition('year', $calendar_year) 
-                                      -> condition('month', $counter_months) 
-                                      -> condition('day', $curr_day)  
+        $calendar -> attach($calendar -> event()
+                                      -> condition('year', $calendar_year)
+                                      -> condition('month', $counter_months)
+                                      -> condition('day', $curr_day)
                                        -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day), $day_count)));
       }
       $curr_day++;
@@ -154,26 +154,26 @@
     if ($calendar_user == "-1") {
       $day_count = ORM::factory("item")
         ->viewable()
-        ->where("type !=", "album")
-        ->where("captured >=", mktime(0, 0, 0, $counter_months, $MAX_DAYS, $calendar_year))
-        ->where("captured <", mktime(0, 0, 0, 1, 1, $calendar_year+1))
+        ->where("type", "!=", "album")
+        ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $MAX_DAYS, $calendar_year))
+        ->where("captured", "<", mktime(0, 0, 0, 1, 1, $calendar_year+1))
         ->find_all()
         ->count();
     } else {
       $day_count = ORM::factory("item")
         ->viewable()
-        ->where("owner_id", $calendar_user)
-        ->where("type !=", "album")
-        ->where("captured >=", mktime(0, 0, 0, $counter_months, $MAX_DAYS, $calendar_year))
-        ->where("captured <", mktime(0, 0, 0, 1, 1, $calendar_year+1))
+        ->where("owner_id", "=", $calendar_user)
+        ->where("type", "!=", "album")
+        ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $MAX_DAYS, $calendar_year))
+        ->where("captured", "<", mktime(0, 0, 0, 1, 1, $calendar_year+1))
         ->find_all()
-        ->count();	
+        ->count();
     }
     if ($day_count > 0) {
-      $calendar -> attach($calendar -> event() 
-                                    -> condition('year', $calendar_year) 
-                                    -> condition('month', $counter_months) 
-                                    -> condition('day', $MAX_DAYS)  
+      $calendar -> attach($calendar -> event()
+                                    -> condition('year', $calendar_year)
+                                    -> condition('month', $counter_months)
+                                    -> condition('day', $MAX_DAYS)
                                     -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS), $day_count)));
 
     }

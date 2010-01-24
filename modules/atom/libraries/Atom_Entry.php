@@ -36,7 +36,7 @@ class Atom_Entry_Core extends Atom_Base {
   }
 
   public function content($text, $type="html") {
-    $content = $this->dom->createElement("content", html::specialchars($text));
+    $content = $this->dom->createElement("content", html::chars($text));
     $content->setAttribute("type", $type);
     $this->element->appendChild($content);
     return $this;

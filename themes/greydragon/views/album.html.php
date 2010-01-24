@@ -5,7 +5,11 @@
   <h1><?= html::purify($item->title) ?></h1>
   <div class="g-description"><?= ($item->description)? bb2html(html::purify($item->description), 1) : null; ?></div>
 </div>
+
+<? if (module::get_var("th_greydragon", "photonav_top")): ?>
 <?= $theme->paginator() ?>
+<? endif ?>
+
 <ul id="g-album-grid">
 <? if (count($children)): ?>
   <? foreach ($children as $i => $child): ?>
@@ -41,4 +45,7 @@
 <? endif; ?>
 </ul>
 <?= $theme->album_bottom() ?>
+
+<? if (module::get_var("th_greydragon", "photonav_bottom")): ?>
 <?= $theme->paginator() ?>
+<? endif ?>

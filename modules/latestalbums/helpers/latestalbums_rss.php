@@ -29,14 +29,14 @@ class latestalbums_rss_Core {
     case "latest":
       $feed->children = ORM::factory("item")
         ->viewable()
-        ->where("type", "album")
-        ->orderby("created", "DESC")
+        ->where("type", "=", "album")
+        ->order_by("created", "DESC")
         ->find_all($limit, $offset);
 
       $all_children = ORM::factory("item")
         ->viewable()
-        ->where("type", "album")
-        ->orderby("created", "DESC");
+        ->where("type", "=", "album")
+        ->order_by("created", "DESC");
 
       $feed->max_pages = ceil($all_children->find_all()->count() / $limit);
       $feed->title = t("Latest albums");

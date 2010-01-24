@@ -5,16 +5,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <!-- Copyright (c) 2009 DragonSoft. All Rights Reserved -->
 
-<? $sidebaralign = $_REQUEST['align'];
-   if (empty($sidebaralign)) {
-     if (isset($_COOKIE['sidebaralign'])) {
-       $sidebaralign = $_COOKIE['sidebaralign'];
+<? $sidebarvisible = $_REQUEST['sb'];
+   if (empty($sidebarvisible)) {
+     if (isset($_COOKIE['gd_sidebar'])) {
+       $sidebarvisible = $_COOKIE['gd_sidebar'];
      } else {
-       $sidebaralign = "right";
+       $sidebarvisible = module::get_var("th_greydragon", "sidebar_visible", "");
      }
    } else {
-     setcookie("sidebaralign", $sidebaralign, 0);
+     // Sidebar position is kept for 360 days
+     setcookie("gd_sidebar", $sidebarvisible, time() + 31536000);
    }
+
+   $sidebarallowed = module::get_var("th_greydragon", "sidebar_allowed", "");
+
+   if ($sidebarallowed == "") { $sidebarallowed = "any"; };
+   if ($sidebarvisible == "") { $sidebarvisible = "right"; };
+   if ($sidebarallowed == "none") { $sidebarvisible = "none"; }
+   if ($sidebarallowed == "right") { $sidebarvisible = "right"; }
+   if ($sidebarallowed == "left") { $sidebarvisible = "left"; }
 ?>
 
 <head>
@@ -70,7 +79,9 @@
   <?= $header_text ?>
 <? else: ?>
   <a id="g-logo" href="<?= item::root()->url() ?>" title="<?= t("go back to the Gallery home")->for_html_attr() ?>">
-    <img alt="<?= t("Gallery logo: Your photos on your web site")->for_html_attr() ?>" src="<?= $theme->url("images/logo.png") ?>" />
+    <? $logo_path = module::get_var("th_greydragon", "logo_path", url::file("lib/images/logo.png")); ?>
+    <? // $theme->url("images/logo.png") ?>
+    <img alt="<?= t("Gallery logo: Your photos on your web site")->for_html_attr() ?>" src="<?= $logo_path ?>" />
   </a>
 <? endif ?>
 
@@ -99,14 +110,23 @@
 </div>
 <div id="g-main">
   <div id="g-main-in">
+    <? if ($sidebarallowed == "any"): ?>
     <ul id="g-viewformat">
-      <? $iscurrent = ($sidebaralign == "left"); ?>
-      <li><?= ($iscurrent) ? null : '<a title="Sidebar Left" href="' . $url . '?align=left">'; ?><span class="g-viewthumb-left <?= ($iscurrent)? "g-viewthumb-current" : null; ?>">Sidebar Left</span><?= ($iscurrent)? null : "</a>"; ?></li>
-      <? $iscurrent = ($sidebaralign == "full"); ?>
-      <li><?= ($iscurrent) ? null : '<a title="No Sidebar" href="' . $url . '?align=full">'; ?><span class="g-viewthumb-full <?= ($iscurrent)? "g-viewthumb-current" : null; ?>">No Sidebar</span><?= ($iscurrent)? null : "</a>"; ?></li>
-      <? $iscurrent = ($sidebaralign == "right"); ?>
-      <li><?= ($iscurrent) ? null : '<a title="Sidebar Right" href="' . $url . '?align=right">'; ?><span class="g-viewthumb-right <?= ($iscurrent)? "g-viewthumb-current" : null; ?>">Sidebar Right</span><?= ($iscurrent)? null : "</a>"; ?></li>
+    <? if (($sidebarallowed == "left") or ($sidebarallowed == "any")): ?>
+      <? $iscurrent = ($sidebarvisible == "left"); ?>
+      <? $url = "" ?>
+      <li><?= ($iscurrent) ? null : '<a title="Sidebar Left" href="' . $url . '?sb=left">'; ?><span class="g-viewthumb-left <?= ($iscurrent)? "g-viewthumb-current" : null; ?>">Sidebar Left</span><?= ($iscurrent)? null : "</a>"; ?></li>
+    <? endif ?>
+    <? if ($sidebarallowed == "any"): ?>
+      <? $iscurrent = ($sidebarvisible == "none"); ?>
+      <li><?= ($iscurrent) ? null : '<a title="No Sidebar" href="' . $url . '?sb=none">'; ?><span class="g-viewthumb-full <?= ($iscurrent)? "g-viewthumb-current" : null; ?>">No Sidebar</span><?= ($iscurrent)? null : "</a>"; ?></li>
+    <? endif ?>
+    <? if (($sidebarallowed == "right") or ($sidebarallowed == "any")): ?>
+      <? $iscurrent = ($sidebarvisible == "right"); ?>
+      <li><?= ($iscurrent) ? null : '<a title="Sidebar Right" href="' . $url . '?sb=right">'; ?><span class="g-viewthumb-right <?= ($iscurrent)? "g-viewthumb-current" : null; ?>">Sidebar Right</span><?= ($iscurrent)? null : "</a>"; ?></li>
+    <? endif ?>
     </ul>
+    <? endif ?>
 
     <div id="g-view-menu" class="g-buttonset">
     <? if ($page_subtype == "album"):?>
@@ -120,21 +140,21 @@
     <? endif ?>
     </div>
 
-<? if ($sidebaralign=="left"): ?>
+<? if ($sidebarvisible=="left"): ?>
 <?= '<div id="g-column-left">' ?>
-<? elseif ($sidebaralign=="full"): ?>
+<? elseif ($sidebarvisible=="none"): ?>
 <? else: ?>
 <?= '<div id="g-column-right">' ?>
 <? endif ?>
     
-<? if (($theme->page_subtype != "login") && ($sidebaralign != "full")): ?>
+<? if (($theme->page_subtype != "login") && ($sidebarvisible != "none")): ?>
 <?= new View("sidebar.html") ?>
 <? endif ?>
-<?= ($sidebaralign != "full")? "</div>" : null ?>
+<?= ($sidebarvisible != "none")? "</div>" : null ?>
 
-<? if ($sidebaralign=="left"): ?>
+<? if ($sidebarvisible == "left"): ?>
 <?= '<div id="g-column-centerright">' ?>
-<? elseif ($sidebaralign=="full"): ?>
+<? elseif ($sidebarvisible == "none"): ?>
 <?= '<div id="g-column-centerfull">' ?>
 <? else: ?>
 <?= '<div id="g-column-centerleft">' ?>
@@ -163,18 +183,17 @@
   </ul>
 <? endif ?>
 <? $copyright = module::get_var("th_greydragon", "copyright"); ?>
-  <div id="g-footer-rightside"><?= ($copyright) ? $copyright : 'Copyright &copy; 2009&nbsp;All Rights Reserved'; ?><br /><br />
+  <div id="g-footer-rightside"><?= ($copyright) ? $copyright : null; ?><br /><br />
 <? // <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10-blue" alt="Valid XHTML 1.0 Transitional" height="15" width="44" /></a> ?>
   </div>
   <?= $theme->user_menu() ?>
 </div>
 <?= $theme->page_bottom() ?>
-<!--start player-->
-<? // <embed src="/music/collection.m3u" hidden="true" autostart="true" loop="true"></embed>
+
+<? // <!--start player--> 
+// <embed src="/music/collection.m3u" hidden="true" autostart="true" loop="true"></embed>
 // <noembed><bgsound src="/music/collection.m3u"></noembed>
-?>
-<!--end player-->
-<?
+// <!--end player-->
 //<object type="application/x-shockwave-flash" data="http://photo.dragonsoft.us/music/xspf_player/xspf_player.swf?playlist_url=http://photo.dragonsoft.us/music/collection.xspf&autoplay=true&repeat_playlist=true&player_title=KICK&playlist_size=3" width="400" height="151">
 //<param name="movie" value="http://photo.dragonsoft.us/music/xspf_player/xspf_player.swf?playlist_url=http://photo.dragonsoft.us/music/collection.xspf&autoplay=true&repeat_playlist=true&player_title=KICK&playlist_size=3" />
 //</object>

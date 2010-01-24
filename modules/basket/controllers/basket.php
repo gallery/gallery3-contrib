@@ -205,7 +205,7 @@ Items Ordered:
 
     // get the item to add
     $item = ORM::factory("item", $id);
-    if (!$item->loaded)
+    if (!$item->loaded())
     {
       //TODO
       die("Not loaded id");

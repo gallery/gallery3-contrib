@@ -50,31 +50,31 @@ class CalendarView_Controller extends Controller {
     if ($display_user == "-1") {
       $day_count = ORM::factory("item")
         ->viewable()
-        ->where("type !=", "album")
-        ->where("captured >=", mktime(0, 0, 0, $display_month, $display_day, $display_year))
-        ->where("captured <", mktime(0, 0, 0, $display_month, ($display_day + 1), $display_year))
+        ->where("type", "!=", "album")
+        ->where("captured", ">=", mktime(0, 0, 0, $display_month, $display_day, $display_year))
+        ->where("captured", "<", mktime(0, 0, 0, $display_month, ($display_day + 1), $display_year))
         ->find_all()
         ->count();
     } else {
       $day_count = ORM::factory("item")
         ->viewable()
-        ->where("owner_id", $display_user)
-        ->where("type !=", "album")
-        ->where("captured >=", mktime(0, 0, 0, $display_month, $display_day, $display_year))
-        ->where("captured <", mktime(0, 0, 0, $display_month, ($display_day + 1), $display_year))
+        ->where("owner_id", "=", $display_user)
+        ->where("type", "!=", "album")
+        ->where("captured", ">=", mktime(0, 0, 0, $display_month, $display_day, $display_year))
+        ->where("captured", "<", mktime(0, 0, 0, $display_month, ($display_day + 1), $display_year))
         ->find_all()
         ->count();
     }
 
     // Figure out paging stuff.
     $page_size = module::get_var("gallery", "page_size", 9);
-    $page = (int) $this->input->get("page", "1");
+    $page = (int) Input::instance()->get("page", "1");
     $offset = ($page-1) * $page_size;
     $max_pages = max(ceil($day_count / $page_size), 1);
 
     // Make sure that the page references a valid offset
     if (($page < 1) || ($page > $max_pages)) {
-      Kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     // Set up the page.
@@ -88,19 +88,19 @@ class CalendarView_Controller extends Controller {
     if ($display_user == "-1") {
       $template->set_global("children", ORM::factory("item")
                             ->viewable()
-                            ->where("type !=", "album")
-                            ->where("captured >=", mktime(0, 0, 0, $display_month, $display_day, $display_year))
-                            ->where("captured <", mktime(0, 0, 0, $display_month, ($display_day + 1), $display_year))
-                            ->orderby("captured", "ASC")
+                            ->where("type", "!=", "album")
+                            ->where("captured", ">=", mktime(0, 0, 0, $display_month, $display_day, $display_year))
+                            ->where("captured", "<", mktime(0, 0, 0, $display_month, ($display_day + 1), $display_year))
+                            ->order_by("captured", "ASC")
                             ->find_all($page_size, $offset));
     } else {
       $template->set_global("children", ORM::factory("item")
                             ->viewable()
-                            ->where("owner_id", $display_user)
-                            ->where("type !=", "album")
-                            ->where("captured >=", mktime(0, 0, 0, $display_month, $display_day, $display_year))
-                            ->where("captured <", mktime(0, 0, 0, $display_month, ($display_day + 1), $display_year))
-                            ->orderby("captured", "ASC")
+                            ->where("owner_id", "=", $display_user)
+                            ->where("type", "!=", "album")
+                            ->where("captured", ">=", mktime(0, 0, 0, $display_month, $display_day, $display_year))
+                            ->where("captured", "<", mktime(0, 0, 0, $display_month, ($display_day + 1), $display_year))
+                            ->order_by("captured", "ASC")
                             ->find_all($page_size, $offset));
     }
 
@@ -126,31 +126,31 @@ class CalendarView_Controller extends Controller {
     if ($display_user == "-1") {
       $day_count = ORM::factory("item")
         ->viewable()
-        ->where("type !=", "album")
-        ->where("captured >=", mktime(0, 0, 0, $display_month, 1, $display_year))
-        ->where("captured <", mktime(0, 0, 0, $display_month+1, 1, $display_year))
+        ->where("type", "!=", "album")
+        ->where("captured", ">=", mktime(0, 0, 0, $display_month, 1, $display_year))
+        ->where("captured", "<", mktime(0, 0, 0, $display_month+1, 1, $display_year))
         ->find_all()
         ->count();
     } else {
       $day_count = ORM::factory("item")
         ->viewable()
-        ->where("owner_id", $display_user)
-        ->where("type !=", "album")
-        ->where("captured >=", mktime(0, 0, 0, $display_month, 1, $display_year))
-        ->where("captured <", mktime(0, 0, 0, $display_month+1, 1, $display_year))
+        ->where("owner_id", "=", $display_user)
+        ->where("type",  "!=", "album")
+        ->where("captured", ">=", mktime(0, 0, 0, $display_month, 1, $display_year))
+        ->where("captured", "<", mktime(0, 0, 0, $display_month+1, 1, $display_year))
         ->find_all()
         ->count();
     }
 
     // Figure out paging stuff.
     $page_size = module::get_var("gallery", "page_size", 9);
-    $page = (int) $this->input->get("page", "1");
+    $page = (int) Input::instance()->get("page", "1");
     $offset = ($page-1) * $page_size;
     $max_pages = max(ceil($day_count / $page_size), 1);
 
     // Make sure that the page references a valid offset
     if (($page < 1) || ($page > $max_pages)) {
-      Kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
     // Set up the page.
@@ -164,19 +164,19 @@ class CalendarView_Controller extends Controller {
     if ($display_user == "-1") {
       $template->set_global("children", ORM::factory("item")
                             ->viewable()
-                            ->where("type !=", "album")
-                            ->where("captured >=", mktime(0, 0, 0, $display_month, 1, $display_year))
-                            ->where("captured <", mktime(0, 0, 0, $display_month+1, 1, $display_year))
-                            ->orderby("captured", "ASC")
+                            ->where("type", "!=", "album")
+                            ->where("captured", ">=", mktime(0, 0, 0, $display_month, 1, $display_year))
+                            ->where("captured", "<", mktime(0, 0, 0, $display_month+1, 1, $display_year))
+                            ->order_by("captured", "ASC")
                             ->find_all($page_size, $offset));
     } else {
       $template->set_global("children", ORM::factory("item")
                             ->viewable()
-                            ->where("owner_id", $display_user)
-                            ->where("type !=", "album")
-                            ->where("captured >=", mktime(0, 0, 0, $display_month, 1, $display_year))
-                            ->where("captured <", mktime(0, 0, 0, $display_month+1, 1, $display_year))
-                            ->orderby("captured", "ASC")
+                            ->where("owner_id", "=", $display_user)
+                            ->where("type", "!=", "album")
+                            ->where("captured", ">=", mktime(0, 0, 0, $display_month, 1, $display_year))
+                            ->where("captured", "<", mktime(0, 0, 0, $display_month+1, 1, $display_year))
+                            ->order_by("captured", "ASC")
                             ->find_all($page_size, $offset));
     }
 
@@ -204,9 +204,9 @@ class CalendarView_Controller extends Controller {
     foreach ($gallery_users as $one_user) {
       $count = ORM::factory("item")
                ->viewable()
-               ->where("owner_id", $one_user->id)
-               ->where("type !=", "album")
-               ->where("captured !=", "")
+               ->where("owner_id", "=", $one_user->id)
+               ->where("type", "!=", "album")
+               ->where("captured", "!=", "")
                ->find_all()
                ->count();
       if ($count > 0) {
@@ -219,10 +219,10 @@ class CalendarView_Controller extends Controller {
     $valid_years = Array();
     $all_photos = ORM::factory("item")
       ->viewable()
-      //->where("owner_id", $one_user->id)
-      ->where("type !=", "album")
-      ->where("captured !=", "")
-      ->orderby("captured", "DESC")
+      //->where("owner_id", "=", $one_user->id)
+      ->where("type", "!=", "album")
+      ->where("captured", "!=", "")
+      ->order_by("captured", "DESC")
       ->find_all();
     $counter = date('Y', $all_photos[count($all_photos)-1]->captured);
     while ($counter <= date('Y', $all_photos[0]->captured)) {

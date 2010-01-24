@@ -19,7 +19,7 @@
 class Admin_register_Controller extends Admin_Controller {
   public function index() {
     $count = ORM::factory("pending_user")
-      ->where("state !=", 2)
+      ->where("state", "!=", 2)
       ->count_all();
     if ($count == 0) {
       site_status::clear("pending_user_registrations");
@@ -32,6 +32,9 @@ class Admin_register_Controller extends Admin_Controller {
     access::verify_csrf();
 
     $post = new Validation($_POST);
+    $post->add_rules("policy", "required");
+    $post->add_rules("group", array($this, "passthru"));
+    $post->add_rules("email_verification", array($this, "passthru"));
     $group_list = array();
     if ($post->validate()) {
       module::set_var("registration", "policy", $post->policy);
@@ -49,11 +52,18 @@ class Admin_register_Controller extends Admin_Controller {
     }
   }
 
+  // We need this validation callback in order to have the optional fields copied to
+  // validation array.
+  public function passthru($field) {
+    return true;
+  }
+
   public function activate() {
     access::verify_csrf();
 
     $post = new Validation($_POST);
     $post->add_rules("activate_users", "required");
+    $post->add_rules("activate", "alpha_numeric");
     if ($post->validate()) {
       $names = array();
       if (!empty($post->activate)) {
@@ -66,7 +76,7 @@ class Admin_register_Controller extends Admin_Controller {
       }
 
       $count = ORM::factory("pending_user")
-        ->where("state != ", 2)
+        ->where("state", "!=", 2)
         ->count_all();
 
       if ($count == 0) {
@@ -105,7 +115,7 @@ class Admin_register_Controller extends Admin_Controller {
         $v->content->group_list[$group->id] = $group->name;
       }
     }
-    $hidden = array("csrf" => access::csrf_token());
+    $hidden = array("name" => "csrf", "value" => access::csrf_token());
     if (count($v->content->group_list)) {
       $v->content->group_list =
         array("" => t("Choose the default group")) + $v->content->group_list;
