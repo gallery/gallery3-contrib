@@ -161,4 +161,17 @@ class user_homes_event_Core {
     }
     return;
   }
+
+  static function show_user_profile($data) {
+    $home = ORM::factory("user_home")->where("id", "=", $data->user->id)->find();
+
+    if ($home->loaded()) {
+      $view = new View("user_profile_home.html");
+      $item = ORM::factory("item")->where("id", "=", $home->home)->find();
+      if ($item->loaded()) {
+        $view->item = $item;
+        $data->content[] = (object)array("title" => t("Home album"), "view" => $view);
+      }
+    }
+  }
 }
