@@ -63,7 +63,7 @@ class export_facebook_Controller extends Controller {
             $photo_keywords = substr($photo_keywords, 0, -2);
           }
         }
-        print $photo->id . "\t" . $photo->name . "\t" . stristr($photo->resize_url(false),"/var/") . "\t" . stristr($photo->thumb_url(false), "/var/") . "\t\t" . $photo->description . "\t" . $photo_keywords . "\n";
+        print $photo->id . "\t" . $photo->title . "\t" . stristr($photo->resize_url(false),"/var/") . "\t" . stristr($photo->thumb_url(false), "/var/") . "\t\t" . $photo->description . "\t" . $photo_keywords . "\n";
       }
     }
   }
