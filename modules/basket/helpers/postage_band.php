@@ -28,7 +28,6 @@ class postage_band_Core {
     $group->input("per_item")->label(t("Per Item"))->id("gPetItem");
     $group->submit("")->value(t("Add Postage Band"));
     $postage = ORM::factory("postage_band");
-    $form->add_rules_from($postage);
     return $form;
   }
 
@@ -44,7 +43,6 @@ class postage_band_Core {
       value($postage->per_item);
 
     $group->submit("")->value(t("Modify Postage Band"));
-    $form->add_rules_from($postage);
     return $form;
   }
 
@@ -56,28 +54,6 @@ class postage_band_Core {
       t("Are you sure you want to delete postage band %name?", array("name" => $postage->name)));
     $group->submit("")->value(t("Delete postage band %name", array("name" => $postage->name)));
     return $form;
-  }
-
-  /**
-   * Create a new postage band
-   *
-   * @param string  $name
-   * @param string  $full_name
-   * @param string  $password
-   * @return User_Model
-   */
-  static function create($name, $flatrate, $peritemcost) {
-    $postage = ORM::factory("postage_band")->where("name", "=", $name)->find();
-    if ($postage->loaded()) {
-      throw new Exception("@todo postage already EXISTS $name");
-    }
-
-    $postage->name = $name;
-    $postage->flat_rate = $flatrate;
-    $postage->per_item = $peritemcost;
-
-    $postage->save();
-    return $postage;
   }
 
   /**

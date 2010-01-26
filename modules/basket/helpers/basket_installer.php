@@ -56,15 +56,32 @@ class basket_installer
                  PRIMARY KEY (`id`))
                  DEFAULT CHARSET=utf8;");
 
-   postage_band::create("No Postage",0,0);
+   $postage_band = ORM::factory("postage_band");
+   $postage_band->name = "No Postage";
+   $postage_band->save();
 
-   product::create("4x6",5,"4\"x6\" print",1);
-   product::create("8x10",25,"8\"x10\" print",1);
-   product::create("8x12",30,"8\"x12\" print",1);
+   $product = ORM::factory("product");
+   $product->name = "4x6";
+   $product->cost = 5;
+   $product->description = "4\"x6\" print";
+   $product->postage_band_id = 1;
+   $product->save();
 
+   $product = ORM::factory("product");
+   $product->name = "8x10";
+   $product->cost = 25;
+   $product->description = "8\"x10\" print";
+   $product->postage_band_id = 1;
+   $product->save();
+
+   $product = ORM::factory("product");
+   $product->name = "8x12";
+   $product->cost = 30;
+   $product->description = "8\"x12\" print";
+   $product->postage_band_id = 1;
+   $product->save();
 
    module::set_version("basket", 2);
-
   }
 
   static function upgrade($version) {
@@ -84,7 +101,9 @@ class basket_installer
                  `per_item` DECIMAL(10,2) default 0,
                  PRIMARY KEY (`id`))
                  ENGINE=InnoDB DEFAULT CHARSET=utf8;");
-      postage_band::create("No Postage",0,0);
+      $postage_band = ORM::factory("postage_band");
+      $postage_band->name = "No Postage";
+      $postage_band->save();
 
       module::set_version("basket", $version = 2);
     }

@@ -41,29 +41,28 @@ class Admin_Product_Lines_Controller extends Controller
     access::verify_csrf();
 
     $form = product::get_add_form_admin();
-    $valid = $form->validate();
-    $name = $form->add_product->inputs["name"]->value;
-    $product = ORM::factory("product")->where("name", "=", $name)->find();
-    if ($product->loaded()) {
-      $form->add_product->inputs["name"]->add_error("in_use", 1);
+    try {
+      $valid = $form->validate();
+      $product = ORM::factory("product");
+      $product->name = $form->add_product->inputs["name"]->value;
+      $product->description = $form->add_product->description->value;
+      $product->postage_band_id = $form->add_product->postage_band->value;
+      $product->validate();
+    } catch (ORM_Validation_Exception $e) {
+      // Translate ORM validation errors into form error messages
+      foreach ($e->validation->errors() as $key => $error) {
+        $form->add_product->inputs[$key]->add_error($error, 1);
+      }
       $valid = false;
     }
 
     if ($valid) {
-      $product = product::create(
-        $name,
-        $form->add_product->cost->value,
-        $form->add_product->description->value,
-        $form->add_product->postage_band->value
-        );
-
       $product->save();
       message::success(t("Created product %product_name", array(
         "product_name" => html::clean($product->name))));
       print json_encode(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error",
-                              "form" => $form->__toString()));
+      print json_encode(array("result" => "error", "form" => (string)$form));
     }
   }
 
@@ -111,34 +110,28 @@ class Admin_Product_Lines_Controller extends Controller
     }
 
     $form = product::get_edit_form_admin($product);
-    $valid = $form->validate();
-    if ($valid) {
-      $new_name = $form->edit_product->inputs["name"]->value;
-      if ($new_name != $product->name &&
-          ORM::factory("product")
-          ->where("name", "=", $new_name)
-          ->where("id", "<>", $product->id)
-          ->find()
-          ->loaded()) {
-        $form->edit_product->inputs["name"]->add_error("in_use", 1);
-        $valid = false;
-      } else {
-        $product->name = $new_name;
-      }
-    }
-
-    if ($valid) {
+    try {
+      $valid = $form->validate();
+      $product->name = $form->edit_product->inputs["name"]->value;
       $product->cost = $form->edit_product->cost->value;
       $product->description = $form->edit_product->description->value;
       $product->postage_band_id = $form->edit_product->postage_band->value;
-      $product->save();
+      $product->validate();
+    } catch (ORM_Validation_Exception $e) {
+      // Translate ORM validation errors into form error messages
+      foreach ($e->validation->errors() as $key => $error) {
+        $form->edit_product->inputs[$key]->add_error($error, 1);
+      }
+      $valid = false;
+    }
 
+    if ($valid) {
+      $product->save();
       message::success(t("Changed product %product_name",
           array("product_name" => html::clean($product->name))));
       print json_encode(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error",
-                              "form" => $form->__toString()));
+      print json_encode(array("result" => "error", "form" => (string)$form));
     }
   }
 
