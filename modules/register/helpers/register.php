@@ -21,8 +21,13 @@ class register_Core {
   private static $_states;
 
   static function format_registration_state($state) {
-    if (empty(self::$_state)) {
-      self::$_states = array(t("Unconfirmed"), t("Confirmed"), t("Activated"));
+    if (empty(self::$_states)) {
+      $policy = module::get_var("registration", "policy");
+      $email_verification = module::get_var("registration", "email_verification");
+      $pending = $policy == "admin_only" || ($policy == "admin_approval" && !$email_verification);
+      self::$_states = array(t("Unconfirmed"),
+                             $pending ? t("Pending")  : t("Confirmed"),
+                             t("Activated"));
     }
     return self::$_states[$state];
   }
@@ -37,10 +42,11 @@ class register_Core {
     return $user->loaded();
   }
 
-  static function send_user_created_confirmation($user) {
+  static function send_user_created_confirmation($user, $requires_first=false) {
     $message = new View("register_welcome.html");
     $message->user = $user;
-    $message->site_url = url::abs_site("register/first/{$user->hash}");
+    $message->site_url = $requires_first ? url::abs_site("register/first/{$user->hash}") :
+                                           url::abs_site("");
     self::_sendemail($user->email, t("Your userid has been created"), $message);
   }
 

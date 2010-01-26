@@ -239,9 +239,6 @@ class Ldap_User implements User_Definition {
     case "id":
       return $this->ldap_entry["uidnumber"][0];
 
-    case "groups":
-      return IdentityProvider_Ldap_Driver::groups_for($this);
-
     case "locale":  // @todo
       return null;
 
@@ -264,6 +261,10 @@ class Ldap_User implements User_Definition {
     default:
       throw new Exception("@todo UNKNOWN_KEY ($key)");
     }
+  }
+
+  public function groups() {
+      return IdentityProvider_Ldap_Driver::groups_for($this);
   }
 
   public function avatar_url($size=80, $default=null) {

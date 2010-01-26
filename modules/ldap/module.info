@@ -1,6 +1,3 @@
 name = "LDAP"
 description = "Use LDAP for authentication"
 version = 1
-
-; Don't show this module on the module administration screen
-no_module_admin = 1
