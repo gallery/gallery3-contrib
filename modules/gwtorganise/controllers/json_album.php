@@ -34,7 +34,7 @@ class Json_Album_Controller extends Controller {
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
 
-    $children = $item->children(null, 0, $where);
+    $children = $item->children(null, null, $where);
     $encoded = array();
     foreach ($children as $id => $child){
       $encoded[$id] = self::child_json_encode($child);
@@ -44,7 +44,7 @@ class Json_Album_Controller extends Controller {
   }
 
   function is_admin() {
-    if (user::active()->admin) {
+    if (identity::active_user()->admin) {
       print json_encode(array("result" => "success", "csrf" => access::csrf_token()));
       return;
     }
@@ -53,8 +53,7 @@ class Json_Album_Controller extends Controller {
   }
 
   function albums($item_id) {
-
-    print $this->child_elements($item_id,array("type" => "album"));
+    print $this->child_elements($item_id, array(array("type", "=", "album")));
   }
 
   function children($item_id){
@@ -102,7 +101,11 @@ class Json_Album_Controller extends Controller {
       $i = 0;
       foreach ($album->children() as $child) {
         // Do this directly in the database to avoid sending notifications
-        Database::Instance()->update("items", array("weight" => ++$i), array("id" => $child->id));
+        b::build()
+          ->update("items")
+          ->set("weight", ++$i)
+          ->where("id", "=", $child->id)
+          ->execute();
       }
       $album->sort_column = "weight";
       $album->sort_order = "ASC";
@@ -118,15 +121,19 @@ class Json_Album_Controller extends Controller {
 
     // Make a hole
     $count = count($source_ids);
-    Database::Instance()->query(
-      "UPDATE {items} " .
-      "SET `weight` = `weight` + $count " .
-      "WHERE `weight` >= $target_weight AND `parent_id` = {$album->id}");
-
+    db::build()
+      ->update("items")
+      ->set("weight", new Database_Expression("`weight` + $count"))
+      ->where("weight", ">=", $target_weight)
+      ->where("parent_id", "=", $album->id)
+      ->execute();
     // Insert source items into the hole
     foreach ($source_ids as $source_id) {
-      Database::Instance()->update(
-        "items", array("weight" => $target_weight++), array("id" => $source_id));
+      db::build()
+        ->update("items")
+        ->set("weight", $target_weight++)
+        ->where("id", "=", $source_id)
+        ->execute();
     }
 
     module::event("album_rearrange", $album);
@@ -232,7 +239,7 @@ class Json_Album_Controller extends Controller {
     }
 
     if ($degrees) {
-      graphics::rotate($item->file_path(), $item->file_path(), array("degrees" => $degrees));
+      gallery_graphics::rotate($item->file_path(), $item->file_path(), array("degrees" => $degrees));
 
       list($item->width, $item->height) = getimagesize($item->file_path());
       $item->resize_dirty= 1;
@@ -253,5 +260,18 @@ class Json_Album_Controller extends Controller {
     print json_encode(self::child_json_encode($item));
   }
 
+  public function resize_config(){
+    if (upload_configuration::isResize())
+    {
+      print json_encode(array(
+        "resize" => true,
+        "max_width" => upload_configuration::getMaxWidth(),
+        "max_height" => upload_configuration::getMaxHeight()));
+    }
+    else
+    {
+      print json_encode(array("resize" => false));
+    }
+  }
 
 }

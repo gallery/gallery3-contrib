@@ -42,7 +42,7 @@ public class ImageDialogBox extends PopupPanel{
 	
 	public void doDialog(String a_Image){
 		
-		Loading.getInstance().loading();
+		Loading.getInstance().loading("Loading Image..");
 
 		if (m_Image != null){
 			m_Image.removeFromParent();

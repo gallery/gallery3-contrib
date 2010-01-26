@@ -1,5 +1,11 @@
 package com.gloopics.g3viewer.client;
 
+import java.util.Iterator;
+
+import com.gloopics.g3viewer.client.dnddesktop.DesktopDropFile;
+import com.gloopics.g3viewer.client.dnddesktop.DesktopDroppableWidget;
+import com.gloopics.g3viewer.client.dnddesktop.DndDesktopFactory;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.dom.client.ContextMenuHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -20,6 +26,7 @@ import com.google.gwt.event.dom.client.MouseWheelHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.gears.client.desktop.File;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -34,9 +41,10 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 
-public class Item extends Composite implements HasAllMouseHandlers{
+public class Item extends Composite implements HasAllMouseHandlers, DesktopDroppableWidget{
 
 	private final int m_ID;
 	
@@ -69,7 +77,7 @@ public class Item extends Composite implements HasAllMouseHandlers{
 		m_Container = a_Container;
 		m_View = a_Container.getView();
 		m_Parent = a_Parent;
-		m_ID = (int)((JSONNumber)a_Value.get("id")).doubleValue();
+		m_ID = Utils.extractId(a_Value.get("id"));
 		m_Title = ((JSONString)a_Value.get("title")).stringValue();
 		m_Thumb = ((JSONString)a_Value.get("thumb")).stringValue();
 		m_Type = ((JSONString)a_Value.get("type")).stringValue();
@@ -77,6 +85,7 @@ public class Item extends Composite implements HasAllMouseHandlers{
 		m_IsAlbum = m_Type.equals("album");
 		m_IsPhoto = m_Type.equals("photo");
 		FlowPanel dp = new FlowPanel();
+		
 		
 		m_ThumbImage = new Image(m_Thumb); 
 		dp.add(m_ThumbImage);
@@ -114,6 +123,11 @@ public class Item extends Composite implements HasAllMouseHandlers{
 		},DoubleClickEvent.getType());
 		
 		a_Container.getDragController().makeDraggable(this);
+
+		if (m_IsAlbum)
+		{
+			((DndDesktopFactory)GWT.create(DndDesktopFactory.class)).getInstance(this);
+		}
 		
 	}
 	
@@ -176,6 +190,20 @@ public class Item extends Composite implements HasAllMouseHandlers{
 	}
 	
 	public void showPopupMenu(ContextMenuEvent event){
+		Iterator<Widget> iter = m_Container.getDragController().getSelectedWidgets().iterator();
+		
+		// show views popup menu if items are selected
+		if (iter.hasNext())
+		{
+			iter.next();
+			if (iter.hasNext())
+			{
+				m_View.showPopupMenu(event);
+				return;
+			}
+			
+		}
+		
 		this.addStyleName("popped");
 		final PopupPanel popupPanel = new PopupPanel(true);		
 		popupPanel.setAnimationEnabled(true);
@@ -331,6 +359,20 @@ public class Item extends Composite implements HasAllMouseHandlers{
 	@Override
 	public HandlerRegistration addMouseWheelHandler(MouseWheelHandler handler) {
 		return addDomHandler(handler, MouseWheelEvent.getType());
+	}
+
+	@Override
+	public void dropFiles(File[] aFile) {
+		if (m_IsAlbum)
+		{
+			m_LinkedAlbum.uploadFiles(aFile);
+		}
+		
+	}
+
+	@Override
+	public Widget getActualWidget() {
+		return this;
 	}
 	
 	
