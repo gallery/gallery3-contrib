@@ -62,7 +62,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   /**
    * @see IdentityProvider_Driver::create_user.
    */
-  public function create_user($name, $full_name, $password) {
+  public function create_user($name, $full_name, $password, $email) {
     throw new Exception("@todo INVALID OPERATION");
   }
 
