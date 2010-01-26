@@ -188,11 +188,23 @@ class Json_Album_Controller extends Controller {
         $path_info = @pathinfo($temp_filename);
         if (array_key_exists("extension", $path_info) &&
             in_array(strtolower($path_info["extension"]), array("flv", "mp4"))) {
-          $item = movie::create($album, $temp_filename, $name, $title);
+          $item = ORM::factory("item");
+          $item->type = "movie";
+          $item->parent_id = $album->id;
+          $item->set_data_file($temp_filename);
+          $item->name = $name;
+          $item->title = $title;
+          $item->save();
           log::success("content", t("Added a movie"),
                        html::anchor("movies/$item->id", t("view movie")));
         } else {
-          $item = photo::create($album, $temp_filename, $name, $title);
+          $item = ORM::factory("item");
+          $item->type = "photo";
+          $item->parent_id = $album->id;
+          $item->set_data_file($temp_filename);
+          $item->name = $name;
+          $item->title = $title;
+          $item->save();
           log::success("content", t("Added a photo"),
                        html::anchor("photos/$item->id", t("view photo")));
         }
