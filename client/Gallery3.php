@@ -25,14 +25,9 @@ class Gallery3 {
   var $url;
   var $token;
   var $data;
-  var $changed_data;
   var $file;
-  var $parent;
 
-  public function __construct() {
-    $this->data = new stdClass();
-    $this->changed_data = new stdClass();
-  }
+  protected $original_resource;
 
   /**
    * Connect to a remote Gallery3 instance
@@ -40,82 +35,50 @@ class Gallery3 {
    * @param   string Gallery 3 API url, eg http://example.com/gallery3/index.php/rest
    * @param   string username
    * @param   string password
-   * @return  object Gallery3
+   * @return  string authentication token
    */
-  static function connect($url, $user, $pass) {
+  static function login($url, $user, $pass) {
     $response = Gallery3_Helper::request(
       "post", $url, null, array("user" => $user, "password" => $pass));
-
-    return self::factory($url, $response, null);
+    return $response;
   }
 
   /**
-   * Create a new Gallery3 instance associated with a remote resource
-   * @param string   the url
-   * @param string   security token
-   * @param object   parent object
-   * @return object  Gallery3
+   * Construct a new Gallery3 instance associated with a remote resource
+   * @param   string remote url
+   * @param   string authentication token
+   * @return  object Gallery3
    */
-  static function factory($url, $token, $parent) {
-    $resource = new Gallery3();
-    $resource->url = $url;
-    $resource->token = $token;
-    $resource->parent = $parent;
-    return $resource;
-  }
-
-  /**
-   * Retrieve a remote resource, by url.
-   *
-   * @param string   the path relative to the current resource
-   * @return object  Gallery3
-   */
-  public function get($relative_path, $params=array()) {
-    $query = "";
-    if ($params) {
-      foreach ($params as $key => $value) {
-        $query[] = rawurlencode($key) . "=" . rawurlencode($value);
-      }
-      if ($query) {
-        $query = "?" . join("&", $query);
-      }
+  public function factory($url=null, $token=null) {
+    $obj = new Gallery3();
+    $obj->token = $token;
+    $obj->url = $url;
+    if ($url && $token) {
+      $obj->load();
     }
-
-    return self::factory("$this->url/$relative_path$query", $this->token, $this)->load();
+    return $obj;
   }
 
   /**
-   * Set a value on the remote resource
+   * Constructor.
+   */
+  public function __construct() {
+    $this->data = new stdClass();
+    $this->token = null;
+    $this->url = null;
+  }
+
+  /**
+   * Set a value on the remote resource.  You must call save for it to take effect.
    *
    * @param string   key
    * @param string   value
    * @return object  Gallery3
+   * @chainable
    */
-  public function set_value($key, $value) {
-    $this->changed_data->$key = $value;
+  public function set($key, $value) {
+    $this->data->resource->$key = $value;
     return $this;
-  }
-
-  /**
-   * Get a value from the remote resource.
-   *
-   * @param string   $key
-   * @return string  value
-   */
-  public function __get($key) {
-    if (property_exists($this->changed_data, $key)) {
-      return $this->changed_data->$key;
-    }
-    return $this->data->$key;
-  }
-
-  /**
-   * Get the list of members from the remote resource
-   *
-   * @return array  member urls
-   */
-  public function members() {
-    return $this->members;
   }
 
   /**
@@ -130,30 +93,30 @@ class Gallery3 {
   }
 
   /**
-   * Add a new member to a collection.  You must call save() for it to be created in the
-   * remote Gallery 3.
+   * Save any local changes made to this resource.  If this is an existing resource, we'll return
+   * the resource itself.  If we're creating a new resource, return the newly created resource.
    *
    * @return object  Gallery3
    */
-  public function add() {
-    return Gallery3::factory(null, $this->token, $this);
+  public function create($url, $token) {
+    $response = Gallery3_Helper::request(
+      "post", $url, $token, $this->data->resource, $this->file);
+    $this->url = $response->url;
+    $this->token = $token;
+    return $this->load();
   }
 
   /**
-   * Save any local changes made to this resource.
+   * Save any local changes made to this resource.  If this is an existing resource, we'll return
+   * the resource itself.  If we're creating a new resource, return the newly created resource.
    *
    * @return object  Gallery3
    */
   public function save() {
-    if ($this->url) {
-      $response = Gallery3_Helper::request("put", $this->url, $this->token, $this->changed_data);
-    } else {
-      $response = Gallery3_Helper::request(
-        "post", $this->parent->url, $this->token, $this->changed_data, $this->file);
-      $this->parent->load();
-    }
-
-    return $this->load(!empty($response->url) ? $response->url : null);
+    $response = Gallery3_Helper::request(
+      "put", $this->url, $this->token,
+      array_diff($this->original_resource, (array)$this->data->resource));
+    return $this->load();
   }
 
   /**
@@ -163,47 +126,21 @@ class Gallery3 {
    */
   public function delete() {
     Gallery3_Helper::request("delete", $this->url, $this->token);
-    $this->reset();
-  }
-
-  /**
-   * Remove a member from the remote collection.
-   *
-   * @return object  Gallery3
-   */
-  public function remove($url) {
-    Gallery3_Helper::request("delete", $this->url, $this->token, array("url" => $url));
-    $this->load();
+    $this->data = array();
+    $this->url = null;
+    return $this;
   }
 
   /**
    * Reload the resource from a given url.  This is useful after the remote resource has been
    * modified.
    *
-   * @param  string   optional url, only necessary if the url changes.
    * @return object   Gallery3
    */
-  protected function load($url=null) {
-    if ($url) {
-      $this->url = $url;
-    }
+  public function load() {
     $response = Gallery3_Helper::request("get", $this->url, $this->token);
-
-    $this->data = isset($response->resource) ? $response->resource : new stdClass();
-    $this->members = isset($response->members) ? $response->members : array();
-    $chis->changed_data = new stdClass();
-    return $this;
-  }
-
-  /**
-   * Reset all data for this reference, essentially disconnecting it from the remote resource.
-   *
-   * @return object   Gallery3
-   */
-  protected function reset() {
-    $this->data = array();
-    $this->changed_data = array();
-    $this->url = null;
+    $this->data = $response;
+    $this->original_resource = (array)$response->resource;
     return $this;
   }
 }

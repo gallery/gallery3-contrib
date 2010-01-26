@@ -10,65 +10,79 @@ if (file_exists("local_config.php")) {
 }
 
 alert("Connect to $SITE_URL");
-$gallery3 = Gallery3::connect($SITE_URL, $USER, $PASSWORD);
-$root = $gallery3->get("gallery");
-$tags = $gallery3->get("tags");
+$auth = Gallery3::login($SITE_URL, $USER, $PASSWORD);
+$root = Gallery3::factory("$SITE_URL/item/1", $auth);
+$tags = Gallery3::factory("$SITE_URL/tags", $auth);
 
-alert("Create a tag");
-$tag = $tags->add()
-  ->set_value("name", "My Tag")
+
+$tag = Gallery3::factory()
+  ->set("name", "My Tag")
+  ->create($tags->url, $auth);
+alert("Created tag: <b>{$tag->url}</b>");
+
+
+$album = Gallery3::factory()
+  ->set("type", "album")
+  ->set("name", "Sample Album")
+  ->set("title", "This is my Sample Album")
+  ->create($root->url, $auth);
+alert("Created album: <b>{$album->url} {$album->data->resource->title}</b>");
+
+
+alert("Modify the album");
+$album
+  ->set("title", "This is the new title")
   ->save();
+alert("New title: <b>{$album->data->resource->title}</b>");
 
-alert("Create a new album");
-$album = $root->add()
-  ->set_value("type", "album")
-  ->set_value("name", "Sample Album")
-  ->set_value("title", "This is my Sample Album")
-  ->save();
 
-alert("Upload a photo");
-$photo = $album->add()
-  ->set_value("type", "photo")
-  ->set_value("name", "Sample Photo.jpg")
-  ->set_value("title", "Sample Photo")
+$photo = Gallery3::factory()
+  ->set("type", "photo")
+  ->set("name", "Sample Photo.jpg")
+  ->set("title", "Sample Photo")
   ->set_file("/tmp/foo.jpg")
-  ->save();
-alert("Added: " . $album->members[0] . "");
+  ->create($album->url, $auth);
+alert("Uploaded photo: <b>{$photo->url}</b>");
+alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
+
 
 alert("Search for the photo");
-$photos = $root->get("", array("name" => "Sample"));
-alert("Found: {$photos->members[0]}");
+$photos = Gallery3::factory($root->url, $auth)
+  ->set("name", "Sample")
+  ->load();
+alert("Found: {$photos->data->members[0]}");
+
 
 alert("Grab a random photo");
-$photos = $root->get("", array("random" => "true"));
-alert("Found: {$photos->members[0]}");
+$photos = Gallery3::factory($root->url, $auth)
+  ->set("random", "true")
+  ->load();
+alert("Found: {$photos->data->members[0]}");
 
-alert("Tag the album");
-$tag->add()
-  ->set_value("url", $album->url)
-  ->save();
 
-alert("Tag the photo");
-$tag->add()
-  ->set_value("url", $photo->url)
-  ->save();
-alert("Tagged items: " . join($tag->members, " "));
+alert("Tag the album (using the album's relationships: {$album->data->relationships->tags->url})");
+$tag_relationship1 = Gallery3::factory()
+  ->set("tag", $tag->url)
+  ->set("item", $root->url)
+  ->create($album->data->relationships->tags->url, $auth);
+alert("Tag: {$tag_relationship1->url}");
+
+
+alert("Tag the photo (using the tag's relationships: {$tag->data->relationships->items->url})");
+$tag_relationship2 = Gallery3::factory()
+  ->set("tag", $tag->url)
+  ->set("item", $photo->url)
+  ->create($tag->data->relationships->items->url, $auth);
+alert("Tag: {$tag_relationship2->url}");
 
 alert("Un-tag the photo");
-$tag->remove($photo->url);
-alert("Tagged items: " . join($tag->members, " "));
+$tag_relationship2->delete();
+$tag->load();
+alert("1 remaining tag: <b>{$tag->data->relationships->items->members[0]}</b>");
 
-alert("Find and modify the album");
-$album = $root->get("Sample-Album")
-  ->set_value("title", "This is my title")
-  ->save();
-alert("New title: $album->title");
 
-// Now delete the album
-alert("Delete the album");
+alert("Delete the album and tag");
 $album->delete();
-
-// Delete the tag
 $tag->delete();
 
 alert("Done!");
