@@ -68,10 +68,8 @@ class Admin_TagsMap_Controller extends Admin_Controller {
 
       // If the tag no longer exists then delete the record.
       if (count($oneTag) == 0) {
-          // Delete the record.
-        ORM::factory("tags_gps")
-          ->where("tag_id", "=", $oneGPS->tag_id)
-          ->delete_all();
+        // Delete the record.
+        db::build()->delete("tags_gpses")->where("tag_id", "=", $oneGPS->tag_id)->execute();
         $int_deleted_records++;
       }
     }
@@ -100,9 +98,7 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     // Delete the GSP data associated with a tag.
 
     // Delete the record.
-    ORM::factory("tags_gps")
-      ->where("tag_id", "=", $tag_id)
-      ->delete_all();
+    db::build()->delete("tags_gpses")->where("tag_id", "=", $tag_id)->execute();
 
     // Redirect back to the main screen and display a "success" message.
     message::success(t("Your Settings Have Been Saved."));

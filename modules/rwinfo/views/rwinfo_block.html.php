@@ -43,7 +43,7 @@
     <? $not_first = 0; ?>
     <? foreach ($tags as $tag): ?>
     <?= ($not_first++) ? "," : "" ?>
-    <a href="<?= url::site("tags/{$tag->name}") ?>"><?= html::clean($tag->name) ?></a>
+    <a href="<?= $tag->url() ?>"><?= html::clean($tag->name) ?></a>
     <? endforeach ?>
   </li>
   <? endif ?>
