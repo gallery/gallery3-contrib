@@ -1,4 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+
 <? if ($map_fullsize == true) { ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
   <head> 
@@ -43,12 +44,13 @@
       // Create markers for each tag with GPS coordinates.
       <? $counter = 0; ?>
       <? foreach ($tags_gps as $oneGPS): ?>
+        <? $one_tag = ORM::factory("tag", $oneGPS->tag_id); ?>
         var myGeographicCoordinates<?=$counter; ?> = new GLatLng(<?= $oneGPS->latitude ?>, 
                                                   <?= $oneGPS->longitude ?>);
         map.addOverlay(createMarker(myGeographicCoordinates<?=$counter; ?>, 
-                                      "<?= $oneGPS->description ?>", 
-                                      "<?= url::site("tags/$oneGPS->tag_id")?>", 
-                                      "<?= ORM::factory("tag", $oneGPS->tag_id)->name ?>"
+                                      "<?= $oneGPS->description; ?>", 
+                                      "<?= $one_tag->url(); ?>", 
+                                      "<?= html::clean($one_tag->name); ?>"
                                     ));
         <? $counter++; ?>
       <? endforeach ?>

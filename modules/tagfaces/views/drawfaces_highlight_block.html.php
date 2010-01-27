@@ -42,7 +42,7 @@
 
     divface.style.display = 'block';
     divface.style.left = (photoimg.offsetLeft + x1) + 'px';
-    divface.style.top = (photodiv.offsetTop + y1) + 'px';
+    divface.style.top = (photodiv.offsetTop + 24 + y1) + 'px';
     divface.style.width=(x2-x1) + 'px';
     divface.style.height=(y2-y1) + 'px';
     if (str_url == '') {

@@ -39,15 +39,13 @@ class BatchTag_Controller extends Controller {
     } else {
       // Generate an array of all non-album items in the current album
       //   and any sub albums.
-      $children = ORM::factory("item", $input->post("item_id"))
-        ->where("type", "!=", "album")
-        ->descendants();
+      $item = ORM::factory("item", $input->post("item_id"));
+      $children = $item->descendants();
     }
-
     // Loop through each item in the album and make sure the user has
     //   access to view and edit it.
     foreach ($children as $child) {
-      if (access::can("view", $child) && access::can("edit", $child)) {
+      if (access::can("view", $child) && access::can("edit", $child) && !$child->is_album()) {
 
         // Assuming the user can view/edit the current item, loop
         //   through each tag that was submitted and apply it to
