@@ -1,19 +1,28 @@
 package com.gloopics.g3viewer.client;
 
-import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.gloopics.g3viewer.client.canvas.Canvas;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.gears.client.Factory;
+import com.google.gwt.gears.client.blob.Blob;
 import com.google.gwt.gears.client.desktop.File;
 import com.google.gwt.gears.client.httprequest.HttpRequest;
 import com.google.gwt.gears.client.httprequest.ProgressEvent;
 import com.google.gwt.gears.client.httprequest.ProgressHandler;
 import com.google.gwt.gears.client.httprequest.RequestCallback;
+import com.google.gwt.gears.client.localserver.ResourceStore;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 
-public class UploadFile extends AbsolutePanel{
+public class UploadFile extends Composite{
 
+	private final static ResourceStore RS = Factory.getInstance().createLocalServer().createStore("temp");
+
+	
 	private class ProgressBar extends SimplePanel{
 		private final SimplePanel m_ProgressInner;
 		public ProgressBar(){
@@ -29,35 +38,66 @@ public class UploadFile extends AbsolutePanel{
 		}
 	}
 	
-	private final File m_LocalFile;
+	private final ResizeOptions m_ResizeOptions;
 	
 	private final String m_Name;
 	
 	private final Album m_Parent;
 	
-	//private final Label m_PendingLabel = new Label("Upload Pending");
+	private final Blob m_Blob;
+	
+	//private final Canvas m_UpThumb;
+	
+	private final Label m_Label = new Label("Pending..");
 	private final ProgressBar m_ProgressBar = new ProgressBar();
 	
-	public UploadFile(Album a_Parent, File a_File){
+
+	/**
+	 * Loads an image into this Canvas, replacing the Canvas' current dimensions
+	 * and contents.
+	 * 
+	 * @param blob The Blob to decode. The image should be in PNG or JPEG format.
+	 */
+	public final native void captureBlob(ResourceStore rs, Blob blob, String a_Url) /*-{
+		rs.captureBlob(blob, a_Url, "image/JPEG");
+	  }-*/;
+
+	/**
+	 * Loads an image into this Canvas, replacing the Canvas' current dimensions
+	 * and contents.
+	 * 
+	 * @param blob The Blob to decode. The image should be in PNG or JPEG format.
+	 */
+	public final native void removeCapture(ResourceStore rs, String a_Url) /*-{
+		rs.remove(a_Url);
+	}-*/;
+	
+	public UploadFile(Album a_Parent, File a_File, ResizeOptions a_ResizeOptions){
+		m_ResizeOptions = a_ResizeOptions;
 		m_Parent = a_Parent;
-		m_LocalFile = a_File;
 		m_Name = a_File.getName();
-		Label name = new Label(m_Name);
-		name.addStyleName("label");
-		add(name,5,20);
+		m_Blob = a_File.getBlob();
+		captureBlob(RS, m_Blob , m_Name);
+			
+		Image img = new Image(m_Name);
+		FlowPanel dp = new FlowPanel();
 		
-		add(m_ProgressBar,0,80);
+		dp.add(img);
+		
+		dp.add(m_ProgressBar);
+		dp.add(m_Label);
+		
+		initWidget(dp);
 		setStylePrimaryName("item");
 		addStyleName("iUpload");
 		
 	}
 	
-	public void startUpload(){
+	protected void uploadBlob(Blob a_Blob){
+		m_Label.setText("Uploading..");
 		HttpRequest request = Factory.getInstance().createHttpRequest();
 		request.open("POST", G3Viewer.UPLOAD_URL + m_Parent.getId() + "?filename=" 
 				+ m_Name + "&csrf=" + G3Viewer.getCSRF());
-		//request.setRequestHeader("Content-Type", "image/jpg");
-		//request.setRequestHeader("Content-Type", "image/jpg");
 		
 		request.getUpload().setProgressHandler(new ProgressHandler() {
 			
@@ -78,17 +118,39 @@ public class UploadFile extends AbsolutePanel{
 				{
 					G3Viewer.displayError("Upload Error", request.getResponseText() + request.getStatus() + request.getStatusText());
 				}
+				removeCapture(RS, m_Name);
+				
 				try{
-				JSONValue jv = JSONParser.parse(request.getResponseText());
-				m_Parent.finishedUpload(UploadFile.this, jv);
-				} catch (Exception e)
-				{
+					JSONValue jv = JSONParser.parse(request.getResponseText());
+					m_Parent.finishedUpload(UploadFile.this, jv);
+				} 
+				catch (Exception e){
 					G3Viewer.displayError("Exception on Upload", e.toString() + " " + request.getResponseText());
 				}
+				
+				
 			}
 		});
 		
-		request.send(m_LocalFile.getBlob());
+		request.send(a_Blob);
+		
+	}
+	
+	public ResizeOptions getResizeOptions(){
+		return m_ResizeOptions;
+	}
+	
+	public void startUpload(){
+		
+		if (m_ResizeOptions.isResize())
+		{
+			m_Label.setText("Resizing..");
+			GWT.runAsync(new AsyncResizer(m_Blob, this));
+		}
+		else
+		{
+			uploadBlob(m_Blob);
+		}
 	}
 	
 }

@@ -53,7 +53,6 @@ class Json_Album_Controller extends Controller {
   }
 
   function albums($item_id) {
-
     print $this->child_elements($item_id, array(array("type", "=", "album")));
   }
 
@@ -128,7 +127,6 @@ class Json_Album_Controller extends Controller {
       ->where("weight", ">=", $target_weight)
       ->where("parent_id", "=", $album->id)
       ->execute();
-
     // Insert source items into the hole
     foreach ($source_ids as $source_id) {
       db::build()
@@ -241,7 +239,7 @@ class Json_Album_Controller extends Controller {
     }
 
     if ($degrees) {
-      graphics::rotate($item->file_path(), $item->file_path(), array("degrees" => $degrees));
+      gallery_graphics::rotate($item->file_path(), $item->file_path(), array("degrees" => $degrees));
 
       list($item->width, $item->height) = getimagesize($item->file_path());
       $item->resize_dirty= 1;
@@ -262,5 +260,18 @@ class Json_Album_Controller extends Controller {
     print json_encode(self::child_json_encode($item));
   }
 
+  public function resize_config(){
+    if (upload_configuration::isResize())
+    {
+      print json_encode(array(
+        "resize" => true,
+        "max_width" => upload_configuration::getMaxWidth(),
+        "max_height" => upload_configuration::getMaxHeight()));
+    }
+    else
+    {
+      print json_encode(array("resize" => false));
+    }
+  }
 
 }
