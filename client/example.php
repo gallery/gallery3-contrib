@@ -26,14 +26,14 @@ $album = Gallery3::factory()
   ->set("name", "Sample Album")
   ->set("title", "This is my Sample Album")
   ->create($root->url, $auth);
-alert("Created album: <b>{$album->url} {$album->data->resource->title}</b>");
+alert("Created album: <b>{$album->url} {$album->data->entity->title}</b>");
 
 
 alert("Modify the album");
 $album
   ->set("title", "This is the new title")
   ->save();
-alert("New title: <b>{$album->data->resource->title}</b>");
+alert("New title: <b>{$album->data->entity->title}</b>");
 
 
 $photo = Gallery3::factory()

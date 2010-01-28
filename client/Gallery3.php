@@ -27,7 +27,7 @@ class Gallery3 {
   var $data;
   var $file;
 
-  protected $original_resource;
+  protected $original_entity;
 
   /**
    * Connect to a remote Gallery3 instance
@@ -77,7 +77,7 @@ class Gallery3 {
    * @chainable
    */
   public function set($key, $value) {
-    $this->data->resource->$key = $value;
+    $this->data->entity->$key = $value;
     return $this;
   }
 
@@ -100,7 +100,7 @@ class Gallery3 {
    */
   public function create($url, $token) {
     $response = Gallery3_Helper::request(
-      "post", $url, $token, $this->data->resource, $this->file);
+      "post", $url, $token, $this->data->entity, $this->file);
     $this->url = $response->url;
     $this->token = $token;
     return $this->load();
@@ -115,7 +115,7 @@ class Gallery3 {
   public function save() {
     $response = Gallery3_Helper::request(
       "put", $this->url, $this->token,
-      array_diff($this->original_resource, (array)$this->data->resource));
+      array_diff($this->original_entity, (array)$this->data->entity));
     return $this->load();
   }
 
@@ -140,7 +140,7 @@ class Gallery3 {
   public function load() {
     $response = Gallery3_Helper::request("get", $this->url, $this->token);
     $this->data = $response;
-    $this->original_resource = (array)$response->resource;
+    $this->original_entity = (array)$response->entity;
     return $this;
   }
 }
