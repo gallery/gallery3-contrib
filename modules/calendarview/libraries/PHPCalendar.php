@@ -4,6 +4,7 @@ class PHPCalendar_Core {
 	// Month and year to use for calendaring
 	protected $month;
 	protected $year;
+	protected $month_url;
 
 	// First Day of the Week (0 = Sunday, 1 = Monday, etc.).
 	protected $week_start = 1;
@@ -11,7 +12,7 @@ class PHPCalendar_Core {
 	// Events for the current month.
 	protected $event_data = Array();
 
-	public function __construct($month = NULL, $year = NULL)
+	public function __construct($month = NULL, $year = NULL, $url = NULL)
 	{
 		empty($month) and $month = date('n'); // Current month
 		empty($year)  and $year  = date('Y'); // Current year
@@ -19,6 +20,7 @@ class PHPCalendar_Core {
 		// Set the month and year
 		$this->month = (int) $month;
 		$this->year  = (int) $year;
+		$this->month_url = $url;
 
 	}
 	
@@ -28,7 +30,7 @@ class PHPCalendar_Core {
 	
 	public function render()
 	{
-	    return $this->generate_calendar($this->year, $this->month, $this->event_data, 2, NULL, $this->week_start, NULL);
+	    return $this->generate_calendar($this->year, $this->month, $this->event_data, 2, $this->month_url, $this->week_start, NULL);
 	}
 
 	# PHP Calendar (version 2.3), written by Keith Devens

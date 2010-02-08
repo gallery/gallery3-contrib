@@ -103,14 +103,14 @@ class CalendarView_Controller extends Controller {
                             ->order_by("captured", "ASC")
                             ->find_all($page_size, $offset));
     }
-
+/*
     // Set up breadcrumbs
     $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
     $calendar_breadcrumbs[1] = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, $display_day, $display_year))), url::site("calendarview/month/" . $display_year . "/" . $display_user . "/" . $display_month));
     $fake_item = new Calendar_Breadcrumb($display_day, "");
     $template->set_global("item", $fake_item);
     $template->set_global("parents", $calendar_breadcrumbs);
-
+*/
     // Finish setting up and then display the page.
     $template->set_global("children_count", $day_count);
     $template->content = new View("dynamic.html");
@@ -179,13 +179,13 @@ class CalendarView_Controller extends Controller {
                             ->order_by("captured", "ASC")
                             ->find_all($page_size, $offset));
     }
-
+/*
     // Set up breadcrumbs for this page.
     $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
     $fake_item = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, 1, $display_year))), "");
     $template->set_global("item", $fake_item);
     $template->set_global("parents", $calendar_breadcrumbs);
-
+*/
     // Finish setting up and then display the page.
     $template->set_global("children_count", $day_count);
     $template->content = new View("dynamic.html");

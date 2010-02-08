@@ -9,8 +9,9 @@
   // Loop through January to November in the current year.
   while ($counter_months <12) {
     print "<td>";
-
-    $calendar = new PHPCalendar($counter_months, $calendar_year);
+	
+	$month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
+    $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
 
     // Figure out if any photos were taken for the current month.
     if ($calendar_user == "-1") {
@@ -108,7 +109,8 @@
 
   // Do December seperately, because the mktime code is different.
   print "<td>";
-  $calendar = new PHPCalendar($counter_months, $calendar_year);
+  $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
+  $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
   if ($calendar_user == "-1") {
     $month_count = ORM::factory("item")
       ->viewable()
