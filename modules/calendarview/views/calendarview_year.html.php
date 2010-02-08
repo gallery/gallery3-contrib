@@ -6,10 +6,11 @@
 <?
   print "<table><tr>";
   $counter_months = 1;
-  // Loop through each month in the current year.
+  // Loop through January to November in the current year.
   while ($counter_months <12) {
     print "<td>";
-    $calendar = new Calendar($counter_months, $calendar_year);
+
+    $calendar = new PHPCalendar($counter_months, $calendar_year);
 
     // Figure out if any photos were taken for the current month.
     if ($calendar_user == "-1") {
@@ -55,11 +56,14 @@
             ->count();
         }
         if ($day_count > 0) {
+		  $calendar->event($curr_day, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day));
+		/*
           $calendar -> attach($calendar -> event()
                                        -> condition('year', $calendar_year)
                                        -> condition('month', $counter_months)
                                        -> condition('day', $curr_day)
                                        -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day), $day_count)));
+									   */
         }
         $curr_day++;
       }
@@ -84,11 +88,14 @@
           ->count();
       }
       if ($day_count > 0) {
+        $calendar->event($MAX_DAYS, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS));
+	  /*
         $calendar -> attach($calendar -> event()
                                       -> condition('year', $calendar_year)
                                       -> condition('month', $counter_months)
                                       -> condition('day', $MAX_DAYS)
                                       -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS), $day_count)));
+									  */
       }
     }
     echo $calendar->render();
@@ -101,7 +108,7 @@
 
   // Do December seperately, because the mktime code is different.
   print "<td>";
-  $calendar = new Calendar($counter_months, $calendar_year);
+  $calendar = new PHPCalendar($counter_months, $calendar_year);
   if ($calendar_user == "-1") {
     $month_count = ORM::factory("item")
       ->viewable()
@@ -143,11 +150,14 @@
           ->count();
       }
       if ($day_count > 0) {
+	  $calendar->event($curr_day, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day));
+	  /*
         $calendar -> attach($calendar -> event()
                                       -> condition('year', $calendar_year)
                                       -> condition('month', $counter_months)
                                       -> condition('day', $curr_day)
                                        -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day), $day_count)));
+									   */
       }
       $curr_day++;
     }
@@ -170,12 +180,14 @@
         ->count();
     }
     if ($day_count > 0) {
+	  $calendar->event($MAX_DAYS, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS));
+	/*
       $calendar -> attach($calendar -> event()
                                     -> condition('year', $calendar_year)
                                     -> condition('month', $counter_months)
                                     -> condition('day', $MAX_DAYS)
                                     -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS), $day_count)));
-
+*/
     }
   }
   $counter_months++;
