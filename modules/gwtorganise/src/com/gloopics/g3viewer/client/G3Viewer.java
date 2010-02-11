@@ -61,7 +61,9 @@ public class G3Viewer {
 		      
 		      DockPanel dp = new DockPanel();
 		      dp.addStyleName("error");
-		      dp.add(new HTML(error), DockPanel.CENTER);
+		      
+		      error = error.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+		      dp.add(new HTML("<pre>" + error + "</pre>"), DockPanel.CENTER);
 		      
 
 		      // DialogBox is a SimplePanel, so you have to set its widget property to
@@ -154,7 +156,7 @@ public class G3Viewer {
   /**
    * the only dialog box
    */
-  private final HttpDialogBox m_HttpDialogBox= new HttpDialogBox();
+  private final HttpDialogBox m_HttpDialogBox= new HttpDialogBox(this);
   
   private class SimplePanelEx extends SimplePanel 
   {
@@ -275,7 +277,7 @@ public class G3Viewer {
 					}
 				});
 			}
-		},false);
+		},false,true);
   }
   
   
@@ -326,10 +328,16 @@ public class G3Viewer {
 	  m_ImageDialogBox.doDialog( a_Url); 
   }
   
-  public void doJSONRequest(final String a_URL, final HttpSuccessHandler a_Handler, final boolean a_hasParams){
+  public void doJSONRequest(final String a_URL, final HttpSuccessHandler a_Handler, final boolean a_hasParams, final boolean a_IncludeCSRF){
+	  doJSONRequest(a_URL, a_Handler, a_hasParams, a_IncludeCSRF, "");
+  }
+
+  
+  public void doJSONRequest(final String a_URL, final HttpSuccessHandler a_Handler, final boolean a_hasParams, final boolean a_IncludeCSRF,
+		  	String a_Data ){
 	  try {
 		  String url;
-		  if (m_CSRF != null)
+		  if (m_CSRF != null && a_IncludeCSRF)
 		  {
 			  url = a_URL + (a_hasParams?"&csrf=":"?csrf=") + m_CSRF;
 		  }
@@ -338,7 +346,9 @@ public class G3Viewer {
 			  url = a_URL;
 		  }
 		 RequestBuilder requestBuilder = new RequestBuilder(
-				 RequestBuilder.GET, url);
+				 RequestBuilder.POST, url);
+		 requestBuilder.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		 requestBuilder.setHeader("X-Requested-With", "XMLHttpRequest");
 		 requestBuilder.setCallback(new JSONResponseTextHandler(
 				new JSONResponseCallback() {
 						
@@ -370,6 +380,7 @@ public class G3Viewer {
 		    	}}
 			));
 		      
+		 requestBuilder.setRequestData(a_Data);
 		 requestBuilder.send();
 	  } catch (RequestException ex) {
 		displayError("Request Exception", ex.toString() + " - " + a_URL);

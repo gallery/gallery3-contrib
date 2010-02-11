@@ -19,16 +19,13 @@
  */
 
 class gwtorganise_event_Core{
-  /**
-   * adds the shopping basket administration controls to the admin menu
-   */
-  static function admin_menu($menu, $theme){
 
-
-    $menu->add_after("users_groups",
-      Menu::factory("link")
+  static function admin_menu($menu, $theme) {
+    $menu->add_after("dashboard",
+    Menu::factory("link")
         ->id("gwtorganise")
         ->label(t("GWT Organise"))
         ->url(url::site("admin/gwtorganise")));
   }
+
 }

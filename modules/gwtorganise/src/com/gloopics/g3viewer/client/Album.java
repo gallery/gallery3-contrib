@@ -109,7 +109,7 @@ public class Album extends TreeItem {
 					public void success(JSONValue aValue) {
 						updateValues(aValue);
 					}
-				},false);
+				},false,true);
 	}
 	
 	
@@ -281,7 +281,7 @@ public class Album extends TreeItem {
 						m_View.getCurrentAlbum().expand();
 						m_View.getCurrentAlbum().select();
 					}
-				},true);
+				},true,true);
 	}
 	
 	/**
@@ -300,7 +300,7 @@ public class Album extends TreeItem {
 					public void success(JSONValue aValue) {
 						m_View.getCurrentAlbum().select();
 					}
-				},true);
+				},true,true);
 	}
 	
 	
@@ -331,7 +331,7 @@ public class Album extends TreeItem {
 						public void success(JSONValue aValue) {
 							addAlbums(aValue);
 						}
-					},false);
+					},false,true);
 	}
 	
 	
@@ -344,7 +344,7 @@ public class Album extends TreeItem {
 					public void success(JSONValue aValue) {
 						viewAlbum(aValue);
 					}
-				},false);
+				},false,true);
 
 	}
 	
@@ -445,7 +445,7 @@ public class Album extends TreeItem {
 		        }
 				}
 			}
-		},false);
+		},false,true);
 		
 		
 	}

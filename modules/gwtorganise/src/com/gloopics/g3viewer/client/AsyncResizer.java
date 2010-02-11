@@ -30,29 +30,26 @@ public class AsyncResizer implements RunAsyncCallback{
 		Canvas upThumb = com.gloopics.g3viewer.client.canvas.Factory.getInstance().createCanvas();
 		upThumb.decode(m_Blob);
 		
+		float imageWidth = (float)upThumb.getWidth();
+		float imageHeight = (float)upThumb.getHeight();
 		
-		int imageWidth = upThumb.getWidth();
-		int imageHeight = upThumb.getHeight();
-		
-		int widthRatio = imageWidth/m_ResizeOptions.getMaxWidth();
-		int heightRatio = imageHeight/m_ResizeOptions.getMaxHeight();
+		float widthRatio = imageWidth/((float)m_ResizeOptions.getMaxWidth());
+		float heightRatio = imageHeight/((float)m_ResizeOptions.getMaxHeight());
 		
 		if (widthRatio > heightRatio){
 			if (widthRatio > 1) {
-				upThumb.resize(m_ResizeOptions.getMaxWidth(), imageHeight / widthRatio );
+				upThumb.resize(m_ResizeOptions.getMaxWidth(), (int)(imageHeight / widthRatio) );
 				m_UploadFile.uploadBlob(upThumb.encode());
+				return;
 			}
 		}
 		else
 		{
 			if (heightRatio > 1){
-				upThumb.resize(imageWidth / heightRatio, m_ResizeOptions.getMaxHeight());
+				upThumb.resize((int)(imageWidth / heightRatio), m_ResizeOptions.getMaxHeight());
 				m_UploadFile.uploadBlob(upThumb.encode());
+				return;
 			}
 		}
-		
-
 	}
-	
-
 }
