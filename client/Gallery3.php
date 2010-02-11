@@ -49,7 +49,7 @@ class Gallery3 {
    * @param   string authentication token
    * @return  object Gallery3
    */
-  public function factory($url=null, $token=null) {
+  static function factory($url=null, $token=null) {
     $obj = new Gallery3();
     $obj->token = $token;
     $obj->url = $url;
