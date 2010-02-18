@@ -30,8 +30,6 @@ class product_Core {
         ->label(t("Postage Band"))
         ->options(postage_band::getPostageArray());
     $group->submit("")->value(t("Add Product"));
-    $product = ORM::factory("product");
-    $form->add_rules_from($product);
     return $form;
   }
 
@@ -51,7 +49,6 @@ class product_Core {
         ->selected($product->postage_band_id);
 
     $group->submit("")->value(t("Modify Product"));
-    $form->add_rules_from($product);
     return $form;
   }
 
@@ -63,28 +60,6 @@ class product_Core {
       t("Are you sure you want to delete product %name?", array("name" => $product->name)));
     $group->submit("")->value(t("Delete product %name", array("name" => $product->name)));
     return $form;
-  }
-
-  /**
-   * Create a new product
-   *
-   * @param string  $name
-   * @param string  $full_name
-   * @param string  $password
-   * @return User_Model
-   */
-  static function create($name, $cost, $description, $postage_band) {
-    $product = ORM::factory("product")->where("name", "=", $name)->find();
-    if ($product->loaded()) {
-      throw new Exception("@todo USER_ALREADY_EXISTS $name");
-    }
-
-    $product->name = $name;
-    $product->cost = $cost;
-    $product->description = $description;
-    $product->postage_band_id = $postage_band;
-    $product->save();
-    return $product;
   }
 
   static function getProductArray($id){

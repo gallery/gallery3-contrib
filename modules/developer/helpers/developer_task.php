@@ -197,13 +197,25 @@ class developer_task_Core {
     if ($type == "album") {
       $thumb_size = module::get_var("core", "thumb_size");
       $rand = rand();
-      $parents[] = album::create(
-        $parent, "rnd_$rand", "Rnd $rand", "random album $rand", $owner_id)
-        ->save();
+      $item = ORM::factory("item");
+      $item->type = "album";
+      $item->parent_id = $parent->id;
+      $item->name = "rnd_$rand";
+      $item->title = "Rnd $rand";
+      $item->description = "random album $rand";
+      $item->owner_id = $owner_id;
+      $parents[] = $item->save();
     } else {
       $photo_index = rand(0, count($test_images) - 1);
-      photo::create($parent, $test_images[$photo_index], basename($test_images[$photo_index]),
-                    "rnd_" . rand(), "sample thumb", $owner_id);
+      $item = ORM:factory("item");
+      $item->type = "photo";
+      $item->parent_id = $parent->id;
+      $item->set_data_file($test_images[$photo_index]);
+      $item->name = basename($test_images[$photo_index]);
+      $item->title = "rnd_" . rand();
+      $item->description = "sample thumb";
+      $item->owner_id = $owner_id;
+      $item->save();
     }
   }
 
@@ -225,8 +237,14 @@ class developer_task_Core {
     $guest_name = ucfirst(self::_random_phrase(rand(1, 3)));
     $guest_email = sprintf("%s@%s.com", self::_random_phrase(1), self::_random_phrase(1));
     $guest_url = sprintf("http://www.%s.com", self::_random_phrase(1));
-    comment::create($photo, $author, self::_random_phrase(rand(8, 500)),
-                    $guest_name, $guest_email, $guest_url);
+
+    $comment = ORM::factory("comment");
+    $comment->author_id = $author->id;
+    $comment->text = self::_random_phrase(rand(8, 500));
+    $comment->guest_name = $guest_name;
+    $comment->guest_email = $guest_email;
+    $comment->guest_url = $guest_url;
+    $comment->save();
   }
 
   private static function _add_tag() {

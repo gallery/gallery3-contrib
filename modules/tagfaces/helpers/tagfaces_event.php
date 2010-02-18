@@ -58,18 +58,14 @@ class tagfaces_event_Core {
                           ->where("item_id", "=", $item->id)
                           ->find_all();
     if (count($existingFaces) > 0) {
-      ORM::factory("items_face")
-        ->where("item_id", "=", $item->id)
-        ->delete_all();
+      db::build()->delete("items_faces")->where("item_id", "=", $item->id)->execute();
     }
 
     $existingNotes = ORM::factory("items_note")
                           ->where("item_id", "=", $item->id)
                           ->find_all();
     if (count($existingNotes) > 0) {
-      ORM::factory("items_note")
-        ->where("item_id", "=", $item->id)
-        ->delete_all();
+      db::build()->delete("items_notes")->where("item_id", "=", $item->id)->execute();
     }
   }
 }

@@ -37,7 +37,7 @@ class rwinfo_theme_Core {
         $results .= t("Tags:") . " ";
         $anchors = array();
         foreach ($tags as $tag) {
-          $anchors[] = "<a href=" . url::site("tags/{$tag->id}") . ">" . html::clean($tag->name) . "</a>";
+          $anchors[] = "<a href=" . $tag->url() . ">" . html::clean($tag->name) . "</a>";
         }
         $results .= join(", ", $anchors) . "</li>";
       }

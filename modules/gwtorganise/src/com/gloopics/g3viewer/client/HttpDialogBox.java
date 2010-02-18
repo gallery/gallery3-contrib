@@ -61,7 +61,7 @@ public class HttpDialogBox extends DialogBox{
 					
 				}
 				HttpDialogBox.this.hide();
-				Loading.getInstance().loading();
+				Loading.getInstance().loading("Please Wait..");
 			}
 		});
 
@@ -155,7 +155,7 @@ public class HttpDialogBox extends DialogBox{
 	
 	public void doDialog(String url, HttpDialogHandler a_Callback){
 		m_Callback = a_Callback;
-		Loading.getInstance().loading();
+		Loading.getInstance().loading("Please Wait");
 		RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
 
 		try {

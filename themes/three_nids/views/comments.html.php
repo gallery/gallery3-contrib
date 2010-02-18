@@ -46,7 +46,7 @@
       <ul>
 	<? foreach ($comments as $comment): ?>
 	<li id="g-Comment-<?= $comment->id ?>" class="g-comment-box">
-	  <?= t('<b>%name</b> <small>%date</small>: ',
+	  <?= t('<b>%name</b> %date: ',
 	      array("date" => date(module::get_var("gallery", "date_time_format", "Y-M-d H:i:s"), $comment->created),
 	  "name" => html::clean($comment->author_name()))); ?>
 	  <div class="g-comment">

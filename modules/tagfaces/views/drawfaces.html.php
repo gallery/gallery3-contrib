@@ -115,17 +115,10 @@ li {
 
 <fieldset>
 <div id="g-delete-faces">
-  <h2><?= t("Delete Faces") ?></h2>
-  <p><?=t("The following tags already have faces associated with them."); ?></p>
+  <h2><?= t("Delete Existing Faces and Notes") ?></h2>
   <?= $delete_form ?>
 </div>
 </fieldset>
-
-
-
-
-
-
 
 <br/>
 

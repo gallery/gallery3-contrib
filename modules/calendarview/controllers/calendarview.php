@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class CalendarView_Controller extends Controller {
-  public function calendar($display_year, $display_user) {
+  public function calendar($display_year="", $display_user="") {
     // Draw a calendar for the year specified by $display_year.
 
     // Make sure the function parameters aren't null,

@@ -62,7 +62,7 @@ public class Album extends TreeItem {
 	
 	public Album(JSONObject jsonObject, G3Viewer a_Container)
 	{
-		m_ID = (int)((JSONNumber)jsonObject.get("id")).doubleValue();
+		m_ID = Utils.extractId(jsonObject.get("id"));
 		m_Title = ((JSONString)jsonObject.get("title")).stringValue();
 		m_Sort = ((JSONString)jsonObject.get("sort")).stringValue();
 		
@@ -233,7 +233,9 @@ public class Album extends TreeItem {
 	    for (int i = 0; i < jsonArray.size(); ++i) 
 	    {
 	    	JSONObject jso = (JSONObject)jsonArray.get(i);
-			int id  = (int)((JSONNumber)jso.get("id")).doubleValue();
+	    	
+	    	
+			int id  = Utils.extractId(jso.get("id"));
 			
 			if (m_IDtoAlbum.containsKey(id))
 			{
@@ -268,7 +270,7 @@ public class Album extends TreeItem {
 	 * moves the given array of ids to this album
 	 */
 	public void moveTo(JSONArray a_Ids){
-		Loading.getInstance().loading();
+		Loading.getInstance().loading("Moving Items..");
 
 		m_Container.doJSONRequest(G3Viewer.MOVE_TO_ALBUM_URL + getId() + "?sourceids=" + a_Ids.toString(), 
 				new HttpSuccessHandler() {
@@ -287,7 +289,7 @@ public class Album extends TreeItem {
 	 */
 
 	public void rearrangeTo(JSONArray a_Ids, Item m_CompareTo, boolean m_Before){
-		Loading.getInstance().loading();
+		Loading.getInstance().loading("Re-arranging..");
 		String bora = m_Before?"before":"after";
 
 		m_Container.doJSONRequest(G3Viewer.REARRANGE_URL + m_CompareTo.getID() + "/" + bora 
@@ -334,7 +336,7 @@ public class Album extends TreeItem {
 	
 	
 	public void select() {
-		Loading.getInstance().loading();
+		Loading.getInstance().loading("Loading Contents..");
 		m_Container.doJSONRequest(G3Viewer.VIEW_CHILDREN_URL + getId(), 
 				new HttpSuccessHandler() {
 					
@@ -362,7 +364,7 @@ public class Album extends TreeItem {
 		  for (int i = 0; i < jsonArray.size(); ++i) 
 		  {
 			  jso = (JSONObject)jsonArray.get(i);
-			  id = (int)((JSONNumber)jso.get("id")).doubleValue();
+			  id = Utils.extractId(jso.get("id"));
 			  
 			  if (m_IDtoItem.containsKey(id)){
 				  item = m_IDtoItem.get(id);
@@ -414,22 +416,38 @@ public class Album extends TreeItem {
         desktop.openFiles(new OpenFilesHandler() {
 
             public void onOpenFiles(OpenFilesEvent event) {
-              File[] files = event.getFiles();
-              UploadFile uf;
-              for (File file : files){
-            	  uf = new UploadFile(Album.this, file);
-            	  m_View.addToView(uf);
-            	  m_UploadQueue.addLast(uf);
-              }
-              
-              if (!m_Running){
-              	m_Running = true;
-              	next();
-              }
-              
+              uploadFiles(event.getFiles());
             }
           }, false);
         
+	}
+	
+	public void uploadFiles(final File[] files){
+		
+		m_Container.doJSONRequest(G3Viewer.RESIZE_DETAILS_URL, new HttpSuccessHandler() {
+			
+			public void success(JSONValue a_Value) {
+				JSONObject jso = a_Value.isObject();
+				if (jso != null) {
+				
+				ResizeOptions ro = new ResizeOptions(jso);
+		        UploadFile uf;
+		        for (File file : files){
+		      	  uf = new UploadFile(Album.this, file, ro);
+		      	  m_View.addToView(uf);
+		      	  m_UploadQueue.addLast(uf);
+		      	  m_Container.addUpload(uf);
+		        }
+		        
+		        if (!m_Running){
+		        	m_Running = true;
+		        	next();
+		        }
+				}
+			}
+		},false);
+		
+		
 	}
 	
 	public void addPendingDownloads()
@@ -443,6 +461,7 @@ public class Album extends TreeItem {
 	public void finishedUpload(UploadFile uf, JSONValue a_Return)
 	{
 		m_UploadQueue.remove(uf);
+		m_Container.removeUpload(uf);
 		next();
 
 		JSONObject jo = a_Return.isObject();

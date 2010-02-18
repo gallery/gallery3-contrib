@@ -19,6 +19,7 @@ package com.gloopics.g3viewer.client;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.RequestBuilder;
@@ -30,6 +31,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalSplitPanel;
@@ -128,11 +130,21 @@ public class G3Viewer {
    * rotate url
    */
   public static final String ROTATE_URL = BASE_URL + "index.php/json_album/rotate/";
-  
+
+  /**
+   * Resize details URL
+   */
+  public static final String RESIZE_DETAILS_URL = BASE_URL + "index.php/json_album/resize_config";
+
   /*
    * tree
    */
   private final AlbumTree m_Tree;
+  
+  /**
+   * the info panel
+   */
+  private final InformationBar m_InfoBar;
   
   /**
    * the only image dialog box
@@ -221,7 +233,9 @@ public class G3Viewer {
 	  m_DragController.setBehaviorDragStartSensitivity(5);
 	  m_DragController.setBehaviorDragProxy(true);
 	  
+	  m_InfoBar = new InformationBar(this);
 	  m_Tree  = new AlbumTree(this);
+	  
 
 	  checkAdmin();
   }
@@ -293,6 +307,13 @@ public class G3Viewer {
 	  return m_View;
   }
   
+  public void addUpload(UploadFile a_UF){
+	  m_InfoBar.addUpload(a_UF);
+  }
+  
+  public void removeUpload(UploadFile a_UF){
+	  m_InfoBar.removeUpload(a_UF);
+  }
   
   
   public void doDialog(String a_Url, HttpDialogHandler a_Handler)
@@ -328,8 +349,24 @@ public class G3Viewer {
 						
 				@Override
 				public void onError(Throwable aThrowable) {
-					displayError("Unexpected Error", 
+					
+					if (aThrowable.getCause() != null)
+					{
+						StringBuffer stack = new StringBuffer();
+						StackTraceElement[] stes =  aThrowable.getCause().getStackTrace();
+						for (StackTraceElement ste: stes){
+							stack.append(ste.toString());
+							stack.append(" \n ");
+						}
+						displayError("a Unexpected Error ", 
+								aThrowable.toString() + " - " + a_URL + "\n " + stack.toString());
+						
+					}
+					else
+					{
+						displayError("a Unexpected Error ", 
 								aThrowable.toString() + " - " + a_URL);
+					}
 		    	}}
 			));
 		      
@@ -356,8 +393,10 @@ public class G3Viewer {
 
 	 SimplePanel sp = new SimplePanelEx();
      sp.add(m_SplitPanel);
-    
-    RootPanel.get("main").add(sp);
+     
+     m_InfoBar.initializeForm();
+     RootPanel.get("main").add(sp);
+     RootPanel.get("main").add(m_InfoBar);
   }
   
 }

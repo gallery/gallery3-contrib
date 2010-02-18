@@ -34,7 +34,7 @@ class Json_Album_Controller extends Controller {
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
 
-    $children = $item->children(null, 0, $where);
+    $children = $item->children(null, null, $where);
     $encoded = array();
     foreach ($children as $id => $child){
       $encoded[$id] = self::child_json_encode($child);
@@ -44,7 +44,7 @@ class Json_Album_Controller extends Controller {
   }
 
   function is_admin() {
-    if (user::active()->admin) {
+    if (identity::active_user()->admin) {
       print json_encode(array("result" => "success", "csrf" => access::csrf_token()));
       return;
     }
@@ -53,8 +53,7 @@ class Json_Album_Controller extends Controller {
   }
 
   function albums($item_id) {
-
-    print $this->child_elements($item_id,array("type" => "album"));
+    print $this->child_elements($item_id, array(array("type", "=", "album")));
   }
 
   function children($item_id){
@@ -128,7 +127,6 @@ class Json_Album_Controller extends Controller {
       ->where("weight", ">=", $target_weight)
       ->where("parent_id", "=", $album->id)
       ->execute();
-
     // Insert source items into the hole
     foreach ($source_ids as $source_id) {
       db::build()
@@ -188,11 +186,23 @@ class Json_Album_Controller extends Controller {
         $path_info = @pathinfo($temp_filename);
         if (array_key_exists("extension", $path_info) &&
             in_array(strtolower($path_info["extension"]), array("flv", "mp4"))) {
-          $item = movie::create($album, $temp_filename, $name, $title);
+          $item = ORM::factory("item");
+          $item->type = "movie";
+          $item->parent_id = $album->id;
+          $item->set_data_file($temp_filename);
+          $item->name = $name;
+          $item->title = $title;
+          $item->save();
           log::success("content", t("Added a movie"),
                        html::anchor("movies/$item->id", t("view movie")));
         } else {
-          $item = photo::create($album, $temp_filename, $name, $title);
+          $item = ORM::factory("item");
+          $item->type = "photo";
+          $item->parent_id = $album->id;
+          $item->set_data_file($temp_filename);
+          $item->name = $name;
+          $item->title = $title;
+          $item->save();
           log::success("content", t("Added a photo"),
                        html::anchor("photos/$item->id", t("view photo")));
         }
@@ -241,7 +251,7 @@ class Json_Album_Controller extends Controller {
     }
 
     if ($degrees) {
-      graphics::rotate($item->file_path(), $item->file_path(), array("degrees" => $degrees));
+      gallery_graphics::rotate($item->file_path(), $item->file_path(), array("degrees" => $degrees));
 
       list($item->width, $item->height) = getimagesize($item->file_path());
       $item->resize_dirty= 1;
@@ -262,5 +272,18 @@ class Json_Album_Controller extends Controller {
     print json_encode(self::child_json_encode($item));
   }
 
+  public function resize_config(){
+    if (upload_configuration::isResize())
+    {
+      print json_encode(array(
+        "resize" => true,
+        "max_width" => upload_configuration::getMaxWidth(),
+        "max_height" => upload_configuration::getMaxHeight()));
+    }
+    else
+    {
+      print json_encode(array("resize" => false));
+    }
+  }
 
 }
