@@ -1,7 +1,7 @@
 <?
 include("Gallery3.php");
 
-$SITE_URL = "http://example.com/gallery3";
+$SITE_URL = "http://example.com/gallery3/index.php/rest";
 $USER     = "admin";
 $PASSWORD = "admin";
 
@@ -13,7 +13,6 @@ alert("Connect to $SITE_URL");
 $auth = Gallery3::login($SITE_URL, $USER, $PASSWORD);
 $root = Gallery3::factory("$SITE_URL/item/1", $auth);
 $tags = Gallery3::factory("$SITE_URL/tags", $auth);
-
 
 $tag = Gallery3::factory()
   ->set("name", "My Tag")

@@ -50,7 +50,7 @@ class BatchTag_Controller extends Controller {
         // Assuming the user can view/edit the current item, loop
         //   through each tag that was submitted and apply it to
         //   the current item.
-        foreach (split(",", $input->post("name")) as $tag_name) {
+        foreach (explode(",", $input->post("name")) as $tag_name) {
           $tag_name = trim($tag_name);
           if ($tag_name) {
             tag::add($child, $tag_name);
