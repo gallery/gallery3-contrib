@@ -178,13 +178,16 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   public function groups() {
     $groups = array();
     foreach (self::$_params["groups"] as $group_name) {
-      $root = item::root();
       $groups[] = $this->lookup_group_by_name($group_name);
     }
     return $groups;
   }
 
   static function groups_for($user) {
+    if ($user->guest) {
+      return $user->groups;
+    }
+
     $result = ldap_search(self::$_connection, self::$_params["group_domain"],
                           "(memberUid=$user->name)");
 
