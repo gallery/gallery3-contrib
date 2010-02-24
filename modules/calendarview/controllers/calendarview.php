@@ -78,7 +78,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Set up the page.
-    $template = new Theme_View("page.html", "collection", "CalendarDayView");
+    $template = new Theme_View("calpage.html", "collection", "CalendarDayView");
     $template->set_global("page", $page);
     $template->set_global("max_pages", $max_pages);
     $template->set_global("page_size", $page_size);
@@ -103,14 +103,14 @@ class CalendarView_Controller extends Controller {
                             ->order_by("captured", "ASC")
                             ->find_all($page_size, $offset));
     }
-/*
+
     // Set up breadcrumbs
-    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
-    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, $display_day, $display_year))), url::site("calendarview/month/" . $display_year . "/" . $display_user . "/" . $display_month));
-    $fake_item = new Calendar_Breadcrumb($display_day, "");
-    $template->set_global("item", $fake_item);
-    $template->set_global("parents", $calendar_breadcrumbs);
-*/
+	$calendar_breadcrumbs[0] = new Calendar_Breadcrumb(item::root()->title, item::root()->url());
+    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
+    $calendar_breadcrumbs[2] = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, $display_day, $display_year))), url::site("calendarview/month/" . $display_year . "/" . $display_user . "/" . $display_month));
+    $calendar_breadcrumbs[3] = new Calendar_Breadcrumb($display_day, "");
+	$template->set_global("breadcrumbs", $calendar_breadcrumbs);
+	
     // Finish setting up and then display the page.
     $template->set_global("children_count", $day_count);
     $template->content = new View("dynamic.html");
@@ -154,7 +154,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Set up the page.
-    $template = new Theme_View("page.html", "collection", "CalendarMonthView");
+    $template = new Theme_View("calpage.html", "collection", "CalendarMonthView");
     $template->set_global("page", $page);
     $template->set_global("max_pages", $max_pages);
     $template->set_global("page_size", $page_size);
@@ -179,13 +179,13 @@ class CalendarView_Controller extends Controller {
                             ->order_by("captured", "ASC")
                             ->find_all($page_size, $offset));
     }
-/*
-    // Set up breadcrumbs for this page.
-    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
-    $fake_item = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, 1, $display_year))), "");
-    $template->set_global("item", $fake_item);
-    $template->set_global("parents", $calendar_breadcrumbs);
-*/
+
+    // Set up breadcrumbs
+	$calendar_breadcrumbs[0] = new Calendar_Breadcrumb(item::root()->title, item::root()->url());
+    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
+    $calendar_breadcrumbs[2] = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, 1, $display_year))), "");
+	$template->set_global("breadcrumbs", $calendar_breadcrumbs);
+
     // Finish setting up and then display the page.
     $template->set_global("children_count", $day_count);
     $template->content = new View("dynamic.html");

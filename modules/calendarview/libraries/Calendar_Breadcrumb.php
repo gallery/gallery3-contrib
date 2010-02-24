@@ -21,27 +21,11 @@ class Calendar_Breadcrumb_Core {
   // Creates a class to maintain a single breadcrumb.
   //   Multiple breadcrumbs can be achieved by createing an array of this class type.
   public $title = "";
-  public $id = 0;
+  public $id = 1;
   public $url = "";
 
   public function __construct($new_title, $new_url) {
     $this->title = $new_title;
     $this->url = $new_url;
-  }
-
-  public function url($query=null) {
-    return $this->url;
-  }
-
-  public function parent() {
-    return null;
-  }
-
-  public function is_album() {
-    return false;
-  }
-
-  public function is_photo() {
-    return false;
   }
 }
