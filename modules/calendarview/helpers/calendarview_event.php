@@ -41,4 +41,12 @@ class calendarview_event_Core {
          ->url(url::site("calendarview/calendar/"))
          ->css_id("g-calendarview-link"));
   }
+
+  static function tag_menu($menu, $theme) {
+    $menu->append(Menu::factory("link")
+         ->id("calendarview")
+         ->label(t("View Calendar"))
+         ->url(url::site("calendarview/calendar/"))
+         ->css_id("g-calendarview-link"));
+  }
 }
