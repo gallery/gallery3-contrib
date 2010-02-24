@@ -10,7 +10,7 @@
   while ($counter_months <12) {
     print "<td>";
 	
-	$month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
+    $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
     $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
 
     // Figure out if any photos were taken for the current month.
@@ -57,14 +57,7 @@
             ->count();
         }
         if ($day_count > 0) {
-		  $calendar->event($curr_day, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day));
-		/*
-          $calendar -> attach($calendar -> event()
-                                       -> condition('year', $calendar_year)
-                                       -> condition('month', $counter_months)
-                                       -> condition('day', $curr_day)
-                                       -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day), $day_count)));
-									   */
+          $calendar->event($curr_day, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day));
         }
         $curr_day++;
       }
@@ -90,13 +83,6 @@
       }
       if ($day_count > 0) {
         $calendar->event($MAX_DAYS, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS));
-	  /*
-        $calendar -> attach($calendar -> event()
-                                      -> condition('year', $calendar_year)
-                                      -> condition('month', $counter_months)
-                                      -> condition('day', $MAX_DAYS)
-                                      -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS), $day_count)));
-									  */
       }
     }
     echo $calendar->render();
@@ -152,14 +138,7 @@
           ->count();
       }
       if ($day_count > 0) {
-	  $calendar->event($curr_day, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day));
-	  /*
-        $calendar -> attach($calendar -> event()
-                                      -> condition('year', $calendar_year)
-                                      -> condition('month', $counter_months)
-                                      -> condition('day', $curr_day)
-                                       -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day), $day_count)));
-									   */
+        $calendar->event($curr_day, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day));
       }
       $curr_day++;
     }
@@ -182,14 +161,7 @@
         ->count();
     }
     if ($day_count > 0) {
-	  $calendar->event($MAX_DAYS, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS));
-	/*
-      $calendar -> attach($calendar -> event()
-                                    -> condition('year', $calendar_year)
-                                    -> condition('month', $counter_months)
-                                    -> condition('day', $MAX_DAYS)
-                                    -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS), $day_count)));
-*/
+      $calendar->event($MAX_DAYS, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS));
     }
   }
   $counter_months++;

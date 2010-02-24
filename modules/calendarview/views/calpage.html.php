@@ -96,9 +96,9 @@
           <?= $theme->header_bottom() ?>
         </div>
 
-		<? // The following code was modifed to allow module-defined breadcrumbs.
-		   // Everything else in this file is a copy of the default page.html.php file.
-		?>
+        <? // The following code was modifed to allow module-defined breadcrumbs.
+           // Everything else in this file is a copy of the default page.html.php file.
+        ?>
         <? if (!empty($breadcrumbs)): ?>
         <ul class="g-breadcrumbs">
           <? $i = 0 ?>
@@ -108,18 +108,18 @@
                  containing that photo.  For now, we just do it for
                  the immediate parent so that when you go back up a
                  level you're on the right page. -->
-			<? if ($breadcrumb->url) : ?>
+            <? if ($breadcrumb->url) : ?>
               <a href="<?= $breadcrumb->url ?>"><?= html::purify($breadcrumb->title) ?></a>
-			<? else : ?>
+            <? else : ?>
               <?= html::purify($breadcrumb->title) ?>
-			<? endif ?>
+            <? endif ?>
           </li>
           <? $i++ ?>
           <? endforeach ?>
         </ul>
         <? endif ?>
-		<? // End modified code ?>
-		
+        <? // End modified code ?>
+
       </div>
       <div id="bd">
         <div id="yui-main">
