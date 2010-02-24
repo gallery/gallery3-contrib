@@ -19,7 +19,7 @@
  */
 class rwinfo_block_Core {
   static function get_site_list() {
-    return array("metadata" => t("Metadata"));
+    return array("metadata" => t("rWInfo"));
   }
 
   static function get($block_id, $theme) {
