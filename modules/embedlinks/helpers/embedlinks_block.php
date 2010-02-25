@@ -31,15 +31,11 @@ class embedlinks_block_Core {
 
     switch ($block_id) {
     case "embed_links_dialog":
-      // If displaying links in a dialog box is enabled then
-      //   insert buttons into the bottom of the side bar
-      //   to open up the dialog window.
-      if (module::get_var("embedlinks", "DialogLinks") && $theme->item()) {
-        $block = new Block();
-        $block->css_id = "g-embed-links-sidebar";
-        $block->title = t("Link To This Page");
-        $block->content = new View("embedlinks_sidebar.html");
-      }
+      // Display dialog buttons in the sidebar.
+      $block = new Block();
+      $block->css_id = "g-embed-links-sidebar";
+      $block->title = t("Link To This Page");
+      $block->content = new View("embedlinks_sidebar.html");
       break;
 
     case "embed_links_album":
