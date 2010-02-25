@@ -226,6 +226,11 @@ public class G3Viewer {
   private final PickupDragController m_DragController;
   
   /**
+   * the upload control
+   */
+  private final UploadControl m_UploadControl;
+  
+  /**
    * constructor
    */
   
@@ -234,14 +239,19 @@ public class G3Viewer {
 	  m_DragController.setBehaviorMultipleSelection(true);
 	  m_DragController.setBehaviorDragStartSensitivity(5);
 	  m_DragController.setBehaviorDragProxy(true);
-	  
-	  m_InfoBar = new InformationBar(this);
+	  m_UploadControl = new UploadControl(this); 
+	  m_InfoBar = new InformationBar(this, m_UploadControl);
 	  m_Tree  = new AlbumTree(this);
 	  
 
 	  checkAdmin();
   }
 
+  public UploadControl getUploadControl()
+  {
+	  return m_UploadControl;
+  }
+  
   public static String getCSRF()
   {
 	  return m_CSRF;
@@ -309,14 +319,9 @@ public class G3Viewer {
 	  return m_View;
   }
   
-  public void addUpload(UploadFile a_UF){
-	  m_InfoBar.addUpload(a_UF);
+  public void updateInformation(){
+	  m_InfoBar.updateInformation();
   }
-  
-  public void removeUpload(UploadFile a_UF){
-	  m_InfoBar.removeUpload(a_UF);
-  }
-  
   
   public void doDialog(String a_Url, HttpDialogHandler a_Handler)
   {

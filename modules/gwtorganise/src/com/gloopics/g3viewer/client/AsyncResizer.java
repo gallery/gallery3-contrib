@@ -42,6 +42,7 @@ public class AsyncResizer implements RunAsyncCallback{
 				m_UploadFile.uploadBlob(upThumb.encode());
 				return;
 			}
+			m_UploadFile.uploadBlob(m_Blob);
 		}
 		else
 		{
@@ -50,6 +51,7 @@ public class AsyncResizer implements RunAsyncCallback{
 				m_UploadFile.uploadBlob(upThumb.encode());
 				return;
 			}
+			m_UploadFile.uploadBlob(m_Blob);
 		}
 	}
 }

@@ -147,6 +147,7 @@ class Json_Album_Controller extends Controller {
   }
 
   public function add_photo($id) {
+
     access::verify_csrf();
     $album = ORM::factory("item", $id);
     access::required("view", $album);
@@ -180,28 +181,32 @@ class Json_Album_Controller extends Controller {
 
       fclose($file);
 
+        $item = ORM::factory("item");
+        $item->name = basename($temp_filename);  // Skip unique identifier Kohana adds
+        $item->title = item::convert_filename_to_title($item->name);
+        $item->parent_id = $album->id;
+        $item->set_data_file($temp_filename);
 
-
-        $title = item::convert_filename_to_title($name);
         $path_info = @pathinfo($temp_filename);
         if (array_key_exists("extension", $path_info) &&
             in_array(strtolower($path_info["extension"]), array("flv", "mp4"))) {
-          $item = movie::create($album, $temp_filename, $name, $title);
+          $item->type = "movie";
+          $item->save();
           log::success("content", t("Added a movie"),
                        html::anchor("movies/$item->id", t("view movie")));
         } else {
-          $item = photo::create($album, $temp_filename, $name, $title);
+          $item->type = "photo";
+          $item->save();
           log::success("content", t("Added a photo"),
                        html::anchor("photos/$item->id", t("view photo")));
         }
-      } catch (Exception $e) {
+
+    } catch (Exception $e) {
         Kohana::log("alert", $e->__toString());
         if (file_exists($temp_filename)) {
           unlink($temp_filename);
         }
-        header("HTTP/1.1 500 Internal Server Error");
-        print "ERROR: " . $e->getMessage();
-        return;
+        throw new Kohana_Exception('Problem creating file.'. $e->__toString());
       }
       unlink($temp_filename);
 
