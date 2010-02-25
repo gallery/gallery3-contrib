@@ -25,24 +25,27 @@ class latestupdates_block_Core {
   static function get($block_id, $theme) {
     $block = "";
 
-    if (!$theme->item()) {
-      return;
-    }
 
     switch ($block_id) {
     case "latestupdates":
-      // Determine the ID# of the current album.
-      $albumID = $theme->item->is_album() ? $theme->item->id : $theme->item->parent_id;
 
       // Make a new sidebar block.
       $block = new Block();
       $block->css_id = "g-latest-updates";
       $block->title = t("Latest Updates");
       $block->content = new View("latestupdates_block.html");
-      $block->content->update_links = array(
-        "Entire Gallery" => url::site("latestupdates/updates"),
-        "This Album" => url::site("latestupdates/albums/$albumID")
-      );
+
+      if (!$theme->item()) {
+        $block->content->update_links = array(
+          "Entire Gallery" => url::site("latestupdates/updates"));
+      } else {
+        // Determine the ID# of the current album.
+        $albumID = $theme->item->is_album() ? $theme->item->id : $theme->item->parent_id;
+        $block->content->update_links = array(
+          "Entire Gallery" => url::site("latestupdates/updates"),
+          "This Album" => url::site("latestupdates/albums/$albumID")
+        );
+      }
       break;
     }
     return $block;
