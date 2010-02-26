@@ -39,7 +39,9 @@ class latestupdates_Controller extends Controller {
     //	for page numbering purposes.
     $count = $item
       ->viewable()
-      ->descendants_count(null, null, array(array("type", "!=", "album")));
+      ->where("type", "!=", "album")
+      ->order_by("created", "DESC")
+      ->descendants_count();
 
     // Figure out what the highest page number is.
     $max_pages = ceil($count / $page_size);
