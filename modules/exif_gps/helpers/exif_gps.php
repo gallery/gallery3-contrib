@@ -51,6 +51,12 @@ class exif_gps_Core {
       $record->item_id = $item->id;
       $record->latitude = $keys["Latitude"];
       $record->longitude = $keys["Longitude"];
+      if ($keys["Latitude Reference"] == "S") {
+        $record->latitude = "-" . $record->latitude;
+      }
+      if ($keys["Longitude Reference"] == "W") {
+        $record->longitude = "-" . $record->longitude;
+      }
       $record->save();
     }
   }
@@ -58,6 +64,8 @@ class exif_gps_Core {
   private static function _keys() {
     if (!isset(self::$exif_keys)) {
       self::$exif_keys = array(
+        "Latitude Reference"     => array("GPS",    "Latitude Reference",       t("GPS: Latitude Reference"), ),
+        "Longitude Reference"    => array("GPS",    "Longitude Reference",      t("GPS: Longitude Reference"),),
         "Latitude"        => array("GPS",    "Latitude",          t("GPS: Latitude"),    ),
         "Longitude"       => array("GPS",    "Longitude",         t("GPS: Longitude"),   )
       );
