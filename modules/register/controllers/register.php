@@ -61,7 +61,7 @@ class register_Controller extends Controller {
     } else {
       print json_encode(
         array("result" => "error",
-              "form" => $form->__toString()));
+              "form" => (string) $form));
     }
   }
 
