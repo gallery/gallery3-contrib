@@ -49,4 +49,25 @@ class calendarview_event_Core {
          ->url(url::site("calendarview/calendar/"))
          ->css_id("g-calendarview-link"));
   }
+
+  static function pre_deactivate($data) {
+    // If the admin is about to deactivate EXIF, warn them that this module requires it.
+    if ($data->module == "exif") {
+      $data->messages["warn"][] = t("The CalendarView module requires the EXIF module.");
+    }
+  }
+
+  static function module_change($changes) {
+    // If EXIF is deactivated, display a warning that it is required for this module to function properly.
+    if (!module::is_active("exif") || in_array("exif", $changes->deactivate)) {
+      site_status::warning(
+        t("The CalendarView module requires the EXIF module.  " .
+          "<a href=\"%url\">Activate the EXIF module now</a>",
+          array("url" => html::mark_clean(url::site("admin/modules")))),
+        "calendarview_needs_exif");
+    } else {
+      site_status::clear("calendarview_needs_exif");
+    }
+  }
+
 }
