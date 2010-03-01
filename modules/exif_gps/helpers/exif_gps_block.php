@@ -25,6 +25,11 @@ class exif_gps_block_Core {
   static function get($block_id, $theme) {
     $block = "";
 
+    // Make sure the current page belongs to an item.
+    if (!$theme->item()) {
+      return;
+    }
+
     switch ($block_id) {
     case "exif_gps_map":
       $record = ORM::factory("exif_coordinate")->where("item_id", "=", $theme->item->id)->find();
@@ -33,8 +38,27 @@ class exif_gps_block_Core {
         $block->css_id = "g-exif-gps-sidebar";
         $block->title = t("Location");
         $block->content = new View("exif_gps_sidebar.html");
-		$block->content->latitude = $record->latitude;
-		$block->content->longitude = $record->longitude;
+        $block->content->latitude = $record->latitude;
+        $block->content->longitude = $record->longitude;
+      } elseif (module::is_active("tagsmap") && module::is_active("tag")) {
+        $tagsItem = ORM::factory("tag")
+          ->join("items_tags", "tags.id", "items_tags.tag_id")
+          ->where("items_tags.item_id", "=", $theme->item->id)
+          ->find_all();
+        if (count($tagsItem) > 0) {
+          foreach ($tagsItem as $oneTag) {
+            $tagsGPS = ORM::factory("tags_gps")->where("tag_id", "=", $oneTag->id)->find();
+            if ($tagsGPS->loaded()) {
+              $block = new Block();
+              $block->css_id = "g-exif-gps-sidebar";
+              $block->title = t("Location");
+              $block->content = new View("exif_gps_sidebar.html");
+              $block->content->latitude = $tagsGPS->latitude;
+              $block->content->longitude = $tagsGPS->longitude;
+			  break;
+            }
+          }
+        }
       }
       break;
     }
