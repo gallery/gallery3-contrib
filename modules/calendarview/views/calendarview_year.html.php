@@ -1,15 +1,13 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 
 <h1 align="center"><?=t($calendar_year) ?></h1>
-<?= $calendar_user_year_form ?>
+<?= $calendar_user_year_form ?><br /><br />
 
 <?
-  print "<table><tr>";
   $counter_months = 1;
   // Loop through January to November in the current year.
   while ($counter_months <12) {
-    print "<td>";
-	
+    print "<div id=\"g-calendar-grid\">";
     $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
     $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
 
@@ -86,15 +84,12 @@
       }
     }
     echo $calendar->render();
-    print "</td>";
-    if (($counter_months == 3) || ($counter_months == 6) || ($counter_months == 9)) {
-      print "</tr><tr>";
-    }
+    print "</div>";
     $counter_months++;
   }
 
   // Do December seperately, because the mktime code is different.
-  print "<td>";
+  print "<div id=\"g-calendar-grid\">";
   $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
   $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
   if ($calendar_user == "-1") {
@@ -166,5 +161,5 @@
   }
   $counter_months++;
   echo $calendar->render();
-  print "</td></tr></table>";
+  print "</div>";
 ?>

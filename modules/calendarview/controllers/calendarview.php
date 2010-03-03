@@ -195,7 +195,7 @@ class CalendarView_Controller extends Controller {
 
   private function _get_calenderprefs_form($display_year, $display_user) {
     // Generate a form to allow the visitor to select a year and a gallery photo owner.
-    $form = new Forge("calendarview/setprefs", "", "post",
+    $calendar_group = new Forge("calendarview/setprefs", "", "post",
                       array("id" => "g-view-calendar-form"));
 
     // Generate a list of all Gallery users who have uploaded photos.
@@ -231,21 +231,22 @@ class CalendarView_Controller extends Controller {
     }
 
     // Create the form.
-    $calendar_group = $form->group("CalendarPrefs");
     $calendar_group->dropdown('cal_user')
                    ->label(t("Display Photos From User: "))
+                   ->id('cal_user')
                    ->options($valid_users)
                    ->selected($display_user);
     $calendar_group->dropdown('cal_year')
                    ->label(t("For Year: "))
+                   ->id('cal_year')
                    ->options($valid_years)
                    ->selected($display_year);
 
     // Add a save button to the form.
-    $calendar_group->submit("SaveSettings")->value(t("Go"));
+    $calendar_group->submit("SaveSettings")->value(t("Go"))->id('cal_go');
 
     // Return the newly generated form.
-    return $form;
+    return $calendar_group;
   }
 
   public function setprefs() {

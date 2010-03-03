@@ -6,8 +6,8 @@ class PHPCalendar_Core {
   protected $year;
   protected $month_url;
 
-  // First Day of the Week (0 = Sunday, 1 = Monday, etc.).
-  protected $week_start = 1;
+  // First Day of the Week (0 = Sunday or 1 = Monday).
+  protected $week_start = 0;
 
   // Events for the current month.
   protected $event_data = Array();
@@ -44,25 +44,24 @@ class PHPCalendar_Core {
     # for instance, mktime(0,0,0,12,32,1997) will be the date for Jan 1, 1998
     # this provides a built in "rounding" feature to generate_calendar()
 
-    $day_names = array(); #generate all the day names according to the current locale
-    for($n=0,$t=(3+$first_day)*86400; $n<7; $n++,$t+=86400) #January 4, 1970 was a Sunday
-      $day_names[$n] = ucfirst(gmstrftime('%A',$t)); #%A means full textual day name
+    if ($first_day == 0) $day_names = array("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"); 
+    if ($first_day == 1) $day_names = array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"); 
 
     list($month, $year, $month_name, $weekday) = explode(',',gmstrftime('%m,%Y,%B,%w',$first_of_month));
     $weekday = ($weekday + 7 - $first_day) % 7; #adjust for $first_day
-    $title   = t(htmlentities(ucfirst($month_name))).'&nbsp;'.$year;  #note that some locales don't capitalize month and day names
+    $title   = t(date("F", mktime(0, 0, 0, $month, 1, $year))) . '&nbsp;' . $year;
 
     #Begin calendar. Uses a real <caption>. See http://diveintomark.org/archives/2002/07/03
     @list($p, $pl) = each($pn); @list($n, $nl) = each($pn); #previous and next links, if applicable
     if($p) $p = '<span class="calendar-prev">'.($pl ? '<a href="'.htmlspecialchars($pl).'">'.$p.'</a>' : $p).'</span>&nbsp;';
     if($n) $n = '&nbsp;<span class="calendar-next">'.($nl ? '<a href="'.htmlspecialchars($nl).'">'.$n.'</a>' : $n).'</span>';
-    $calendar = '<table class="calendar">'."\n".
-      '<td class="title" colspan="7" align="center">'.$p.($month_href ? '<a href="'.htmlspecialchars($month_href).'">'.$title.'</a>' : $title).$n."</td></tr>\n<tr>";
+    $calendar = '<table class="calendar" id="g-calendar-month">'."\n".
+      '<td class="title" colspan="7" align="center">'.$p.($month_href ? '<a href="'. ($month_href) .'">'.$title.'</a>' : $title).$n."</td></tr>\n<tr>";
 
     if($day_name_length){ #if the day names should be shown ($day_name_length > 0)
       #if day_name_length is >3, the full name of the day will be printed
       foreach($day_names as $d)
-        $calendar .= '<th abbr="'.htmlentities($d).'">'.t(htmlentities($day_name_length < 4 ? substr($d,0,$day_name_length) : $d)).'</th>';
+        $calendar .= '<th abbr="' . $d .'">'.t($day_name_length < 4 ? substr($d,0,$day_name_length) : $d) . '</th>';
       $calendar .= "</tr>\n<tr>";
     }
 
