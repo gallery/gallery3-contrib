@@ -8,8 +8,6 @@
   // Loop through January to November in the current year.
   while ($counter_months <12) {
     print "<div id=\"g-calendar-grid\">";
-    $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
-    $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
 
     // Figure out if any photos were taken for the current month.
     if ($calendar_user == "-1") {
@@ -30,6 +28,12 @@
         ->find_all()
         ->count();
     }
+    if ($month_count > 0) {
+      $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
+    } else {
+      $month_url = "";
+    }
+    $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
 
     // If there are photos, loop through each day in the month and display links on the correct dates.
     if ($month_count > 0) {
@@ -90,8 +94,6 @@
 
   // Do December seperately, because the mktime code is different.
   print "<div id=\"g-calendar-grid\">";
-  $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
-  $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
   if ($calendar_user == "-1") {
     $month_count = ORM::factory("item")
       ->viewable()
@@ -110,6 +112,12 @@
       ->find_all()
       ->count();
   }
+  if ($month_count > 0) {
+    $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
+  } else {
+    $month_url = "";
+  }
+  $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
   if ($month_count > 0) {
     $curr_day = 1;
     $MAX_DAYS = date('t', mktime(00, 00, 00, $counter_months, 1, $calendar_year));
