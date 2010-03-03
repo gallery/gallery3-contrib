@@ -29,4 +29,8 @@ class sso_event {
       }
     }
   }
+
+  static function user_menu($menu, $theme) {
+    $menu->remove("user_menu_logout");
+  }
 }
