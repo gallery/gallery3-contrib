@@ -31,7 +31,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Draw the page.
-    $template = new Theme_View("page.html", "other", "CalendarView");
+    $template = new Theme_View("calpage.html", "other", "CalendarView");
     $template->css("calendarview_calendar.css");
     $template->set_global("calendar_user", $display_user);
     $template->page_title = t("Gallery :: Calendar");
@@ -39,6 +39,11 @@ class CalendarView_Controller extends Controller {
     $template->content->calendar_year = $display_year;
     $template->content->calendar_user = $display_user;
     $template->content->calendar_user_year_form = $this->_get_calenderprefs_form($display_year, $display_user);
+    $template->content->title = t("Calendar") . ": " . $display_year;
+    // Set up breadcrumbs
+	$calendar_breadcrumbs[0] = new Calendar_Breadcrumb(item::root()->title, item::root()->url());
+    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb($display_year, "");
+    $template->set_global("breadcrumbs", $calendar_breadcrumbs);
     print $template;
   }
 

@@ -1,6 +1,11 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<div id="g-album-header">
+  <div id="g-album-header-buttons">
+    <?= $theme->dynamic_top() ?>
+  </div>
+  <h1><?= html::clean($title) ?></h1>
+</div>
 
-<h1 align="center"><?=t($calendar_year) ?></h1>
 <?= $calendar_user_year_form ?><br /><br />
 
 <?
