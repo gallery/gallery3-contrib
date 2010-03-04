@@ -6,7 +6,7 @@
   <h1><?= html::clean($title) ?></h1>
 </div>
 
-<?= $calendar_user_year_form ?><br /><br />
+<br/><?= $calendar_user_year_form ?><br /><br />
 
 <?
   $counter_months = 1;

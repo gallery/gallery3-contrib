@@ -83,6 +83,5 @@ class PHPCalendar_Core {
 
     return $calendar."</tr>\n</table>\n";
   }
-
 }
 ?>

@@ -1,10 +1,4 @@
-table.calendar { text-align: center; width:100px; }
-table.calendar caption { font-size: 1.5em; padding: 0.2em; }
-table.calendar th, table.calendar td { padding: 0.2em; background: #fff; border: 0; }
-table.calendar td:hover { background: #ddf; }
-table.calendar td.prev-next { background: #ccc; color: #999; }
-table.calendar td.today { color: #800; }
-#cal_user, #cal_year, #cal_go { display: inline; }
+/* Grid view ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #g-calendar-grid {
   position: relative;
   align: center;
@@ -14,3 +8,44 @@ table.calendar td.today { color: #800; }
   margin: 10px 10px 10px 10px;
 }
 
+/* Search form ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+#cal_user {
+  top: 0px;
+  left: 60px;
+  display: inline;
+}
+#cal_year {
+  top: 0px;
+  left: 240px;
+  display: inline;
+}
+#cal_go {
+  top: 0px;
+  left: 328px;
+  display: inline;
+}
+
+/* Content ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+table.calendar {
+  text-align: center;
+}
+
+table.calendar caption {
+  font-size: 1.5em;
+  padding: 0.2em;
+}
+
+table.calendar th, table.calendar td {
+  padding: 0.2em;
+  background: #ffffff;
+  border: 0px;
+}
+
+table.calendar td:hover {
+  background: #ddf;
+}
+
+/* For RTL Languages ~~~~~~~~~~~~~~~~~~~~~~~ */
+.rtl #g-calendar-grid {
+  float: right;
+}

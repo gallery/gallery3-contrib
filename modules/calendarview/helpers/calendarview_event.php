@@ -69,5 +69,4 @@ class calendarview_event_Core {
       site_status::clear("calendarview_needs_exif");
     }
   }
-
 }
