@@ -51,6 +51,7 @@ class exif_gps_Core {
       $record->item_id = $item->id;
       $record->latitude = $keys["Latitude"];
       $record->longitude = $keys["Longitude"];
+      // Represent N/S/E/W as postive and negative numbers
       if ($keys["Latitude Reference"] == "S") {
         $record->latitude = "-" . $record->latitude;
       }
@@ -62,6 +63,7 @@ class exif_gps_Core {
   }
 
   private static function _keys() {
+    // EXIF fields to extract.
     if (!isset(self::$exif_keys)) {
       self::$exif_keys = array(
         "Latitude Reference"     => array("GPS",    "Latitude Reference",       t("GPS: Latitude Reference"), ),

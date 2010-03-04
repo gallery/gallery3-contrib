@@ -32,6 +32,7 @@ class exif_gps_block_Core {
 
     switch ($block_id) {
     case "exif_gps_map":
+      // Check and see if the item has exif coordinates associated with it.
       $record = ORM::factory("exif_coordinate")->where("item_id", "=", $theme->item->id)->find();
       if ($record->loaded()) {
         $block = new Block();
@@ -41,6 +42,7 @@ class exif_gps_block_Core {
         $block->content->latitude = $record->latitude;
         $block->content->longitude = $record->longitude;
       } elseif (module::is_active("tagsmap") && module::is_active("tag")) {
+        // If there are no exif coordinates, check for tagsmap coordinates instead.
         $tagsItem = ORM::factory("tag")
           ->join("items_tags", "tags.id", "items_tags.tag_id")
           ->where("items_tags.item_id", "=", $theme->item->id)
@@ -55,7 +57,7 @@ class exif_gps_block_Core {
               $block->content = new View("exif_gps_sidebar.html");
               $block->content->latitude = $tagsGPS->latitude;
               $block->content->longitude = $tagsGPS->longitude;
-			  break;
+              break;
             }
           }
         }

@@ -38,21 +38,25 @@ class exif_gps_task_Core {
   static function update_gps_index($task) {
     $start = microtime(true);
 
+    // Figure out the total number of photos in the database.
+    // If this is the first run, also set last_id and completed to 0.
     $total = $task->get("total");
     if (empty($total)) {
       $task->set("total", $total = count(ORM::factory("item")->where("type", "=", "photo")->find_all()));
       $task->set("last_id", 0);
       $task->set("completed", 0);
     }
-
     $last_id = $task->get("last_id");
     $completed = $task->get("completed");
 
+    // Generate an array of the next 100 photos to check.
     $all_photos = ORM::factory("item")
              ->where("id", ">", $last_id)
              ->where("type", "=", "photo")
              ->find_all(100);
 
+    // Check each photo in the array to see if it already has exif gps data associated with it.
+    //  If it doesn't, attempt to extract gps coordinates.
     foreach (ORM::factory("item")
              ->where("id", ">", $last_id)
              ->where("type", "=", "photo")
