@@ -26,7 +26,7 @@
     } else {
       $month_count = ORM::factory("item")
         ->viewable()
-        ->where("owner_id", $calendar_user)
+        ->where("owner_id", "=", $calendar_user)
         ->where("type", "!=", "album")
         ->where("captured", ">=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
         ->where("captured", "<", mktime(0, 0, 0, $counter_months+1, 1, $calendar_year))
@@ -56,7 +56,7 @@
         } else {
           $day_count = ORM::factory("item")
             ->viewable()
-            ->where("owner_id", $calendar_user)
+            ->where("owner_id", "=", $calendar_user)
             ->where("type", "!=", "album")
             ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
             ->where("captured", "<", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
