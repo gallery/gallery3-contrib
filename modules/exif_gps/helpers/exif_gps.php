@@ -49,8 +49,8 @@ class exif_gps_Core {
     if (isset($keys["Latitude"]) && isset($keys["Longitude"])) {
       $record = ORM::factory("exif_coordinate");
       $record->item_id = $item->id;
-      $record->latitude = $keys["Latitude"];
-      $record->longitude = $keys["Longitude"];
+      $record->latitude = str_replace(",", ".", $keys["Latitude"]);
+      $record->longitude = str_replace(",", ".", $keys["Longitude"]);
       // Represent N/S/E/W as postive and negative numbers
       if ($keys["Latitude Reference"] == "S") {
         $record->latitude = "-" . $record->latitude;
