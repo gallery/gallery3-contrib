@@ -1,0 +1,12 @@
+#g-selected-language-flag, #g-language-flag, #g-default-language-flag {
+  position: relative;
+  float: left;
+}
+
+#g-selected-language-flag {
+  border:1px solid #000000;
+}
+
+#g-default-language-flag {
+  border:1px solid #000fff;
+}
