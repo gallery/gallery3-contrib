@@ -44,13 +44,19 @@ public class UploadFile extends Composite{
 	
 	private final Album m_Parent;
 	
-	private final Blob m_Blob;
+	private Blob m_Blob;
 	
 	//private final Canvas m_UpThumb;
 	
 	private final Label m_Label = new Label("Pending..");
 	private final ProgressBar m_ProgressBar = new ProgressBar();
 	
+	//private final Image m_Image;
+	private final File m_File;
+	
+	private final SimplePanel m_ImageContainer;
+	
+	private final UploadControl m_UploadControl;
 
 	/**
 	 * Loads an image into this Canvas, replacing the Canvas' current dimensions
@@ -72,17 +78,19 @@ public class UploadFile extends Composite{
 		rs.remove(a_Url);
 	}-*/;
 	
-	public UploadFile(Album a_Parent, File a_File, ResizeOptions a_ResizeOptions){
+	public UploadFile(UploadControl a_UploadControl, Album a_Parent, File a_File, ResizeOptions a_ResizeOptions){
+		m_UploadControl = a_UploadControl;
+		m_File = a_File;
 		m_ResizeOptions = a_ResizeOptions;
 		m_Parent = a_Parent;
 		m_Name = a_File.getName();
-		m_Blob = a_File.getBlob();
-		captureBlob(RS, m_Blob , m_Name);
-			
-		Image img = new Image(m_Name);
+		
 		FlowPanel dp = new FlowPanel();
 		
-		dp.add(img);
+	
+		m_ImageContainer = new SimplePanel();
+		m_ImageContainer.setWidget(new Label(m_Name));
+		dp.add(m_ImageContainer);
 		
 		dp.add(m_ProgressBar);
 		dp.add(m_Label);
@@ -116,18 +124,25 @@ public class UploadFile extends Composite{
 				
 				if (request.getStatus() != 200)
 				{
-					G3Viewer.displayError("Upload Error", request.getResponseText() + request.getStatus() + request.getStatusText());
+					m_Label.setText("Upload Error");
+					addStyleName("upload-error");
 				}
 				removeCapture(RS, m_Name);
 				
-				try{
-					JSONValue jv = JSONParser.parse(request.getResponseText());
-					m_Parent.finishedUpload(UploadFile.this, jv);
-				} 
-				catch (Exception e){
-					G3Viewer.displayError("Exception on Upload", e.toString() + " " + request.getResponseText());
+				if (request.getStatus() == 200)
+				{
+					try{
+						JSONValue jv = JSONParser.parse(request.getResponseText());
+						m_UploadControl.finishedUpload(UploadFile.this);
+						m_Parent.replaceUpload(UploadFile.this, jv);
+						return;
+					} 
+					catch (Exception e){
+						G3Viewer.displayError("Exception on Upload", e.toString() + " " + request.getResponseText());
+					}
 				}
-				
+				m_Parent.removeUpload(UploadFile.this);
+				m_UploadControl.finishedUploadWithError(UploadFile.this);
 				
 			}
 		});
@@ -138,6 +153,22 @@ public class UploadFile extends Composite{
 	
 	public ResizeOptions getResizeOptions(){
 		return m_ResizeOptions;
+	}
+	
+	public void prepareUpload(){
+		GWT.runAsync(new AsyncRunner(new Runnable() {
+			
+			@Override
+			public void run() {
+				m_Blob = m_File.getBlob();
+				captureBlob(RS, m_Blob , m_Name);
+				Image img = new Image(m_Name);
+				
+				m_ImageContainer.setWidget(img);		
+				m_UploadControl.finishedPrepare(UploadFile.this);
+			}
+		}));
+		
 	}
 	
 	public void startUpload(){

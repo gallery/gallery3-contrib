@@ -29,5 +29,5 @@
       <when-property-is name="user.agent" value="ie8" />   
     </any>
   </replace-with>  
-
+  
 </module>
