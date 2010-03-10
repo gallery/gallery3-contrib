@@ -72,7 +72,7 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
                 ->value(module::get_var("exif_gps", "sidebar_zoom"))
                 ->rules("required");
     $gps_sidebar->dropdown("sidebar_mapformat")
-                ->label(t("Default Map Format"))
+                ->label(t("Map Interface"))
                 ->options(array(t("Static"), t("Interactive")))
                 ->selected(module::get_var("exif_gps", "sidebar_mapformat"));
     $gps_sidebar->dropdown("sidebar_maptype")

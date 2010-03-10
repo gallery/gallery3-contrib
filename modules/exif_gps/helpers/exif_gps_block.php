@@ -38,7 +38,19 @@ class exif_gps_block_Core {
         $block = new Block();
         $block->css_id = "g-exif-gps-sidebar";
         $block->title = t("Location");
-        $block->content = new View("exif_gps_sidebar.html");
+        if (module::get_var("exif_gps", "sidebar_mapformat") == 1) {
+          $block->content = new View("exif_gps_dynamic_sidebar.html");
+          if (module::get_var("exif_gps", "sidebar_maptype") == 0) $block->content->sidebar_map_type = "ROADMAP";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 1) $block->content->sidebar_map_type = "SATELLITE";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 2) $block->content->sidebar_map_type = "HYBRID";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 3) $block->content->sidebar_map_type = "TERRAIN";
+        } else {
+          $block->content = new View("exif_gps_static_sidebar.html");
+          if (module::get_var("exif_gps", "sidebar_maptype") == 0) $block->content->sidebar_map_type = "roadmap";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 1) $block->content->sidebar_map_type = "satellite";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 2) $block->content->sidebar_map_type = "hybrid";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 3) $block->content->sidebar_map_type = "terrain";
+        }
         $block->content->latitude = $record->latitude;
         $block->content->longitude = $record->longitude;
       } elseif (module::is_active("tagsmap") && module::is_active("tag")) {
