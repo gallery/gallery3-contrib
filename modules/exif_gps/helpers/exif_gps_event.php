@@ -87,4 +87,13 @@ class exif_gps_event_Core {
       $record->save();
     }
   }
+
+  static function admin_menu($menu, $theme) {
+    // Add a link to the EXIF_GPS admin page to the Settings menu.
+    $menu->get("settings_menu")
+      ->append(Menu::factory("link")
+               ->id("exif_gps")
+               ->label(t("EXIF_GPS Settings"))
+               ->url(url::site("admin/exif_gps")));
+  }
 }
