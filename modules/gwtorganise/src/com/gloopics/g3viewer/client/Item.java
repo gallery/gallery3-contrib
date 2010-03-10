@@ -181,7 +181,7 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 					public void success(JSONValue aValue) {
 						updateValues(aValue);
 					}
-				},false);
+				},false,true);
 		
 	}
 	
@@ -255,7 +255,7 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 					public void success(JSONValue aValue) {
 						// nothing to do
 					}
-				},false);
+				},false,true);
 				popupPanel.hide();
 			}
 		});
@@ -273,7 +273,7 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 						public void success(JSONValue aValue) {
 							updateImages(aValue);
 						}
-					},false);
+					},false,true);
 					popupPanel.hide();
 				}
 			});
@@ -289,7 +289,7 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 						public void success(JSONValue aValue) {
 							updateImages(aValue);
 						}
-					},false);
+					},false,true);
 					popupPanel.hide();
 				}
 			});
