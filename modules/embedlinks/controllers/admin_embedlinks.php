@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
     $BBCodeButton = false;
     $FullURLButton = false;
     $InPageLinks = false;
-    $DialogLinks = false;
     
     for ($i = 0; $i < count($linkOpts_array); $i++) {
       if ($linkOpts_array[$i] == "HTMLCode") {
@@ -56,9 +55,6 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
       if ($displayType_array[$i] == "InPageLinks") {
         $InPageLinks = true;
       }
-      if ($displayType_array[$i] == "DialogLinks") {
-        $DialogLinks = true;
-      }
     }
     
     // Save Settings.
@@ -66,7 +62,6 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
     module::set_var("embedlinks", "BBCode", $BBCodeButton);
     module::set_var("embedlinks", "FullURL", $FullURLButton);
     module::set_var("embedlinks", "InPageLinks", $InPageLinks);
-    module::set_var("embedlinks", "DialogLinks", $DialogLinks);
     message::success(t("Your Selection Has Been Saved."));
     
     // Load Admin page.
@@ -88,7 +83,6 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
 
     // Make an array for the different methods of displaying the links.
     $linkDisplays["InPageLinks"] = array(t("Show Links In The Actual Page"), module::get_var("embedlinks", "InPageLinks"));
-    $linkDisplays["DialogLinks"] = array(t("Show Links In a Seperate Dialog Box"), module::get_var("embedlinks", "DialogLinks"));
     
     // Setup a few checkboxes on the form.
     $add_links = $form->group("EmbedLinks");

@@ -6,3 +6,6 @@ Display tags when mousing over the thumbnails (if tags module is active).
 Display "Movie Info" on movies instead of "Photo Info" like the Gallery Info module does.
 Use long month instead of short month on the album display.
 Change Date/Time format to "F j, Y h:i:s a" for photos.
+
+Changed block name on sidebar to rWInfo, to make it stick out more (helpers\rwinfo_block.php -> return array("metadata" => t("rWInfo"));
+

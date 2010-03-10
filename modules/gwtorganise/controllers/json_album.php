@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,6 +147,7 @@ class Json_Album_Controller extends Controller {
   }
 
   public function add_photo($id) {
+
     access::verify_csrf();
     $album = ORM::factory("item", $id);
     access::required("view", $album);
@@ -180,40 +181,32 @@ class Json_Album_Controller extends Controller {
 
       fclose($file);
 
+        $item = ORM::factory("item");
+        $item->name = basename($temp_filename);  // Skip unique identifier Kohana adds
+        $item->title = item::convert_filename_to_title($item->name);
+        $item->parent_id = $album->id;
+        $item->set_data_file($temp_filename);
 
-
-        $title = item::convert_filename_to_title($name);
         $path_info = @pathinfo($temp_filename);
         if (array_key_exists("extension", $path_info) &&
             in_array(strtolower($path_info["extension"]), array("flv", "mp4"))) {
-          $item = ORM::factory("item");
           $item->type = "movie";
-          $item->parent_id = $album->id;
-          $item->set_data_file($temp_filename);
-          $item->name = $name;
-          $item->title = $title;
           $item->save();
           log::success("content", t("Added a movie"),
                        html::anchor("movies/$item->id", t("view movie")));
         } else {
-          $item = ORM::factory("item");
           $item->type = "photo";
-          $item->parent_id = $album->id;
-          $item->set_data_file($temp_filename);
-          $item->name = $name;
-          $item->title = $title;
           $item->save();
           log::success("content", t("Added a photo"),
                        html::anchor("photos/$item->id", t("view photo")));
         }
-      } catch (Exception $e) {
+
+    } catch (Exception $e) {
         Kohana::log("alert", $e->__toString());
         if (file_exists($temp_filename)) {
           unlink($temp_filename);
         }
-        header("HTTP/1.1 500 Internal Server Error");
-        print "ERROR: " . $e->getMessage();
-        return;
+        throw new Kohana_Exception('Problem creating file.'. $e->__toString());
       }
       unlink($temp_filename);
 

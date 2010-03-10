@@ -1,15 +1,18 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<div id="g-album-header">
+  <div id="g-album-header-buttons">
+    <?= $theme->dynamic_top() ?>
+  </div>
+  <h1><?= html::clean($title) ?></h1>
+</div>
 
-<h1 align="center"><?=t($calendar_year) ?></h1>
-<?= $calendar_user_year_form ?>
+<br/><?= $calendar_user_year_form ?><br /><br />
 
 <?
-  print "<table><tr>";
   $counter_months = 1;
-  // Loop through each month in the current year.
+  // Loop through January to November in the current year.
   while ($counter_months <12) {
-    print "<td>";
-    $calendar = new Calendar($counter_months, $calendar_year);
+    print "<div id=\"g-calendar-grid\">";
 
     // Figure out if any photos were taken for the current month.
     if ($calendar_user == "-1") {
@@ -23,13 +26,19 @@
     } else {
       $month_count = ORM::factory("item")
         ->viewable()
-        ->where("owner_id", $calendar_user)
+        ->where("owner_id", "=", $calendar_user)
         ->where("type", "!=", "album")
         ->where("captured", ">=", mktime(0, 0, 0, $counter_months, 1, $calendar_year))
         ->where("captured", "<", mktime(0, 0, 0, $counter_months+1, 1, $calendar_year))
         ->find_all()
         ->count();
     }
+    if ($month_count > 0) {
+      $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
+    } else {
+      $month_url = "";
+    }
+    $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
 
     // If there are photos, loop through each day in the month and display links on the correct dates.
     if ($month_count > 0) {
@@ -47,7 +56,7 @@
         } else {
           $day_count = ORM::factory("item")
             ->viewable()
-            ->where("owner_id", $calendar_user)
+            ->where("owner_id", "=", $calendar_user)
             ->where("type", "!=", "album")
             ->where("captured", ">=", mktime(0, 0, 0, $counter_months, $curr_day, $calendar_year))
             ->where("captured", "<", mktime(0, 0, 0, $counter_months, ($curr_day + 1), $calendar_year))
@@ -55,11 +64,7 @@
             ->count();
         }
         if ($day_count > 0) {
-          $calendar -> attach($calendar -> event()
-                                       -> condition('year', $calendar_year)
-                                       -> condition('month', $counter_months)
-                                       -> condition('day', $curr_day)
-                                       -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day), $day_count)));
+          $calendar->event($curr_day, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day));
         }
         $curr_day++;
       }
@@ -84,24 +89,16 @@
           ->count();
       }
       if ($day_count > 0) {
-        $calendar -> attach($calendar -> event()
-                                      -> condition('year', $calendar_year)
-                                      -> condition('month', $counter_months)
-                                      -> condition('day', $MAX_DAYS)
-                                      -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS), $day_count)));
+        $calendar->event($MAX_DAYS, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS));
       }
     }
     echo $calendar->render();
-    print "</td>";
-    if (($counter_months == 3) || ($counter_months == 6) || ($counter_months == 9)) {
-      print "</tr><tr>";
-    }
+    print "</div>";
     $counter_months++;
   }
 
   // Do December seperately, because the mktime code is different.
-  print "<td>";
-  $calendar = new Calendar($counter_months, $calendar_year);
+  print "<div id=\"g-calendar-grid\">";
   if ($calendar_user == "-1") {
     $month_count = ORM::factory("item")
       ->viewable()
@@ -120,6 +117,12 @@
       ->find_all()
       ->count();
   }
+  if ($month_count > 0) {
+    $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
+  } else {
+    $month_url = "";
+  }
+  $calendar = new PHPCalendar($counter_months, $calendar_year, $month_url);
   if ($month_count > 0) {
     $curr_day = 1;
     $MAX_DAYS = date('t', mktime(00, 00, 00, $counter_months, 1, $calendar_year));
@@ -143,11 +146,7 @@
           ->count();
       }
       if ($day_count > 0) {
-        $calendar -> attach($calendar -> event()
-                                      -> condition('year', $calendar_year)
-                                      -> condition('month', $counter_months)
-                                      -> condition('day', $curr_day)
-                                       -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day), $day_count)));
+        $calendar->event($curr_day, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $curr_day));
       }
       $curr_day++;
     }
@@ -170,15 +169,10 @@
         ->count();
     }
     if ($day_count > 0) {
-      $calendar -> attach($calendar -> event()
-                                    -> condition('year', $calendar_year)
-                                    -> condition('month', $counter_months)
-                                    -> condition('day', $MAX_DAYS)
-                                    -> output(html::anchor(url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS), $day_count)));
-
+      $calendar->event($MAX_DAYS, url::site("calendarview/day/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/" . $MAX_DAYS));
     }
   }
   $counter_months++;
   echo $calendar->render();
-  print "</td></tr></table>";
+  print "</div>";
 ?>

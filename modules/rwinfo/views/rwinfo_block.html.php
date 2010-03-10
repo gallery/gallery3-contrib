@@ -1,4 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<? date_default_timezone_set('America/New_York'); ?>
 <ul class="g-metadata">
   <? if ($item->owner): ?>
   <li>
@@ -20,7 +21,7 @@
   <? if ($item->captured): ?>
   <li>
     <strong class="caption"><?= t("Date:") ?></strong>
-    <?= date("F j, Y h:i:s a", $item->captured)?>
+    <?= date("F j, Y h:i:s a T", $item->captured)?>
   </li>
   <? endif ?>
 

@@ -54,14 +54,15 @@ public class Album extends TreeItem {
 
 	private final Map<Integer, Album> m_IDtoAlbum = new HashMap<Integer, Album>();
 	
-	private final LinkedList<UploadFile> m_UploadQueue = new LinkedList<UploadFile>();
-	
-	private boolean m_Running = false; 
+	private final Set<UploadFile> m_AllUploads = new HashSet<UploadFile>();
 	
 	private final AlbumTreeDropController m_DropController;
 	
+	private final UploadControl m_UploadControl;
+	
 	public Album(JSONObject jsonObject, G3Viewer a_Container)
 	{
+		m_UploadControl = a_Container.getUploadControl();
 		m_ID = Utils.extractId(jsonObject.get("id"));
 		m_Title = ((JSONString)jsonObject.get("title")).stringValue();
 		m_Sort = ((JSONString)jsonObject.get("sort")).stringValue();
@@ -75,6 +76,7 @@ public class Album extends TreeItem {
 
 	public Album(G3Viewer a_Container)
 	{
+		m_UploadControl = a_Container.getUploadControl();
 		m_ID = 1;
 		m_Title = "Root";
 		m_Container = a_Container;
@@ -109,7 +111,7 @@ public class Album extends TreeItem {
 					public void success(JSONValue aValue) {
 						updateValues(aValue);
 					}
-				},false);
+				},false,true);
 	}
 	
 	
@@ -281,7 +283,7 @@ public class Album extends TreeItem {
 						m_View.getCurrentAlbum().expand();
 						m_View.getCurrentAlbum().select();
 					}
-				},true);
+				},true,true);
 	}
 	
 	/**
@@ -300,7 +302,7 @@ public class Album extends TreeItem {
 					public void success(JSONValue aValue) {
 						m_View.getCurrentAlbum().select();
 					}
-				},true);
+				},true,true);
 	}
 	
 	
@@ -331,7 +333,7 @@ public class Album extends TreeItem {
 						public void success(JSONValue aValue) {
 							addAlbums(aValue);
 						}
-					},false);
+					},false,true);
 	}
 	
 	
@@ -344,7 +346,7 @@ public class Album extends TreeItem {
 					public void success(JSONValue aValue) {
 						viewAlbum(aValue);
 					}
-				},false);
+				},false,true);
 
 	}
 	
@@ -433,68 +435,53 @@ public class Album extends TreeItem {
 				ResizeOptions ro = new ResizeOptions(jso);
 		        UploadFile uf;
 		        for (File file : files){
-		      	  uf = new UploadFile(Album.this, file, ro);
+		      	  uf = m_UploadControl.createUploadFile(Album.this, file, ro);
+		      	  m_AllUploads.add(uf);
 		      	  m_View.addToView(uf);
-		      	  m_UploadQueue.addLast(uf);
-		      	  m_Container.addUpload(uf);
 		        }
-		        
-		        if (!m_Running){
-		        	m_Running = true;
-		        	next();
-		        }
+		        m_Container.updateInformation();
 				}
 			}
-		},false);
+		},false,true);
 		
 		
 	}
 	
-	public void addPendingDownloads()
+	public void removeUpload(UploadFile a_Uf)
 	{
-		for (UploadFile uf: m_UploadQueue)
-		{
-			m_View.addToView(uf);
-		}
+		m_AllUploads.remove(a_Uf);
 	}
-	
-	public void finishedUpload(UploadFile uf, JSONValue a_Return)
-	{
-		m_UploadQueue.remove(uf);
-		m_Container.removeUpload(uf);
-		next();
 
+	public void replaceUpload(UploadFile a_Uf, JSONValue a_Return)
+	{
+		m_AllUploads.remove(a_Uf);
+		
 		JSONObject jo = a_Return.isObject();
 
 		if (jo != null){
 			Item item = new Item(this,jo,m_Container);
 			m_IDtoItem.put(item.getID(), item);
 			m_Items.add(item);
-			
+		
 			if (m_View.getCurrentAlbum() == this){
-				m_View.replaceInView(uf, item);
+				m_View.replaceInView(a_Uf, item);
 			}
 		}
 		else
 		{
 			if (m_View.getCurrentAlbum() == this){
-				m_View.removeFromView(uf);
+				m_View.removeFromView(a_Uf);
 			}
 		}
-		
-		
 	}
 	
-	private void next()
+	public void addPendingDownloads()
 	{
-		if (m_UploadQueue.size() > 0)
+		for (UploadFile uf: m_AllUploads)
 		{
-			UploadFile uf = m_UploadQueue.getFirst();
-			uf.startUpload();
-		}
-		else
-		{
-			m_Running = false;
+			m_View.addToView(uf);
 		}
 	}
+	
+
 }
