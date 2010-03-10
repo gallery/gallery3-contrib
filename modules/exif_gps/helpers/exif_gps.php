@@ -52,10 +52,10 @@ class exif_gps_Core {
       $record->latitude = str_replace(",", ".", $keys["Latitude"]);
       $record->longitude = str_replace(",", ".", $keys["Longitude"]);
       // Represent N/S/E/W as postive and negative numbers
-      if ($keys["Latitude Reference"] == "S") {
+      if (substr(strtoupper($keys["Latitude Reference"]), 0, 1) == "S") {
         $record->latitude = "-" . $record->latitude;
       }
-      if ($keys["Longitude Reference"] == "W") {
+      if (substr(strtoupper($keys["Longitude Reference"]), 0, 1) == "W") {
         $record->longitude = "-" . $record->longitude;
       }
       $record->save();
