@@ -12,7 +12,7 @@
     var map = new google.maps.Map(document.getElementById("sidebar_map_canvas"), myOptions);
     var marker = new google.maps.Marker({
       position: latlng, 
-      map: map,
+      map: map
     });
   }
 
