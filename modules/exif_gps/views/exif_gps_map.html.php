@@ -10,7 +10,7 @@
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-    var glatlngbounds = new google.maps.LatLngBounds( );
+    var glatlngbounds = new google.maps.LatLngBounds( ); // This is so we can auto center the map.
     <? $counter = 1; ?>
     <? foreach ($items as $item) { ?>
       <? $item_coordinates = ORM::factory("exif_coordinate")->where("item_id", "=", $item->id)->find(); ?>

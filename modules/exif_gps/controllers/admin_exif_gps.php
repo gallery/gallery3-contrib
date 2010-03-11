@@ -33,9 +33,12 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
+    // Make sure the user filled out the form properly.
     $form = $this->_get_admin_form();
     if ($form->validate()) {
       Kohana_Log::add("error",print_r($form,1));
+
+      // Save settings to Gallery's database.
       module::set_var("exif_gps", "googlemap_api_key", $form->google_api_key->value);
       module::set_var("exif_gps", "sidebar_zoom", $form->Sidebar->sidebar_default_zoom->value);
       module::set_var("exif_gps", "sidebar_mapformat", $form->Sidebar->sidebar_mapformat->value);
@@ -64,7 +67,7 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
       ->value(module::get_var("exif_gps", "googlemap_api_key"))
       ->rules("required");
 
-	  // Create a group for sidebar settings
+    // Create a group for sidebar settings
     $gps_sidebar = $form->group("Sidebar")
                         ->label(t("Sidebar Settings"));
     $gps_sidebar->input("sidebar_default_zoom")
@@ -82,7 +85,7 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
                 ->selected(module::get_var("exif_gps", "sidebar_maptype"));
 
     // Add a save button to the form.
-    $form->submit("SaveLinks")->value(t("Save"));
+    $form->submit("SaveSettings")->value(t("Save"));
 
     // Return the newly generated form.
     return $form;
