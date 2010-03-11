@@ -19,4 +19,4 @@
   google.setOnLoadCallback(initialize);
 
 </script>
-  <div id="sidebar_map_canvas" style="width:205px; height:214px"></div>
+<div id="sidebar_map_canvas" style="width:205px; height:214px"></div>
