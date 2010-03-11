@@ -10,9 +10,11 @@
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    var glatlngbounds = new google.maps.LatLngBounds( );
     <? $counter = 1; ?>
-	<? foreach ($items as $item) { ?>
+    <? foreach ($items as $item) { ?>
       <? $item_coordinates = ORM::factory("exif_coordinate")->where("item_id", "=", $item->id)->find(); ?>
+      glatlngbounds.extend(new google.maps.LatLng(<?=$item_coordinates->latitude; ?>,<?=$item_coordinates->longitude; ?>));
       <? if (!isset($currLat)) { ?>
         <? $currLat = $item_coordinates->latitude; ?>
         <? $currLong = $item_coordinates->longitude; ?>
@@ -57,6 +59,7 @@
     google.maps.event.addListener(marker<?=$counter; ?>, 'click', function() {
       infowindow<?=$counter; ?>.open(map,marker<?=$counter; ?>);
     });
+    map.fitBounds(glatlngbounds);
   }
 
   google.setOnLoadCallback(initialize);
