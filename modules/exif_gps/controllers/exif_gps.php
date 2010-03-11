@@ -22,11 +22,12 @@ class EXIF_GPS_Controller extends Controller {
     // Map all items in the specified album.
 
     // Generate an array of all items in the current album that have exif gps 
-	//   coordinates and order by latitude (to group items w/ the same
-	//   coordinates together).
+    //   coordinates and order by latitude (to group items w/ the same
+    //   coordinates together).
     $items = ORM::factory("item")
              ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
              ->where("items.parent_id", "=", $album_id)
+             ->viewable()
              ->order_by("exif_coordinates.latitude", "ASC")
              ->find_all();
 
@@ -41,31 +42,5 @@ class EXIF_GPS_Controller extends Controller {
 
     // Display the page.
     print $template;
-
-/*
-print "<br/>\n";
-  print count($items);
-print "<br/>\n";
-print "<br/>\n";
-foreach ($items as $item) {
-  print $item->name . "\t";
-  $item_coordinates = ORM::factory("exif_coordinate")->where("item_id", "=", $item->id)->find();
-  print $item_coordinates->latitude . "\t" . $item_coordinates->longitude;
-  print "<br/>\n";
-}
-    $template = new Theme_View("page.html", "other", "TagsMap");
-    $template->page_title = t("Gallery :: Map");
-    $template->content = new View("tagsmap_googlemap.html");
-
-        // Load in module preferences.
-      $template->content->tags_gps = $tagsGPS;
-      $template->content->google_map_key = module::get_var("tagsmap", "googlemap_api_key");
-      $template->content->google_map_latitude = module::get_var("tagsmap", "googlemap_latitude");
-      $template->content->google_map_longitude = module::get_var("tagsmap", "googlemap_longitude");
-      $template->content->google_map_zoom = module::get_var("tagsmap", "googlemap_zoom");
-      $template->content->google_map_type = module::get_var("tagsmap", "googlemap_type");
-    
-      print $template;
-    */
   }
 }
