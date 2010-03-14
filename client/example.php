@@ -4,6 +4,7 @@ include("Gallery3.php");
 $SITE_URL = "http://example.com/gallery3/index.php/rest";
 $USER     = "admin";
 $PASSWORD = "admin";
+$IMAGE_FILES = array("/tmp/foo.jpg", "/tmp/bar.jpg");
 
 if (file_exists("local_config.php")) {
   include("local_config.php");
@@ -34,6 +35,29 @@ $album
   ->save();
 alert("New title: <b>{$album->data->entity->title}</b>");
 
+// Add some image files
+foreach ($IMAGE_FILES as $IMAGE_FILE) {
+  if (file_exists($IMAGE_FILE)) {
+    $photo = Gallery3::factory()
+      ->set("type", "photo")
+      ->set("name", "Sample Photo.jpg")
+      ->set("title", "Sample Photo")
+      ->set_file($IMAGE_FILE)
+      ->create($album->url, $auth);
+    alert("Uploaded photo: <b>{$photo->url}</b>");
+  }
+}
+
+// Reload the image files
+$album->load();
+alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
+
+// Update reorder the children
+$album->data->members = array_reverse($album->data->members);
+$album
+  ->set("sort_column", "weight")
+  ->set("sort_order", "ASC")
+  ->save();
 
 $photo = Gallery3::factory()
   ->set("type", "photo")
@@ -44,6 +68,13 @@ $photo = Gallery3::factory()
 alert("Uploaded photo: <b>{$photo->url}</b>");
 alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
 
+// Remove a child by removing it from the member list
+$album->data->members = array($album->data->members[0]);
+$album->save();
+
+// Reload the members
+$album->load();
+alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
 
 alert("Search for the photo");
 $photos = Gallery3::factory($root->url, $auth)
@@ -87,7 +118,7 @@ $tag->delete();
 alert("Done!");
 
 function alert($msg) {
-  print "$msg <br/>";
+  print "$msg \n";
   flush();
 }
 ?>
