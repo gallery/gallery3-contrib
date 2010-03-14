@@ -113,9 +113,13 @@ class Gallery3 {
    * @return object  Gallery3
    */
   public function save() {
-    $response = Gallery3_Helper::request(
-      "put", $this->url, $this->token,
-      array_diff($this->original_entity, (array)$this->data->entity));
+    $params = array_diff((array)$this->data->entity, $this->original_entity);
+    $members_changed = array_diff_assoc($this->data->members, $this->original_members);
+    if (!empty($members_changed) || count($this->data->members) != count($this->original_members)) {
+      $params = array_merge($params, array("children" => $this->data->members));
+    }
+
+    $response = Gallery3_Helper::request("put", $this->url, $this->token, $params);
     return $this->load();
   }
 
@@ -141,6 +145,7 @@ class Gallery3 {
     $response = Gallery3_Helper::request("get", $this->url, $this->token);
     $this->data = $response;
     $this->original_entity = (array)$response->entity;
+    $this->original_members = (array)$response->members;
     return $this;
   }
 }
@@ -154,7 +159,14 @@ class Gallery3_Helper {
       $req->addHeader("X-Gallery-Request-Key", $token);
     }
     foreach ($params as $key => $value) {
-      $req->addPostData($key, $value);
+      if (is_array($value)) {
+        // @todo figure out how to send an empty array indicator via the post data
+        foreach ($value as $index => $element) {
+          $req->addPostData("{$key}[$index]", $element);
+        }
+      } else {
+        $req->addPostData($key, $value);
+      }
     }
     if ($file) {
       $req->addFile("file", $file, mime_content_type($file));
