@@ -56,14 +56,15 @@ class exif_gps_event_Core {
   static function item_edit_form($item, $form) {
     // Allow users to set / edit the GPS coordinates associated with the current item.
     $record = ORM::factory("exif_coordinate")->where("item_id", "=", $item->id)->find();
+    $gpsdata = $form->edit_item->group("gps_data")->label("GPS Data");
     if ($record->loaded()) {
-      $form->edit_item->input("latitude")->label(t("Latitude"))
+      $gpsdata->input("latitude")->label(t("Latitude"))
            ->value($record->latitude);
-      $form->edit_item->input("longitude")->label(t("Longitude"))
+      $gpsdata->input("longitude")->label(t("Longitude"))
            ->value($record->longitude);
     } else {
-      $form->edit_item->input("latitude")->label(t("Latitude"));
-      $form->edit_item->input("longitude")->label(t("Longitude"));
+      $gpsdata->input("latitude")->label(t("Latitude"));
+      $gpsdata->input("longitude")->label(t("Longitude"));
     }
   }
 
@@ -82,8 +83,8 @@ class exif_gps_event_Core {
       if (!$record->loaded()) {
         $record->item_id = $item->id;
       }
-      $record->latitude = $form->edit_item->latitude->value;
-      $record->longitude = $form->edit_item->longitude->value;
+      $record->latitude = $form->edit_item->gps_data->latitude->value;
+      $record->longitude = $form->edit_item->gps_data->longitude->value;
       $record->save();
     }
   }
