@@ -18,23 +18,43 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class EXIF_GPS_Controller extends Controller {
-  public function map($album_id) {
+  public function map($map_type, $type_id) {
     // Map all items in the specified album.
 
-    // Generate an array of all items in the current album that have exif gps 
-    //   coordinates and order by latitude (to group items w/ the same
-    //   coordinates together).
-    $items = ORM::factory("item")
-             ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
-             ->where("items.parent_id", "=", $album_id)
-             ->viewable()
-             ->order_by("exif_coordinates.latitude", "ASC")
-             ->find_all();
-
+    $map_title = "";
+    if ($map_type == "album") {
+      // Generate an array of all items in the current album that have exif gps 
+      //   coordinates and order by latitude (to group items w/ the same
+      //   coordinates together).
+      $items = ORM::factory("item", $type_id)
+               ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+               ->viewable()
+               ->order_by("exif_coordinates.latitude", "ASC")
+               ->descendants();
+      $curr_album = ORM::factory("item")->where("id", "=", $type_id)->find_all();
+      $map_title = $curr_album[0]->name;
+    } elseif ($map_type == "user") {
+      // Generate an array of all items uploaded by the current user that 
+      //   have exif gps coordinates and order by latitude (to group items 
+      //   w/ the same coordinates together).
+      $items = ORM::factory("item")
+               ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+               ->where("items.owner_id", "=", $type_id)
+               ->viewable()
+               ->order_by("exif_coordinates.latitude", "ASC")
+               ->find_all();
+      $curr_user = ORM::factory("user")->where("id", "=", $type_id)->find_all();
+      $map_title = $curr_user[0]->full_name . "'s " . t("Photos");
+    }
     // Make a new page.
     $template = new Theme_View("page.html", "other", "TagsMap");
     $template->page_title = t("Gallery :: Map");
     $template->content = new View("exif_gps_map.html");
+    if ($map_title == "") {
+      $template->content->title = t("Map");
+    } else {
+      $template->content->title = t("Map of") . " " . $map_title;
+    }
 			 
     // Load in module preferences.
     $template->content->items = $items;
