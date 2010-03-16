@@ -65,4 +65,13 @@
   google.setOnLoadCallback(initialize);
 
 </script>
+
+<div id="g-exif-map-header">
+  <div id="g-exif-map-header-buttons">
+    <?= $theme->dynamic_top() ?>
+  </div>
+  <h1><?= html::clean($title) ?></h1>
+</div>
+<br />
 <div id="map_canvas" style="width:600px; height:480px;"></div>
+<?= $theme->dynamic_bottom() ?>
