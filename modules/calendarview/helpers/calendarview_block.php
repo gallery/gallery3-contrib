@@ -38,14 +38,32 @@ class calendarview_block_Core {
       $display_date = $item->created;
     }
 
+    // Make sure there are photo's to display.
+    $day_count = ORM::factory("item")
+                 ->viewable()
+                 ->where("type", "!=", "album")
+                 ->where("captured", ">=", mktime(0, 0, 0, date("n", $display_date), date("j", $display_date), date("Y", $display_date)))
+                 ->where("captured", "<", mktime(0, 0, 0, date("n", $display_date), date("j", $display_date)+1, date("Y", $display_date)))
+                 ->find_all()
+                 ->count();
+    $month_count = ORM::factory("item")
+                   ->viewable()
+                   ->where("type", "!=", "album")
+                   ->where("captured", ">=", mktime(0, 0, 0, date("n", $display_date), 1, date("Y", $display_date)))
+                   ->where("captured", "<", mktime(0, 0, 0, date("n", $display_date)+1, 1, date("Y", $display_date)))
+                   ->find_all()
+                   ->count();
+
     switch ($block_id) {
     case "calendarview_photo":
-      if ($display_date != "") {
+      if ( ($display_date != "") && (($day_count > 0) || ($month_count > 0)) ) {
         $block = new Block();
         $block->css_id = "g-calendarview-sidebar";
         $block->title = t("Calendar");
         $block->content = new View("calendarview_sidebar.html");
         $block->content->date = $display_date;
+        $block->content->day_count = $day_count;
+        $block->content->month_count = $month_count;
       }
       break;
     }
