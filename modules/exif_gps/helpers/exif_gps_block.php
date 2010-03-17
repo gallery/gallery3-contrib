@@ -19,14 +19,56 @@
  */
 class exif_gps_block_Core {
   static function get_site_list() {
-    return array("exif_gps_map" => t("EXIF GPS Map"));
+    return array("exif_gps_location" => t("EXIF GPS Location"),
+                 "exif_gps_maps" => t("EXIF GPS Maps"));
   }
 
   static function get($block_id, $theme) {
     $block = "";
 
     switch ($block_id) {
-    case "exif_gps_map":
+    case "exif_gps_maps":
+      // Display links to a map of the current album and
+      //  a map of the current user.
+      if ($theme->item()) {
+        $album_id = "";
+        $item = $theme->item;
+        if ($item->is_album()) {
+          $album_id = $item->id;
+        } else {
+          $album_id = $item->parent_id;
+        }
+        $curr_user = ORM::factory("user")->where("id", "=", $item->owner_id)->find_all();
+        $user_name = $curr_user[0]->full_name;
+
+        // Make sure there are actually map-able items to display.
+        $album_items_count = ORM::factory("item", $album_id)
+               ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+               ->viewable()
+               ->order_by("exif_coordinates.latitude", "ASC")
+               ->descendants_count();
+        $user_items_count = ORM::factory("item")
+               ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+               ->where("items.owner_id", "=", $item->owner_id)
+               ->viewable()
+               ->order_by("exif_coordinates.latitude", "ASC")
+               ->count_all();
+
+        if (($album_items_count > 0) || ($user_items_count > 0)) {
+          $block = new Block();
+          $block->css_id = "g-exif-gps-maps";
+          $block->title = t("Maps");
+          $block->content = new View("exif_gps_maps_sidebar.html");
+          $block->content->album_id = $album_id;
+          $block->content->user_id = $item->owner_id;
+          $block->content->user_name = $user_name;
+          $block->content->album_items = $album_items_count;
+          $block->content->user_items = $user_items_count;
+        }
+      }
+      break;
+
+    case "exif_gps_location":
 
       // Look for coordinates to display.
       $latitude = "";
@@ -66,7 +108,7 @@ class exif_gps_block_Core {
       // If coordinates were found, create the block.
       if ($latitude != "" && $longitude != "") {
         $block = new Block();
-        $block->css_id = "g-exif-gps-sidebar";
+        $block->css_id = "g-exif-gps-location";
         $block->title = t("Location");
         if (module::get_var("exif_gps", "sidebar_mapformat") == 1) {
           $block->content = new View("exif_gps_dynamic_sidebar.html");

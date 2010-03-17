@@ -46,6 +46,7 @@ class EXIF_GPS_Controller extends Controller {
       $curr_user = ORM::factory("user")->where("id", "=", $type_id)->find_all();
       $map_title = $curr_user[0]->full_name . "'s " . t("Photos");
     }
+
     // Make a new page.
     $template = new Theme_View("page.html", "other", "TagsMap");
     $template->page_title = t("Gallery :: Map");
@@ -55,7 +56,7 @@ class EXIF_GPS_Controller extends Controller {
     } else {
       $template->content->title = t("Map of") . " " . $map_title;
     }
-			 
+
     // Load in module preferences.
     $template->content->items = $items;
     $template->content->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
