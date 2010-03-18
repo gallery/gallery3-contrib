@@ -7,7 +7,7 @@
     var myOptions = {
       zoom: 1,
       center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+      mapTypeId: google.maps.MapTypeId.<?=$map_type; ?>
     };
     var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
     var glatlngbounds = new google.maps.LatLngBounds( ); // This is so we can auto center the map.
