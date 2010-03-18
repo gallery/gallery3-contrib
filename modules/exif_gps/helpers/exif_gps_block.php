@@ -69,7 +69,6 @@ class exif_gps_block_Core {
       break;
 
     case "exif_gps_location":
-
       // Look for coordinates to display.
       $latitude = "";
       $longitude = "";
