@@ -57,6 +57,14 @@ class EXIF_GPS_Controller extends Controller {
       $template->content->title = t("Map of") . " " . $map_title;
     }
 
+    // Figure out default map type.
+    $int_map_type = module::get_var("exif_gps", "largemap_maptype");
+    if ($int_map_type == 0) $map_type = "ROADMAP";
+    if ($int_map_type == 1) $map_type = "SATELLITE";
+    if ($int_map_type == 2) $map_type = "HYBRID";
+    if ($int_map_type == 3) $map_type = "TERRAIN";
+    $template->content->map_type = $map_type;
+
     // Load in module preferences.
     $template->content->items = $items;
     $template->content->google_map_key = module::get_var("exif_gps", "googlemap_api_key");

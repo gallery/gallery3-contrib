@@ -39,10 +39,11 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
       Kohana_Log::add("error",print_r($form,1));
 
       // Save settings to Gallery's database.
-      module::set_var("exif_gps", "googlemap_api_key", $form->google_api_key->value);
+      module::set_var("exif_gps", "googlemap_api_key", $form->Global->google_api_key->value);
       module::set_var("exif_gps", "sidebar_zoom", $form->Sidebar->sidebar_default_zoom->value);
       module::set_var("exif_gps", "sidebar_mapformat", $form->Sidebar->sidebar_mapformat->value);
       module::set_var("exif_gps", "sidebar_maptype", $form->Sidebar->sidebar_maptype->value);
+      module::set_var("exif_gps", "largemap_maptype", $form->LargeMap->largemap_maptype->value);
 
       // Display a success message and redirect back to the TagsMap admin page.
       message::success(t("Your settings have been saved."));
@@ -62,7 +63,9 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
                       array("id" => "g-exif-gps-adminForm"));
 
     // Input box for the Maps API Key
-    $form->input("google_api_key")
+    $gps_global_group = $form->group("Global")
+                             ->label(t("Global Settings"));
+    $gps_global_group->input("google_api_key")
       ->label(t("Google Maps API Key"))
       ->value(module::get_var("exif_gps", "googlemap_api_key"))
       ->rules("required");
@@ -83,6 +86,15 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
                 ->options(array(t("Road Map"), t("Satellite Map"), 
                                 t("Hybrid Map"), t("Physical Map")))
                 ->selected(module::get_var("exif_gps", "sidebar_maptype"));
+
+    // Create a group for map album/user settings
+    $gps_large_map_group = $form->group("LargeMap")
+                                ->label(t("Map Album/User Settings"));
+    $gps_large_map_group->dropdown("largemap_maptype")
+                        ->label(t("Default Map Type"))
+                        ->options(array(t("Road Map"), t("Satellite Map"), 
+                                        t("Hybrid Map"), t("Physical Map")))
+                        ->selected(module::get_var("exif_gps", "largemap_maptype"));
 
     // Add a save button to the form.
     $form->submit("SaveSettings")->value(t("Save"));
