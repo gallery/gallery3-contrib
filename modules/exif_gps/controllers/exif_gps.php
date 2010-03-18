@@ -65,6 +65,9 @@ class EXIF_GPS_Controller extends Controller {
     if ($int_map_type == 3) $map_type = "TERRAIN";
     $template->content->map_type = $map_type;
 
+    // When mapping an album, generate a "return to album" link.
+    if (isset($curr_album)) $template->content->return_url = url::abs_site("{$curr_album[0]->type}s/{$curr_album[0]->id}");
+
     // Load in module preferences.
     $template->content->items = $items;
     $template->content->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
