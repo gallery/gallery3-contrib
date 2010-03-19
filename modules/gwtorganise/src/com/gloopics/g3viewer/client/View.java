@@ -42,7 +42,10 @@ public class View extends FlowPanel implements DesktopDroppableWidget{
 	
 	public View(G3Viewer a_Container){
 		m_Container = a_Container;
-		((DndDesktopFactory)GWT.create(DndDesktopFactory.class)).getInstance(this);
+		if (m_Container.isUploadEnabled())
+		{
+			((DndDesktopFactory)GWT.create(DndDesktopFactory.class)).getInstance(this);
+		}
 	}
 	
 	

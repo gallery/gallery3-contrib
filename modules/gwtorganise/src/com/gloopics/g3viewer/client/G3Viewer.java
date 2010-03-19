@@ -17,9 +17,9 @@ package com.gloopics.g3viewer.client;
 
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.RequestBuilder;
@@ -239,7 +239,8 @@ public class G3Viewer {
 	  m_DragController.setBehaviorMultipleSelection(true);
 	  m_DragController.setBehaviorDragStartSensitivity(5);
 	  m_DragController.setBehaviorDragProxy(true);
-	  m_UploadControl = new UploadControl(this); 
+	  m_UploadControl = (UploadControl)GWT.create(UploadControl.class);
+	  m_UploadControl.init(this);
 	  m_InfoBar = new InformationBar(this, m_UploadControl);
 	  m_Tree  = new AlbumTree(this);
 	  
@@ -250,6 +251,11 @@ public class G3Viewer {
   public UploadControl getUploadControl()
   {
 	  return m_UploadControl;
+  }
+  
+  public boolean isUploadEnabled()
+  {
+	  return m_UploadControl.isUploadEnabled();
   }
   
   public static String getCSRF()
