@@ -17,9 +17,10 @@ public class UploadControl {
 	private boolean m_Running = false; 
 	private boolean m_PrepareRunning = false;
 	
-	private final G3Viewer m_Container;
+	private G3Viewer m_Container;
 	
-	public UploadControl(G3Viewer a_Container){
+	public void init(G3Viewer a_Container)
+	{
 		m_Container = a_Container;
 	}
 
@@ -102,6 +103,10 @@ public class UploadControl {
 		m_PrepareRunning = false;
 		prepareNext();
 		
+	}
+	
+	public boolean isUploadEnabled(){
+		return true;
 	}
 	
 }

@@ -126,7 +126,10 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 
 		if (m_IsAlbum)
 		{
-			((DndDesktopFactory)GWT.create(DndDesktopFactory.class)).getInstance(this);
+			if (m_Container.isUploadEnabled())
+			{
+				((DndDesktopFactory)GWT.create(DndDesktopFactory.class)).getInstance(this);
+			}
 		}
 		
 	}

@@ -1,6 +1,5 @@
 package com.gloopics.g3viewer.client.dnddesktop;
 
-import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
 
 public class DesktopDropFileIE extends DesktopDropBase{
