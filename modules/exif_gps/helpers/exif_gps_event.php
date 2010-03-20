@@ -73,7 +73,7 @@ class exif_gps_event_Core {
 
     // Require a set of coordinates (both latitude and longitude).
     //   If one or both fields are blank, completely delete any coordinates associated with this item.
-    if (($form->edit_item->latitude->value == "") || ($form->edit_item->longitude->value == "")) {
+    if (($form->edit_item->gps_data->latitude->value == "") || ($form->edit_item->gps_data->longitude->value == "")) {
       db::build()
         ->delete("exif_coordinates")
         ->where("item_id", "=", $item->id)
