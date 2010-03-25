@@ -125,6 +125,25 @@ class exif_gps_block_Core {
         }
         $block->content->latitude = $latitude;
         $block->content->longitude = $longitude;
+      } elseif ($theme->item->is_album() && (module::get_var("exif_gps", "sidebar_mapformat") == 1)) {
+        // If coordinates were NOT found, and this is an album with a dynamic map, then map the contents of the album.
+        $items = ORM::factory("item", $theme->item->id)
+                 ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+                 ->viewable()
+                 ->order_by("exif_coordinates.latitude", "ASC")
+                 ->descendants();
+        if (count($items) > 0) {
+          $block = new Block();
+          $block->css_id = "g-exif-gps-location";
+          $block->title = t("Location");
+          $block->content = new View("exif_gps_dynamic2_sidebar.html");
+          if (module::get_var("exif_gps", "sidebar_maptype") == 0) $block->content->sidebar_map_type = "ROADMAP";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 1) $block->content->sidebar_map_type = "SATELLITE";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 2) $block->content->sidebar_map_type = "HYBRID";
+          if (module::get_var("exif_gps", "sidebar_maptype") == 3) $block->content->sidebar_map_type = "TERRAIN";
+          $block->content->items = $items;
+          $block->content->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
+        }
       }
       break;
     }
