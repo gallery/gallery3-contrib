@@ -83,8 +83,8 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
                 ->selected(module::get_var("exif_gps", "sidebar_mapformat"));
     $gps_sidebar->dropdown("sidebar_maptype")
                 ->label(t("Default Map Type"))
-                ->options(array(t("Road Map"), t("Satellite Map"), 
-                                t("Hybrid Map"), t("Physical Map")))
+                ->options(array(t("Map"), t("Satellite"), 
+                                t("Hybrid"), t("Terrain")))
                 ->selected(module::get_var("exif_gps", "sidebar_maptype"));
 
     // Create a group for map album/user settings
@@ -92,8 +92,8 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
                                 ->label(t("Map Album/User Settings"));
     $gps_large_map_group->dropdown("largemap_maptype")
                         ->label(t("Default Map Type"))
-                        ->options(array(t("Road Map"), t("Satellite Map"), 
-                                        t("Hybrid Map"), t("Physical Map")))
+                        ->options(array(t("Map"), t("Satellite"), 
+                                        t("Hybrid"), t("Terrain")))
                         ->selected(module::get_var("exif_gps", "largemap_maptype"));
 
     // Add a save button to the form.
