@@ -44,6 +44,20 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
       module::set_var("exif_gps", "sidebar_mapformat", $form->Sidebar->sidebar_mapformat->value);
       module::set_var("exif_gps", "sidebar_maptype", $form->Sidebar->sidebar_maptype->value);
       module::set_var("exif_gps", "largemap_maptype", $form->LargeMap->largemap_maptype->value);
+      $checkbox_album = false;
+      $checkbox_user = false;
+      for ($i = 0; $i < count($form->Global->toolbar_map_album); $i++) {
+        if ($form->Global->toolbar_map_album->value[$i] == "checkbox_album") {
+          $checkbox_album = true;
+        }
+      }
+      for ($i = 0; $i < count($form->Global->toolbar_map_user); $i++) {
+        if ($form->Global->toolbar_map_user->value[$i] == "checkbox_user") {
+          $checkbox_user = true;
+        }
+      }
+      module::set_var("exif_gps", "toolbar_map_album", $checkbox_album);
+      module::set_var("exif_gps", "toolbar_map_user", $checkbox_user);
 
       // Display a success message and redirect back to the TagsMap admin page.
       message::success(t("Your settings have been saved."));
@@ -69,6 +83,12 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
       ->label(t("Google Maps API Key"))
       ->value(module::get_var("exif_gps", "googlemap_api_key"))
       ->rules("required");
+    $checkbox_user["checkbox_user"] = array(t("Show \"Map this user\" icon?"), module::get_var("exif_gps", "toolbar_map_user"));
+    $checkbox_album["checkbox_album"] = array(t("Show \"Map this album\" icon?"), module::get_var("exif_gps", "toolbar_map_album"));
+    $gps_global_group->checklist("toolbar_map_album")
+      ->options($checkbox_album);
+    $gps_global_group->checklist("toolbar_map_user")
+      ->options($checkbox_user);
 
     // Create a group for sidebar settings
     $gps_sidebar = $form->group("Sidebar")
