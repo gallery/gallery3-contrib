@@ -17,12 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-/**
- * This is the API for handling exif data.
- */
 class exif_gps_Core {
-
   protected static $exif_keys;
 
   static function extract($item) {

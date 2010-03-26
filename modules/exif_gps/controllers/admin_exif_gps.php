@@ -62,7 +62,7 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
     $form = new Forge("admin/exif_gps/saveprefs", "", "post",
                       array("id" => "g-exif-gps-adminForm"));
 
-    // Input box for the Maps API Key
+    // Create group for global settings, like the Maps API Key
     $gps_global_group = $form->group("Global")
                              ->label(t("Global Settings"));
     $gps_global_group->input("google_api_key")
