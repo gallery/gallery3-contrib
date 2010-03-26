@@ -2,6 +2,8 @@
 <script type="text/javascript" src="http://www.google.com/jsapi?key=<?= module::get_var("exif_gps", "googlemap_api_key"); ?>"></script>
 <script type="text/javascript">
   google.load("maps", "3",{"other_params":"sensor=false"});
+  var google_zoom_hack = false;
+
   function initialize() {
     var latlng = new google.maps.LatLng(0,0);
     var myOptions = {
@@ -33,6 +35,16 @@
       <? } else { ?>
       <? } ?>
     <? } ?>
+    <? if (module::get_var("exif_gps", "googlemap_max_autozoom") != "") : ?>
+    google.maps.event.addListener(map, 'zoom_changed', function() {
+      if (google_zoom_hack) {
+        if (map.getZoom() > 18) map.setZoom(18);
+        google_zoom_hack = false;
+      }
+    });
+    <? endif ?>
+
+    google_zoom_hack = true;
     map.fitBounds(glatlngbounds);
   }
 
