@@ -37,9 +37,9 @@ alert("New title: <b>{$album->data->entity->title}</b>");
 
 $photo = Gallery3::factory()
   ->set("type", "photo")
-  ->set("name", "Sample Photo.jpg")
+  ->set("name", "Sample Photo.png")
   ->set("title", "Sample Photo")
-  ->set_file("/tmp/foo.jpg")
+  ->set_file("gallery.png")
   ->create($album->url, $auth);
 alert("Uploaded photo: <b>{$photo->url}</b>");
 alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
