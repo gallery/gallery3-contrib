@@ -105,7 +105,7 @@ $.Jcrop = function(obj,opt)
 	// Initialize some jQuery objects {{{
 
 	var $origimg = $(obj);
-	var $img = $origimg.clone().removeAttr('id').css({ position: 'absolute' });
+	var $img = $origimg.clone().removeAttr('id').css({ position: 'static' });
 
 	$img.width($origimg.width());
 	$img.height($origimg.height());
