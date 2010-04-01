@@ -126,6 +126,11 @@ class register_Controller extends Controller {
     print $v;
   }
 
+  public function change_password($id, $password) {
+    $user = user::lookup($id);
+    print $this->_get_change_password_form($user, $password);
+  }
+
   private function _get_form() {
     $minimum_length = module::get_var("user", "mininum_password_length", 5);
     $form = new Forge("register/handler", "", "post", array("id" => "g-register-form"));
@@ -144,6 +149,33 @@ class register_Controller extends Controller {
 
     module::event("register_add_form", $form);
     $group->submit("")->value(t("Register"));
+    return $form;
+  }
+
+  /**
+   * Get the password change form.  This code is copied from controllers/users.php.  The
+   * difference is that as this is the first time logging on, the user might not have
+   * expected that they were going to have to enter the password displayed on the welcome
+   * page, and didn't make note of it.  If we were using the standard change password dialog, the
+   * user would be screwed as there is no way to go back and get it.  So with this dialog,
+   * we will provide the old password as a hidden field.
+   */
+  private function _get_change_password_form($user, $password) {
+    $form = new Forge(
+      "users/change_password/$user->id", "", "post", array("id" => "g-change-password-user-form"));
+    $group = $form->group("change_password")->label(t("Change your password"));
+    $group->hidden("old_password")->value($password);
+    $group->password("password")->label(t("New password"))->id("g-password")
+      ->error_messages("min_length", t("Your new password is too short"));
+    $group->script("")
+      ->text(
+        '$("form").ready(function(){$(\'input[name="password"]\').user_password_strength();});');
+    $group->password("password2")->label(t("Confirm new password"))->id("g-password2")
+      ->matches($group->password)
+      ->error_messages("matches", t("The passwords you entered do not match"));
+
+    module::event("user_change_password_form", $user, $form);
+    $group->submit("")->value(t("Save"));
     return $form;
   }
 }
