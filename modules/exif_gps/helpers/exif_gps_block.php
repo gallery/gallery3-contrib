@@ -124,7 +124,7 @@ class exif_gps_block_Core {
         }
         $block->content->latitude = $latitude;
         $block->content->longitude = $longitude;
-      } elseif ($theme->item->is_album() && (module::get_var("exif_gps", "sidebar_mapformat") == 1)) {
+      } elseif (($theme->item()) && ($theme->item->is_album() && (module::get_var("exif_gps", "sidebar_mapformat") == 1))) {
         // If coordinates were NOT found, and this is an album with a dynamic map, then map the contents of the album.
         $items = ORM::factory("item", $theme->item->id)
                  ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
