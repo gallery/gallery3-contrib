@@ -19,7 +19,7 @@
  */
 class EXIF_GPS_Controller extends Controller {
   public function map($map_type, $type_id) {
-    // Map all items in the specified album.
+    // Map all items in the specified album or user.
 
     $map_title = "";
     if ($map_type == "album") {
@@ -48,7 +48,7 @@ class EXIF_GPS_Controller extends Controller {
     }
 
     // Make a new page.
-    $template = new Theme_View("page.html", "other", "TagsMap");
+    $template = new Theme_View("page.html", "other", "EXIFMap");
     $template->page_title = t("Gallery :: Map");
     $template->content = new View("exif_gps_map.html");
     if ($map_title == "") {
