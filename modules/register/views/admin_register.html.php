@@ -11,7 +11,7 @@
   });
 </script>
 <div id="g-admin-register" class="g-block">
-  <h1><?= t("User registration adminstration") ?></h1>
+  <h1><?= t("User registration administration") ?></h1>
   <div id="g-registration-admin" class="g-block-content">
   <?= form::open($action, array("method" => "post"), $hidden) ?>
     <fieldset>

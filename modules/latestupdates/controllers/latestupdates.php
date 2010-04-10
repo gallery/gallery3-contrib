@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,9 @@ class latestupdates_Controller extends Controller {
     //	for page numbering purposes.
     $count = $item
       ->viewable()
-      ->descendants_count(null, null, array(array("type", "!=", "album")));
+      ->where("type", "!=", "album")
+      ->order_by("created", "DESC")
+      ->descendants_count();
 
     // Figure out what the highest page number is.
     $max_pages = ceil($count / $page_size);

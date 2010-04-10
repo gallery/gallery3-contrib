@@ -16,9 +16,11 @@ public class InformationBar extends FlowPanel{
 	
 	private final Label m_Label = new Label();
 	
-	private final Set<UploadFile> m_Uploads = new HashSet<UploadFile>();
+	private final UploadControl m_UploadControl; 
+	
 
-	public InformationBar(G3Viewer a_Container){
+	public InformationBar(G3Viewer a_Container, UploadControl a_UploadControl){
+		m_UploadControl = a_UploadControl;
 		m_Container = a_Container;
 		setStylePrimaryName("infobar");
 	}
@@ -45,9 +47,9 @@ public class InformationBar extends FlowPanel{
 		add(m_Label);
 	}
 	
-	private void updateInformation()
+	public void updateInformation()
 	{
-		int size = m_Uploads.size(); 
+		int size = m_UploadControl.size(); 
 		if (size == 0){
 			m_Label.setText("");
 		}
@@ -61,17 +63,5 @@ public class InformationBar extends FlowPanel{
 			}
 			
 		}
-	}
-	
-	public void addUpload(UploadFile a_Upload)
-	{
-		m_Uploads.add(a_Upload);
-		updateInformation();
-	}
-	
-	public void removeUpload(UploadFile a_Upload)
-	{
-		m_Uploads.remove(a_Upload);
-		updateInformation();
 	}
 }

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,20 +78,14 @@ class register_Core {
   static function create_new_user($id) {
     $user = ORM::factory("pending_user", $id);
 
-    $password = md5(rand());
-    $new_user = identity::create_user($user->name, $user->full_name, $password);
-    $new_user->email = $user->email;
+    $password = md5(uniqid(mt_rand(), true));
+    $new_user = identity::create_user($user->name, $user->full_name, $password, $user->email);
     $new_user->url = $user->url;
     $new_user->admin = false;
     $new_user->guest = false;
     $new_user->save();
 
-    $default_group = module::get_var("registration", "default_group");
-    if (!empty($default_group)) {
-      identity::add_user_to_group($new_user, $default_group);
-    }
-
-    $user->hash =  md5(rand());
+    $user->hash =  md5(uniqid(mt_rand(), true));
     $user->state = 2;
     $user->save();
     self::send_user_created_confirmation($user, $password);

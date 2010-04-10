@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Draw the page.
-    $template = new Theme_View("page.html", "other", "CalendarView");
+    $template = new Theme_View("calpage.html", "other", "CalendarView");
     $template->css("calendarview_calendar.css");
     $template->set_global("calendar_user", $display_user);
     $template->page_title = t("Gallery :: Calendar");
@@ -39,6 +39,11 @@ class CalendarView_Controller extends Controller {
     $template->content->calendar_year = $display_year;
     $template->content->calendar_user = $display_user;
     $template->content->calendar_user_year_form = $this->_get_calenderprefs_form($display_year, $display_user);
+    $template->content->title = t("Calendar") . ": " . $display_year;
+    // Set up breadcrumbs
+    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb(item::root()->title, item::root()->url());
+    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb($display_year, "");
+    $template->set_global("breadcrumbs", $calendar_breadcrumbs);
     print $template;
   }
 
@@ -78,7 +83,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Set up the page.
-    $template = new Theme_View("page.html", "collection", "CalendarDayView");
+    $template = new Theme_View("calpage.html", "collection", "CalendarDayView");
     $template->set_global("page", $page);
     $template->set_global("max_pages", $max_pages);
     $template->set_global("page_size", $page_size);
@@ -105,11 +110,11 @@ class CalendarView_Controller extends Controller {
     }
 
     // Set up breadcrumbs
-    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
-    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, $display_day, $display_year))), url::site("calendarview/month/" . $display_year . "/" . $display_user . "/" . $display_month));
-    $fake_item = new Calendar_Breadcrumb($display_day, "");
-    $template->set_global("item", $fake_item);
-    $template->set_global("parents", $calendar_breadcrumbs);
+    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb(item::root()->title, item::root()->url());
+    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
+    $calendar_breadcrumbs[2] = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, $display_day, $display_year))), url::site("calendarview/month/" . $display_year . "/" . $display_user . "/" . $display_month));
+    $calendar_breadcrumbs[3] = new Calendar_Breadcrumb($display_day, "");
+    $template->set_global("breadcrumbs", $calendar_breadcrumbs);
 
     // Finish setting up and then display the page.
     $template->set_global("children_count", $day_count);
@@ -154,7 +159,7 @@ class CalendarView_Controller extends Controller {
     }
 
     // Set up the page.
-    $template = new Theme_View("page.html", "collection", "CalendarMonthView");
+    $template = new Theme_View("calpage.html", "collection", "CalendarMonthView");
     $template->set_global("page", $page);
     $template->set_global("max_pages", $max_pages);
     $template->set_global("page_size", $page_size);
@@ -180,11 +185,11 @@ class CalendarView_Controller extends Controller {
                             ->find_all($page_size, $offset));
     }
 
-    // Set up breadcrumbs for this page.
-    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
-    $fake_item = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, 1, $display_year))), "");
-    $template->set_global("item", $fake_item);
-    $template->set_global("parents", $calendar_breadcrumbs);
+    // Set up breadcrumbs
+    $calendar_breadcrumbs[0] = new Calendar_Breadcrumb(item::root()->title, item::root()->url());
+    $calendar_breadcrumbs[1] = new Calendar_Breadcrumb($display_year, url::site("calendarview/calendar/" . $display_year . "/" . $display_user));
+    $calendar_breadcrumbs[2] = new Calendar_Breadcrumb(t(date("F", mktime(0, 0, 0, $display_month, 1, $display_year))), "");
+    $template->set_global("breadcrumbs", $calendar_breadcrumbs);
 
     // Finish setting up and then display the page.
     $template->set_global("children_count", $day_count);
@@ -195,7 +200,7 @@ class CalendarView_Controller extends Controller {
 
   private function _get_calenderprefs_form($display_year, $display_user) {
     // Generate a form to allow the visitor to select a year and a gallery photo owner.
-    $form = new Forge("calendarview/setprefs", "", "post",
+    $calendar_group = new Forge("calendarview/setprefs", "", "post",
                       array("id" => "g-view-calendar-form"));
 
     // Generate a list of all Gallery users who have uploaded photos.
@@ -231,21 +236,22 @@ class CalendarView_Controller extends Controller {
     }
 
     // Create the form.
-    $calendar_group = $form->group("CalendarPrefs");
     $calendar_group->dropdown('cal_user')
                    ->label(t("Display Photos From User: "))
+                   ->id('cal_user')
                    ->options($valid_users)
                    ->selected($display_user);
     $calendar_group->dropdown('cal_year')
                    ->label(t("For Year: "))
+                   ->id('cal_year')
                    ->options($valid_years)
                    ->selected($display_year);
 
     // Add a save button to the form.
-    $calendar_group->submit("SaveSettings")->value(t("Go"));
+    $calendar_group->submit("SaveSettings")->value(t("Go"))->id('cal_go');
 
     // Return the newly generated form.
-    return $form;
+    return $calendar_group;
   }
 
   public function setprefs() {
