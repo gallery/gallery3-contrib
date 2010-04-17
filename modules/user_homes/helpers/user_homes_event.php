@@ -27,7 +27,10 @@ class user_homes_event_Core {
   static function user_login($user) {
     $home = ORM::factory("user_home")->where("id", "=", $user->id)->find();
     if ($home->loaded() && $home->home != 0) {
-      Session::instance()->set("redirect_home", $home->home);
+      $continue_url = Session::instance()->get("continue_url", null);
+      if ($continue_url == null){
+        Session::instance()->set("redirect_home", $home->home);
+      }
     }
   }
 
@@ -172,6 +175,123 @@ class user_homes_event_Core {
         $view->item = $item;
         $data->content[] = (object)array("title" => t("Home album"), "view" => $view);
       }
+    }
+  }
+
+  static function album_add_form($form){
+
+    $group = $form->group("privacy")
+      ->label(t("album privacy settings"));
+    $group->checkbox("private")->label(t("Private"))->id("uh_private")->onClick("pc()");
+    $group->input("username")->label(t("Username"))->id("uh_username")
+      ->callback("user_homes_event::user_already_exists")
+      ->error_messages("in_use", t("There is already a user with that username"))
+      ->error_messages("required", t("You must enter a username"))->callback("user_homes_event::valid_name")->rules("length[1,32]");
+    $group->password("password")->label(t("Password"))->id("uh_password")
+      ->callback("user_homes_event::valid_password")
+      ->error_messages("required", t("You must enter a password"))
+      ->error_messages("minlength", t("Password is not long enough"));
+    $group->password("password2")->label(t("Confirm password"))->id("uh_password2")
+      ->error_messages("matches", t("Passwords do not match"))
+      ->matches($group->password);
+
+    $form->script("")->url(url::abs_file("modules/user_homes/js/user_homes_add_album.js"));
+  }
+
+  /**
+   * Validate the user name.  Make sure there are no conflicts.
+   */
+  static function valid_password($field) {
+    $input = Input::instance();
+    $method = $field->method;
+    $checked = $input->$method("private", false);
+    if ($checked)
+    {
+      if (!$field->value || strlen($field->value)==0){
+        $field->add_error("required", 1);
+      }
+      else
+      {
+        $minimum_length = module::get_var("user", "mininum_password_length", 5);
+        if (strlen($field->value) < $minimum_length) {
+          $field->add_error("minlength", 1);
+        }
+      }
+    }
+
+  }
+
+  /**
+   * Validate the user name.  Make sure there are no conflicts.
+   */
+  static function valid_name($field) {
+    $input = Input::instance();
+    $method = $field->method;
+    $checked = $input->$method("private", false);
+
+    if ($checked)
+    {
+      if (!$field->value || strlen($field->value)==0){
+        $field->add_error("required", 1);
+      }
+      elseif (db::build()->from("users")
+        ->where("name", "=", $field->value)
+        ->count_records() == 1) {
+        $field->add_error("in_use", 1);
+      }
+    }
+  }
+
+
+  static function album_add_form_completed($album, $form){
+    if ($form->privacy->private->checked)
+    {
+      $username = $form->privacy->username->value;
+      $password = $form->privacy->password->value;
+
+      // TODO validation
+
+      // create a group based on username
+      $group = identity::create_group($username);
+
+      // create a user based on username
+      $user = identity::create_user($username, $username, $password, $username."@unknown.com");
+
+      identity::add_user_to_group($user,$group->id);
+
+      // create user home
+      $home = ORM::factory("user_home")->where("id", "=", $user->id)->find();
+      $home->id = $user->id;
+      $home->home = $album->id;
+      $home->save();
+
+      // reload album
+      $album->reload();
+
+      // set permissions
+      // deny all groups.
+      $groups = ORM::factory("group")->find_all();
+      foreach ($groups as $group2){
+        if ($group->id != $group2->id){
+          access::deny($group2 , "view", $album);
+          access::deny($group2 , "view_full", $album);
+        }
+      }
+
+      // deny all other albums
+      $albums = ORM::factory("item")
+        ->where("type", "=", "album")->find_all();
+      foreach($albums as $albumt){
+        access::deny($group,"view", $albumt);
+      }
+
+      // allow access to newly created group
+      access::allow($group, "view_full", $album);
+      $parents = $album->parents();
+      foreach ($parents as $parent){
+        access::allow($group, "view", $parent);
+      }
+      access::allow($group, "view", $album);
     }
   }
 }
