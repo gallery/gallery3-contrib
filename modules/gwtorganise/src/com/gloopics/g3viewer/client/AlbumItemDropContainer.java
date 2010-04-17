@@ -28,19 +28,7 @@ public class AlbumItemDropContainer implements DropController{
 
 	@Override
 	public void onDrop(DragContext context) {
-		JSONArray jsa = new JSONArray();
-		
-		int i = 0;
-		for (Widget widget : context.selectedWidgets){
-			if (widget instanceof Item){
-				jsa.set(i, new JSONNumber(((Item)widget).getID()));
-				i++;
-			}
-		}
-		m_Album.moveTo(jsa);
-		// context.
-		// TODO Auto-generated method stub
-		
+		m_Album.moveTo(Utils.extractIds(context));
 	}
 
 	@Override
