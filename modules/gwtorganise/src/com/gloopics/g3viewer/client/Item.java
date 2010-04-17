@@ -1,6 +1,7 @@
 package com.gloopics.g3viewer.client;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.gloopics.g3viewer.client.dnddesktop.DesktopDropFile;
 import com.gloopics.g3viewer.client.dnddesktop.DesktopDroppableWidget;
@@ -27,6 +28,7 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.gears.client.desktop.File;
+import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONNumber;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -164,7 +166,7 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 		}
 	}
 	
-	private void updateImages(JSONValue a_Value){
+	public void updateImages(JSONValue a_Value){
 		JSONObject jso = a_Value.isObject();
 		
 		if (jso != null) {
@@ -192,19 +194,20 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 		m_LinkedAlbum = a_Album;
 	}
 	
+	public void removeLinkedAlbum()
+	{
+		if (m_LinkedAlbum != null){
+			m_LinkedAlbum.remove();
+		}
+	}
+	
+	
 	public void showPopupMenu(ContextMenuEvent event){
-		Iterator<Widget> iter = m_Container.getDragController().getSelectedWidgets().iterator();
-		
 		// show views popup menu if items are selected
-		if (iter.hasNext())
+		if (m_Container.getDragController().getSelectedWidgetcount() > 1)
 		{
-			iter.next();
-			if (iter.hasNext())
-			{
-				m_View.showPopupMenu(event);
-				return;
-			}
-			
+			m_View.showPopupMenu(event);
+			return;
 		}
 		
 		this.addStyleName("popped");
@@ -270,7 +273,7 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 			MenuItem rotateCW = new MenuItem("Rotate Clockwise", true, new Command() {
 				@Override
 				public void execute() {
-					m_ThumbImage.setUrl(Loading.URL);
+					setLoadingThumb();
 					m_Container.doJSONRequest(G3Viewer.ROTATE_URL + m_ID + "/cw", new HttpSuccessHandler() {
 						
 						public void success(JSONValue aValue) {
@@ -286,7 +289,7 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 			MenuItem rotateCCW = new MenuItem("Rotate Couter-Clockwise", true, new Command() {
 				@Override
 				public void execute() {
-					m_ThumbImage.setUrl(Loading.URL);
+					setLoadingThumb();
 					m_Container.doJSONRequest(G3Viewer.ROTATE_URL + m_ID + "/ccw", new HttpSuccessHandler() {
 						
 						public void success(JSONValue aValue) {
@@ -299,6 +302,7 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 			rotateCCW.addStyleName("popup-item");
 			popupMenuBar.addItem(rotateCCW);
 		}
+		
 		
 		 
 		 
@@ -320,6 +324,10 @@ public class Item extends Composite implements HasAllMouseHandlers, DesktopDropp
 		popupPanel.show();		
 	}
 	
+	public void setLoadingThumb()
+	{
+		m_ThumbImage.setUrl(Loading.URL);
+	}
 	
 	public boolean isAlbum(){
 		return m_IsAlbum;

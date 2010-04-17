@@ -73,13 +73,21 @@ class Json_Album_Controller extends Controller {
     access::verify_csrf();
 
     $target_album = ORM::factory("item", $target_album_id);
+    access::required("view", $target_album);
+    access::required("add", $target_album);
+
+    $source_album = null;
 
     $js = json_decode($_REQUEST["sourceids"]);
-
     $i = 0;
+    $source_album = null;
     foreach ($js as $source_id) {
       $source = ORM::factory("item", $source_id);
+      if (empty($source_album)) {     // get the source_album
+        $source_album = $source->parent();
+      }
       if (!$source->contains($target_album)) {
+        access::required("edit", $source);
         item::move($source, $target_album);
       }
       $i++;
@@ -226,12 +234,7 @@ class Json_Album_Controller extends Controller {
     print json_encode(array("result" => "success"));
   }
 
-    public function rotate($id, $dir) {
-    access::verify_csrf();
-    $item = model_cache::get("item", $id);
-    access::required("view", $item);
-    access::required("edit", $item);
-
+  public function p_rotate($item, $dir){
     $degrees = 0;
     switch($dir) {
     case "ccw":
@@ -261,6 +264,63 @@ class Json_Album_Controller extends Controller {
         $parent->save();
       }
     }
+
+    return $item;
+  }
+
+  public function delete_many($id) {
+
+    access::verify_csrf();
+
+    $js = json_decode($_REQUEST["sourceids"]);
+
+    $i = 0;
+    $toreturn = array();
+    foreach ($js as $item_id) {
+      $item = ORM::factory("item", $item_id);
+      access::required("view", $item);
+      access::required("edit", $item);
+      if ($item->is_album()) {
+        $msg = t("Deleted album <b>%title</b>", array("title" => html::purify($item->title)));
+      } else {
+        $msg = t("Deleted photo <b>%title</b>", array("title" => html::purify($item->title)));
+      }
+      $parent = $item->parent();
+      $item->delete();
+      message::success($msg);
+    }
+
+    print json_encode(array("result" => "success"));
+
+  }
+
+  public function rotate_many($dir) {
+    access::verify_csrf();
+
+    $js = json_decode($_REQUEST["sourceids"]);
+
+    $i = 0;
+    $toreturn = array();
+    foreach ($js as $item_id) {
+      $item = ORM::factory("item", $item_id);
+      access::required("view", $item);
+      access::required("edit", $item);
+      $item = $this->p_rotate($item, $dir);
+      $toreturn[$item_id] = self::child_json_encode($item);
+      $i++;
+    }
+
+    print json_encode($toreturn);
+  }
+
+
+  public function rotate($id, $dir) {
+    access::verify_csrf();
+    $item = model_cache::get("item", $id);
+    access::required("view", $item);
+    access::required("edit", $item);
+
+    $item = $this->p_rotate($item, $dir);
 
     print json_encode(self::child_json_encode($item));
   }

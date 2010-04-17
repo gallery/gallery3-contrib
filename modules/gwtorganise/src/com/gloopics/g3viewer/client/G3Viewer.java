@@ -17,6 +17,7 @@ package com.gloopics.g3viewer.client;
 
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.gloopics.g3viewer.client.ConfirmDialogBox.ConfirmCallBack;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
@@ -134,10 +135,21 @@ public class G3Viewer {
   public static final String ROTATE_URL = BASE_URL + "index.php/json_album/rotate/";
 
   /**
+   * rotate url
+   */
+  public static final String ROTATE_ALL_URL = BASE_URL + "index.php/json_album/rotate_many/";
+  
+  /**
    * Resize details URL
    */
   public static final String RESIZE_DETAILS_URL = BASE_URL + "index.php/json_album/resize_config";
 
+  /**
+   * Resize details URL
+   */
+  public static final String DELETE_ALL_URL = BASE_URL + "index.php/json_album/delete_many/";
+  
+  
   /*
    * tree
    */
@@ -157,6 +169,11 @@ public class G3Viewer {
    * the only dialog box
    */
   private final HttpDialogBox m_HttpDialogBox= new HttpDialogBox(this);
+  
+  /**
+   * the only confirmation dialog box
+   */
+  private final ConfirmDialogBox m_ConfirmDialogBox = new ConfirmDialogBox(this);
   
   private class SimplePanelEx extends SimplePanel 
   {
@@ -223,7 +240,7 @@ public class G3Viewer {
   /**
    * the drag controller
    */
-  private final PickupDragController m_DragController;
+  private final MyPickupDragController m_DragController;
   
   /**
    * the upload control
@@ -235,7 +252,7 @@ public class G3Viewer {
    */
   
   public G3Viewer(){
-	  m_DragController = new PickupDragController(RootPanel.get(),false);
+	  m_DragController = new MyPickupDragController(RootPanel.get(),false);
 	  m_DragController.setBehaviorMultipleSelection(true);
 	  m_DragController.setBehaviorDragStartSensitivity(5);
 	  m_DragController.setBehaviorDragProxy(true);
@@ -313,7 +330,7 @@ public class G3Viewer {
   /**
    * returns the drag controller
    */
-  public PickupDragController getDragController(){
+  public MyPickupDragController getDragController(){
 	  return m_DragController;
   }
 
@@ -332,6 +349,11 @@ public class G3Viewer {
   public void doDialog(String a_Url, HttpDialogHandler a_Handler)
   {
 	  m_HttpDialogBox.doDialog(BASE_URL  + a_Url, a_Handler); 
+  }
+  
+  public void doConfirm(String a_Text, ConfirmCallBack a_Handler)
+  {
+	  m_ConfirmDialogBox.doDialog(a_Text, a_Handler);
   }
   
   public void showImage(String a_Url)
