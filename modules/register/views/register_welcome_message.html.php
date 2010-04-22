@@ -15,7 +15,7 @@
   </p>
 
   <p>
-    <a href="<?= url::site("form/edit/users/{$user->id}") ?>"
+    <a href="<?= url::site("register/change_password/{$user->id}/$password") ?>"
       title="<?= t("Edit your profile")->for_html_attr() ?>"
       id="g-after-install-change-password-link"
       class="g-button ui-state-default ui-corners-all">
