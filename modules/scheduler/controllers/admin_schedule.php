@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Admin_Schedule_Controller extends Admin_Controller {
+class Admin_Schedule_Controller extends Admin_Maintenance_Controller {
   /**
    * Show a list of all available, running and finished tasks.
    */
@@ -80,14 +80,14 @@ class Admin_Schedule_Controller extends Admin_Controller {
 
     $v = new View("admin_schedule_confirm.html");
     $v->name = $schedule->name;
-    $v->form = new Forge("admin/schedule/remove/{$id}", "", "post",
+    $v->form = new Forge("admin/schedule/remove_event/{$id}", "", "post",
                          array("id" => "g-remove-schedule"));
     $group = $v->form->group("remove");
     $group->submit("")->value(t("Continue"));
     print $v;
   }
 
-  public function remove($id) {
+  public function remove_event($id) {
     access::verify_csrf();
     $schedule = ORM::factory("schedule", $id);
     $schedule->delete();
