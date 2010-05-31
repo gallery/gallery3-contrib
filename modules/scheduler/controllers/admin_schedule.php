@@ -18,24 +18,56 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class Admin_Schedule_Controller extends Admin_Controller {
+  /**
+   * Show a list of all available, running and finished tasks.
+   */
+  public function index() {
+    $query = db::build()
+      ->update("tasks")
+      ->set("state", "stalled")
+      ->where("done", "=", 0)
+      ->where("state", "<>", "stalled")
+      ->where(new Database_Expression("UNIX_TIMESTAMP(NOW()) - `updated` > 15"))
+      ->execute();
+    $stalled_count = $query->count();
+    if ($stalled_count) {
+      log::warning("tasks",
+                   t2("One task is stalled",
+                      "%count tasks are stalled",
+                      $stalled_count),
+                   t('<a href="%url">view</a>',
+                     array("url" => html::mark_clean(url::site("admin/maintenance")))));
+    }
+
+    $view = new Admin_View("admin.html");
+    $view->page_title = t("Maintenance tasks");
+    $view->content = new View("admin_schedule.html");
+    $view->content->task_definitions = task::get_definitions();
+    $view->content->running_tasks = ORM::factory("task")
+      ->where("done", "=", 0)->order_by("updated", "DESC")->find_all();
+    $view->content->finished_tasks = ORM::factory("task")
+      ->where("done", "=", 1)->order_by("updated", "DESC")->find_all();
+    $view->content->schedule_definitions = scheduler::get_definitions();
+    print $view;
+  }
+
   public function form_add($task_callback) {
     access::verify_csrf();
 
     $schedule = ORM::factory("schedule");
     $schedule->task_callback = $task_callback;
     $schedule->next_run_datetime = time();
-    $v = new View("admin_schedule.html");
+    $v = new View("admin_schedule_form.html");
     $v->form = scheduler::get_form("define", $schedule);
     $v->method = "define";
     print $v;
   }
 
-  public function update_form($id) {
+  public function form_edit($id) {
     access::verify_csrf();
 
-
     $schedule = ORM::factory("schedule", $id);
-    $v = new View("admin_schedule.html");
+    $v = new View("admin_schedule_form.html");
     $v->form = scheduler::get_form("update", $schedule);
     $v->method = "update";
     print $v;
@@ -70,7 +102,7 @@ class Admin_Schedule_Controller extends Admin_Controller {
 
   public function update($id=null) {
     $this->_handle_request("update", $id);
-   }
+  }
 
   private function _handle_request($method, $id=null) {
     $schedule = ORM::factory("schedule", $id);
