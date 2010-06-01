@@ -1,8 +1,9 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 
-<?= form::open($action, array("method" => "post"), $hidden) ?>
+<?= form::open($action, array("method" => "post")) ?>
   <fieldset>
     <ul>
+      <li><?= access::csrf_form_field() ?></li>
       <li <? if (!empty($errors["name"])): ?> class="g-error"<? endif ?>>
         <?= form::label("name", t("Name")) ?>
         <?= form::input("name", $form["name"]) ?>
@@ -33,14 +34,14 @@
             <?= form::label("theme[]", t("Theme callbacks")) ?>
             <?= form::dropdown(array("name" => "theme[]", "multiple" => true, "size" => 6), $theme, $form["theme[]"]) ?>
           </li>
-          <li>
+          <li style="padding-left: 1em" >
             <?= form::label("event[]", t("Gallery event handlers")) ?>
             <?= form::dropdown(array("name" => "event[]", "multiple" => true, "size" => 6), $event, $form["event[]"]) ?>
           </li>
         </ul>
       </li>
       <li>
-        <?= form::submit(array("id" => "g-generate-module", "name" => "generate", "class" => "submit", "style" => "clear:both!important"), t("Generate")) ?>
+         <?= form::submit($submit_attributes, t("Generate")) ?>
       </li>
     </ul>
   </fieldset>
