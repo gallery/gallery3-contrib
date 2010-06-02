@@ -1,6 +1,8 @@
 name = "Stop Design"
-description = "A clean and sober theme from <a href="http://stopdesign.com/templates/photos/">stopdesign.com</a>, by Douglas Bowman."
+description = "A clean and sober theme from http://stopdesign.com/templates/photos/, by Douglas Bowman."
 version = 1
-author = "Romain LE DISEZ"
+author = "RLD"
 site = 1
 admin = 0
+;wind commit = 1240878df0f4a2b0ad0cdb32814717038ff2773f
+;wind date = Fri May 14 16:55:15 2010 -0700

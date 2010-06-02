@@ -3,7 +3,7 @@
  */
 
 $(document).ready(function() {
-    $(".g-dialog-link").gallery_dialog('option', 'position', 'top');
-    $(".g-dialog-link").gallery_dialog('option', 'draggable', false);
-    $(".g-ajax-link").gallery_ajax();
+    $.ui.gallery_dialog.defaults.position = "top";
+    //$.ui.gallery_dialog.defaults.show = "slide";
+    $.ui.dialog.defaults.draggable = false;
 });

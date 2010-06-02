@@ -5,8 +5,8 @@
 $(document).ready(function() {
 
   // Initialize Superfish menus (hidden, then shown to address IE issue)
-  /*$("#g-site-menu .g-menu").hide().addClass("sf-menu");
-  $("#g-site-menu .g-menu").superfish({
+  $("#g-site-menu .g-menu").hide().addClass("sf-menu");
+  /*$("#g-site-menu .g-menu").superfish({
     delay: 500,
     animation: {
       opacity:'show',
@@ -17,23 +17,23 @@ $(document).ready(function() {
   }).show();*/
 
   // Initialize status message effects
-  /*$("#g-action-status li").gallery_show_message();*/
+  $("#g-action-status li").gallery_show_message();
 
   // Initialize dialogs
   $(".g-dialog-link").gallery_dialog();
 
   // Initialize short forms
-  /*$(".g-short-form").gallery_short_form();*/
+  $(".g-short-form").gallery_short_form();
 
   // Apply jQuery UI icon, hover, and rounded corner styles
-  /*$("input[type=submit]:not(.g-short-form input)").addClass("ui-state-default ui-corner-all");
+  $("input[type=submit]:not(.g-short-form input)").addClass("ui-state-default ui-corner-all");
   if ($("#g-view-menu").length) {
     $("#g-view-menu ul").removeClass("g-menu").removeClass("sf-menu");
     $("#g-view-menu a").addClass("ui-icon");
-  }*/
+  }
 
   // Apply jQuery UI icon and hover styles to context menus
-  /*if ($(".g-context-menu").length) {
+  if ($(".g-context-menu").length) {
     $(".g-context-menu li").addClass("ui-state-default");
     $(".g-context-menu a").addClass("g-button ui-icon-left");
     $(".g-context-menu a").prepend("<span class=\"ui-icon\"></span>");
@@ -41,9 +41,9 @@ $(document).ready(function() {
       var iconClass = $(this).parent().attr("class").match(/ui-icon-.[^\s]+/).toString();
       $(this).addClass(iconClass);
     });
-  }*/
+  }
 
-  // Album view only
+  // Album and search results views
   /*if ($("#g-album-grid").length) {
     // Set equal height for album items and vertically align thumbnails/metadata
     $('.g-item').equal_heights().gallery_valign();
@@ -64,7 +64,13 @@ $(document).ready(function() {
         $(this).height("auto");
         var context_menu = $(this).find(".g-context-menu");
         var adj_height = $(this).height() + context_menu.height();
-        $(this).height(adj_height);
+        if ($(this).next().height() > $(this).height()) {
+          $(this).height($(this).next().height());
+        } else if ($(this).prev().height() > $(this).height()) {
+          $(this).height($(this).prev().height());
+        } else {
+          $(this).height(adj_height);
+        }
       },
       function() {
         // Reset item height and position
@@ -87,25 +93,27 @@ $(document).ready(function() {
   }*/
 
   // Photo/Item item view
-  /*if ($("#g-photo,#g-movie").length) {
+  if ($("#g-photo,#g-movie").length) {
     // Ensure the resized image fits within its container
     $("#g-photo,#g-movie").gallery_fit_photo();
 
     // Initialize context menus
-    var resize = $("#g-photo,#g-movie").gallery_get_photo();
-    $(resize).hover(function(){
+    $("#g-photo,#g-movie").hover(function(){
       $(this).gallery_context_menu();
     });
 
     // Add scroll effect for links to named anchors
-    $.localScroll({
+    /*$.localScroll({
       queue: true,
       duration: 1000,
       hash: true
-    });
-  }*/
+    });*/
+
+    $(this).find(".g-dialog-link").gallery_dialog();
+    $(this).find(".g-ajax-link").gallery_ajax();
+  }
 
   // Initialize button hover effect
-  /*$.fn.gallery_hover_init();*/
+  $.fn.gallery_hover_init();
 
 });

@@ -1,61 +1,42 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <? // @todo Set hover on AlbumGrid list items for guest users ?>
-<div class="galleryinfo">
+<div id="g-info">
+  <?= $theme->album_top() ?>
   <h1><?= html::purify($item->title) ?></h1>
-  <p class="desc"><?= nl2br(html::purify($item->description)) ?></p>
+  <div class="g-description"><?= nl2br(html::purify($item->description)) ?></div>
 </div>
 
-<ul class="slideset">
+<ul id="g-album-grid" class="ui-helper-clearfix">
 <? if (count($children)): ?>
-  <!-- Albums first -->
   <? foreach ($children as $i => $child): ?>
-    <? if( $child->is_album() ): ?>
-    <li class="thumb"><em style="background-image: url('<?= $child->thumb_url() ?>');"><a href="<?= $child->url() ?>"><span><?= html::purify($child->title) ?></span></a></em></li>
-    <? endif; ?>
+    <? $item_class = "g-photo"; ?>
+    <? if ($child->is_album()): ?>
+      <? $item_class = "g-album"; ?>
+    <? endif ?>
+  <li id="g-item-id-<?= $child->id ?>" class="g-item <?= $item_class ?>">
+    <?= $theme->thumb_top($child) ?>
+    <a href="<?= $child->url() ?>">
+      <?= $child->thumb_img(array("class" => "g-thumbnail")) ?>
+    </a>
+    <?= $theme->thumb_bottom($child) ?>
+    <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
+    <h2><span class="<?= $item_class ?>"></span>
+      <a href="<?= $child->url() ?>"><?= html::purify($child->title) ?></a></h2>
+    <ul class="g-metadata">
+      <?= $theme->thumb_info($child) ?>
+    </ul>
+  </li>
   <? endforeach ?>
-
-  <? foreach ($children as $i => $child): ?>
-    <? if( !$child->is_album() ): ?>
-    <li class="thumb"><em style="background-image: url('<?= $child->thumb_url() ?>');"><a href="<?= $child->url() ?>"><span><?= html::purify($child->title) ?></span></a></em></li>
-    <? endif; ?>
-  <? endforeach ?>
+<? else: ?>
+  <? if ($user->admin || access::can("add", $item)): ?>
+  <? $addurl = url::file("index.php/simple_uploader/app/$item->id") ?>
+  <li><?= t("There aren't any photos here yet! <a %attrs>Add some</a>.",
+            array("attrs" => html::mark_clean("href=\"$addurl\" class=\"g-dialog-link\""))) ?></li>
+  <? else: ?>
+  <li><?= t("There aren't any photos here yet!") ?></li>
+  <? endif; ?>
 <? endif; ?>
 </ul>
+<?= $theme->album_bottom() ?>
 
-<div class="galleryinfo">
-  <p>
-    <em class="count"><?= /* @todo This message isn't easily localizable */
-            t2("Photo %from_number of %count",
-               "Photos %from_number - %to_number of %count",
-               $children_count,
-               array("from_number" => ($page - 1) * $page_size + 1,
-                     "to_number" => min($page * $page_size, $children_count),
-                     "count" => $children_count)) ?>
-    </em>
-    <? if ($page != 1): ?>
-      <a href="<?= url::site(url::merge(array("page" => $page - 1))) ?>" accesskey="z">&laquo; <?= t("Previous") ?></a>
-    <? endif; ?>
-      &nbsp;
-    <? if ($page != $max_pages): ?>
-      <a id="next-page" href="<?= url::site(url::merge(array("page" => $page + 1))) ?>" accesskey="x"><?= t("Next") ?> &raquo;</a>
-    <? endif; ?>
-  </p>
-
-  <? if( access::can("add", $item) || access::can("edit", $item) ): ?>
-  <p><em class="count">Actions</em></p>
-  <ul>
-    <? if( access::can("add", $item) ): ?>
-    <li><a class="g-dialog-link" href="<?= url::site("simple_uploader/app/$item->id") ?>"><?= t("Add photos") ?></a></li>
-    <li><a class="g-dialog-link" href="<?= url::site("form/add/albums/$item->id?type=album") ?>"><?= t("Add an album") ?></a></li>
-    <? endif; ?>
-    <? if( access::can("edit", $item) ): ?>
-    <li><a class="g-dialog-link" href="<?= url::site("form/edit/{$item->type}s/$item->id") ?>"><?= t("Edit album") ?></a></li>
-    <li><a class="g-dialog-link" href="<?= url::site("move/browse/$item->id") ?>"><?= t("Move to another album") ?></a></li>
-    <li><a class="g-dialog-link" href="<?= url::site("quick/form_delete/$item->id?csrf=$csrf&from_id=$theme_item->id") ?>"><?= t("Delete this album") ?></a></li>
-    <? endif; ?>
-    <? if( identity::active_user()->admin ): ?>
-    <li><a class="g-dialog-link" href="<?= url::site("permissions/browse/$item->id") ?>"><?= t("Edit permissions") ?></a></li>
-    <? endif; ?>
-  </ul>
-  <? endif; ?>
-</div>
+<?= $theme->paginator() ?>
