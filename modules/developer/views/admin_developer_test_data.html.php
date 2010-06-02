@@ -19,7 +19,7 @@
     <? endif ?>
   });
 </script>
-<?= form::open($action, array("method" => "post", "id" => "g-generate-test-data"), $hidden) ?>
+<?= form::open($action, array("method" => "post", "id" => "g-generate-test-data")) ?>
   <? if (!empty($album_count)): ?>
     <p><?= t("Currently:") ?><br />
 
@@ -29,6 +29,7 @@
 
 <fieldset>
   <ul>
+    <li><?= access::csrf_form_field() ?></li>
     <li <? if (!empty($errors["albums"])): ?> class="g-error"<? endif ?>>
       <fieldset>
         <?= form::label("g-generate-albums", t("Generate Albums")) ?>

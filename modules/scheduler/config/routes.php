@@ -1,4 +1,5 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2010 Bharat Mediratta
  *
@@ -16,21 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class sso_event {
-  static function gallery_ready() {
-    $sso_username = Input::instance()->server("REMOTE_USER");
-    $user = Session::instance()->get("user");
-    if (empty($user) || $user->name != $sso_username) {
-      try {
-        identity::set_active_user(identity::lookup_user_by_name($sso_username));
-      } catch (Exception $e) {
-        Kohana_Log::add("error", "Couldn't authenticate as $sso_username: " .
-                        $e->getMessage() . "\n" . $e->getTraceAsString());
-      }
-    }
-  }
 
-  static function user_menu($menu, $theme) {
-    $menu->remove("user_menu_logout");
-  }
-}
+// Redirect /admin/maintenance to the admin/scheduler
+$config["^admin/maintenance(.*)$"] = "admin/schedule$1";

@@ -59,8 +59,13 @@ $album
   ->set("sort_order", "ASC")
   ->save();
 
-// Reload the members
-$album->load();
+$photo = Gallery3::factory()
+  ->set("type", "photo")
+  ->set("name", "Sample Photo.png")
+  ->set("title", "Sample Photo")
+  ->set_file("gallery.png")
+  ->create($album->url, $auth);
+alert("Uploaded photo: <b>{$photo->url}</b>");
 alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
 
 // Remove a child by removing it from the member list

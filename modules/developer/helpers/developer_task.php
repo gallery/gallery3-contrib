@@ -25,6 +25,7 @@ class developer_task_Core {
 
   static function create_module($task) {
     $context = unserialize($task->context);
+    Kohana_Log::add("error", "task context:\n" . Kohana::debug($context));
 
     if (empty($context["module"])) {
       $context["class_name"] = strtr($context["name"], " ", "_");
@@ -34,11 +35,11 @@ class developer_task_Core {
 
     switch ($context["step"]) {
     case 0:               // Create directory tree
-      foreach (array("", "controllers", "helpers", "js", "views") as $dir) {
+      foreach (array("", "controllers", "helpers", "views") as $dir) {
         $path = "{$context['module_path']}/$dir";
         if (!file_exists($path)) {
           mkdir($path);
-          chmod($path, 0777);
+          chmod($path, 0755);
          }
       }
       break;
@@ -103,7 +104,19 @@ class developer_task_Core {
       file_put_contents($file, ob_get_contents());
       ob_end_clean();
       break;
-    case 9:              // Generate module.info (do last)
+    case 9:               // Generate dashboard block view
+      $file = "{$context['module_path']}/views/admin_{$context['module']}_block.html.php";
+      ob_start();
+      $v = new View("dashboard_block_html.txt");
+      $v->name = $context["name"];
+      $v->module = $context["module"];
+      $v->class_name = $context["class_name"];
+      $v->css_id = preg_replace("#\s+#", "", $context["name"]);
+      print $v->render();
+      file_put_contents($file, ob_get_contents());
+      ob_end_clean();
+      break;
+    case 10:              // Generate module.info (do last)
       $file = "{$context["module_path"]}/module.info";
       ob_start();
       $v = new View("module_info.txt");
@@ -115,7 +128,7 @@ class developer_task_Core {
       break;
     }
     if (isset($file)) {
-      chmod($file, 0666);
+      chmod($file, 0765);
     }
     $task->done = (++$context["step"]) >= 11;
     $task->context = serialize($context);
@@ -128,7 +141,6 @@ class developer_task_Core {
       $config = Kohana::config("developer.methods");
       $file = "{$context["module_path"]}/helpers/{$context["module"]}_{$helper}.php";
       touch($file);
-      chmod($file, 0666);
       ob_start();
       $v = new View("$helper.txt");
       $v->helper = $helper;
@@ -184,7 +196,7 @@ class developer_task_Core {
   private static function _add_album_or_photo($desired_type=null) {
     srand(time());
     $parents = ORM::factory("item")->where("type", "=", "album")->find_all()->as_array();
-    $owner_id = user::active()->id;
+    $owner_id = identity::active_user()->id;
 
     $test_images = glob(dirname(dirname(__FILE__)) . "/data/*.[Jj][Pp][Gg]");
 
@@ -207,7 +219,7 @@ class developer_task_Core {
       $parents[] = $item->save();
     } else {
       $photo_index = rand(0, count($test_images) - 1);
-      $item = ORM:factory("item");
+      $item = ORM::factory("item");
       $item->type = "photo";
       $item->parent_id = $parent->id;
       $item->set_data_file($test_images[$photo_index]);
@@ -240,6 +252,7 @@ class developer_task_Core {
 
     $comment = ORM::factory("comment");
     $comment->author_id = $author->id;
+    $comment->item_id = $photo->id;
     $comment->text = self::_random_phrase(rand(8, 500));
     $comment->guest_name = $guest_name;
     $comment->guest_email = $guest_email;

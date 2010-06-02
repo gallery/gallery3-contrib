@@ -18,73 +18,13 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class rescue_task_Core {
-  const LEFT = 0;
-  const RIGHT = 1;
-
   static function available_tasks() {
     return array(Task_Definition::factory()
-                 ->callback("rescue_task::fix_mptt")
-                 ->name(t("Fix Album/Photo hierarchy"))
-                 ->description(t("Fix problems where your album/photo breadcrumbs are out of " .
-                                 "sync with your actual hierarchy."))
-                 ->severity(log::SUCCESS),
-
-                 Task_Definition::factory()
                  ->callback("rescue_task::fix_internet_addresses")
                  ->name(t("Fix internet addresses"))
                  ->description(t("Fix internet addresses broken when upgrading to Beta 3"))
                  ->severity(log::SUCCESS),
                  );
-  }
-
-  static function fix_mptt($task) {
-    $start = microtime(true);
-
-    $total = $task->get("total");
-    if (empty($total)) {
-      $task->set("total", $total = db::build()->count_records("items"));
-      $task->set("stack", "1:" . self::LEFT);
-      $task->set("ptr", 1);
-      $task->set("completed", 0);
-    }
-
-    $ptr = $task->get("ptr");
-    $stack = explode(" ", $task->get("stack"));
-    $completed = $task->get("completed");
-
-    // Implement a depth-first tree walk using a stack.  Not the most efficient, but it's simple.
-    while ($stack && microtime(true) - $start < 1.5) {
-      list($id, $state) = explode(":", array_pop($stack));
-      switch ($state) {
-      case self::LEFT:
-        self::set_left($id, $ptr++);
-        $item = ORM::factory("item", $id);
-        array_push($stack, $id . ":" . self::RIGHT);
-        foreach (self::children($id) as $child) {
-          array_push($stack, $child->id . ":" . self::LEFT);
-        }
-        break;
-
-      case self::RIGHT:
-        self::set_right($id, $ptr++);
-        $completed++;
-        break;
-      }
-    }
-
-    $task->set("stack", implode(" ", $stack));
-    $task->set("ptr", $ptr);
-    $task->set("completed", $completed);
-
-    if ($total == $completed) {
-      $task->done = true;
-      $task->state = "success";
-      $task->percent_complete = 100;
-    } else {
-      $task->percent_complete = round(100 * $completed / $total);
-    }
-    $task->status = t2("One row updated", "%count / %total rows updated", $completed,
-                       array("total" => $total));
   }
 
   static function fix_internet_addresses($task) {
@@ -130,30 +70,5 @@ class rescue_task_Core {
     }
     $task->status = t2("One row updated", "%count / %total rows updated", $completed,
                        array("total" => $total));
-  }
-
-  static function children($parent_id) {
-    return db::build()
-      ->select("id")
-      ->from("items")
-      ->where("parent_id", "=", $parent_id)
-      ->order_by("left_ptr", "ASC")
-      ->execute();
-  }
-
-  static function set_left($id, $value) {
-    db::build()
-      ->update("items")
-      ->set("left_ptr", $value)
-      ->where("id", "=", $id)
-      ->execute();
-  }
-
-  static function set_right($id, $value) {
-    db::build()
-      ->update("items")
-      ->set("right_ptr", $value)
-      ->where("id", "=", $id)
-      ->execute();
   }
 }
