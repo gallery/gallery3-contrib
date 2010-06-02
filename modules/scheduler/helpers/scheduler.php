@@ -100,16 +100,12 @@ class scheduler_Core {
   }
 
   static function get_definitions() {
-    $v = "";
+    $schedule_definitions = array();
     $events = ORM::factory("schedule")
       ->order_by("next_run_datetime", "asc")
       ->find_all();
     if ($events->count()) {
-      $v = new View("scheduler_definitions.html");
-      $v->schedule_definitions = array();
       foreach ($events as $schedule) {
-        $entry[] = $schedule->id;
-        $entry[] = $schedule->name;
         $run_date = strftime("%A, %b %e, %Y %H:%M ", $schedule->next_run_datetime);
         $intervals = scheduler::intervals();
         $interval = $intervals[$schedule->interval];
@@ -121,13 +117,13 @@ class scheduler_Core {
           $status = t("Scheduled");
         }
 
-        $v->schedule_definitions[] = (object)array("id" => $schedule->id,
-                                                   "name" => $schedule->name,
-                                                   "run_date" => $run_date,
-                                                   "interval" => $interval,
-                                                   "status" => $status);
+        $schedule_definitions[] = (object)array("id" => $schedule->id,
+                                                "name" => $schedule->name,
+                                                "run_date" => $run_date,
+                                                "interval" => $interval,
+                                                "status" => $status);
       }
     }
-    return $v;
+    return $schedule_definitions;
   }
 }

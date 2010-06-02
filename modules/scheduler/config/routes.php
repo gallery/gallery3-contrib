@@ -1,5 +1,4 @@
-<?php defined("SYSPATH") or die("No direct script access.") ?>
-<?= "<?php defined(\"SYSPATH\") or die(\"No direct script access.\");" ?>
+<?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2010 Bharat Mediratta
@@ -18,10 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class <?= $module ?>_event {
-<? foreach ($callbacks as $callback => $unused): ?>
-  <?= $callback ?> {
-  }
 
-<? endforeach ?>
-}
+// Redirect /admin/maintenance to the admin/scheduler
+$config["^admin/maintenance(.*)$"] = "admin/schedule$1";
