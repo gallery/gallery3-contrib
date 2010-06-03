@@ -259,17 +259,20 @@ class Admin_Developer_Controller extends Admin_Controller {
         if (preg_match_all('#module::event\("(.*?)"(.*)\);#mU', $file_as_string, $matches, PREG_SET_ORDER) > 0) {
           foreach ($matches as $match) {
             $event_name = $match[1];
-            $parameters = array();
-            if (!empty($match[2]) &&
-                preg_match_all('#\$[a-zA-Z_]*#', $match[2], $param_names)) {
+            $display_name = ucwords(str_replace("_", " ", $event_name));
+            if (!in_array($display_name, self::$event_list)) {
+              $parameters = array();
+              if (!empty($match[2]) &&
+                  preg_match_all('#\$[a-zA-Z_]*#', $match[2], $param_names)) {
 
-              foreach ($param_names[0] as $name) {
-                $parameters[] = $name != '$this' ? $name : '$' . $event_name;
+                foreach ($param_names[0] as $name) {
+                  $parameters[] = $name != '$this' ? $name : '$' . $event_name;
+                }
               }
+              self::$event_list["static function $event_name(" . implode(", ", $parameters) . ")"] = $display_name;
             }
-            self::$event_list["static function $event_name(" . implode(", ", $parameters) . ")"] = $event_name;
-            ksort(self::$event_list);
           }
+          ksort(self::$event_list);
         }
       }
     }
