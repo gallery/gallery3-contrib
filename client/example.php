@@ -60,8 +60,7 @@ alert("Found: {$photos->data->members[0]}");
 
 
 alert("Grab a random photo");
-$photos = Gallery3::factory($root->url, $auth)
-  ->set("random", "true")
+$photos = Gallery3::factory("{$root->url}?random=true", $auth)
   ->load();
 alert("Found: {$photos->data->members[0]}");
 
