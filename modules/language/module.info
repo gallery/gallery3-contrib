@@ -1,0 +1,4 @@
+name = Multi-Language Support
+description = "Provide support for internationalization (i18n) and localization(i10n)"
+
+version = 1
