@@ -19,32 +19,26 @@
  */
 class language_block {
   static function get_site_list() {
-    return array(
-      "language_site" => t("language Sidebar Block"));
-  }
-
-  static function get_admin_list() {
-    return array(
-      "language_admin" => t("language Dashboard Block"));
+    return array("language" => t("Language preference"));
   }
 
   static function get($block_id, $theme) {
     $block = new Block();
-    switch ($block_id) {
-    case "language_admin":
-      $block->css_id = "g-language-admin";
-      $block->title = t("language Dashboard Block");
-      $block->content = new View("admin_language_block.html");
-
-      $block->content->item = ORM::factory("item", 1);
-      break;
-    case "language_site":
-      $block->css_id = "g-language-site";
-      $block->title = t("language Sidebar Block");
-      $block->content = new View("language_block.html");
-
-      $block->content->item = ORM::factory("item", 1);
-      break;
+    if ($block_id == "language") {
+      $locales = locales::installed();
+      if (count($locales) > 1) {
+        foreach ($locales as $locale => $display_name) {
+          $locales[$locale] = SafeString::of_safe_html($display_name);
+        }
+        $block = new Block();
+        $block->css_id = "g-user-language-block";
+        $block->title = t("Language preference");
+        $block->content = new View("user_languages_block.html");
+        $block->content->installed_locales = array_merge(array("" => t("« none »")), $locales);
+        $block->content->selected = (string) locales::cookie_locale();
+      } else {
+        $block = "";
+      }
     }
     return $block;
   }
