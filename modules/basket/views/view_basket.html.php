@@ -76,7 +76,7 @@
           <? $total += $prod_details->cost?>
           <?= html::clean(basket::formatMoney($prod_details->cost)) ?>
         </td>
-        <td class="g-actions">
+        <td>
         <!-- a href="<?= url::site("admin/product_lines/edit_product_form/") ?>"
           open_text="<?= t("close") ?>"
           class="g-panel-link g-button ui-state-default ui-corner-all ui-icon-left">

@@ -19,7 +19,6 @@ $tag = Gallery3::factory()
   ->create($tags->url, $auth);
 alert("Created tag: <b>{$tag->url}</b>");
 
-
 $album = Gallery3::factory()
   ->set("type", "album")
   ->set("name", "Sample Album")
@@ -34,16 +33,24 @@ $album
   ->save();
 alert("New title: <b>{$album->data->entity->title}</b>");
 
-
-$photo = Gallery3::factory()
-  ->set("type", "photo")
-  ->set("name", "Sample Photo.png")
-  ->set("title", "Sample Photo")
-  ->set_file("gallery.png")
-  ->create($album->url, $auth);
-alert("Uploaded photo: <b>{$photo->url}</b>");
+for ($i = 0; $i < 2; $i++) {
+  $photo = Gallery3::factory()
+    ->set("type", "photo")
+    ->set("name", "Sample Photo.png")
+    ->set("title", "Sample Photo")
+    ->set_file("gallery.png")
+    ->create($album->url, $auth);
+  alert("Uploaded photo: <b>{$photo->url}</b>");
+}
+$album->load();
 alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
 
+alert("Reorder the album");
+$album
+  ->set_members(array($album->data->members[1], $album->data->members[0]))
+  ->set("sort_column", "weight")
+  ->save();
+alert("New order: <b>" . join(", ", $album->data->members) . "</b>");
 
 alert("Search for the photo");
 $photos = Gallery3::factory($root->url, $auth)
@@ -53,8 +60,7 @@ alert("Found: {$photos->data->members[0]}");
 
 
 alert("Grab a random photo");
-$photos = Gallery3::factory($root->url, $auth)
-  ->set("random", "true")
+$photos = Gallery3::factory("{$root->url}?random=true", $auth)
   ->load();
 alert("Found: {$photos->data->members[0]}");
 

@@ -17,15 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
 class scheduler_event_Core {
-  static function admin_maintenance_content($maintenance_content) {
-    $maintenance_content[] = scheduler::get_definitions();
-  }
-
-  static function admin_maintenance_task_buttons($task_buttons) {
-    $task_buttons[] = (object)array("text" => t("schedule"),
-                                    "url" =>url::site("form/add/admin/schedule"));
+  static function admin_menu($menu, $theme) {
+      $menu->get("maintenance")
+        ->url(url::site("admin/schedule"));
   }
 
   /**

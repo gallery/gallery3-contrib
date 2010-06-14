@@ -93,6 +93,7 @@ class Admin_register_Controller extends Admin_Controller {
 
   private function _get_admin_view($form, $errors) {
     $v = new Admin_View("admin.html");
+    $v->page_title = t("User registration");
     $v->content = new View("admin_register.html");
     $v->content->action = "admin/register/update";
     $v->content->policy_list =
