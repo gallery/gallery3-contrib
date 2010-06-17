@@ -76,7 +76,7 @@
           <?= $theme->user_menu() ?>
           <?= $theme->header_top() ?>
 
-          <!-- hide the menu and make it visible after the page has loaded, to minimize menu flicker -->
+          <!-- hide the menu until after the page has loaded, to minimize menu flicker -->
           <div id="g-site-menu" style="visibility: hidden">
             <?= $theme->site_menu($theme->item() ? "#g-item-id-{$theme->item()->id}" : "") ?>
           </div>
@@ -95,9 +95,7 @@
                  the immediate parent so that when you go back up a
                  level you're on the right page. -->
             <a href="<?= $parent->url($parent == $theme->item()->parent() ?
-                     "show={$theme->item()->id}" : null) ?>">
-              <?= html::purify($parent->title) ?>
-            </a>
+                     "show={$theme->item()->id}" : null) ?>"><?= html::purify($parent->title) ?></a>
           </li>
           <? $i++ ?>
           <? endforeach ?>
