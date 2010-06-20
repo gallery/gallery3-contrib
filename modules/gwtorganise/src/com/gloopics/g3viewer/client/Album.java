@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * encapsulates an album
@@ -190,6 +189,7 @@ public class Album extends TreeItem {
 		popupMenuBar.addItem(addAlbum);
 		popupMenuBar.addItem(userPermissions);
 		
+		 
 		popupMenuBar.setVisible(true);
 		popupPanel.add(popupMenuBar);
 		

@@ -126,7 +126,6 @@ public class UploadFile extends Composite{
 				{
 					m_Label.setText("Upload Error");
 					addStyleName("upload-error");
-					G3Viewer.displayError("Error Uploading", request.getResponseText());
 				}
 				removeCapture(RS, m_Name);
 				
