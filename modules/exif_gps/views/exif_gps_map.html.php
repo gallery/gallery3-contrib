@@ -2,6 +2,8 @@
 <script type="text/javascript" src="http://www.google.com/jsapi?key=<?= module::get_var("exif_gps", "googlemap_api_key"); ?>"></script>
 <script type="text/javascript">
   google.load("maps", "3",{"other_params":"sensor=false"});
+  var google_zoom_hack = false;
+  
   function initialize() {
     var latlng = new google.maps.LatLng(0,0);
     var myOptions = {
@@ -59,11 +61,25 @@
     google.maps.event.addListener(marker<?=$counter; ?>, 'click', function() {
       infowindow<?=$counter; ?>.open(map,marker<?=$counter; ?>);
     });
+
+    <? if (module::get_var("exif_gps", "googlemap_max_autozoom") != "") : ?>
+    // If there is a maximum auto-zoom value, then set up an event to check the zoom
+    // level the first time it is changed, and adjust it if necessary.
+    // (if we call map.getZoom right after .fitBounds, getZoom will return the initial 
+    // zoom level, not the auto zoom level, this way we get the auto zoomed value).
+    google.maps.event.addListener(map, 'zoom_changed', function() {
+      if (google_zoom_hack) {
+        if (map.getZoom() > 18) map.setZoom(18);
+        google_zoom_hack = false;
+      }
+    });
+    <? endif ?>
+
+    google_zoom_hack = true;
     map.fitBounds(glatlngbounds);
   }
 
   google.setOnLoadCallback(initialize);
-
 </script>
 
 <div id="g-exif-map-header">
