@@ -111,6 +111,10 @@ class Gallery3 {
    * @return object  Gallery3
    */
   public function create($url, $token) {
+    if (!is_string($url)) {
+      throw new Gallery3_Exception("Invalid url: " . var_export($url));
+    }
+
     $response = Gallery3_Helper::request(
       "post", $url, $token, array("entity" => $this->data->entity), $this->file);
     $this->url = $response->url;
@@ -153,7 +157,7 @@ class Gallery3 {
   public function load() {
     $response = Gallery3_Helper::request("get", $this->url, $this->token);
     $this->data = $response;
-    $this->original_entity = (array)$response->entity;
+    $this->original_entity = isset($response->entity) ? (array)$response->entity : null;
     return $this;
   }
 }
