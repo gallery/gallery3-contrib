@@ -45,7 +45,7 @@
     <?= $theme->script("gallery.dialog.js") ?>
     <?= $theme->script("_DISABLED_superfish/js/superfish.js") ?>
     <?= $theme->script("_DISABLED_jquery.localscroll.js") ?>
-    <?= $theme->script("stopdesign.ui.init.js") ?>
+    <?= $theme->script("sobriety.ui.init.js") ?>
     <?= $theme->script("ui.init.js") ?>
 
     <? /* These are page specific, but if we put them before $theme->head() they get combined */ ?>
@@ -57,7 +57,7 @@
     <? endif ?>
 
     <?= $theme->head() ?>
-    <?= new View("stopdesign_styles.html") ?>
+    <?= new View("sobriety_styles.html") ?>
   </head>
 
   <body <?= $theme->body_attributes() ?>>

@@ -11,7 +11,7 @@
     <?= $theme->tag_menu() ?>
   <? endif ?>
 </div>
-<?= new View("stopdesign_actions.html") ?>
+<?= new View("sobriety_actions.html") ?>
 
 <?= $theme->sidebar_blocks() ?>
 <?= $theme->sidebar_bottom() ?>
