@@ -56,14 +56,15 @@ class exif_gps_event_Core {
   static function item_edit_form($item, $form) {
     // Allow users to set / edit the GPS coordinates associated with the current item.
     $record = ORM::factory("exif_coordinate")->where("item_id", "=", $item->id)->find();
+    $gpsdata = $form->edit_item->group("gps_data")->label("GPS Data");
     if ($record->loaded()) {
-      $form->edit_item->input("latitude")->label(t("Latitude"))
+      $gpsdata->input("latitude")->label(t("Latitude"))
            ->value($record->latitude);
-      $form->edit_item->input("longitude")->label(t("Longitude"))
+      $gpsdata->input("longitude")->label(t("Longitude"))
            ->value($record->longitude);
     } else {
-      $form->edit_item->input("latitude")->label(t("Latitude"));
-      $form->edit_item->input("longitude")->label(t("Longitude"));
+      $gpsdata->input("latitude")->label(t("Latitude"));
+      $gpsdata->input("longitude")->label(t("Longitude"));
     }
   }
 
@@ -72,7 +73,7 @@ class exif_gps_event_Core {
 
     // Require a set of coordinates (both latitude and longitude).
     //   If one or both fields are blank, completely delete any coordinates associated with this item.
-    if (($form->edit_item->latitude->value == "") || ($form->edit_item->longitude->value == "")) {
+    if (($form->edit_item->gps_data->latitude->value == "") || ($form->edit_item->gps_data->longitude->value == "")) {
       db::build()
         ->delete("exif_coordinates")
         ->where("item_id", "=", $item->id)
@@ -82,9 +83,18 @@ class exif_gps_event_Core {
       if (!$record->loaded()) {
         $record->item_id = $item->id;
       }
-      $record->latitude = $form->edit_item->latitude->value;
-      $record->longitude = $form->edit_item->longitude->value;
+      $record->latitude = $form->edit_item->gps_data->latitude->value;
+      $record->longitude = $form->edit_item->gps_data->longitude->value;
       $record->save();
     }
+  }
+
+  static function admin_menu($menu, $theme) {
+    // Add a link to the EXIF_GPS admin page to the Settings menu.
+    $menu->get("settings_menu")
+      ->append(Menu::factory("link")
+               ->id("exif_gps")
+               ->label(t("EXIF_GPS Settings"))
+               ->url(url::site("admin/exif_gps")));
   }
 }

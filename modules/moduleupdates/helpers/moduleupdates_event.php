@@ -1,5 +1,4 @@
-<?php defined("SYSPATH") or die("No direct script access.");
-/**
+<?php defined("SYSPATH") or die("No direct script access.");/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2010 Bharat Mediratta
  *
@@ -17,5 +16,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class EXIF_Coordinate_Model extends ORM {
+
+class moduleupdates_event_Core {
+
+	static function admin_menu($menu, $theme) {
+  
+		$menu->get("settings_menu")
+			->append(Menu::factory("link")
+			->id("moduleupdates_menu")
+			->label(t("Module Updates"))
+			->url(url::site("admin/moduleupdates")));
+	}
 }

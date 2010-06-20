@@ -41,5 +41,5 @@
   // Limit Description to 150 characters.
   $metaDescription = substr($metaDescription, 0,150);
 ?>
-<META NAME="KEYWORDS" CONTENT="<?= $metaTags ?>">
-<META NAME="DESCRIPTION" CONTENT="<?= $metaDescription ?>">
+<meta name="KEYWORDS" content="<?= $metaTags ?>" />
+<meta name="DESCRIPTION" content="<?= $metaDescription ?>" />
