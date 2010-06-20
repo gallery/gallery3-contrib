@@ -1,135 +1,108 @@
-/* =Links
+/* Common
+----------------------------------------------- */
+a, a:visited {
+
+  color: #258;
+  text-decoration: none;
+
+  border-bottom: 1px dotted #469;
+}
+
+a:hover, a:active {
+  color: #933;
+
+  border-color: #b55;
+  border-bottom-style: solid;
+}
+
+h1 {
+  padding: 0 0 .5em;
+
+  font-size: 1.7em;
+  font-weight: normal;
+  color: #543;
+
+  border-bottom: 1px solid #ddd;
+}
+
+
+
+/* Page structure
 ----------------------------------------------- */
 
-h1 {
-  margin:0 0 3px;
-  padding:0 0 .35em;
-  border-bottom:1px solid #ddd;
-  font:200% "Gill Sans","Trebuchet MS",Verdana,Sans-serif;
-  line-height:1.2em;
-  text-align:center;
-  text-transform:uppercase;
-  letter-spacing:.15em;
-  }
-
-h1 {
-  color:#543;
-  border-color:#ddc;
-  }
-
-a, a:visited {
-  color:#258;
-  text-decoration:none;
-  border-bottom:1px solid #469;
-  outline:none;
-  }
-html>body a, html>body a:visited {
-  border-bottom-style:dotted;
-  }
-a:hover, a:active {
-  color:#933;
-  border-color:#b55;
-  border-bottom-style:solid;
-  }
-a img, a.btn, a.btn:visited, a.i, a.i:visited, a.i:hover {
-  border-width:0;
-  }
-a.btn img, a.i>img {
-  position:relative;
-  top:2px;
-  }
-
-
-
-
-
-#g-login-menu {
-  position: absolute;
-  right: 0;
-  padding: 0;
+body {
   margin: 0;
-}
-#g-login-menu li {
-  display: inline;
-}
-#g-login-menu li:first-child {
-  /*display: none;*/
-}
-#g-logo, #g-quick-search-form, #g-site-menu {
-  display: none;
-}
 
-
-
-
-/* ~~~~~ Page ~~~~~ */
-
-body, html {
-  background: #ccb url("../images/backgrounds/body-bg.jpg") repeat-x 0 0;
-  margin: 0;
-  padding: 0;
-  font: small Verdana,Sans-serif;
+  font-family: "Gill Sans", "Trebuchet MS", Verdana, sans-serif;
+  font-size: small;
   color: #333;
-}
 
-.g-view {
-  width: 100%;
-}
-
-#bd {
-  margin: 0;
-  padding: 15px 15px 0 15px;
+  background-color: #ccb;
+  background-image: url("../images/backgrounds/body-bg.jpg");
+  background-repeat: repeat-x;
+  background-position: top;
 }
 
 
 /* ~~~~~ Header ~~~~~ */
 
-#g-header {
-  background: #000 url("../images/backgrounds/body-breadcrumbs-bg.gif");
-  padding: 4px 0 6px;
+div#g-header {
+  padding: 0.5em 0;
+  height: 1.5em;
+
+  line-height: 1.5em;
+
+  background-color: #000;
+  background-image: url("../images/backgrounds/body-breadcrumbs-bg.gif");
+  background-repeat: repeat;
+  background-position: top;
+
   border-bottom: 3px solid #bba;
-  min-height: 1.6em;
 }
 
-#g-banner {
-  /*display: none;*/
+div#g-banner {
+  display: none;
 }
 
-.g-breadcrumbs {
+ul.g-breadcrumbs {
   margin: 0;
   padding: 0;
-  font-size: 85%;
-  line-height: 1.6em;
+
   color: #777;
   text-align: center;
 }
 
-.g-breadcrumbs li,
-.g-breadcrumbs a {
-  border-color: #777;
-  color: #888;
-}
-
-.g-breadcrumbs li {
+ul.g-breadcrumbs > li {
   display: inline;
   padding-left: 0.3em;
 }
 
-.g-breadcrumbs li:after {
+ul.g-breadcrumbs > li:after {
   content: "»";
 }
 
-.g-breadcrumbs li.g-active:after {
+ul.g-breadcrumbs > li.g-active:after {
   content: "";
 }
 
-.g-breadcrumbs a {
+ul.g-breadcrumbs > li > a {
   margin-right: 0.3em;
+
+  color: #888;
+
+  border-color: #777;
+}
+
+
+/* ~~~~~ Content ~~~~~ */
+
+div#bd {
+  padding: 15px;
 }
 
 
 /* ~~~~~ Footer ~~~~~ */
-
+/* TODO */
 #g-footer {
   clear: both;
   margin: 0 15px;
@@ -151,47 +124,102 @@ body, html {
 }
 
 
-/* Status and validation messages ~~~~ */
 
-.g-message-block {
-  background-position: .4em .3em;
-  border: 1px solid #ccc;
-  padding: 0;
+
+
+
+/* Albums & Items
+----------------------------------------------- */
+
+
+.g-item,
+#g-item .g-paginator li.g-first,
+#g-item .g-paginator li.g-text-right {
+  display: block;
+  position: relative;
+  text-align: center;
+
+  background: #fff url("../images/backgrounds/thumb.png") no-repeat;
+
+  border-radius: 5px;
+  box-shadow: 3px 3px 0px #b7b7a7;
+  -webkit-border-radius: 5px;
+  -webkit-box-shadow: 3px 3px 0px #b7b7a7;
+  -moz-border-radius: 5px;
+  -moz-box-shadow: 3px 3px 0px #b7b7a7;
 }
 
-#g-action-status {
-  width: 75%;
-  float: right;
-  margin-bottom: 1em;
+
+
+.g-item > a,
+#g-item .g-paginator li.g-first a,
+#g-item .g-paginator li.g-text-right a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 0;
+  vertical-align: middle;
 }
 
-#g-action-status li,
-p#g-action-status,
-div#g-action-status {
-  padding: .3em .3em .3em 30px;
+.g-item > a {
+  display: table-cell;
 }
 
-#g-site-status li {
-  border-bottom: 1px solid #ccc;
-  padding: .3em .3em .3em 30px;
+#g-item .g-paginator li.g-first a,
+#g-item .g-paginator li.g-text-right a {
+  border-bottom: none;
+  text-indent: -9999em;
+  font-size: 1px;
+  color: #fff;
 }
 
-.g-module-status {
-  clear: both;
-  margin-bottom: 1em;
+.g-item > h2 {
+  position: absolute;
+  left: 15px;
+  bottom: 8px;
+  margin: 0;
+  padding-top: 8px;
+
+  background: #fff;
+  text-align: center;
+  color:#333;
+  line-height: 10px;
+
+  font-size: 10px;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: .1em;
 }
 
-.g-message {
-  background-position: 0 50%;
+.g-item > h2 a {
+  border: 0;
 }
 
-.g-warning {
-  background: #fcf9ce url('../../../lib/images/ico-warning.png') no-repeat .4em 50%;
+#g-item .g-paginator li.g-text-right {
+  position: absolute;
+  top: 0px;
 }
+
 
 
 
 /* ~~~~~ Album ~~~~~ */
+.g-item {
+  float:left;
+  margin:0 10px 10px 0;
+}
+
+.g-item.g-album >  a {
+  background-image: url("../images/emblems/g-item_g-album.png");
+  background-repeat: no-repeat;
+}
+
+
+
+
 
 #g-content > #g-info {
   clear:left;
@@ -329,63 +357,6 @@ span.ui-icon-key { background-position: -112px -128px; }
 
 
 
-.g-item {
-  float:left;
-  margin:0 10px 10px 0;
-
-  position: relative;
-  text-align: center;
-
-  background-color: #fff;
-  background-image: url("../images/backgrounds/thumb.png");
-  background-position: 0 0;
-  background-repeat: no-repeat;
-
-  -webkit-border-radius: 5px;
-  -webkit-box-shadow: 3px 3px 0px #b7b7a7;
-  -moz-border-radius: 5px;
-  -moz-box-shadow: 3px 3px 0px #b7b7a7;
-}
-
-.g-item > div {
-  margin-top: 0;
-}
-
-.g-item > a {
-  display: table-cell;
-  text-decoration: none;
-  border: 0;
-  vertical-align: middle;
-}
-
-.g-item.g-album >  a {
-  background-image: url("../images/emblems/g-item_g-album.png");
-  background-repeat: no-repeat;
-}
-
-.g-item > h2 {
-  position: absolute;
-  left: 15px;
-  bottom: 8px;
-  margin: 0;
-  padding-top: 8px;
-
-  background: #fff;
-  text-align: center;
-  color:#333;
-  line-height: 10px;
-
-  font-size: 10px;
-  font-family:"Gill Sans","Trebuchet MS",Verdana,Sans-serif;
-  font-weight: normal;
-  text-transform: uppercase;
-  letter-spacing: .1em;
-}
-
-.g-item > h2 a {
-  border: 0;
-}
-
 
 #g-content > .g-paginator {
   clear:left;
@@ -519,42 +490,6 @@ span.ui-icon-key { background-position: -112px -128px; }
   background-repeat: no-repeat;
 }
 
-#g-item .g-paginator li.g-first,
-#g-item .g-paginator li.g-text-right {
-  display: block;
-  position: relative;
-
-  background-color: #fff;
-  background-image: url("../images/backgrounds/thumb.png");
-  background-repeat: no-repeat;
-
-  border-radius: 5px;
-  box-shadow: 3px 3px 0px #b7b7a7;
-  -webkit-border-radius: 5px;
-  -webkit-box-shadow: 3px 3px 0px #b7b7a7;
-  -moz-border-radius: 5px;
-  -moz-box-shadow: 3px 3px 0px #b7b7a7;
-}
-
-#g-item .g-paginator li.g-first a,
-#g-item .g-paginator li.g-text-right a {
-  display: block;
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-bottom: none;
-  text-indent: -9999em;
-  font-size: 1px;
-  color: #fff;
-}
-
-#g-item .g-paginator li.g-text-right {
-  position: absolute;
-  top: 0px;
-}
-
 #g-item .g-paginator li.g-first a:hover span,
 #g-item .g-paginator li.g-text-right a:hover span {
     display: block;
@@ -627,6 +562,98 @@ span.ui-icon-key { background-position: -112px -128px; }
 #g-item .g-block#g-comments {
   display: block;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#g-login-menu {
+  position: absolute;
+  right: 0;
+  padding: 0;
+  margin: 0;
+}
+#g-login-menu li {
+  display: inline;
+}
+#g-login-menu li:first-child {
+  /*display: none;*/
+}
+#g-logo, #g-quick-search-form, #g-site-menu {
+  display: none;
+}
+
+
+
+
+
+
+
+
+
+/* Status and validation messages ~~~~ */
+
+.g-message-block {
+  background-position: .4em .3em;
+  border: 1px solid #ccc;
+  padding: 0;
+}
+
+#g-action-status {
+  width: 75%;
+  float: right;
+  margin-bottom: 1em;
+}
+
+#g-action-status li,
+p#g-action-status,
+div#g-action-status {
+  padding: .3em .3em .3em 30px;
+}
+
+#g-site-status li {
+  border-bottom: 1px solid #ccc;
+  padding: .3em .3em .3em 30px;
+}
+
+.g-module-status {
+  clear: both;
+  margin-bottom: 1em;
+}
+
+.g-message {
+  background-position: 0 50%;
+}
+
+.g-warning {
+  background: #fcf9ce url('../../../lib/images/ico-warning.png') no-repeat .4em 50%;
+}
+
+
+
 
 
 /* ~~~~~ Dialog ~~~~~ */
