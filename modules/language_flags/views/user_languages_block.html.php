@@ -33,7 +33,7 @@
             key($installed_locales) . "')\"><img src=\"" . 
             $flag_url . "\" width=\"50\" title=\"" . $one_locale . 
             "\" alt=\"" . $one_locale . "\" border=\"0\" class=\"" . 
-            $img_class . "\"></a></div>";
+            $img_class . "\" /></a></div>";
     }
     next($installed_locales);
   }

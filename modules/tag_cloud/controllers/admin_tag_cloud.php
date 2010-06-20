@@ -43,6 +43,7 @@ class Admin_Tag_Cloud_Controller extends Admin_Controller {
       }
       if ($valid) {
         module::set_var("tag_cloud", "tagcolor", $options->tagcolor->value);
+        module::set_var("tag_cloud", "mouseover", $options->mouseover->value);
         module::set_var("tag_cloud", "background_color", $options->background_color->value);
         module::set_var("tag_cloud", "transparent", $options->transparent->value);
         module::set_var("tag_cloud", "speed", $options->speed->value);
@@ -65,6 +66,10 @@ class Admin_Tag_Cloud_Controller extends Admin_Controller {
     $group = $form->group("tag_cloud_options")->label(t("Tag Cloud Options"));
     $group->input("tagcolor")    ->label(t("Tag color"))
       ->value(module::get_var("tag_cloud", "tagcolor", "0x333333"))
+      ->error_message("not_valid", t("The color value must be specified as '0xhhhhhh'"))
+      ->rules("required|length[8]");
+    $group->input("mouseover")    ->label(t("Tag mouseover color"))
+      ->value(module::get_var("tag_cloud", "mouseover", "0x000000"))
       ->error_message("not_valid", t("The color value must be specified as '0xhhhhhh'"))
       ->rules("required|length[8]");
     $group->input("background_color")->label(t("Background color"))

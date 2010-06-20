@@ -265,7 +265,6 @@ class CalendarView_Controller extends Controller {
     $str_year_id = Input::instance()->post("cal_year");
 
     // redirect to the currect page.
-    url::redirect(url::site("calendarview/calendar/" . $str_year_id . "/" . $str_user_id));
-
+    url::redirect(url::site("calendarview/calendar/" . $str_year_id . "/" . $str_user_id, request::protocol()));
   }
 }

@@ -17,5 +17,20 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class EXIF_Coordinate_Model extends ORM {
+class database_info_block_Core {
+  static function get_admin_list() {
+    return array("database_info" => t("Database info"));
+  }
+
+  static function get($block_id) {
+    $block = new Block();
+    switch ($block_id) {
+    case "database_info":
+      $block->css_id = "g-database-info";
+      $block->title = t("Database information");
+      $block->content = new View("admin_block_db.html");
+      break;
+    }
+    return $block;
+  }
 }

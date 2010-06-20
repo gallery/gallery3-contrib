@@ -28,13 +28,16 @@ class tag_cloud_block {
     switch ($block_id) {
     case "tag_cloud_site":
       $options = array();
-      foreach (array("tagcolor", "background_color", "transparent", "speed", "distribution")
+      foreach (array("tagcolor", "background_color", "mouseover", "transparent", "speed", "distribution")
                as $option) {
         $value = module::get_var("tag_cloud", $option, null);
         if (!empty($value)) {
           switch ($option) {
           case "tagcolor":
             $options["tcolor"] = $value;
+            break;
+          case "mouseover":
+            $options["hicolor"] = $value;
             break;
           case "background_color":
             $options["bgColor"] = $value;

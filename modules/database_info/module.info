@@ -1,0 +1,3 @@
+name = "Database Info"
+description = "View information about your Gallery 3 database on the admin dashboard."
+version = 1
