@@ -4,26 +4,18 @@
  * @requires YUI reset, font, grids CSS
  *
  * Sheet organization:
- *  0)  ThemeRoller
  *  1)  Basic HTML elements
  *  2)  Reusable content blocks
  *  3)  Page layout containers
  *  4)  Content blocks in specific layout containers
  *  5)  Navigation and menus
- *  6)  jQuery and jQuery UI
- *  7)  Right-to-left language styles
- *  8)  More Browny
+ *  6)  ThemeRoller
+ *  7)  jQuery and jQuery UI
+ *  8)  Right-to-left language styles
+ *  9)  More Browny
  *
  * @todo Review g-buttonset-vertical
  */
-
-/** *******************************************************************
- * 0) ThemeRoller
- **********************************************************************/
-/* ~browny~ */
-
-/* ThemeRoller overrides ~~~~~~~~~~~~~~~~~~~ */
-@import "themeroller/ui.tabs.css";
 
 /** *******************************************************************
  * 1) Basic HTML elements
@@ -32,7 +24,7 @@
 /* ~browny~ */
 body, html {
   background-color: #5a3007;
-  font-family: 'Geeza Pro', Tahoma, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 p {
@@ -414,7 +406,7 @@ th {
   padding: .3em .8em;
 }
 
-/* In-line editing  ~~~~~~~~~~~~~~~~~~~~~~ */
+/* In-line editing  ~~~~~~~~~~~~~~~~~~~~ */
 #g-in-place-edit-message {
   background-color: #FFF;
 }
@@ -437,10 +429,18 @@ th {
 }
 
 /** *******************************************************************
- * 6) jQuery and jQuery UI
+ * 6) ThemeRoller Theme
+ **********************************************************************/
+/* ~browny~ */
+
+/* ThemeRoller overrides ~~~~~~~~~~~~~~ */
+@import "themeroller/ui.tabs.css";
+
+/** *******************************************************************
+ * 7) jQuery and jQuery UI
  *********************************************************************/
 
-/* Superfish menu overrides ~~~~~~~~~~~~~~ */
+/* Superfish menu overrides ~~~~~~~~~~~ */
 
 /* ~browny~ */
 .sf-menu li li,
@@ -453,7 +453,26 @@ th {
   background-color: #e0cbae;
 }
 
-/* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
+/* ~browny~ */
+.sf-menu a {
+	border-top: 1px solid #e0cbae;
+}
+
+/* ~browny~ */
+.sf-menu li {
+	background: #d3b07e url('../images/ui-bg_highlight-soft_45_d3b07e_1x100.png') 50% 50% repeat-x;
+}
+
+/* ~browny~ */
+.sf-menu li:hover, 
+.sf-menu li.sfHover,
+.sf-menu a:focus, 
+.sf-menu a:hover, 
+.sf-menu a:active {
+	background: #e0cbae;
+}
+
+/* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~ */
 
 #g-admin-dashboard .ui-state-highlight,
 #g-sidebar .ui-state-highlight {
@@ -471,7 +490,7 @@ th {
 }
 
 /** *******************************************************************
- * 7) Right to left styles
+ * 8) Right to left styles
  *********************************************************************/
 
 .rtl #g-content #g-album-grid .g-item,
@@ -513,38 +532,31 @@ th {
 }
 
 /** *******************************************************************
- * 8) More Browny (Extra overrides for better Browny look)
+ * 9) More Browny (Extra overrides for better Browny look)
  *********************************************************************/
 
-/* /lib/superfish/css/superfish.css ~~~~~~~~~ */
-.sf-menu a {
-	border-top: 1px solid #e0cbae;
-}
-.sf-menu li {
-	background: #d3b07e url('../images/ui-bg_highlight-soft_45_d3b07e_1x100.png') 50% 50% repeat-x;
-}
-.sf-menu li:hover, .sf-menu li.sfHover,
-.sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
-	background: #e0cbae;
-}
+/* /lib/gallery.common.css ~~~~~~~~~~~~ */
 
-/* /lib/gallery.common.css ~~~~~~~~~~~~~~~~ */
 .g-success {
 background: #fcf9ce url('../images/ico-success.png') no-repeat .4em 50%
 }
+
 .g-even {
 	  background: transparent;
 }
+
 .g-odd {
   background-color: #f2e6d4;
 }
 
 /* /modules/gallery/css/l10n_client.css */
+
 #l10n-client .labels {
   background:#262626 !important;
 }
 
-/* /modules/user/css/user.css */
+/* /modules/user/css/user.css ~~~~~~~~~ */
+
 #g-user-admin-list .g-admin {
   color: #8d8d3d !important;
 }

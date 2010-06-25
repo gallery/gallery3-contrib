@@ -4,24 +4,16 @@
  * @requires YUI reset, font, grids CSS
  *
  * Sheet organization:
- *  0)  ThemeRoller
  *  1)  Font sizes, base HTML elements
  *  2)  Reusable content blocks
  *  3)  Page layout containers
  *  4)  Content blocks in specific layout containers
  *  5)  Navigation and menus
- *  6)  jQuery and jQuery UI
- *  7)  Right-to-left language styles
- *  8)  More Browny
+ *  6)  ThemeRoller
+ *  7)  jQuery and jQuery UI
+ *  8)  Right-to-left language styles
+ *  9)  More Browny
  */
-
-/** *******************************************************************
- * 0) ThemeRoller
- **********************************************************************/
-/* ~browny~ */
-
-/* ThemeRoller overrides ~~~~~~~~~~~~~~~~~~~ */
-@import "themeroller/ui.tabs.css";
 
 /** *******************************************************************
  * 1) Font sizes, base HTML elements
@@ -440,7 +432,16 @@ td {
 }
 
 /** *******************************************************************
- * 6) jQuery and jQuery UI
+ * 6) ThemeRoller Theme
+ **********************************************************************/
+/* ~browny~ */
+
+/* ThemeRoller overrides ~~~~~~~~~~~~~~~~~ */
+
+@import "themeroller/ui.tabs.css";
+
+/** *******************************************************************
+ * 7) jQuery and jQuery UI
  *********************************************************************/
 
 /* Superfish menu overrides ~~~~~~~~~~~~~~ */
@@ -473,7 +474,7 @@ td {
 }
 
 /** *******************************************************************
- * 7) Right to left language styles
+ * 8) Right to left language styles
  *********************************************************************/
 
 .rtl #g-header #g-login-menu,
@@ -498,7 +499,7 @@ td {
 }
 
 /** *******************************************************************
- * 8) More Browny (Extra overrides for better Browny look)
+ * 9) More Browny (Extra overrides for better Browny look)
  *********************************************************************/
 /* ~browny~ */
 
@@ -530,7 +531,28 @@ tr.g-success td.g-success {
   padding: .5em 18px .5em 8px;
 }
 
-/* /lib/uploadify/uploadify.css ~~~~~~~~~~~ */
+/* /modules/gallery/css/gallery.css ~~~~~~ */
+
+#g-add-photos-form p {
+  margin-bottom: .5em !important;
+}
+
+#g-permissions .g-allowed {
+  background-color: #fcf9ce !important;
+}
+
+#g-user-profile th,
+#g-user-profile td {
+  border: 1px dotted #ccc !important;
+}
+
+/* /modules/gallery/css/l10n_client.css ~~ */
+
+#l10n-client .labels {
+  background:#262626 !important;
+}
+
+/* Uploadify ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .uploadifyQueueItem {
 	border: 2px solid #EBEBDF !important;
@@ -545,26 +567,15 @@ tr.g-success td.g-success {
 	margin-top: 1em;
 }
 
-/* /modules/gallery/css/gallery.css */
-#g-add-photos-form p {
-  margin-bottom: .5em !important;
+/* User Profile ~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-avatar g-left {
+	width: 80px !important;
+	height: 80px !important;
 }
 
-#g-permissions .g-allowed {
-  background-color: #fcf9ce !important;
-}
+/* Organize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-#g-user-profile th,
-#g-user-profile td {
-  border: 1px dotted #ccc !important;
-}
-
-/* /modules/gallery/css/l10n_client.css */
-#l10n-client .labels {
-  background:#262626 !important;
-}
-
-/* /modules/organize/css/organize_theme.css */
 #g-organize {
   color: #6E3B1C !important;
 }
@@ -577,13 +588,8 @@ tr.g-success td.g-success {
   background-color: #F2EEE9 !important;
 }
 
-/* User Profile ~~~~~~~~~~~ */
-.g-avatar g-left {
-	width: 80px !important;
-	height: 80px !important;
-}
+/* EXIF ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-/* EXIF Module ~~~~~~~~~~~ */
 #g-exif-data {
 	font-size: .85em !important;
 }
@@ -594,7 +600,9 @@ tr.g-success td.g-success {
 	background: #fcf9ce !important;
 }
 
-/* /modules/calendarview/css/calendarview_calendar.css */
+/* 3rd Party Modules ~~~~~~~~~~~~~~~~~~~~~ */
+
+/* CalendarView */
 #g-calendar-grid {
   margin: 8px 8px 8px 8px !important;
   border: dotted #f2e6d4;
@@ -610,12 +618,11 @@ table.calendar td:hover {
   padding-left: 0px;
 }
 
-/* ../calendarview_menu.css */
 #g-view-menu #g-calendarview-link {
   background-image: url('../images/ico-view-calendarview.png') !important;
 }
 
-/* /modules/downloadfullsize/css/downloadfullsize_menu.css */
+/* DownloadFullSize */
 #g-view-menu #g-download-fullsize-link {
   background-image: url('../images/ico-view-downloadfullsize.png') !important;
 }
