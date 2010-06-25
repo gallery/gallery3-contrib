@@ -47,16 +47,24 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
 		
 		foreach (module::available() as $this_module_name => $module_info) {
 			
+			$remote_version = '';
+			$remote_server = '';
+			
 			list ($remote_version, $remote_server) = $this->get_remote_module_version($this_module_name);
 			
 			$font_color = "black";
 			if ($remote_version == "DNE") {
 				$font_color = "blue";
-			} else if ($remote_version < $module_info->code_version) {
+			} else if ($module_info->version != '' and $module_info->code_version < $module_info->version) {
+				$font_color = "pink";
+			} else if ($module_info->version != '' and $module_info->code_version > $module_info->version) {
+				$font_color = "orange";
+			} else if ($remote_version < $module_info->code_version  or ($module_info->version != '' and $remote_version < $module_info->version)) {
 				$font_color = "green";
-			} else if ($remote_version > $module_info->code_version) {
+			} else if ($remote_version > $module_info->code_version   or ($module_info->version != '' and $remote_version > $module_info->version)) {
 				$font_color = "red";
 			}
+      
 			$all_modules->$this_module_name = array ("name" => $module_info->name, "locked" => $module_info->locked,
       "code_version" => $module_info->code_version, "active" => $module_info->active, 
       "version" => $module_info->version,"description" => $module_info->description, 
@@ -91,7 +99,9 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
 		
 		try {
 			$file = fopen ("http://github.com/gallery/gallery3/raw/master/modules/".$module_name."/module.info", "r");
-			$server = '(G3)';
+			if ($file != null) {
+			  $server = '(G3)';
+			}
 		}
 		catch (Exception $e) {
 			//echo 'Message: ' .$e->getMessage() . '<br>';
@@ -100,7 +110,9 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
 		if ($file == null) {
 			try {
 				$file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/modules/".$module_name."/module.info", "r");
-				$server = '(G3CC)';
+				if ($file != null) {
+          $server = '(G3CC)';
+        }
 			}
 			catch (Exception $e) {
 				//echo 'Message: ' .$e->getMessage() . '<br>';
