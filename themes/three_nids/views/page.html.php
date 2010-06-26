@@ -98,7 +98,7 @@
           <? endif ?>
           <div id="g-site-menu">
 	 <? if ($user->admin): ?>
-              <?= $theme->site_menu("#g-item-img") ?>
+           <?= $theme->site_menu("#g-item-img") ?>
 	 <? endif ?>
           </div>
           <?= $theme->header_bottom() ?>
