@@ -95,11 +95,13 @@
                  the immediate parent so that when you go back up a
                  level you're on the right page. -->
             <a href="<?= $parent->url($parent == $theme->item()->parent() ?
-                     "show={$theme->item()->id}" : null) ?>"><?= html::purify($parent->title) ?></a>
+                     "show={$theme->item()->id}" : null) ?>"><?= text::limit_chars(html::purify($parent->title), 15) ?></a>
           </li>
           <? $i++ ?>
           <? endforeach ?>
-          <li class="g-active<? if ($i == 0) print " g-first" ?>"><?= html::purify($theme->item()->title) ?></li>
+          <li class="g-active<? if ($i == 0) print " g-first" ?>">
+            <?= text::limit_chars(html::purify($theme->item()->title), 15) ?>
+          </li>
         </ul>
         <? endif ?>
       </div>
