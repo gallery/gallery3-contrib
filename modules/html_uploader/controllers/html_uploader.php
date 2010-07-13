@@ -26,7 +26,7 @@ class Html_Uploader_Controller extends Controller {
       $album = $album->parent();
     }
 
-    print $this->_get_add_form($album);
+    print json_encode(array("form" => (string) $this->_get_add_form($album)));
   }
 
   public function add($id) {
@@ -66,7 +66,7 @@ class Html_Uploader_Controller extends Controller {
                          html::anchor("photos/$item->id", t("view photo")));
           }
           module::event("add_photos_form_completed", $item, $form);
-          
+
         } catch (Exception $e) {
           // Lame error handling for now.  Just record the exception and move on
           Kohana_Log::add("error", $e->getMessage() . "\n" . $e->getTraceAsString());
