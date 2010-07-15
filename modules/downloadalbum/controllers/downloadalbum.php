@@ -72,7 +72,7 @@ class downloadalbum_Controller extends Controller {
       // Central directory structure: File header
       $cds .= pack('VvvvvVVVVvvvvvVVa' . $f_namelen,
           0x02014b50,         // central file header signature (4 bytes)
-          0x14,               // version made by (2 bytes)
+          0x031e,             // version made by (2 bytes) => v3 / Unix
           0x0a,               // version needed to extract (2 bytes) => 1.0
           0x0800,             // general purpose bit flag (2 bytes) => UTF-8
           0x00,               // compression method (2 bytes) => store
@@ -85,7 +85,7 @@ class downloadalbum_Controller extends Controller {
           0,                  // file comment length (2 bytes)
           0,                  // disk number start (2 bytes)
           0,                  // internal file attributes (2 bytes)
-          0x20,               // external file attributes (4 bytes) => (magic?)
+          0x81b40000,         // external file attributes (4 bytes) => chmod 664
           $lfh_offset,        // relative offset of local header (4 bytes)
 
           $f                  // file name (variable size)
