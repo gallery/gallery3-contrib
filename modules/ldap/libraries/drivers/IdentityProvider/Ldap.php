@@ -31,7 +31,11 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
     self::$_params = $params;
     self::$_connection = ldap_connect(self::$_params["url"]);
     ldap_set_option(self::$_connection, LDAP_OPT_PROTOCOL_VERSION, 3);
-    ldap_bind(self::$_connection);
+    if (self::$_params["bind_rdn"]) {
+      ldap_bind(self::$_connection, self::$_params["bind_rdn"], self::$_params["bind_password"]);
+    } else {
+      ldap_bind(self::$_connection);
+    }
   }
 
   /**

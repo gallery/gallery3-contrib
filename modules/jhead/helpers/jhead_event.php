@@ -48,6 +48,9 @@ class jhead_event_Core {
     $image_info = getimagesize($item->file_path());
     $item->width = $image_info[0];
     $item->height = $image_info[1];
+    $item->resize_dirty = 1;
+    $item->thumb_dirty = 1;
     $item->save();
+    graphics::generate($item);
   }
 }

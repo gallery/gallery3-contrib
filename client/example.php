@@ -13,6 +13,7 @@ alert("Connect to $SITE_URL");
 $auth = Gallery3::login($SITE_URL, $USER, $PASSWORD);
 $root = Gallery3::factory("$SITE_URL/item/1", $auth);
 $tags = Gallery3::factory("$SITE_URL/tags", $auth);
+$comments = Gallery3::factory("$SITE_URL/comments", $auth);
 
 $tag = Gallery3::factory()
   ->set("name", "My Tag")
@@ -44,6 +45,13 @@ for ($i = 0; $i < 2; $i++) {
 }
 $album->load();
 alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
+
+$comment = Gallery3::factory()
+  ->set("item", $album->data->members[0])
+  ->set("type", "comment")
+  ->set("text", "This is a random comment-- whee!")
+  ->create($comments->url, $auth);
+alert("Comment: <b>{$comment->url}</b>");
 
 alert("Reorder the album");
 $album
@@ -93,7 +101,7 @@ $tag->delete();
 alert("Done!");
 
 function alert($msg) {
-  print "$msg <br/>";
+  print "$msg <br/>\n";
   flush();
 }
 ?>

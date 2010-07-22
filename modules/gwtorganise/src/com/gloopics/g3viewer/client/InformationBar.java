@@ -8,6 +8,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 
 public class InformationBar extends FlowPanel{
@@ -26,7 +27,10 @@ public class InformationBar extends FlowPanel{
 	}
 	
 	public void initializeForm(){
+		if (m_UploadControl.isUploadEnabled())
+		{
 		Anchor button = new Anchor("Upload Options");
+		button.addStyleName("up-options");
 		button.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -45,6 +49,11 @@ public class InformationBar extends FlowPanel{
 		
 		updateInformation();
 		add(m_Label);
+		}
+		else
+		{
+			add(new HTML("Please install <a href=\"http://gears.google.com\">Google Gears</a> to allow upload"));
+		}
 	}
 	
 	public void updateInformation()

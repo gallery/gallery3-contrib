@@ -19,7 +19,7 @@
  */
 
 class three_nids_Core {
-  public function fancylink($item, $view_type="album", $group_img = true,
+  static function fancylink($item, $view_type="album", $group_img = true,
                             $display_comment = true, $parent_title_class = "h2") {
     // view_type = album || dynamic || header
     $link = "";
@@ -112,7 +112,7 @@ class three_nids_Core {
     return $link;
   }
 
-  public function comment_count($item) {
+  static function comment_count($item) {
     access::required("view", $item);
 
     return ORM::factory("comment")

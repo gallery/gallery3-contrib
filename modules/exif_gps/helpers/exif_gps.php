@@ -17,12 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-/**
- * This is the API for handling exif data.
- */
 class exif_gps_Core {
-
   protected static $exif_keys;
 
   static function extract($item) {
@@ -52,10 +47,10 @@ class exif_gps_Core {
       $record->latitude = str_replace(",", ".", $keys["Latitude"]);
       $record->longitude = str_replace(",", ".", $keys["Longitude"]);
       // Represent N/S/E/W as postive and negative numbers
-      if ($keys["Latitude Reference"] == "S") {
+      if (substr(strtoupper($keys["Latitude Reference"]), 0, 1) == "S") {
         $record->latitude = "-" . $record->latitude;
       }
-      if ($keys["Longitude Reference"] == "W") {
+      if (substr(strtoupper($keys["Longitude Reference"]), 0, 1) == "W") {
         $record->longitude = "-" . $record->longitude;
       }
       $record->save();

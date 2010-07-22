@@ -13,10 +13,13 @@ import com.google.gwt.event.dom.client.ContextMenuEvent;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.gears.client.desktop.File;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -42,7 +45,10 @@ public class View extends FlowPanel implements DesktopDroppableWidget{
 	
 	public View(G3Viewer a_Container){
 		m_Container = a_Container;
-		((DndDesktopFactory)GWT.create(DndDesktopFactory.class)).getInstance(this);
+		if (m_Container.isUploadEnabled())
+		{
+			((DndDesktopFactory)GWT.create(DndDesktopFactory.class)).getInstance(this);
+		}
 	}
 	
 	
@@ -140,17 +146,26 @@ public class View extends FlowPanel implements DesktopDroppableWidget{
 			
 			@Override
 			public void execute() {
-				/*
-				m_Container.doDialog("index.php/quick/form_delete/" + m_ID, new HttpDialogHandler() {
-					public void success(String aResult) {
-						m_View.removeFromView(Item.this);
-						if (m_LinkedAlbum != null){
-							m_LinkedAlbum.remove();
-						}
+				popupPanel.hide(); 
+				
+				m_Container.doConfirm("Are you sure you wish to delete selected items?", new ConfirmDialogBox.ConfirmCallBack() {
+					
+					public void ok() {
+						JSONArray jsa = Utils.extractIds(m_Container.getDragController().getDragContext());
+						
+						m_Container.doJSONRequest(G3Viewer.DELETE_ALL_URL + "?sourceids=" + jsa.toString() , new HttpSuccessHandler() {
+							public void success(JSONValue aValue) {
+								final List<Widget> widgets = m_Container.getDragController().getSelectedWidgets();
+								Item i;
+								for (Widget widget: widgets){
+									i = (Item)widget;
+									removeFromView(i);
+									i.removeLinkedAlbum();
+								}
+								
+							}}, true, true);
 					}
 				});
-				*/
-				popupPanel.hide(); 
 				
 			}
 		});
@@ -160,6 +175,62 @@ public class View extends FlowPanel implements DesktopDroppableWidget{
 		popupMenuBar.setVisible(true);
 		popupPanel.add(popupMenuBar);
 		
+			MenuItem rotateAllCW = new MenuItem("Rotate All Clockwise", true, new Command() {
+				@Override
+				public void execute() {
+					// change all thumbs into loading
+					final List<Widget> widgets = m_Container.getDragController().getSelectedWidgets();
+					
+					for (Widget widget: widgets){
+						final Item i = ((Item)widget);
+						if (i.isPhoto())
+						{
+							i.setLoadingThumb();
+						}
+					
+						m_Container.doJSONRequest(G3Viewer.ROTATE_URL + i.getID() + "/cw", 
+							new HttpSuccessHandler() {
+						
+							public void success(JSONValue aValue) {
+								i.updateImages(aValue);
+							}
+						},false,true);
+					}
+					popupPanel.hide();
+				}
+			});
+		
+			rotateAllCW.addStyleName("popup-item");
+			popupMenuBar.addItem(rotateAllCW);
+
+			
+			MenuItem rotateAllCCW = new MenuItem("Rotate All Counter-Clockwise", true, new Command() {
+				@Override
+				public void execute() {
+					// change all thumbs into loading
+					final List<Widget> widgets = m_Container.getDragController().getSelectedWidgets();
+					
+					for (Widget widget: widgets){
+						final Item i = ((Item)widget);
+						if (i.isPhoto())
+						{
+							i.setLoadingThumb();
+						}
+						m_Container.doJSONRequest(G3Viewer.ROTATE_URL + i.getID() + "/cw", 
+							new HttpSuccessHandler() {
+						
+							public void success(JSONValue aValue) {
+								i.updateImages(aValue);
+							}
+						},false,true);
+					}
+					popupPanel.hide();
+				}
+			});
+		
+			rotateAllCW.addStyleName("popup-item");
+			popupMenuBar.addItem(rotateAllCCW);
+			
 		int x = DOM.eventGetClientX((Event)event.getNativeEvent());
 		int y = DOM.eventGetClientY((Event)event.getNativeEvent());
 		popupPanel.setPopupPosition(x, y);
@@ -167,6 +238,4 @@ public class View extends FlowPanel implements DesktopDroppableWidget{
 		popupPanel.show();		
 
 	}
-	  
-
 }
