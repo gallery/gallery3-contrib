@@ -636,3 +636,8 @@ table.calendar td:hover {
 #g-view-menu #g-download-fullsize-link {
   background-image: url('../images/ico-view-downloadfullsize.png') !important;
 }
+
+/* DownloadAlbum */
+#g-view-menu #g-download-album-link {
+  background-image: url('../images/ico-view-downloadalbum.png');
+}
