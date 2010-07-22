@@ -45,7 +45,7 @@ class downloadalbum_Controller extends Controller {
       $f_namelen = strlen($f);
       $f_size = filesize($f);
       $f_mtime = $this->unix2dostime(filemtime($f));
-      $f_crc32 = hexdec(hash_file('crc32b', $f, false));
+      $f_crc32 = $this->fixBug45028(hexdec(hash_file('crc32b', $f, false)));
 
       // Local file header
       echo pack('VvvvVVVVvva' . $f_namelen,
@@ -254,5 +254,15 @@ class downloadalbum_Controller extends Controller {
     return ($timebit['year']    << 25 | $timebit['mon']     << 21 |
             $timebit['mday']    << 16 | $timebit['hours']   << 11 |
             $timebit['minutes'] << 5  | $timebit['seconds'] >> 1);
+  }
+
+  /**
+   * See http://bugs.php.net/bug.php?id=45028
+   */
+  private function fixBug45028($hash) {
+    return (version_compare(PHP_VERSION, '5.2.7', '<'))
+      ? (($hash & 0x000000ff) << 24) + (($hash & 0x0000ff00) << 8)
+          + (($hash & 0x00ff0000) >> 8) + (($hash & 0xff000000) >> 24)
+      : $hash;
   }
 }
