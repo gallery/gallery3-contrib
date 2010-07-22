@@ -639,5 +639,9 @@ table.calendar td:hover {
 
 /* DownloadAlbum */
 #g-view-menu #g-download-album-link {
+  background-image: url('../images/ico-view-downloadalbum.png') !important;
+}
+/* DownloadAlbum */
+#g-view-menu #g-download-album-link {
   background-image: url('../images/ico-view-downloadalbum.png');
 }
