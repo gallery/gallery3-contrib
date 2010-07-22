@@ -217,23 +217,27 @@ class downloadalbum_Controller extends Controller {
     // Prevent caching
     header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
+    $pragma = 'no-cache';
+    $cachecontrol = 'no-cache, max-age=0';
+
+    // request::user_agent('browser') seems bugged
     if (request::user_agent('browser') === 'Internet Explorer'
-        AND request::user_agent('version') <= '6.0')
+        || stripos(request::user_agent(), 'msie') !== false
+        || stripos(request::user_agent(), 'internet explorer') !== false)
     {
-      // HTTP 1.0
-      header('Pragma:');
+      if (request::protocol() === 'https') {
+        // See http://support.microsoft.com/kb/323308/en-us
+        $pragma = 'cache';
+        $cachecontrol = 'private';
 
-      // HTTP 1.1 with IE extensions
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+      } else if (request::user_agent('version') <= '6.0') {
+        $pragma = '';
+        $cachecontrol = 'must-revalidate, post-check=0, pre-check=0';
+      }
     }
-    else
-    {
-      // HTTP 1.0
-      header('Pragma: no-cache');
 
-      // HTTP 1.1
-      header('Cache-Control: no-cache, max-age=0');
-    }
+    header('Pragma: '.$pragma);
+    header('Cache-Control: '.$cachecontrol);
   }
 
   /**
