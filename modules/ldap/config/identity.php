@@ -41,7 +41,7 @@ $config["ldap"] = array(
     "url" => "ldaps://ldap.corp.google.com/",
     "group_domain" => "ou=Posix,ou=Groups,dc=google,dc=com",
     "user_domain" => "ou=People,dc=google,dc=com",
-    "bind_rdn" => NULL,
-    "bind_password" => NULL,
+    "bind_rdn" => null,
+    "bind_password" => null,
   )
 );
