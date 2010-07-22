@@ -145,7 +145,7 @@ td {
 
 /* ~browny~ */
 .g-block h2 {
-  background-color: #f2e6d4;
+  background-color: #EDE4D5;
   padding: .3em .8em;
 }
 
@@ -174,7 +174,7 @@ td {
 
 /* ~browny~ */
 #g-banner {
-  background-color: #f2e6d4;
+  background-color: #EDE4D5;
   border-bottom: 1px solid #ccc;
   min-height: 9em;
   padding: .5em 20px;
@@ -194,7 +194,7 @@ td {
 
 /* ~browny~ */
 #g-footer {
-  background-color: #f2e6d4;
+  background-color: #EDE4D5;
   border-top: 1px solid #ccc;
   margin-top: 20px;
   padding: 10px 20px;
@@ -263,7 +263,7 @@ td {
 
 /* ~browny~ */
 #g-content #g-album-grid .g-album {
-  background-color: #f2e6d4;
+  background-color: #EDE4D5;
 }
 
 #g-content #g-album-grid .g-album h2 span.g-album {
@@ -530,7 +530,7 @@ tr.g-success td.g-success {
 }
 
 .g-odd {
-  background-color: #f2e6d4;
+  background-color: #EDE4D5;
 }
 
 .g-breadcrumbs li {
@@ -604,10 +604,10 @@ tr.g-success td.g-success {
 	font-size: .85em !important;
 }
 .g-odd {
-	background: #d6ce6c !important;
+	background: #BAAD8B !important;
 }
 .g-even {
-	background: #fcf9ce !important;
+	background: #EDE4D5 !important;
 }
 
 /* 3rd Party Modules ~~~~~~~~~~~~~~~~~~~~~ */
@@ -615,12 +615,12 @@ tr.g-success td.g-success {
 /* CalendarView */
 #g-calendar-grid {
   margin: 8px 8px 8px 8px !important;
-  border: dotted #f2e6d4;
+  border: dotted #EDE4D5;
   padding-left: 8px;
 }
 
 table.calendar td:hover {
-  background: #f2e6d4 !important;
+  background: #EDE4D5 !important;
 }
 
 .rtl #g-calendar-grid {
