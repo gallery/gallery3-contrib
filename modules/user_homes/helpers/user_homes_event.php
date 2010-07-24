@@ -178,13 +178,13 @@ class user_homes_event_Core {
     }
   }
 
-  static function album_add_form($form){
+  static function album_add_form($parent, $form){
 
     $group = $form->group("privacy")
       ->label(t("album privacy settings"));
     $group->checkbox("private")->label(t("Private"))->id("uh_private")->onClick("pc()");
     $group->input("username")->label(t("Username"))->id("uh_username")
-      ->callback("user_homes_event::user_already_exists")
+      ->callback("user_homes_event::valid_name")
       ->error_messages("in_use", t("There is already a user with that username"))
       ->error_messages("required", t("You must enter a username"))->callback("user_homes_event::valid_name")->rules("length[1,32]");
     $group->password("password")->label(t("Password"))->id("uh_password")

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,12 +34,14 @@ $config["ldap"] = array(
   "driver"        => "ldap",
   "allow_updates" => false,
   "params"        => array(
-    "groups" => array("users", "guest"),
+    "groups" => array("eng", "google", "guest"),
     "everybody_group" => "guest",
-    "registered_users_group" => "users",
-    "admins" => array("jdoe"),
-    "url" => "ldap://127.0.0.1/",
-    "group_domain" => "ou=groups,dc=gallery,dc=local",
-    "user_domain" => "ou=people,dc=gallery,dc=local"
+    "registered_users_group" => "google",
+    "admins" => array("mediratta", "martinm"),
+    "url" => "ldaps://ldap.corp.google.com/",
+    "group_domain" => "ou=Posix,ou=Groups,dc=google,dc=com",
+    "user_domain" => "ou=People,dc=google,dc=com",
+    "bind_rdn" => null,
+    "bind_password" => null,
   )
 );
