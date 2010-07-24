@@ -180,6 +180,7 @@ class Gallery3_Helper {
 
     switch ($req->getResponseCode()) {
     case 200:
+    case 201:
       return json_decode($req->getResponseBody());
 
     case 403:
