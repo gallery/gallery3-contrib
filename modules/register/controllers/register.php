@@ -18,7 +18,7 @@
  */
 class register_Controller extends Controller {
   public function index() {
-    print $this->_get_form();
+    json::reply(array("form" => (string) $this->_get_form()));
   }
 
   public function handler() {
@@ -57,11 +57,9 @@ class register_Controller extends Controller {
         message::success(t("A confirmation email has been sent to your email address."));
       }
 
-      print json_encode(array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(
-        array("result" => "error",
-              "form" => (string) $form));
+      json::reply(array("result" => "error", "form" => (string) $form));
     }
   }
 
@@ -128,7 +126,7 @@ class register_Controller extends Controller {
 
   public function change_password($id, $password) {
     $user = user::lookup($id);
-    print $this->_get_change_password_form($user, $password);
+    json::reply(array("form" => (string) $this->_get_change_password_form($user, $password)));
   }
 
   private function _get_form() {
