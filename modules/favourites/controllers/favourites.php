@@ -184,17 +184,17 @@ class Favourites_Controller extends Controller {
 
       mail($email_address,$name."'s Favourites",$email, $from);
 
-      print json_encode(array("result" => "success","location" => url::site("favourites")));
+      json::reply(array("result" => "success","location" => url::site("favourites")));
       return;
     }
-    print json_encode(array("result" => "error", "form" => (string) $form));
+    json::reply(array("result" => "error", "form" => (string) $form));
   }
 
   public function toggle_favourites($id){
     $favourites = Favourites::getOrCreate();
     $infavour = $favourites ->toggle($id);
     $title = $infavour?t("Remove from favourites"):t("Add to favourites");
-    print json_encode(array("result" => "success",
+    json::reply(array("result" => "success",
         "favourite" => $infavour,
         "hasfavourites" => $favourites->hasFavourites(),
         "title" => (string)$title));
