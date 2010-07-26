@@ -189,7 +189,7 @@ Items Ordered:
       $form->add_to_basket->product->value,
       $form->add_to_basket->quantity->value);
 
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
     }
     else
     {

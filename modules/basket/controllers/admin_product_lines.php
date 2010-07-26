@@ -60,9 +60,9 @@ class Admin_Product_Lines_Controller extends Controller
       $product->save();
       message::success(t("Created product %product_name", array(
         "product_name" => html::clean($product->name))));
-      print json_encode(array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error", "form" => (string)$form));
+      json::reply(array("result" => "error", "form" => (string)$form));
     }
   }
 
@@ -91,14 +91,14 @@ class Admin_Product_Lines_Controller extends Controller
       $name = $product->name;
       $product->delete();
     } else {
-      print json_encode(array("result" => "error",
+      json::reply(array("result" => "error",
                               "form" => $form->__toString()));
     }
 
     $message = t("Deleted user %product_name", array("product_name" => html::clean($name)));
     log::success("user", $message);
     message::success($message);
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
   }
 
   public function edit_product($id) {
@@ -129,9 +129,9 @@ class Admin_Product_Lines_Controller extends Controller
       $product->save();
       message::success(t("Changed product %product_name",
           array("product_name" => html::clean($product->name))));
-      print json_encode(array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error", "form" => (string)$form));
+      json::reply(array("result" => "error", "form" => (string)$form));
     }
   }
 
