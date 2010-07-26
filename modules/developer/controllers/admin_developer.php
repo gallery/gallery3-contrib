@@ -68,7 +68,7 @@ class Admin_Developer_Controller extends Admin_Controller {
       $task_context = array("step" => 0, "success_msg" => $success_msg, "error_msg" => $error_msg);
       $task = task::create($task_def, array_merge($task_context, $post->as_array()));
 
-      print json_encode(array("result" => "started",
+      json::reply(array("result" => "started",
                               "max_iterations" => 15,
                               "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
                                                  access::csrf_token()),
@@ -76,7 +76,7 @@ class Admin_Developer_Controller extends Admin_Controller {
     } else {
       $v = $this->_get_module_create_content(arr::overwrite($form, $post->as_array()),
         arr::overwrite($errors, $post->errors()));
-      print json_encode(array("result" => "error",
+      json::reply(array("result" => "error",
                               "form" => $v->__toString()));
     }
   }
@@ -119,7 +119,7 @@ class Admin_Developer_Controller extends Admin_Controller {
                                             "comments" => $post->comments, "tags" => $post->tags));
       batch::start();
 
-      print json_encode(array("result" => "started",
+      json::reply(array("result" => "started",
                               "max_iterations" => $total + 5,
                               "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
                                                  access::csrf_token()),
@@ -127,7 +127,7 @@ class Admin_Developer_Controller extends Admin_Controller {
     } else {
       $v = $this->_get_test_data_view(arr::overwrite($form, $post->as_array()),
         arr::overwrite($errors, $post->errors()));
-       print json_encode(array("result" => "error",
+       json::reply(array("result" => "error",
                               "form" => $v->__toString()));
     }
   }
@@ -152,11 +152,11 @@ class Admin_Developer_Controller extends Admin_Controller {
         message::success(empty($error_msg) ? $context["error_msg"] : $error_msg);
         break;
       }
-      print json_encode(array("result" => "success",
+      json::reply(array("result" => "success",
                               "task" => $task->as_array()));
 
     } else {
-      print json_encode(array("result" => "in_progress",
+      json::reply(array("result" => "in_progress",
                               "task" => $task->as_array()));
     }
   }
