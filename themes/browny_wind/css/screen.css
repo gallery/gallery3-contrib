@@ -22,7 +22,7 @@
 /* ~browny~ */
 body, html {
   background-color: #5a3007;
-  font-family: 'Geeza Pro', Tahoma, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 p {
@@ -637,10 +637,6 @@ table.calendar td:hover {
   background-image: url('../images/ico-view-downloadfullsize.png') !important;
 }
 
-/* DownloadAlbum */
-#g-view-menu #g-download-album-link {
-  background-image: url('../images/ico-view-downloadalbum.png') !important;
-}
 /* DownloadAlbum */
 #g-view-menu #g-download-album-link {
   background-image: url('../images/ico-view-downloadalbum.png');
