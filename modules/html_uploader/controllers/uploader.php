@@ -26,7 +26,7 @@ class Uploader_Controller extends Controller {
       $album = $album->parent();
     }
 
-    json::reply(array("form" => (string) $this->_get_add_form($album)));
+    print $this->_get_add_form($album);
   }
 
   public function add($id) {
@@ -85,7 +85,7 @@ class Uploader_Controller extends Controller {
       batch::stop();
       json::reply(array("result" => "success"));
     } else {
-      json::reply(array("result" => "error", "form" => (string) $form));
+      json::reply(array("result" => "error", "html" => (string) $form));
     }
   }
 

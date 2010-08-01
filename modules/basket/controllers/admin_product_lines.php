@@ -62,7 +62,7 @@ class Admin_Product_Lines_Controller extends Controller
         "product_name" => html::clean($product->name))));
       json::reply(array("result" => "success"));
     } else {
-      json::reply(array("result" => "error", "form" => (string)$form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 
@@ -91,8 +91,7 @@ class Admin_Product_Lines_Controller extends Controller
       $name = $product->name;
       $product->delete();
     } else {
-      json::reply(array("result" => "error",
-                              "form" => $form->__toString()));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
 
     $message = t("Deleted user %product_name", array("product_name" => html::clean($name)));
@@ -131,7 +130,7 @@ class Admin_Product_Lines_Controller extends Controller
           array("product_name" => html::clean($product->name))));
       json::reply(array("result" => "success"));
     } else {
-      json::reply(array("result" => "error", "form" => (string)$form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 

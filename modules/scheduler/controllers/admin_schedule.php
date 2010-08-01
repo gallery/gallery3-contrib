@@ -123,7 +123,7 @@ class Admin_Schedule_Controller extends Admin_Maintenance_Controller {
       }
       json::reply(array("result" => "success", "reload" => 1));
     } else {
-      json::reply(array("result" => "error", "form" => (string) $form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 

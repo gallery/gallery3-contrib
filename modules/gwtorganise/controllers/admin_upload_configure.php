@@ -38,8 +38,7 @@ class Admin_Upload_Configure_Controller extends Controller
       }
       else
       {
-        json::reply
-s(array("result" => "error", "form" => (string) $form));
+        json::reply(array("result" => "error", "html" => (string) $form));
         return;
 
       }

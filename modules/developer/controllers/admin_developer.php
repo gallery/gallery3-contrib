@@ -69,15 +69,14 @@ class Admin_Developer_Controller extends Admin_Controller {
       $task = task::create($task_def, array_merge($task_context, $post->as_array()));
 
       json::reply(array("result" => "started",
-                              "max_iterations" => 15,
-                              "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
-                                                 access::csrf_token()),
-                              "task" => $task->as_array()));
+                        "max_iterations" => 15,
+                        "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
+                                           access::csrf_token()),
+                        "task" => $task->as_array()));
     } else {
       $v = $this->_get_module_create_content(arr::overwrite($form, $post->as_array()),
         arr::overwrite($errors, $post->errors()));
-      json::reply(array("result" => "error",
-                              "form" => $v->__toString()));
+      json::reply(array("result" => "error", "html" => (string)$v));
     }
   }
 
@@ -120,15 +119,14 @@ class Admin_Developer_Controller extends Admin_Controller {
       batch::start();
 
       json::reply(array("result" => "started",
-                              "max_iterations" => $total + 5,
-                              "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
-                                                 access::csrf_token()),
-                              "task" => $task->as_array()));
+                        "max_iterations" => $total + 5,
+                        "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
+                                           access::csrf_token()),
+                        "task" => $task->as_array()));
     } else {
       $v = $this->_get_test_data_view(arr::overwrite($form, $post->as_array()),
-        arr::overwrite($errors, $post->errors()));
-       json::reply(array("result" => "error",
-                              "form" => $v->__toString()));
+                                      arr::overwrite($errors, $post->errors()));
+      json::reply(array("result" => "error", "html" => (string)$v));
     }
   }
 
@@ -152,12 +150,10 @@ class Admin_Developer_Controller extends Admin_Controller {
         message::success(empty($error_msg) ? $context["error_msg"] : $error_msg);
         break;
       }
-      json::reply(array("result" => "success",
-                              "task" => $task->as_array()));
+      json::reply(array("result" => "success", "task" => $task->as_array()));
 
     } else {
-      json::reply(array("result" => "in_progress",
-                              "task" => $task->as_array()));
+      json::reply(array("result" => "in_progress", "task" => $task->as_array()));
     }
   }
 

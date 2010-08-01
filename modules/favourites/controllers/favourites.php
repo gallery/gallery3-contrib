@@ -184,10 +184,10 @@ class Favourites_Controller extends Controller {
 
       mail($email_address,$name."'s Favourites",$email, $from);
 
-      json::reply(array("result" => "success","location" => url::site("favourites")));
+      json::reply(array("result" => "success", "location" => url::site("favourites")));
       return;
     }
-    json::reply(array("result" => "error", "form" => (string) $form));
+    json::reply(array("result" => "error", "html" => (string)$form));
   }
 
   public function toggle_favourites($id){
@@ -195,9 +195,9 @@ class Favourites_Controller extends Controller {
     $infavour = $favourites ->toggle($id);
     $title = $infavour?t("Remove from favourites"):t("Add to favourites");
     json::reply(array("result" => "success",
-        "favourite" => $infavour,
-        "hasfavourites" => $favourites->hasFavourites(),
-        "title" => (string)$title));
+                      "favourite" => $infavour,
+                      "hasfavourites" => $favourites->hasFavourites(),
+                      "title" => (string)$title));
   }
 
   public function clear_favourites(){

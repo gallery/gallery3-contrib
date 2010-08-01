@@ -32,12 +32,9 @@ class <?= $class_name ?>_Controller extends Controller {
 
       message::success(t("<?= $name ?> Processing Successfully"));
 
-      json::reply(
-        array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      json::reply(
-        array("result" => "error",
-              "form" => $form->__toString()));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 

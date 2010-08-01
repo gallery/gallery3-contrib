@@ -18,7 +18,7 @@
  */
 class register_Controller extends Controller {
   public function index() {
-    json::reply(array("form" => (string) $this->_get_form()));
+    print $this->_get_form();
   }
 
   public function handler() {
@@ -59,7 +59,7 @@ class register_Controller extends Controller {
 
       json::reply(array("result" => "success"));
     } else {
-      json::reply(array("result" => "error", "form" => (string) $form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 
@@ -126,7 +126,7 @@ class register_Controller extends Controller {
 
   public function change_password($id, $password) {
     $user = user::lookup($id);
-    json::reply(array("form" => (string) $this->_get_change_password_form($user, $password)));
+    print $this->_get_change_password_form($user, $password);
   }
 
   private function _get_form() {
