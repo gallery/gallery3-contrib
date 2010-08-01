@@ -27,18 +27,19 @@ class latestalbums_rss_Core {
   static function feed($feed_id, $offset, $limit, $id) {
     switch ($feed_id) {
     case "latest":
-      $feed->children = ORM::factory("item")
+      $feed = new stdClass();
+      $feed->items = ORM::factory("item")
         ->viewable()
         ->where("type", "=", "album")
         ->order_by("created", "DESC")
         ->find_all($limit, $offset);
 
-      $all_children = ORM::factory("item")
+      $all_items = ORM::factory("item")
         ->viewable()
         ->where("type", "=", "album")
         ->order_by("created", "DESC");
 
-      $feed->max_pages = ceil($all_children->find_all()->count() / $limit);
+      $feed->max_pages = ceil($all_items->find_all()->count() / $limit);
       $feed->title = t("Latest albums");
       $feed->description = t("Most recently created albums");
       return $feed;
