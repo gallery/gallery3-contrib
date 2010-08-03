@@ -73,6 +73,8 @@ class Admin_Navcarousel_Controller extends Admin_Controller {
       module::set_var(
         "navcarousel", "noajax", $form->navcarousel->noajax->value, true);
       module::set_var(
+        "navcarousel", "showondomready", $form->navcarousel->showondomready->value, true);
+      module::set_var(
         "navcarousel", "maintainaspect", $form->thumbsettings->maintainaspect->value, true);
       module::set_var(
         "navcarousel", "nomouseover", $form->thumbsettings->nomouseover->value, true);
@@ -109,6 +111,8 @@ class Admin_Navcarousel_Controller extends Admin_Controller {
       ->checked(module::get_var("navcarousel", "abovephoto", false));	
     $group->checkbox("noajax")->label(t("Disable dynamic loading of thumbnails (might be slow for big albums)"))
       ->checked(module::get_var("navcarousel", "noajax", false));	
+    $group->checkbox("showondomready")->label(t("Show carousel before all items are loaded (faster loading on large albums but might cause too early display on Chrome and Opera)"))
+      ->checked(module::get_var("navcarousel", "showondomready", false));	
    
     $group = $form->group("thumbsettings")->label(t("Change how thumnails are displayed"));
     $group->input("thumbsize")->label(t('Thumbnail size (in pixel)'))

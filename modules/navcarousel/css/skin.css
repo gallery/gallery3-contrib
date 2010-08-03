@@ -87,14 +87,12 @@
   box-shadow: 1px 0px 8px #d7e1fa;
   -moz-box-shadow: 1px 0px 8px #d7e1fa;
   -webkit-box-shadow: 1px 0px 8px #d7e1fa;
-  behavior: url(ie-css3.htc);
 }
 
 .carousel-current {
   box-shadow: 1px 0px 8px #d7e1fa;
   -moz-box-shadow: 1px 0px 8px #d7e1fa;
   -webkit-box-shadow: 1px 0px 8px #d7e1fa;
-  behavior: url(ie-css3.htc);
   padding: 5px;
   margin: 0 !important;
 }

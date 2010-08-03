@@ -58,7 +58,12 @@ class navcarousel_theme_Core {
       } else {
         $ajaxhandler = "itemLoadCallback: navcarousel_itemLoadCallback,\n";
       }
-      
+      if (module::get_var("navcarousel", "showondomready", false)) {
+        $onwinload = "";
+      } else {
+        $onwinload = "});\n
+                  $(window).load(function () {\n";
+      }
       Return "\n<!-- Navcaoursel -->
                 <style type=\"text/css\">\n
                 ". $containerwidth ."
@@ -82,16 +87,15 @@ class navcarousel_theme_Core {
                 </style>\n
                 <script type=\"text/javascript\">\n
                   jQuery(document).ready(function() {\n
-                  jQuery('#navcarousel').jcarousel({\n
-                      ". $ajaxhandler ."
-                      start: ". $itemoffset .",\n
-                      size: ". $childcount .",\n
-                      visible: ". $showelements .",\n
-                      ". $rtl_support ."
-                      scroll: ". module::get_var("navcarousel", "scrollsize", "7") ."\n
+                    jQuery('#navcarousel').jcarousel({\n
+                        ". $ajaxhandler ."
+                        start: ". $itemoffset .",\n
+                        size: ". $childcount .",\n
+                        visible: ". $showelements .",\n
+                        ". $rtl_support ."
+                        scroll: ". module::get_var("navcarousel", "scrollsize", "7") ."\n
                     });\n
-                  });\n
-                  $(window).load(function () {\n
+                  ". $onwinload ."
                     $(\".jcarousel-prev-horizontal\").css(\"visibility\", \"visible\");\n
                     $(\".jcarousel-next-horizontal\").css(\"visibility\", \"visible\");\n
                     $(\"#navcarousel\").css(\"visibility\", \"visible\");\n
