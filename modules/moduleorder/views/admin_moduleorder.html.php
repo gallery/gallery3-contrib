@@ -34,7 +34,7 @@
     <?= t("You will only need to change this order in rare circumstances (e.g. if two modules display content at the bottom of the image and you want to change the order in which this content is being shown). If everything on your Gallery Site is looking normal then please do not touch this.") ?>
   </p>
   <p>
-    <?= t("The core module ('gallery') and the identity provider module (default is 'user') cannot be sorted. When saving, these two modules will be automatically put at the top of the list.") ?>
+    <?= t("The core module ('gallery') and the identity provider module (default is 'user') cannot be sorted and are therefore hidden from this list.") ?>
   </p>
 
   <div class="g-block-content">

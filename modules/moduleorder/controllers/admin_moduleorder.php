@@ -39,13 +39,13 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
     
     //Make sure that gallery and user modules are first in the list
     $currentindex = 2;
-    $indent_provider = module::get_var("gallery", "identity_provider")
+    $identity_provider = module::get_var("gallery", "identity_provider");
     foreach ($modulerawlist as $row) {
       $currentry = explode("=", $row);
       $currentry = explode(":", $currentry[1]);
       if ($currentry[0] == "gallery") {
         $modulelist[0] = $row;
-      } elseif ($currentry[0] == $indent_provider) {
+      } elseif ($currentry[0] == $identity_provider) {
         $modulelist[1] = $row;
       } else {
         $modulelist[$currentindex] = $row;
@@ -62,6 +62,7 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
         $highestindex = $currentry[1];
       }
     }
+    
     $highestindex++;       //Have a safety margin just in case
     //To avoid conflicts on the index we now rewrite all indices of all modules
     foreach ($modulelist as $row) {
