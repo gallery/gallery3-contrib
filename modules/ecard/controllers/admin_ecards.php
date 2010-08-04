@@ -29,31 +29,29 @@ class Admin_ecards_Controller extends Admin_Controller {
   public function save() {
     access::verify_csrf();
     $form = $this->_get_admin_form();
-    $form->validate();
-      module::set_var(
-        "ecard", "sender", $form->ecard->sender->value);
-      module::set_var(
-        "ecard", "subject", $form->ecard->subject->value);
-      module::set_var(
-        "ecard", "message", $form->ecard->message->value);
-	  module::set_var(
-		"ecard", "access_permissions",
-                    $form->ecard->access_permissions->value);
-    message::success(t("eCard settings updated"));
-    url::redirect("admin/ecards");
+    if ($form->validate()) {
+      module::set_var("ecard", "sender", $form->ecard->sender->value);
+      module::set_var("ecard", "subject", $form->ecard->subject->value);
+      module::set_var("ecard", "message", $form->ecard->message->value);
+      module::set_var("ecard", "access_permissions", $form->ecard->access_permissions->value);
+      message::success(t("eCard settings updated"));
+      url::redirect("admin/ecards");
+    } else {
+      print $form;
+    }
   }
 
   private function _get_admin_form() {
-    $form = new Forge("admin/ecards/save", "", "post",
-                      array("id" => "g-ecards-admin-form"));
+    $form = new Forge("admin/ecards/save", "", "post", array("id" => "g-ecards-admin-form"));
     $ecard_settings = $form->group("ecard")->label(t("eCard settings"));
-	$ecard_settings->input("sender")->label(t('E-mail Sender (leave blank for a user-defined address)'))
-		->value(module::get_var("ecard", "sender", ""));
-	$ecard_settings->input("subject")->label(t('E-mail Subject'))
-		->value(module::get_var("ecard", "subject", "You have been sent an eCard"));
-	$ecard_settings->textarea("message")->label(t('E-mail Message'))
-		->value(module::get_var("ecard", "message", "Hello %toname%, \r\n%fromname% has sent you an eCard. Click the image to be taken to the gallery."));
-     $ecard_settings->dropdown("access_permissions")
+    $ecard_settings->input("sender")
+      ->label(t("E-mail sender (leave blank for a user-defined address)"))
+      ->value(module::get_var("ecard", "sender", ""));
+    $ecard_settings->input("subject")->label(t("E-mail subject"))
+      ->value(module::get_var("ecard", "subject"));
+    $ecard_settings->textarea("message")->label(t("E-mail message"))
+      ->value(module::get_var("ecard", "message"));
+    $ecard_settings->dropdown("access_permissions")
       ->label(t("Who can send eCards?"))
       ->options(array("everybody" => t("Everybody"),
                       "registered_users" => t("Only registered users")))

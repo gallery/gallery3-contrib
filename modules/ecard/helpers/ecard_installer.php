@@ -17,14 +17,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class ecard_theme_Core {
-  static function sidebar_bottom($theme) {
-    if (ecard::can_send_ecard()) {
-      $block = new Block;
-      $block->css_id = "g-ecards";
-      $block->title = t("eCards");
-      $block->content = new View("ecards.html");
-      return $block;
-    }
+class ecard_installer {
+  static function install() {
+    module::set_var("ecard", "subject", "You have been sent an eCard");
+    module::set_var("ecard", "message",
+                    "Hello %toname%, \r\n%fromname% has sent you an eCard. " .
+                    "Click the image to be taken to the gallery.");
+    module::set_var("ecard", "access_permissions", "everybody");
+    module::set_version("ecard", 1);
   }
 }

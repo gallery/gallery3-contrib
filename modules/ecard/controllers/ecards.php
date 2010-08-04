@@ -19,59 +19,35 @@
  */
 class ecards_Controller extends Controller {
   /**
-   * Add a new ecard to the collection.
+   * Send the ecard.
    */
-  public function create($id) {
+  public function send($id) {
     $item = ORM::factory("item", $id);
     access::required("view", $item);
-    if (!ecard::can_ecard()) {
+    if (!ecard::can_send_ecard()) {
       access::forbidden();
     }
 
-    $form = ecard::get_add_form($item);
-    try {
-      $valid = $form->validate();
-      $form->item_id = $id;
-      $form->author_id = identity::active_user()->id;
-      $form->text = $form->add_ecard->text->value;
-      $form->to_name = $form->add_ecard->inputs["to_name"]->value;
-      $form->to_email = $form->add_ecard->to_email->value;
-      $form->validate();
-    } catch (ORM_Validation_Exception $e) {
-      // Translate ORM validation errors into form error messages
-      foreach ($e->validation->errors() as $key => $error) {
-        switch ($key) {
-        case "to_name":  $key = "name";  break;
-        case "to_email": $key = "email"; break;
-        }
-        $form->add_ecard->inputs[$key]->add_error($error, 1);
-      }
-      $valid = false;
-    }
-
-    if ($valid) {
-      ecard::save();
-
-      print json_encode(
-        array("result" => "success",
-              "view" => (string) $view,
-              "form" => (string) ecard::get_add_form($item)));
+    $form = ecard::get_send_form($item);
+    if ($form->validate()) {
+      Kohana_Log::add("error",print_r($form,1));
+      // Send the ecard here, based on the form data
+      json::reply(array("result" => "success"));
     } else {
-      $form = ecard::prefill_add_form($form);
-      print json_encode(array("result" => "error", "form" => (string) $form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 
   /**
    * Present a form for adding a new ecard to this item or editing an existing ecard.
    */
-  public function form_add($item_id) {
+  public function form_send($item_id) {
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
-    if (!ecard::can_ecard()) {
+    if (!ecard::can_send_ecard()) {
       access::forbidden();
     }
 
-    print ecard::prefill_add_form(ecard::get_add_form($item));
+    print ecard::prefill_send_form(ecard::get_send_form($item));
   }
 }
