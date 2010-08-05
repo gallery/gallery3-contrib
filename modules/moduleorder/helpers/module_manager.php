@@ -24,8 +24,7 @@ class module_manager_Core {
 
   private static function _get_modules() {
     $modules = array();
-    foreach (db::query("SELECT * FROM `modules` ORDER BY `id`")
-             ->execute() as $row) {
+    foreach (db::build()->select("*")->from("modules")->order_by("id")->execute() as $row) {
       $modules["{$row->name}:$row->id"] = $row->name;
     }
     return $modules;
