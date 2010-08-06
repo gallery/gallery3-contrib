@@ -6,7 +6,7 @@ import com.google.gwt.gears.client.desktop.Desktop;
 import com.google.gwt.gears.client.desktop.File;
 import com.google.gwt.user.client.ui.Widget;
 
-public abstract class DesktopDropBase {
+public abstract class DesktopDropBase implements DesktopDrop{
 	private final DesktopDroppableWidget m_DropFile;
 	protected final Widget m_Widget;
 	private final Desktop m_Desktop;

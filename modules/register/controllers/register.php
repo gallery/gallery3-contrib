@@ -57,11 +57,9 @@ class register_Controller extends Controller {
         message::success(t("A confirmation email has been sent to your email address."));
       }
 
-      print json_encode(array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(
-        array("result" => "error",
-              "form" => (string) $form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 

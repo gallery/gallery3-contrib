@@ -9,8 +9,8 @@
 	<entry-point class='com.gloopics.g3viewer.client.G3Viewer'/><inherits
 		name="com.allen_sauer.gwt.dnd.gwt-dnd" /><inherits name="com.google.gwt.gears.Gears" />
    
-  <replace-with class="com.gloopics.g3viewer.client.NoGears">
-          <when-type-is class="com.gloopics.g3viewer.client.G3Viewer"/>
+  <replace-with class="com.gloopics.g3viewer.client.UploadControlNoGears">
+          <when-type-is class="com.gloopics.g3viewer.client.UploadControl"/>
           <when-property-is name="gears.installed" value="false"/>
   </replace-with>
   
@@ -29,5 +29,10 @@
       <when-property-is name="user.agent" value="ie8" />   
     </any>
   </replace-with>  
+
+    <replace-with class="com.gloopics.g3viewer.client.dnddesktop.DndDesktopFactoryNoGears">
+          <when-type-is class="com.gloopics.g3viewer.client.dnddesktop.DndDesktopFactory"/>
+          <when-property-is name="gears.installed" value="false"/>
+  </replace-with>
   
 </module>

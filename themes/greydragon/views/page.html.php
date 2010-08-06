@@ -5,8 +5,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <!-- Copyright (c) 2009 DragonSoft. All Rights Reserved -->
 
-<? $sidebarvisible = $_REQUEST['sb'];
-   if (empty($sidebarvisible)) {
+<?
+   if (empty($_REQUEST['sb'])) {
      if (isset($_COOKIE['gd_sidebar'])) {
        $sidebarvisible = $_COOKIE['gd_sidebar'];
      } else {
@@ -14,6 +14,7 @@
      }
    } else {
      // Sidebar position is kept for 360 days
+     $sidebarvisible = $_REQUEST['sb'];
      setcookie("gd_sidebar", $sidebarvisible, time() + 31536000);
    }
 
@@ -46,9 +47,9 @@
 <?=    t("Gallery") ?>
 <?   endif ?>
 <? endif ?></title>
-  <meta name="robots" content="noindex, nofollow, noarchive" /> 
-  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate" /> 
-  <meta name="slurp" content="noindex, nofollow, noarchive, nosnippet, noodp, noydir" /> 
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate" />
+  <meta name="slurp" content="noindex, nofollow, noarchive, nosnippet, noodp, noydir" />
   <meta name="msnbot" content="noindex, nofollow, noarchive, nosnippet, noodp" />
   <meta name="teoma" content="noindex, nofollow, noarchive" />
   <link rel="shortcut icon" href="<?= $theme->url("images/favicon.ico") ?>" type="image/x-icon" />
@@ -87,7 +88,7 @@
 
 <? if (!$user->guest): ?>
   <div id="g-site-menu">
-  <?= $theme->site_menu() ?>
+  <?= $theme->site_menu("") ?>
   </div>
 <? endif ?>
   <?= $theme->messages() ?>
@@ -146,7 +147,7 @@
 <? else: ?>
 <?= '<div id="g-column-right">' ?>
 <? endif ?>
-    
+
 <? if (($theme->page_subtype != "login") && ($sidebarvisible != "none")): ?>
 <?= new View("sidebar.html") ?>
 <? endif ?>
@@ -174,7 +175,7 @@
   <ul id="g-credits">
     <?= $theme->credits() ?>
     <?php
-      $theme_id = module::get_var("gallery", "active_site_theme"); 
+      $theme_id = module::get_var("gallery", "active_site_theme");
       $ini = parse_ini_file(THEMEPATH . "$theme_id/theme.info");
       print "\n    <li>" . $ini["name"] . "</li>";
       print "\n    <li>&copy;" . $ini["author"] . "</li>";
@@ -190,7 +191,7 @@
 </div>
 <?= $theme->page_bottom() ?>
 
-<? // <!--start player--> 
+<? // <!--start player-->
 // <embed src="/music/collection.m3u" hidden="true" autostart="true" loop="true"></embed>
 // <noembed><bgsound src="/music/collection.m3u"></noembed>
 // <!--end player-->

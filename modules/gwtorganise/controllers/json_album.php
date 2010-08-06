@@ -45,10 +45,10 @@ class Json_Album_Controller extends Controller {
 
   function is_admin() {
     if (identity::active_user()->admin) {
-      print json_encode(array("result" => "success", "csrf" => access::csrf_token()));
+      json::reply(array("result" => "success", "csrf" => access::csrf_token()));
       return;
     }
-    print json_encode(array("result" => "failure"));
+    json::reply(array("result" => "failure"));
 
   }
 
@@ -65,7 +65,7 @@ class Json_Album_Controller extends Controller {
 
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
-    print json_encode(self::child_json_encode($item));
+    json::reply(self::child_json_encode($item));
   }
 
 
@@ -73,19 +73,27 @@ class Json_Album_Controller extends Controller {
     access::verify_csrf();
 
     $target_album = ORM::factory("item", $target_album_id);
+    access::required("view", $target_album);
+    access::required("add", $target_album);
+
+    $source_album = null;
 
     $js = json_decode($_REQUEST["sourceids"]);
-
     $i = 0;
+    $source_album = null;
     foreach ($js as $source_id) {
       $source = ORM::factory("item", $source_id);
+      if (empty($source_album)) {     // get the source_album
+        $source_album = $source->parent();
+      }
       if (!$source->contains($target_album)) {
+        access::required("edit", $source);
         item::move($source, $target_album);
       }
       $i++;
     }
 
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
   }
 
  function rearrange($target_id, $before_or_after) {
@@ -138,7 +146,7 @@ class Json_Album_Controller extends Controller {
 
     module::event("album_rearrange", $album);
 
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
 
   }
 
@@ -210,7 +218,7 @@ class Json_Album_Controller extends Controller {
       }
       unlink($temp_filename);
 
-      print json_encode(self::child_json_encode($item));
+      json::reply(self::child_json_encode($item));
   }
 
   public function make_album_cover($id) {
@@ -223,15 +231,10 @@ class Json_Album_Controller extends Controller {
 
     item::make_album_cover($item);
 
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
   }
 
-    public function rotate($id, $dir) {
-    access::verify_csrf();
-    $item = model_cache::get("item", $id);
-    access::required("view", $item);
-    access::required("edit", $item);
-
+  public function p_rotate($item, $dir){
     $degrees = 0;
     switch($dir) {
     case "ccw":
@@ -262,20 +265,77 @@ class Json_Album_Controller extends Controller {
       }
     }
 
-    print json_encode(self::child_json_encode($item));
+    return $item;
+  }
+
+  public function delete_many($id) {
+
+    access::verify_csrf();
+
+    $js = json_decode($_REQUEST["sourceids"]);
+
+    $i = 0;
+    $toreturn = array();
+    foreach ($js as $item_id) {
+      $item = ORM::factory("item", $item_id);
+      access::required("view", $item);
+      access::required("edit", $item);
+      if ($item->is_album()) {
+        $msg = t("Deleted album <b>%title</b>", array("title" => html::purify($item->title)));
+      } else {
+        $msg = t("Deleted photo <b>%title</b>", array("title" => html::purify($item->title)));
+      }
+      $parent = $item->parent();
+      $item->delete();
+      message::success($msg);
+    }
+
+    json::reply(array("result" => "success"));
+
+  }
+
+  public function rotate_many($dir) {
+    access::verify_csrf();
+
+    $js = json_decode($_REQUEST["sourceids"]);
+
+    $i = 0;
+    $toreturn = array();
+    foreach ($js as $item_id) {
+      $item = ORM::factory("item", $item_id);
+      access::required("view", $item);
+      access::required("edit", $item);
+      $item = $this->p_rotate($item, $dir);
+      $toreturn[$item_id] = self::child_json_encode($item);
+      $i++;
+    }
+
+    json::reply($toreturn);
+  }
+
+
+  public function rotate($id, $dir) {
+    access::verify_csrf();
+    $item = model_cache::get("item", $id);
+    access::required("view", $item);
+    access::required("edit", $item);
+
+    $item = $this->p_rotate($item, $dir);
+
+    json::reply(self::child_json_encode($item));
   }
 
   public function resize_config(){
     if (upload_configuration::isResize())
     {
-      print json_encode(array(
+      json::reply(array(
         "resize" => true,
         "max_width" => upload_configuration::getMaxWidth(),
         "max_height" => upload_configuration::getMaxHeight()));
     }
     else
     {
-      print json_encode(array("resize" => false));
+      json::reply(array("resize" => false));
     }
   }
 

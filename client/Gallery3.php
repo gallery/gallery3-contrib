@@ -69,7 +69,7 @@ class Gallery3 {
   }
 
   /**
-   * Set a value on the remote resource.  You must call save for it to take effect.
+   * Set a value on the remote resource's entity.  You must call save for it to take effect.
    *
    * @param string   key
    * @param string   value
@@ -78,6 +78,18 @@ class Gallery3 {
    */
   public function set($key, $value) {
     $this->data->entity->$key = $value;
+    return $this;
+  }
+
+  /**
+   * Replace the members for the remote resource
+   *
+   * @param array    members
+   * @return object  Gallery3
+   * @chainable
+   */
+  public function set_members($members) {
+    $this->data->members = $members;
     return $this;
   }
 
@@ -99,8 +111,12 @@ class Gallery3 {
    * @return object  Gallery3
    */
   public function create($url, $token) {
+    if (!is_string($url)) {
+      throw new Gallery3_Exception("Invalid url: " . var_export($url));
+    }
+
     $response = Gallery3_Helper::request(
-      "post", $url, $token, $this->data->entity, $this->file);
+      "post", $url, $token, array("entity" => $this->data->entity), $this->file);
     $this->url = $response->url;
     $this->token = $token;
     return $this->load();
@@ -115,7 +131,8 @@ class Gallery3 {
   public function save() {
     $response = Gallery3_Helper::request(
       "put", $this->url, $this->token,
-      array_diff($this->original_entity, (array)$this->data->entity));
+      array("entity" => array_diff((array)$this->data->entity, $this->original_entity),
+            "members" => $this->data->members));
     return $this->load();
   }
 
@@ -140,7 +157,7 @@ class Gallery3 {
   public function load() {
     $response = Gallery3_Helper::request("get", $this->url, $this->token);
     $this->data = $response;
-    $this->original_entity = (array)$response->entity;
+    $this->original_entity = isset($response->entity) ? (array)$response->entity : null;
     return $this;
   }
 }
@@ -154,7 +171,7 @@ class Gallery3_Helper {
       $req->addHeader("X-Gallery-Request-Key", $token);
     }
     foreach ($params as $key => $value) {
-      $req->addPostData($key, $value);
+      $req->addPostData($key, is_string($value) ? $value : json_encode($value));
     }
     if ($file) {
       $req->addFile("file", $file, mime_content_type($file));
@@ -163,6 +180,7 @@ class Gallery3_Helper {
 
     switch ($req->getResponseCode()) {
     case 200:
+    case 201:
       return json_decode($req->getResponseBody());
 
     case 403:

@@ -13,12 +13,12 @@ alert("Connect to $SITE_URL");
 $auth = Gallery3::login($SITE_URL, $USER, $PASSWORD);
 $root = Gallery3::factory("$SITE_URL/item/1", $auth);
 $tags = Gallery3::factory("$SITE_URL/tags", $auth);
+$comments = Gallery3::factory("$SITE_URL/comments", $auth);
 
 $tag = Gallery3::factory()
   ->set("name", "My Tag")
   ->create($tags->url, $auth);
 alert("Created tag: <b>{$tag->url}</b>");
-
 
 $album = Gallery3::factory()
   ->set("type", "album")
@@ -34,16 +34,31 @@ $album
   ->save();
 alert("New title: <b>{$album->data->entity->title}</b>");
 
-
-$photo = Gallery3::factory()
-  ->set("type", "photo")
-  ->set("name", "Sample Photo.png")
-  ->set("title", "Sample Photo")
-  ->set_file("gallery.png")
-  ->create($album->url, $auth);
-alert("Uploaded photo: <b>{$photo->url}</b>");
+for ($i = 0; $i < 2; $i++) {
+  $photo = Gallery3::factory()
+    ->set("type", "photo")
+    ->set("name", "Sample Photo.png")
+    ->set("title", "Sample Photo")
+    ->set_file("gallery.png")
+    ->create($album->url, $auth);
+  alert("Uploaded photo: <b>{$photo->url}</b>");
+}
+$album->load();
 alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
 
+$comment = Gallery3::factory()
+  ->set("item", $album->data->members[0])
+  ->set("type", "comment")
+  ->set("text", "This is a random comment-- whee!")
+  ->create($comments->url, $auth);
+alert("Comment: <b>{$comment->url}</b>");
+
+alert("Reorder the album");
+$album
+  ->set_members(array($album->data->members[1], $album->data->members[0]))
+  ->set("sort_column", "weight")
+  ->save();
+alert("New order: <b>" . join(", ", $album->data->members) . "</b>");
 
 alert("Search for the photo");
 $photos = Gallery3::factory($root->url, $auth)
@@ -86,7 +101,7 @@ $tag->delete();
 alert("Done!");
 
 function alert($msg) {
-  print "$msg <br/>";
+  print "$msg <br/>\n";
   flush();
 }
 ?>
