@@ -44,8 +44,6 @@ class Admin_Themeroller_Controller extends Admin_Controller {
   public function upload() {
     access::verify_csrf();
 
-    //list ($v->form, $v->errors) = $this->_get_upload_form();
-
     $validation = new Validation(array_merge($_POST, $_FILES));
     $validation->add_rules("zip_file", "upload::valid",  "upload::required", "upload::type[zip]");
     $validation->add_rules("is_admin", "chars[0,1]");

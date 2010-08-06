@@ -526,7 +526,11 @@ td {
 
 /* Superfish menu overrides ~~~~~~~~~~~~~~ */
 .sf-menu a {
+<<<<<<< HEAD
   border-left:1px solid #<?= $borderColorContent ?>;
+=======
+  border-left:1px solid #a6c9e2; /* borderColorContent */
+>>>>>>> 64332d66885c485bee45bd5a8c3fcaee631119ca
 }
 
 .sf-menu li,
