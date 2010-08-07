@@ -18,13 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ecard_theme_Core {
-  static function sidebar_bottom($theme) {
-    if (ecard::can_send_ecard()) {
-      $block = new Block;
-      $block->css_id = "g-ecards";
-      $block->title = t("eCards");
-      $block->content = new View("ecards.html");
-      return $block;
-    }
+  static function head($theme) {
+    $theme->css("ecard.css");
   }
 }
