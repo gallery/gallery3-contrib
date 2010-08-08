@@ -129,10 +129,16 @@ class Gallery3 {
    * @return object  Gallery3
    */
   public function save() {
-    $response = Gallery3_Helper::request(
-      "put", $this->url, $this->token,
-      array("entity" => array_diff((array)$this->data->entity, $this->original_entity),
-            "members" => $this->data->members));
+    $data = array();
+    $data["entity"] = array_diff((array)$this->data->entity, $this->original_entity);
+    if (isset($this->data->members)) {
+      $data["members"] = $this->data->members;
+    }
+    if ($this->file) {
+      $response = Gallery3_Helper::request("put", $this->url, $this->token, $data, $this->file);
+    } else {
+      $response = Gallery3_Helper::request("put", $this->url, $this->token, $data);
+    }
     return $this->load();
   }
 
