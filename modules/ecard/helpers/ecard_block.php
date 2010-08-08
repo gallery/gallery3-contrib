@@ -26,7 +26,7 @@ class ecard_block_Core {
     $block = "";
     switch ($block_id) {
     case "ecard":
-      if ($theme->item()->is_photo() && module::get_var("ecard", "location") == "sidebar") {
+      if ($theme->item() && $theme->item()->is_photo() && module::get_var("ecard", "location") == "sidebar") {
         $block = new Block();
         $block->css_id = "g-send-ecard";
         $block->title = t("eCard");
