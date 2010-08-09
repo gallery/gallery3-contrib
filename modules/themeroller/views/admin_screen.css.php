@@ -21,11 +21,11 @@
  * 1) Basic HTML elements
  **********************************************************************/
 html {
-  color: #2e6e9e; /* fcDefault; */
+  color: #<?= $fcDefault ?>;
 }
 
 body, html {
-  background-color: #dfeffc; /* bgColorDefault */
+  background-color: #<?= $bgColorDefault ?>;
   font-family: Lucida Grande, Lucida Sans, Arial, sans-serif; /* ffDefault */
   font-size: 13px/1.231; /* fsDefault/ gallery_line_height */
 }
@@ -73,7 +73,7 @@ a,
 #g-dialog a,
 .g-button,
 .g-button:active {
-  color: #2e6e9e !important; /* fcDefault; */
+  color: #<?= $fcDefault ?> !important;
   text-decoration: none;
   -moz-outline-style: none;
 }
@@ -83,7 +83,7 @@ a:hover,
 a.ui-state-hover,
 input.ui-state-hover,
 button.ui-state-hover {
-  color: #1d5987 !important; /* fcHover */
+  color: #<?= $fcHover ?> !important;
   text-decoration: none;
   -moz-outline-style: none;
 }
@@ -133,7 +133,7 @@ th {
 th,
 td {
   border: none;
-  border-bottom: 1px solid #aaaaaa; /* borderColorContent */
+  border-bottom: 1px solid #<?= $borderColorContent?>;
   padding: .5em;
   vertical-align: middle;
 }
@@ -144,11 +144,11 @@ th {
 }
 
 .g-even {
-  background-color: #fcfdfd; /* bgColorContent */
+  background-color: #<?= $bgColorContent ?>;
 }
 
 .g-odd {
-  background-color: #dfeffc;  /* bgColorDefault */
+  background-color: #<?= $bgColorDefault ?>
 }
 
 /** *******************************************************************
@@ -157,7 +157,7 @@ th {
 
 .g-block,
 #g-content #g-admin-dashboard .g-block {
-  border: 1px solid #aaaaaa; /* borderColorContent */
+  border: 1px solid #<?= $borderColorContent ?>;
   padding: 1em;
 }
 
@@ -180,7 +180,7 @@ th {
 
 #g-content .g-selected,
 #g-content .g-available .g-block {
-  border: 1px solid #aaaaaa; /* borderColorContent */
+  border: 1px solid #<?= $borderColorContent ?>;
   padding: .8em;
 }
 
@@ -191,12 +191,12 @@ th {
 }
 
 .g-selected {
-  background: #f5f8f9 ; /* bgColorActive */
+  background: #<?= $bgColorActive ?>;
 }
 
 .g-available .g-installed-toolkit:hover {
   cursor: pointer;
-  background: #fcfdfd; /* bgColorContent */
+  background: #<?= $bgColorContent ?>;
 }
 
 .g-available .g-button {
@@ -208,7 +208,7 @@ th {
 }
 
 .g-unavailable {
-  border-color: #ffffff; /* fcHeader; */;
+  border-color: #<?= $fcHeader ?>;
   opacity: 0.4;
 }
 
@@ -223,8 +223,8 @@ th {
 }
 
 .g-error td {
-  background-color: #cd0a0a /* borderColorError */;
-  color: #cd0a0a /* fcError */;
+  background-color: #<?= $borderColorError ?>;
+  color: #<?= $fcError ?>;
   background-image: none;
 }
 
@@ -237,7 +237,7 @@ th {
 #g-log-entries .g-info,
 .g-module-status.g-success,
 #g-log-entries .g-success {
-  background-color: #fcfdfd /* bgColorContent */;
+  background-color: #<?= $bgColorContent ?>;
 }
 
 /*** ******************************************************************
@@ -254,8 +254,8 @@ th {
 /* View container ~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .g-view {
-  background-color: #fcfdfd; /* bgColorContent */
-  border: 1px solid #a6c9e2; /* borderColorContent */
+  background-color: #<?= $bgColorContent ?>;
+  border: 1px solid #<?= $borderColorContent ?>;
   border-bottom: none;
   min-width: 974px !important;
 }
@@ -263,9 +263,9 @@ th {
 /* Layout containers ~~~~~~~~~~~~~~~~~~~~~ */
 
 #g-header {
-  background-color: #5c9ccc; /* bgColorHeader */
-  border-bottom: 1px solid #4297d7; /* borderColorHeader */
-  color: #ffffff; /* fcHeader */
+  background-color: #<?= $bgColorHeader ?>;
+  border-bottom: 1px solid #<?= $borderColorHeader ?>;
+  color: #<?= $fcHeader ?>;
   font-size: .8em;
   margin-bottom: 20px;
   padding: 0 20px;
@@ -279,16 +279,16 @@ th {
 }
 
 #g-sidebar {
-  background-color: #fff;
+  background-color: #<?= $bgColorContent ?>;
   font-size: .9em;
   padding: 0 20px;
   width: 220px;
 }
 
 #g-footer {
-  background-color: #5c9ccc; /* bgColorHeader */
-  border-top: 1px solid #4297d7; /* borderColorHeader */
-  color: #ffffff; /* fcHeader */
+  background-color: #<?= $bgColorHeader ?>;
+  border-top: 1px solid #<?= $borderColorHeader ?>;
+  color: #<?= $fcHeader ?>
   font-size: .8em;
   margin-top: 20px;
   padding: 10px 20px;
@@ -302,7 +302,7 @@ th {
 
 #g-header #g-logo {
   background: transparent url('../../../lib/images/logo.png') no-repeat 0 .5em;
-  color: #ffffff /* fcHeader */ !important;
+  color: #<?= $fcHeader ?> !important;
   display: block;
   height: 65px;
   padding-top: 5px;
@@ -310,7 +310,7 @@ th {
 }
 
 #g-header #g-logo:hover {
-  color: #1d5987 !important; /* fcHover */
+  color: #<?= $fcHover ?> !important;
   text-decoration: none;
 }
 
@@ -346,10 +346,10 @@ th {
 }
 
 #g-content #g-photo-stream .g-item {
-  background-color: #dfeffc;  /* bgColorDefault */
-  border: 1px solid #e8e8e8;
-  border-right-color: #ccc;
-  border-bottom-color: #ccc;
+  background-color: #<?= $bgColorDefault ?>;
+  border: 1px solid #<?= $borderColorContent ?>;
+  border-right-color: #<?= $borderColorHighlight ?>;
+  border-bottom-color: #<?= $borderColorHighlight ?>;
   float: left;
   height: 90px;
   overflow: hidden;
@@ -358,10 +358,10 @@ th {
 }
 
 #g-content .g-item {
-  background-color: #dfeffc;  /* bgColorDefault */
-  border: 1px solid #e8e8e8;
-  border-right-color: #ccc;
-  border-bottom-color: #ccc;
+  background-color: #<?= $bgColorDefault ?>;
+  border: 1px solid #<?= $borderColorContent ?>;
+  border-right-color: #<?= $borderColorHighlight ?>;
+  border-bottom-color: #<?= $borderColorHighlight ?>;
   height: 90px;
   padding: 14px 8px;
   text-align: center;
@@ -409,19 +409,19 @@ th {
 }
 
 .g-admin-blocks-list ul li.g-draggable {
-  background-color: #dfeffc;  /* bgColorDefault */
+  background-color: #<?= $bgColorDefault ?>;
   margin: .5em;
   padding: .3em .8em;
 }
 
 /* In-line editing  ~~~~~~~~~~~~~~~~~~~~~~ */
 #g-in-place-edit-message {
-  background-color: #fcfdfd; /* bgColorContent */
+  background-color: #<?= $bgColorContent ?>;
 }
 
 /* Theme options  ~~~~~~~~~~~~~~~~~~~~~~~~ */
 #g-theme-options-form {
-  border: 1px solid #aaaaaa; /* borderColorContent */
+  border: 1px solid #<?= $borderColorContent ?>;
 }
 #g-theme-options-form-tabs {
   border: none !important;
@@ -436,7 +436,7 @@ th {
 
 .ui-tabs .ui-tabs-nav li a.g-error {
   background: none no-repeat scroll 0 0 transparent;
-  color: #cd0a0a !important; /* fcError */
+  color: #<?= $fcError ?> !important;
 }
 
 /** *******************************************************************
@@ -462,17 +462,17 @@ th {
 
 /* Superfish menu overrides ~~~~~~~~~~~~~~ */
 .sf-menu a {
-  border-left:1px solid #a6c9e2; /* borderColorContent */
+  border-left:1px solid #<?= $borderColorContent ?>;
 }
 
 .sf-menu li,
 .sf-menu li li,
 .sf-menu li li ul li {
-  background-color: #dfeffc;  /* bgColorDefault */
+  background-color: #<?= $bgColorDefault ?>;
 }
 
 .sf-menu li:hover {
-  background-color: #d0e5f5; /* bgColorHover */
+  background-color: #<?= $bgColorHover ?>;
 }
 
 .sf-menu li:hover,
@@ -480,7 +480,7 @@ th {
 .sf-menu a:focus,
 .sf-menu a:hover,
 .sf-menu a:active {
-  background-color: #d0e5f5 !important; /* bgColorHover */
+  background-color: #<?= $bgColorHover ?> !important;
 }
 
 .sf-sub-indicator {
@@ -521,22 +521,22 @@ a > .sf-sub-indicator {
 
 /* User admin form ~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #g-user-admin-list .g-admin {
-  color: #2e6e9e !important; /* fcDefault; */
+  color: #<?= $fcDefault ?> !important;
   font-weight: bold;
 }
 
 .g-group {
-  border: 1px solid #aaaaaa !important; /* borderColorContent */
+  border: 1px solid #<?= $borderColorContent ?> !important;
 }
 
 .g-group h4 {
-  background-color: #dfeffc !important;  /* bgColorDefault */
-  border-bottom: 1px dashed #2e6e9e !important; /* fcDefault; */
+  background-color: #<?= $bgColorDefault ?> !important;
+  border-bottom: 1px dashed #<?= $fcDefault ?> !important;
 }
 
 .g-default-group h4,
 .g-default-group .g-user {
-  color: #2e6e9e !important; /* fcDefault; */
+  color: #<?= $fcDefault ?> !important;
 }
 
 /** *******************************************************************
@@ -544,13 +544,13 @@ a > .sf-sub-indicator {
  *********************************************************************/
 
 .g-draggable:hover {
-  border: 1px dashed #fbec88; /* bgColorHighlight */
+  border: 1px dashed #<?= $bgColorHighlight ?>;
 }
 
 .ui-sortable .g-target,
 .ui-state-highlight {
-  background-color: #fbec88; /* bgColorHighlight */
-  border: 2px dotted #fad42e; /* borderColorHighlight */
+  background-color: #<?= $bgColorHighlight ?>;
+  border: 2px dotted #<?= $borderColorHighlight ?>;
 }
 
 /** *******************************************************************
@@ -597,11 +597,11 @@ a > .sf-sub-indicator {
 /* RTL Superfish ~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .rtl .sf-menu a {
-  border-right:1px solid #fff;
+  border-right:1px solid #<?= $borderColorContent ?>;
 }
 
 .rtl .sf-sub-indicator {
-  background: url("themeroller/images/ui-icons_2e83ff_256x240.png") no-repeat -96px -16px; /* 8-bit indexed alpha png. IE6 gets solid image only */
+  background: url("themeroller/images/ui-icons_<?= $fcDefault ?>_256x240.png") no-repeat -96px -16px; /* 8-bit indexed alpha png. IE6 gets solid image only */
 }
 
 /*** shadows for all but IE6 ***/
