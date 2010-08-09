@@ -158,11 +158,12 @@ class Admin_Themeroller_Controller extends Admin_Controller {
       ->error_messages("required", t("You must enter a theme display name"));
     if (!empty($theme_name)) {
       $name_field->value($theme_name);
-      $display_name->value(ucwords(t("%name theme", array("name" => $theme_name))));
+      $display_name->value(ucwords(t("%name theme", array("name" => str_replace("-", " ", $theme_name)))));
       $original_name->hidden("original")->value(Session::instance()->get("themeroller_name"));
     }
     $form_group->textarea("description")->label(t("Description"))
       ->id("g-description")
+      ->value(t("A generated theme based on the ui themeroller '%name' styling", array("name" => $theme_name)))
       ->rules("required")
       ->error_messages("required", t("You must enter a theme description name"));
     $form_group->submit("")->value(t("Create"));

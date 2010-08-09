@@ -80,6 +80,10 @@ class themeroller {
         }
       }
     }
+    if (empty($parameters["colors"]["bgColorOverlay"])) {
+      $parameters["colors"]["bgColorOverlay"] = $parameters["colors"]["bgColorDefault"];
+      // @todo go find the .ui-widget-overlay { background: #aaaaaa
+    }
     $parameters["js"] = $is_admin ? glob(MODPATH . "themeroller/data/js/admin_*.js") :
       glob(MODPATH . "themeroller/data/js/site_*.js");
     $parameters["standard_css"] = glob(MODPATH . "themeroller/data/css/*.css");
@@ -105,7 +109,7 @@ class themeroller {
   }
 
   static function generate_image($mask_file, $color, $target_dir, $replace_with="") {
-    $output = $target_dir . str_replace("mask", $replace_with, basename($mask_file));
+    $output = $target_dir . str_replace("_mask", $replace_with, basename($mask_file));
     $mask = imagecreatefrompng($mask_file);
     $image = imagecreatetruecolor(imagesx($mask), imagesy($mask));
     $icon_color = self::_rgb(hexdec($color));
@@ -113,16 +117,16 @@ class themeroller {
     $transparent = imagecolorallocatealpha($image,
        $icon_color['red'], $icon_color['green'], $icon_color['blue'], 127);
     imagefill($image, 0, 0, $transparent);
-    imagefilter($mask, IMG_FILTER_EDGEDETECT);
 
     for ($y=0; $y < imagesy($mask); $y++) {
       for ($x=0; $x < imagesx($mask); $x++) {
         $pixel_color = imagecolorsforindex($mask, imagecolorat($mask, $x, $y));
         $mask_color = self::_grayscale_pixel($pixel_color);
-        $mask_alpha = 127 - (floor($mask_color["red"] / 2) * (1 - ($pixel_color["alpha"] / 127)));
+        //$mask_alpha = 127 - (floor($mask_color["red"] / 2) * (1 - ($pixel_color["alpha"] / 127)));
+        $mask_alpha = 127 - floor($mask_color["red"] * 127 / 256);
         $new_color = imagecolorallocatealpha($image,
           $icon_color['red'], $icon_color['green'], $icon_color['blue'], $mask_alpha);
-        imagesetpixel($image, $x, $y, $new_color);
+       imagesetpixel($image, $x, $y, $new_color);
       }
     }
 
@@ -131,6 +135,8 @@ class themeroller {
     imagepng($image, $output);
     imagedestroy($image);
     imagedestroy($mask);
+
+    return $output;
   }
 
   static function generate_thumbnail($base, $parts, $target) {
@@ -156,11 +162,6 @@ class themeroller {
       imagedestroy($image_part);
     }
 
-    //$new_width = 200;
-    //$new_height = floor($height * $new_width / $width);
-
-    //$resized = imagecreatetruecolor($new_width, $new_height);
-    //imagecopyresampled($resized, $image, 0, 0, 0, 0,$new_width, $new_height, $width, $height);
     imagesavealpha($image, true);
     imagealphablending($image, false);
     imagepng($image, $target);

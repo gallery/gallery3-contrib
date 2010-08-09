@@ -484,7 +484,7 @@ th {
 }
 
 .sf-sub-indicator {
-  background-image: url("themeroller/images/ui-icons_2e83ff_256x240.png");
+  background-image: url("themeroller/images/ui-icons_<?= $iconColorHighlight ?>_256x240.png");
   height: 16px;
   width: 16px;
 }
