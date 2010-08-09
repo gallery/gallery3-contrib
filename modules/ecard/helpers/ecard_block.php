@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,24 +17,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class ecard_event_Core {
-  static function admin_menu($menu, $theme) {
-    $menu->get("settings_menu")
-      ->append(Menu::factory("link")
-               ->id("ecard")
-               ->label(t("eCard Settings"))
-               ->url(url::site("admin/ecard")));
+class ecard_block_Core {
+  static function get_site_list() {
+    return array("ecard" => t("eCard"));
   }
 
-  static function photo_menu($menu, $theme) {
-    if (module::get_var("ecard", "location") == "top") {
-      $item = $theme->item();
-      $menu->append(Menu::factory("link")
-                    ->id("ecard")
-                    ->label(t("Send as eCard"))
-                    ->url(url::site("ecard/form_send/{$item->id}"))
-                    ->css_class("g-dialog-link ui-icon-ecard")
-                    ->css_id("g-send-ecard"));
+  static function get($block_id, $theme) {
+    $block = "";
+    switch ($block_id) {
+    case "ecard":
+      if ($theme->item() && $theme->item()->is_photo() && module::get_var("ecard", "location") == "sidebar") {
+        $block = new Block();
+        $block->css_id = "g-send-ecard";
+        $block->title = t("eCard");
+        $block->content = new View("ecard_block.html");
+      }
+      break;
     }
+    return $block;
   }
 }

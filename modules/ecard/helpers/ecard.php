@@ -25,7 +25,7 @@
  */
 class ecard_Core {
   static function get_send_form($item) {
-    $form = new Forge("ecards/send/{$item->id}", "", "post", array("id" => "g-ecard-form"));
+    $form = new Forge("ecard/send/{$item->id}", "", "post", array("id" => "g-ecard-form"));
     $group = $form->group("send_ecard")->label(t("Send eCard"));
     $group->input("from_name")
       ->label(t("Your name"))

@@ -39,12 +39,18 @@ for ($i = 0; $i < 2; $i++) {
     ->set("type", "photo")
     ->set("name", "Sample Photo.png")
     ->set("title", "Sample Photo")
-    ->set_file("gallery.png")
+    ->set_file("test1.png")
     ->create($album->url, $auth);
   alert("Uploaded photo: <b>{$photo->url}</b>");
 }
 $album->load();
 alert("Album members: <b>" . join(", ", $album->data->members) . "</b>");
+
+
+alert("Replace the data file");
+$photo->set_file("test2.png")
+  ->save();
+
 
 $comment = Gallery3::factory()
   ->set("item", $album->data->members[0])
@@ -92,7 +98,6 @@ alert("Un-tag the photo");
 $tag_relationship2->delete();
 $tag->load();
 alert("1 remaining tag: <b>{$tag->data->relationships->items->members[0]}</b>");
-
 
 alert("Delete the album and tag");
 $album->delete();

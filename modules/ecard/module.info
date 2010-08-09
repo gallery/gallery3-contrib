@@ -1,3 +1,4 @@
 name = "E-Card"
 description = "Send a photo as a postcard"
-version = 1
+version = 2
+
