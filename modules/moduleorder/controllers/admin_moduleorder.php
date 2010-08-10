@@ -38,7 +38,7 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
     $modulerawlist = explode("&", trim($_POST['modulelist'], "&"));
     
     //Make sure that gallery and user modules are first in the list
-    $currentindex = 2;
+    $current_weight = 2;
     $identity_provider = module::get_var("gallery", "identity_provider");
     foreach ($modulerawlist as $row) {
       $currentry = explode("=", $row);
@@ -48,13 +48,13 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
       } elseif ($currentry[0] == $identity_provider) {
         $modulelist[1] = $row;
       } else {
-        $modulelist[$currentindex] = $row;
-        $currentindex++;
+        $modulelist[$current_weight] = $row;
+        $current_weight++;
       }
     }
     ksort($modulelist);
     
-    //Now we are ready to write the correct id values
+    //Write the correct weight values
     $current_weight = 0;
     foreach ($modulelist as $row) {
       $current_weight++;
@@ -63,7 +63,7 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
       db::build()
         ->update("modules")
         ->set("weight", $current_weight)
-        ->where("name", "=", $currentry[0])
+        ->where("id", "=", $currentry[1])
         ->execute();
     }
     
