@@ -54,44 +54,19 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
     }
     ksort($modulelist);
     
-    //Get the highest used index
-    $highestindex = 0;
-    foreach ($modulelist as $row) {
-      $currentry = explode(":", $row);
-      if ($currentry[1] > $highestindex) {
-        $highestindex = $currentry[1];
-      }
-    }
-    
-    $highestindex++;       //Have a safety margin just in case
-    //To avoid conflicts on the index we now rewrite all indices of all modules
-    foreach ($modulelist as $row) {
-      $highestindex++;
-      $currentry = explode("=", $row);
-      $currentry = explode(":", $currentry[1]);
-      db::build()
-        ->update("modules")
-        ->set("id", $highestindex)
-        ->where("name", "=", $currentry[0])
-        ->execute();
-    }
-    
     //Now we are ready to write the correct id values
-    $highestindex = 0;
+    $current_weight = 0;
     foreach ($modulelist as $row) {
-      $highestindex++;
+      $current_weight++;
       $currentry = explode("=", $row);
       $currentry = explode(":", $currentry[1]);
       db::build()
         ->update("modules")
-        ->set("id", $highestindex)
+        ->set("weight", $current_weight)
         ->where("name", "=", $currentry[0])
         ->execute();
     }
     
-    //As last step we optimize the table
-    db::query("OPTIMIZE TABLE `modules`")
-              ->execute();
     message::success(t("Your settings have been saved."));
     url::redirect("admin/moduleorder");
     print $this->_get_view();
