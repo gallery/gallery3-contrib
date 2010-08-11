@@ -22,7 +22,7 @@ class moduleorder_event_Core {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
                ->id("moduleorder_menu")
-               ->label(t("Manage Module Order"))
+               ->label(t("Module order"))
                ->url(url::site("admin/moduleorder")));
   }
 }
