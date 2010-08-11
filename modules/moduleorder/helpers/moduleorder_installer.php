@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,23 +17,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class moduleorder_event_Core {
-  static function module_change($changes) {
-    // Gallery version must be >= 32
-    if (module::get_version("gallery") < 32) {
-      site_status::warning(
-        t("The module 'Module Order' requires Gallery core version of 32 or higher."),
-        "moduleorder_needs_higherversion");
-    } else {
-      site_status::clear("moduleorder_needs_higherversion");
-    }
+class moduleorder_installer {
+  static function install() {
+    // Set the module's version number.
+    module::set_version("moduleorder", 1);
   }
-  
-  static function admin_menu($menu, $theme) {
-    $menu->get("settings_menu")
-      ->append(Menu::factory("link")
-               ->id("moduleorder_menu")
-               ->label(t("Module order"))
-               ->url(url::site("admin/moduleorder")));
+
+  static function upgrade($version) {
+    module::set_version("moduleorder", $version = 1);
+  }
+
+  static function deactivate() {
+  // Clear the require higher core version message.
+    site_status::clear("moduleorder_needs_higherversion");
+  }
+
+  static function uninstall() {
+    module::delete("moduleorder");
   }
 }
