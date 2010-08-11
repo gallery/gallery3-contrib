@@ -299,6 +299,10 @@ td {
   padding-left: 0;
 }
 
+#g-login-menu li a {
+  color: #<?= $fcHighlight ?> !important;
+}
+
 /* Sidebar  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 #g-sidebar .g-block-content {
@@ -397,6 +401,10 @@ td {
 
 #g-footer #g-credits li {
   padding-right: 1.2em;
+}
+
+#g-footer #g-credits li a {
+  color: #<?= $fcHighlight ?> !important;
 }
 
 /* In-line editing  ~~~~~~~~~~~~~~~~~~~~~~ */
@@ -578,6 +586,7 @@ input.textbox,
 input[type="text"],
 input[type="password"],
 textarea {
+  background-color: #<?= $bgColorDefault ?>;
   border: 1px solid #<?= $borderColorActive ?>;
   border-top-color: #<?= $borderColorContent ?>;
   border-left-color: #<?= $borderColorContent ?>;
@@ -598,13 +607,14 @@ option:focus {
 label,
 input[readonly] {
   background-color: #<?= $bgColorContent ?>;
-  color: #<?= $fcDefault ?>; /* fcDefault; */
+  color: #<?= $fcDefault ?>;
 }
 
 /* Short forms ~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .g-short-form .textbox,
 .g-short-form input[type=text] {
+  background-color: <?= $bgColorDefault ?>
   color: #<?= $fcContent ?>;
 }
 
@@ -638,6 +648,7 @@ input[readonly] {
 
 .g-editable:hover {
   background-color: #<?= $bgColorActive ?>;
+  color: #<?= $iconColorActive ?>
 }
 
 form li.g-error,

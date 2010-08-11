@@ -120,7 +120,18 @@ class themeroller_task_Core {
         $image_color = $parameters["colors"]["iconColorContent"];
         while (!empty($parameters["masks"]) && microtime(true) - $start < 1.5) {
           $mask = array_shift($parameters["masks"]);
-          $image_file = themeroller::generate_image($mask, $image_color, $target_dir);
+          $basename = basename($mask);
+          if (preg_match("/(.*)_mask(\[(\w*)\])?(\.png)$/", $basename, $matches)) {
+            $basename = "{$matches[1]}{$matches[4]}";
+            $image_color = empty($matches[3]) ? $parameters["colors"]["iconColorContent"] :
+                                                $parameters["colors"][$matches[3]];
+          } else {
+            $image_color = $parameters["colors"]["iconColorContent"];
+          }
+          Kohana_Log::add("error", Kohana::debug(array("image_color" => $image_color,
+                                                       "matches" => $matches)));
+          $image_file = "{$target_dir}$basename";
+          themeroller::generate_image($mask, $image_file, $image_color);
           $completed++;
           $task->log(t("Generated image: %path", array("path" => $image_file)));
         }
@@ -132,9 +143,11 @@ class themeroller_task_Core {
       case "generate_icons":
         $task->status = t("Generating icons");
         $target_dir = "{$theme_path}css/themeroller/images/";
+        $mask_file = $parameters["icon_mask"];
         while (!empty($parameters["icons"]) && microtime(true) - $start < 1.5) {
           $color = array_shift($parameters["icons"]);
-          $icon_file = themeroller::generate_image($parameters["icon_mask"], $color, $target_dir, "_$color");
+          $icon_file = $target_dir . str_replace("mask", $color, basename($mask_file));
+          themeroller::generate_image($mask_file, $icon_file, $color);
           $completed++;
           $task->log(t("Generated themeroller icon: %path", array("path" => $icon_file)));
         }

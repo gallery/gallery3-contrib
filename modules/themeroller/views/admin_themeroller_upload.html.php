@@ -15,6 +15,11 @@
        fileDataName     : 'zip_file',
        'wmode'    : 'transparent',
        hideButton: true, /* should be true */
+       onSelectOnce: function(event, queueID, fileObj) {
+         $("#g-themeroller-form").find(":submit")
+           .addClass("ui-state-disabled")
+           .attr("disabled", "disabled");
+       },
        onComplete       : function(event, queueID, fileObj, response, data) {
          $("#g-themeroller-form").submit();
          return false;

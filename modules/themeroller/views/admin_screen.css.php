@@ -11,8 +11,9 @@
  *  5)  Navigation and menus
  *  6)  jQuery and jQuery UI
  *  7)  Module color overrides
- *  8)  States and interactions
- *  9)  Right-to-left language styles
+ *  8)  Forms
+ *  9)  States and interactions
+ * 10)  Right-to-left language styles
  *
  * @todo Review g-buttonset-vertical
  */
@@ -288,7 +289,7 @@ th {
 #g-footer {
   background-color: #<?= $bgColorHeader ?>;
   border-top: 1px solid #<?= $borderColorHeader ?>;
-  color: #<?= $fcHeader ?>
+  color: #<?= $fcHeader ?>;
   font-size: .8em;
   margin-top: 20px;
   padding: 10px 20px;
@@ -312,6 +313,10 @@ th {
 #g-header #g-logo:hover {
   color: #<?= $fcHover ?> !important;
   text-decoration: none;
+}
+
+#g-login-menu li a {
+  color: #<?= $fcHighlight ?> !important;
 }
 
 #g-content .g-block h2 {
@@ -439,9 +444,26 @@ th {
   color: #<?= $fcError ?> !important;
 }
 
+/* Footer content ~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#g-footer #g-credits li a {
+  color: #<?= $fcHighlight ?> !important;
+}
+
 /** *******************************************************************
  * 5) Navigation and menus
  *********************************************************************/
+
+/* Login menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#g-banner #g-login-menu {
+  color: #<?= $fcHeader ?>;
+  float: right;
+}
+
+#g-banner #g-login-menu li {
+  padding-left: 1.2em;
+}
 
 /* Site Menu  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -500,6 +522,11 @@ a > .sf-sub-indicator {
 
 /* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
 
+.ui-widget-overlay {
+  background: #<?= $bgColorOverlay ?>;
+  opacity: .7;
+}
+
 #g-admin-dashboard .ui-state-highlight,
 #g-sidebar .ui-state-highlight {
   height: 2em;
@@ -540,7 +567,60 @@ a > .sf-sub-indicator {
 }
 
 /** *******************************************************************
- * 8) States and interactions
+ * 8) Forms
+ *********************************************************************/
+fieldset {
+  border: 1px solid #<?= $borderColorContent ?>;
+}
+
+legend {
+  font-weight: bold;
+  color: #<?= $fcDefault ?>;
+}
+
+input.textbox,
+input[type="text"],
+input[type="password"],
+textarea {
+  background-color: #<?= $bgColorDefault ?>;
+  border: 1px solid #<?= $borderColorActive ?>;
+  border-top-color: #<?= $borderColorContent ?>;
+  border-left-color: #<?= $borderColorContent ?>;
+  color: #<?= $fcContent ?>;
+}
+
+input:focus,
+input.textbox:focus,
+input[type=text]:focus,
+textarea:focus,
+option:focus {
+  background-color: #<?= $bgColorActive ?>;
+  color: #<?= $fcContent ?>;
+}
+
+/* Forms in dialogs and panels ~~~~~~~~~ */
+
+label,
+input[readonly] {
+  background-color: #<?= $bgColorContent ?>;
+  color: #<?= $fcDefault ?>;
+}
+
+/* Short forms ~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-short-form .textbox,
+.g-short-form input[type=text] {
+  background-color: <?= $bgColorDefault ?>;
+  color: #<?= $fcContent ?>;
+}
+
+.g-short-form .textbox.g-error {
+  border: 1px solid #<?= $borderColorError ?>;
+  color: #<?= $fcError ?>;
+}
+
+/** *******************************************************************
+ * 9) States and interactions
  *********************************************************************/
 
 .g-draggable:hover {
@@ -553,8 +633,116 @@ a > .sf-sub-indicator {
   border: 2px dotted #<?= $borderColorHighlight ?>;
 }
 
+.g-active,
+.g-enabled,
+.g-available,
+.g-selected,
+.g-highlight {
+  font-weight: bold;
+}
+
+.g-inactive,
+.g-disabled,
+.g-unavailable,
+.g-uneditable,
+.g-locked,
+.g-deselected,
+.g-understate {
+  color: #<?= $borderColorContent ?>;
+  font-weight: normal;
+}
+
+.g-editable:hover {
+  background-color: #<?= $bgColorActive ?>;
+  color: #<?= $iconColorActive ?>
+}
+
+form li.g-error,
+form li.g-info,
+form li.g-success,
+form li.g-warning {
+  background-image: none;
+}
+
+
+form.g-error input[type="text"],
+li.g-error input[type="text"],
+form.g-error input[type="password"],
+li.g-error input[type="password"],
+form.g-error input[type="checkbox"],
+li.g-error input[type="checkbox"],
+form.g-error input[type="radio"],
+li.g-error input[type="radio"],
+form.g-error textarea,
+li.g-error textarea,
+form.g-error select,
+li.g-error select {
+  border: 2px solid #<?= $fcError ?>;
+}
+
+.g-error,
+.g-denied,
+tr.g-error td.g-error,
+#g-add-photos-status .g-error {
+  background: #<?= $borderColorError ?> url('../images/ico-error.png') no-repeat .4em 50%;
+  color: #<?= $fcError ?>;
+}
+
+.g-info {
+  background: #<?= $bgColorContent ?> url('../images/ico-info.png') no-repeat .4em 50%;
+}
+
+.g-success,
+.g-allowed,
+#g-add-photos-status .g-success {
+  background: #<?= $bgColorContent ?> url('../images/ico-success.png') no-repeat .4em 50%;
+}
+
+tr.g-success {
+  background-image: none;
+}
+
+tr.g-success td.g-success {
+  background-image: url('../images/ico-success.png');
+}
+
+.g-warning,
+tr.g-warning td.g-warning {
+  background: #<?= $bgColorHighlight ?> url('../images/ico-warning.png') no-repeat .4em 50%;
+}
+
+form .g-error {
+  background-color: #<?= $bgColorError ?>;
+}
+
+.g-default {
+  background-color: #<?= $bgColorDefault ?>;
+  font-weight: bold;
+}
+
+.g-draggable:hover {
+  border: 1px dashed #<?= $bgColorHighlight ?>;
+}
+
+.ui-sortable .g-target,
+.ui-state-highlight {
+  background-color: #<?= $bgColorHighlight ?>;
+  border: 2px dotted #<?= $borderColorHighlight ?>;
+}
+
+/* Ajax loading indicator ~~~~~~~~~~~~~~~~ */
+
+.g-loading-large,
+.g-dialog-loading-large {
+  background: #<?= $bgColorContent ?> url('../images/loading-large.gif') no-repeat center center !important;
+}
+
+.g-loading-small {
+  background: #<?= $bgColorContent ?> url('../images/loading-small.gif') no-repeat center center !important;
+}
+
 /** *******************************************************************
- * 9) Right to left styles
+ * 10) Right to left styles
  *********************************************************************/
 
 .rtl #g-content #g-album-grid .g-item,

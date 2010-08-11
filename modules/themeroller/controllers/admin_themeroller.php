@@ -53,10 +53,10 @@ class Admin_Themeroller_Controller extends Admin_Controller {
       $themeroller_name = $session->get("themeroller_name");
       $is_admin = $validation["is_admin"];
       $counter = 0;
-      $theme_name_generated = ($is_admin ? "admin_" : "") . $themeroller_name;
+      $theme_name_generated = $theme_name = ($is_admin ? "admin_" : "") . $themeroller_name;
       while (file_exists(THEMEPATH . "$theme_name_generated/theme.info")) {
         $counter++;
-        $theme_name_generated = "{$theme_name_generated}_{$counter}";
+        $theme_name_generated = "{$theme_name}_{$counter}";
       }
 
       $theme_name = strtolower(strtr($theme_name_generated, " ", "_"));
@@ -163,7 +163,7 @@ class Admin_Themeroller_Controller extends Admin_Controller {
     }
     $form_group->textarea("description")->label(t("Description"))
       ->id("g-description")
-      ->value(t("A generated theme based on the ui themeroller '%name' styling", array("name" => $theme_name)))
+      ->value(t("A generated theme based on the ui themeroller '%name' styling", array("name" => str_replace("admin_", "", $theme_name))))
       ->rules("required")
       ->error_messages("required", t("You must enter a theme description name"));
     $form_group->submit("")->value(t("Create"));
