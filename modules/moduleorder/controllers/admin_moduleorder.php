@@ -24,7 +24,7 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
   
   private function _get_view() {
     $view = new Admin_View("admin.html");
-    $view->page_title = t("Manage Module Order");
+    $view->page_title = t("Manage module order");
     $view->content = new View("admin_moduleorder.html");
     $view->content->csrf = access::csrf_token();
     $view->content->available = new View("admin_moduleorder_blocks.html");
