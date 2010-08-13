@@ -17,14 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class module_manager_Core {
+class moduleorder_Core {
   static function get_available_site_modules() {
     return self::_get_modules();
   }
 
   private static function _get_modules() {
     $modules = array();
-    foreach (db::build()->select("*")->from("modules")->order_by("id")->execute() as $row) {
+    foreach (db::build()->select("*")->from("modules")->order_by("weight")->execute() as $row) {
       $modules["{$row->name}:$row->id"] = $row->name;
     }
     return $modules;
