@@ -413,6 +413,17 @@ td {
   background-color: #<?= $bgColorContent ?>;
 }
 
+/* Permissions  ~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+.g-resource-access a {
+  background-image: url("themeroller/images/ui-icons_<?= $iconColorHighlight ?>_256x240.png") !important;
+  margin: auto;
+}
+
+.g-resource-denied a {
+  background-image: url("themeroller/images/ui-icons_<?= $iconColorError ?>_256x240.png") !important;
+  margin: auto;
+}
+
 /** *******************************************************************
  * 5) Navigation and menus
  *********************************************************************/
