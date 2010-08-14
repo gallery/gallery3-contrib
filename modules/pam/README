@@ -34,7 +34,8 @@ CONFIGURATION
   getAccount() method that will return at the very least: name,full_name,email
 
   Note:
-  Two plugins are included in the pam_plugin folder.
+  Two plugins are included in the pam_plugin folder. Copy a plugin to the
+  plugin folder to make it available to the PAM module.
 
   mock: will authenticate any matching name/password pair. ex. user/user and if
   $create_account is true then an account will be created using the name. The
