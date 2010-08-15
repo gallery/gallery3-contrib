@@ -32,4 +32,13 @@ class themeroller_installer {
     /* @todo Put database table drops here */
     module::delete("themeroller");
   }
+
+  static function can_activate() {
+    $messages = array();
+    if (!(extension_loaded("zip") || extension_loaded("zlib"))) {
+      $messages["warn"][] = t("Themeroller requires either the '%zip' or '%zlib' extension to be loaded",
+                              array("zip" => "zip", "zlib" => "zlib"));
+    }
+    return $messages;
+  }
 }
