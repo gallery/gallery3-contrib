@@ -128,8 +128,6 @@ class themeroller_task_Core {
           } else {
             $image_color = $parameters["colors"]["iconColorContent"];
           }
-          Kohana_Log::add("error", Kohana::debug(array("image_color" => $image_color,
-                                                       "matches" => $matches)));
           $image_file = "{$target_dir}$basename";
           themeroller::generate_image($mask, $image_file, $image_color);
           $completed++;
