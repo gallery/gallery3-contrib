@@ -82,8 +82,24 @@ class themeroller {
     }
     if (empty($parameters["colors"]["bgColorOverlay"])) {
       $parameters["colors"]["bgColorOverlay"] = $parameters["colors"]["bgColorDefault"];
-      // @todo go find the .ui-widget-overlay { background: #aaaaaa
+      /* @todo go find the .ui-widget-overlay { background: #aaaaaa */
     }
+    // The jquery themeroller has no warning style so lets generate the appropriate colors.
+    // We'll do this by averaging the color components of highlight and error colors
+    foreach (array("borderColor", "fc", "bgColor", "iconColor") as $type) {
+      $highlight = self::_rgb(hexdec($parameters["colors"]["{$type}Highlight"]));
+      $error = self::_rgb(hexdec($parameters["colors"]["{$type}Error"]));
+
+      $warning = 0;
+      foreach (array("red", "green", "blue") as $color) {
+        $warning = ($warning << 8) | (int)floor(($highlight[$color] + $error[$color]) / 2);
+      }
+      $parameters["colors"]["{$type}Warning"] = dechex($warning);
+      if ($type == "iconColor") {
+        $parameters["icons"][] = $parameters["colors"]["{$type}Warning"];
+      }
+    }
+
     $parameters["js"] = $is_admin ? glob(MODPATH . "themeroller/data/js/admin_*.js") :
       glob(MODPATH . "themeroller/data/js/site_*.js");
     $parameters["standard_css"] = glob(MODPATH . "themeroller/data/css/*.css");
@@ -108,7 +124,7 @@ class themeroller {
     return $parameters;
   }
 
-    static function generate_image($mask_file, $output, $color) {
+  static function generate_image($mask_file, $output, $color) {
     $mask = imagecreatefrompng($mask_file);
     $image = imagecreatetruecolor(imagesx($mask), imagesy($mask));
     $icon_color = self::_rgb(hexdec($color));

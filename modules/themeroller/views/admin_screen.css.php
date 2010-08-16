@@ -230,7 +230,7 @@ th {
 }
 
 .g-warning td {
-  background-color: #fcf9ce;
+  background-color: #<?= $bgColorWarning ?> !important;
   background-image: none;
 }
 
@@ -708,7 +708,8 @@ tr.g-success td.g-success {
 
 .g-warning,
 tr.g-warning td.g-warning {
-  background: #<?= $bgColorHighlight ?> url('../images/ico-warning.png') no-repeat .4em 50%;
+  background: #<?= $bgColorWarning ?> url('../images/ico-warning.png') no-repeat .4em 50% !important;
+  color: #<?= $fcWarning ?> !important;
 }
 
 form .g-error {
