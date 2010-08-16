@@ -240,7 +240,7 @@ class themeroller_task_Core {
         $message = t("Successfully generated: %name", array("name" => $display_name));
         message::info($message);
         $task->log($message);
-        $task->status = t("Theme '%name' generated", array("name" => $display_name));
+        $task->status = t("'%name' generated", array("name" => $display_name));
       }
       $task->set("completed", $completed);
       if (!$task->done) {
