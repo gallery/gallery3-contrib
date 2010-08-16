@@ -144,6 +144,7 @@ class Admin_Themeroller_Controller extends Admin_Controller {
   }
 
   private function _get_theme_form($theme_name=null) {
+    $session = Session::instance();
     $form = new Forge("admin/themeroller/create", "", "post", array("id" => "g-themeroller-create-form"));
     $form_group = $form->group("theme")->label(t("Create theme"));
     $original_name = $form_group->hidden("original");
@@ -158,8 +159,13 @@ class Admin_Themeroller_Controller extends Admin_Controller {
       ->error_messages("required", t("You must enter a theme display name"));
     if (!empty($theme_name)) {
       $name_field->value($theme_name);
-      $display_name->value(ucwords(t("%name theme", array("name" => str_replace("-", " ", $theme_name)))));
-      $original_name->hidden("original")->value(Session::instance()->get("themeroller_name"));
+      $is_admin = $session->get("themeroller_is_admin");
+      $themeroller_name = $session->get("themeroller_name");
+      $display_name->value(ucwords($is_admin ? t("%name administration theme",
+                                                 array("name" => str_replace("-", " ", $themeroller_name))) :
+                                               t("%name theme",
+                                                 array("name" => str_replace("-", " ", $themeroller_name)))));
+     $original_name->hidden("original")->value(Session::instance()->get("themeroller_name"));
     }
     $form_group->textarea("description")->label(t("Description"))
       ->id("g-description")
