@@ -18,16 +18,25 @@
  */
 class themeroller {
   static function extract_zip_file($zipfile) {
-    $zip = new ZipArchive();
-    if ($zip->open($zipfile) === true) {
-      $extract_path = VARPATH . trim($zipfile, "/") . ".d";
-      Session::instance()->set("theme_extract_path", $extract_path);
-      $zip->extractTo($extract_path);
-      $zip->close();
-      return $extract_path;
-    } else {
-      return false;
+    $extract_path = VARPATH . trim($zipfile, "/") . ".d";
+    if (extension_loaded("zip")) {
+      $zip = new ZipArchive();
+      if ($zip->open($zipfile) === true) {
+        Session::instance()->set("theme_extract_path", $extract_path);
+        $zip->extractTo($extract_path);
+        $zip->close();
+        return $extract_path;
+      }
+    } else if (extension_loaded("zlib")) {
+      require_once(MODPATH . "themeroller/libraries/pclzip.lib.php");
+      $archive = new PclZip($zipfile);
+      $list = $archive->extract(PCLZIP_OPT_PATH, $extract_path);
+      if (!empty($list)) {
+        Session::instance()->set("theme_extract_path", $extract_path);
+        return $extract_path;
+      }
     }
+    return false;
   }
 
   static function recursive_directory_delete($path) {
