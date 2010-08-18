@@ -45,10 +45,10 @@ class Json_Album_Controller extends Controller {
 
   function is_admin() {
     if (identity::active_user()->admin) {
-      print json_encode(array("result" => "success", "csrf" => access::csrf_token()));
+      json::reply(array("result" => "success", "csrf" => access::csrf_token()));
       return;
     }
-    print json_encode(array("result" => "failure"));
+    json::reply(array("result" => "failure"));
 
   }
 
@@ -65,7 +65,7 @@ class Json_Album_Controller extends Controller {
 
     $item = ORM::factory("item", $item_id);
     access::required("view", $item);
-    print json_encode(self::child_json_encode($item));
+    json::reply(self::child_json_encode($item));
   }
 
 
@@ -93,7 +93,7 @@ class Json_Album_Controller extends Controller {
       $i++;
     }
 
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
   }
 
  function rearrange($target_id, $before_or_after) {
@@ -146,7 +146,7 @@ class Json_Album_Controller extends Controller {
 
     module::event("album_rearrange", $album);
 
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
 
   }
 
@@ -218,7 +218,7 @@ class Json_Album_Controller extends Controller {
       }
       unlink($temp_filename);
 
-      print json_encode(self::child_json_encode($item));
+      json::reply(self::child_json_encode($item));
   }
 
   public function make_album_cover($id) {
@@ -231,7 +231,7 @@ class Json_Album_Controller extends Controller {
 
     item::make_album_cover($item);
 
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
   }
 
   public function p_rotate($item, $dir){
@@ -290,7 +290,7 @@ class Json_Album_Controller extends Controller {
       message::success($msg);
     }
 
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
 
   }
 
@@ -310,7 +310,7 @@ class Json_Album_Controller extends Controller {
       $i++;
     }
 
-    print json_encode($toreturn);
+    json::reply($toreturn);
   }
 
 
@@ -322,20 +322,20 @@ class Json_Album_Controller extends Controller {
 
     $item = $this->p_rotate($item, $dir);
 
-    print json_encode(self::child_json_encode($item));
+    json::reply(self::child_json_encode($item));
   }
 
   public function resize_config(){
     if (upload_configuration::isResize())
     {
-      print json_encode(array(
+      json::reply(array(
         "resize" => true,
         "max_width" => upload_configuration::getMaxWidth(),
         "max_height" => upload_configuration::getMaxHeight()));
     }
     else
     {
-      print json_encode(array("resize" => false));
+      json::reply(array("resize" => false));
     }
   }
 

@@ -93,7 +93,7 @@ class Admin_Schedule_Controller extends Admin_Maintenance_Controller {
     $schedule->delete();
 
     message::success(t("Removed scheduled task: %name", array("name" => $schedule->name)));
-    print json_encode(array("result" => "success", "reload" => 1));
+    json::reply(array("result" => "success", "reload" => 1));
   }
 
   public function define() {
@@ -121,9 +121,9 @@ class Admin_Schedule_Controller extends Admin_Maintenance_Controller {
       } else {
         message::success(t("Updated scheduled task: %name", array("name" => $schedule->name)));
       }
-      print json_encode(array("result" => "success", "reload" => 1));
+      json::reply(array("result" => "success", "reload" => 1));
     } else {
-      print json_encode(array("result" => "error", "form" => (string) $form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 

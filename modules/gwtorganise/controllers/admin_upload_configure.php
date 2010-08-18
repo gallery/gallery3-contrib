@@ -33,13 +33,14 @@ class Admin_Upload_Configure_Controller extends Controller
 
         upload_configuration::extractForm($form);
         message::success(t("GWTOrganise Module Configured!"));
-        print json_encode(array("result" => "success"));
+        json::reply(array("result" => "success"));
         return;
       }
       else
       {
-        print json_encode(array("result" => "error", "form" => (string) $form));
+        json::reply(array("result" => "error", "html" => (string) $form));
         return;
+
       }
     }
     else

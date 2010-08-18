@@ -45,7 +45,7 @@ class downloadalbum_Controller extends Controller {
       $f_namelen = strlen($f);
       $f_size = filesize($f);
       $f_mtime = $this->unix2dostime(filemtime($f));
-      $f_crc32 = hexdec(hash_file('crc32b', $f, false));
+      $f_crc32 = $this->fixBug45028(hexdec(hash_file('crc32b', $f, false)));
 
       // Local file header
       echo pack('VvvvVVVVvva' . $f_namelen,
@@ -217,23 +217,27 @@ class downloadalbum_Controller extends Controller {
     // Prevent caching
     header('Expires: Thu, 01 Jan 1970 00:00:00 GMT');
 
+    $pragma = 'no-cache';
+    $cachecontrol = 'no-cache, max-age=0';
+
+    // request::user_agent('browser') seems bugged
     if (request::user_agent('browser') === 'Internet Explorer'
-        AND request::user_agent('version') <= '6.0')
+        || stripos(request::user_agent(), 'msie') !== false
+        || stripos(request::user_agent(), 'internet explorer') !== false)
     {
-      // HTTP 1.0
-      header('Pragma:');
+      if (request::protocol() === 'https') {
+        // See http://support.microsoft.com/kb/323308/en-us
+        $pragma = 'cache';
+        $cachecontrol = 'private';
 
-      // HTTP 1.1 with IE extensions
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+      } else if (request::user_agent('version') <= '6.0') {
+        $pragma = '';
+        $cachecontrol = 'must-revalidate, post-check=0, pre-check=0';
+      }
     }
-    else
-    {
-      // HTTP 1.0
-      header('Pragma: no-cache');
 
-      // HTTP 1.1
-      header('Cache-Control: no-cache, max-age=0');
-    }
+    header('Pragma: '.$pragma);
+    header('Cache-Control: '.$cachecontrol);
   }
 
   /**
@@ -254,5 +258,15 @@ class downloadalbum_Controller extends Controller {
     return ($timebit['year']    << 25 | $timebit['mon']     << 21 |
             $timebit['mday']    << 16 | $timebit['hours']   << 11 |
             $timebit['minutes'] << 5  | $timebit['seconds'] >> 1);
+  }
+
+  /**
+   * See http://bugs.php.net/bug.php?id=45028
+   */
+  private function fixBug45028($hash) {
+    return (version_compare(PHP_VERSION, '5.2.7', '<'))
+      ? (($hash & 0x000000ff) << 24) + (($hash & 0x0000ff00) << 8)
+          + (($hash & 0x00ff0000) >> 8) + (($hash & 0xff000000) >> 24)
+      : $hash;
   }
 }

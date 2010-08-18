@@ -26,7 +26,7 @@ class Uploader_Controller extends Controller {
       $album = $album->parent();
     }
 
-    print json_encode(array("form" => (string) $this->_get_add_form($album)));
+    print $this->_get_add_form($album);
   }
 
   public function add($id) {
@@ -39,6 +39,9 @@ class Uploader_Controller extends Controller {
     if ($form->validate()) {
       batch::start();
 
+      $count = 0;
+      $added_a_movie = false;
+      $added_a_photo = false;
       foreach (array("file1", "file2", "file3") as $key) {
         if ($form->add_photos->$key->value == "") {
           continue;
@@ -57,16 +60,18 @@ class Uploader_Controller extends Controller {
               in_array(strtolower($path_info["extension"]), array("flv", "mp4", "m4v"))) {
             $item->type = "movie";
             $item->save();
+            $added_a_movie = true;
             log::success("content", t("Added a movie"),
                          html::anchor("movies/$item->id", t("view movie")));
           } else {
             $item->type = "photo";
             $item->save();
+            $added_a_photo = true;
             log::success("content", t("Added a photo"),
                          html::anchor("photos/$item->id", t("view photo")));
           }
+          $count++;
           module::event("add_photos_form_completed", $item, $form);
-
         } catch (Exception $e) {
           // Lame error handling for now.  Just record the exception and move on
           Kohana_Log::add("error", $e->getMessage() . "\n" . $e->getTraceAsString());
@@ -83,10 +88,26 @@ class Uploader_Controller extends Controller {
         }
       }
       batch::stop();
-      print json_encode(array("result" => "success"));
+      if ($count) {
+        if ($added_a_photo && $added_a_movie) {
+          message::success(t("Added %count photos and movies", array("count" => $count)));
+        } else if ($added_a_photo) {
+          message::success(t2("Added one photo", "Added %count photos", $count));
+        } else {
+          message::success(t2("Added one movie", "Added %count movies", $count));
+        }
+      }
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error", "form" => (string) $form));
+      json::reply(array("result" => "error", "html" => (string) $form));
     }
+
+    // Override the application/json mime type.  The dialog based HTML uploader uses an iframe to
+    // buffer the reply, and on some browsers (Firefox 3.6) it does not know what to do with the
+    // JSON that it gets back so it puts up a dialog asking the user what to do with it.  So force
+    // the encoding type back to HTML for the iframe.
+    // See: http://jquery.malsup.com/form/#file-upload
+    header("Content-Type: text/html; charset=" . Kohana::CHARSET);
   }
 
   private function _get_add_form($album) {

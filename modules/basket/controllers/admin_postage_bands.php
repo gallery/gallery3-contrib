@@ -60,9 +60,9 @@ class Admin_Postage_Bands_Controller extends Controller
       $postage_band->save();
       message::success(t("Created postage band %postage_name", array(
         "postage_name" => html::clean($postage_band->name))));
-      print json_encode(array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error", "form" => (string)$form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 
@@ -91,13 +91,13 @@ class Admin_Postage_Bands_Controller extends Controller
       $name = $postage->name;
       $postage->delete();
     } else {
-      print json_encode(array("result" => "error", "form" => (string)$form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
 
     $message = t("Deleted user %postage_band", array("postage_band" => html::clean($name)));
     log::success("user", $message);
     message::success($message);
-    print json_encode(array("result" => "success"));
+    json::reply(array("result" => "success"));
   }
 
   public function edit_postage_band($id) {
@@ -127,9 +127,9 @@ class Admin_Postage_Bands_Controller extends Controller
       $postage->save();
       message::success(t("Changed postage band %postage_name",
           array("postage_name" => html::clean($postage->name))));
-      print json_encode(array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error", "form" => (string)$form));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 
