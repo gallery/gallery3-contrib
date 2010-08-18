@@ -24,12 +24,14 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
   
   private function _get_view() {
     $view = new Admin_View("admin.html");
-    $view->page_title = t("Manage Module Order");
+    $view->page_title = t("Manage module order");
     $view->content = new View("admin_moduleorder.html");
     $view->content->csrf = access::csrf_token();
     $view->content->available = new View("admin_moduleorder_blocks.html");
     $view->content->active = new View("admin_moduleorder_blocks.html");
-    $view->content->available->modules = $this->_get_modules();
+    if (module::get_version("gallery") > 31) {
+      $view->content->available->modules = $this->_get_modules();
+    }
     return $view;
   }
 
@@ -74,7 +76,7 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
 
   private function _get_modules() {
     $active_blocks = array();
-    $available_modules = module_manager::get_available_site_modules();
+    $available_modules = moduleorder::get_available_site_modules();
     return $available_modules;
   }
 }
