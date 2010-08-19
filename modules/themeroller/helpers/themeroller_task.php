@@ -220,6 +220,7 @@ class themeroller_task_Core {
         $v->description = $task->get("description");
         $v->user_name = identity::active_user()->name;
         $v->is_admin = $is_admin;
+        $v->definition = json_encode($parameters["colors"]);
         ob_start();
         print $v->render();
         file_put_contents($file, ob_get_contents());
