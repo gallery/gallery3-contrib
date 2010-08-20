@@ -25,8 +25,8 @@ html {
 
 body, html {
   background-color: #<?= $bgColorDefault ?>;
-  font-family: Lucida Grande, Lucida Sans, Arial, sans-serif; /* ffDefault */
-  font-size: 13px/1.231;   /* fsDefault/ gallery_line_height */
+  font-family: <?= urldecode($ffDefault) ?>;
+  font-size: 13px/1.231;   /*  gallery_line_height */
 }
 
 p {
@@ -414,12 +414,28 @@ td {
 }
 
 /* Permissions  ~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-.g-resource-access a {
+#g-edit-permissions-form td {
+  background-image: none;
+}
+
+#g-edit-permissions-form fieldset {
+  border: 1px solid #<?= $borderColorHighlight ?>;
+}
+
+#g-permissions .g-denied {
+  background-color: transparent;
+}
+
+#g-permissions .g-allowed {
+  background-color: transparent;
+}
+
+.g-allowed a {
   background-image: url("themeroller/images/ui-icons_<?= $iconColorHighlight ?>_256x240.png") !important;
   margin: auto;
 }
 
-.g-resource-denied a {
+.g-denied a {
   background-image: url("themeroller/images/ui-icons_<?= $iconColorError ?>_256x240.png") !important;
   margin: auto;
 }
@@ -686,7 +702,6 @@ li.g-error select {
 }
 
 .g-error,
-.g-denied,
 tr.g-error td.g-error,
 #g-add-photos-status .g-error {
   background: #<?= $borderColorError ?> url('../images/ico-error.png') no-repeat .4em 50%;
@@ -698,7 +713,6 @@ tr.g-error td.g-error,
 }
 
 .g-success,
-.g-allowed,
 #g-add-photos-status .g-success {
   background: #<?= $bgColorContent ?> url('../images/ico-success.png') no-repeat .4em 50%;
 }
