@@ -24,12 +24,14 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
   
   private function _get_view() {
     $view = new Admin_View("admin.html");
-    $view->page_title = t("Manage Module Order");
+    $view->page_title = t("Manage module order");
     $view->content = new View("admin_moduleorder.html");
     $view->content->csrf = access::csrf_token();
     $view->content->available = new View("admin_moduleorder_blocks.html");
     $view->content->active = new View("admin_moduleorder_blocks.html");
-    $view->content->available->modules = $this->_get_modules();
+    if (module::get_version("gallery") > 31) {
+      $view->content->available->modules = $this->_get_modules();
+    }
     return $view;
   }
 
@@ -38,7 +40,7 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
     $modulerawlist = explode("&", trim($_POST['modulelist'], "&"));
     
     //Make sure that gallery and user modules are first in the list
-    $currentindex = 2;
+    $current_weight = 2;
     $identity_provider = module::get_var("gallery", "identity_provider");
     foreach ($modulerawlist as $row) {
       $currentry = explode("=", $row);
@@ -48,50 +50,25 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
       } elseif ($currentry[0] == $identity_provider) {
         $modulelist[1] = $row;
       } else {
-        $modulelist[$currentindex] = $row;
-        $currentindex++;
+        $modulelist[$current_weight] = $row;
+        $current_weight++;
       }
     }
     ksort($modulelist);
     
-    //Get the highest used index
-    $highestindex = 0;
+    //Write the correct weight values
+    $current_weight = 0;
     foreach ($modulelist as $row) {
-      $currentry = explode(":", $row);
-      if ($currentry[1] > $highestindex) {
-        $highestindex = $currentry[1];
-      }
-    }
-    
-    $highestindex++;       //Have a safety margin just in case
-    //To avoid conflicts on the index we now rewrite all indices of all modules
-    foreach ($modulelist as $row) {
-      $highestindex++;
+      $current_weight++;
       $currentry = explode("=", $row);
       $currentry = explode(":", $currentry[1]);
       db::build()
         ->update("modules")
-        ->set("id", $highestindex)
-        ->where("name", "=", $currentry[0])
+        ->set("weight", $current_weight)
+        ->where("id", "=", $currentry[1])
         ->execute();
     }
     
-    //Now we are ready to write the correct id values
-    $highestindex = 0;
-    foreach ($modulelist as $row) {
-      $highestindex++;
-      $currentry = explode("=", $row);
-      $currentry = explode(":", $currentry[1]);
-      db::build()
-        ->update("modules")
-        ->set("id", $highestindex)
-        ->where("name", "=", $currentry[0])
-        ->execute();
-    }
-    
-    //As last step we optimize the table
-    db::query("OPTIMIZE TABLE `modules`")
-              ->execute();
     message::success(t("Your settings have been saved."));
     url::redirect("admin/moduleorder");
     print $this->_get_view();
@@ -99,7 +76,7 @@ class Admin_Moduleorder_Controller extends Admin_Controller {
 
   private function _get_modules() {
     $active_blocks = array();
-    $available_modules = module_manager::get_available_site_modules();
+    $available_modules = moduleorder::get_available_site_modules();
     return $available_modules;
   }
 }
