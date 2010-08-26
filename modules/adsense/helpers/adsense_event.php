@@ -17,24 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class ecard_event_Core {
+class adsense_event_Core {
   static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
-               ->id("ecard")
-               ->label(t("eCard settings"))
-               ->url(url::site("admin/ecard")));
-  }
-
-  static function photo_menu($menu, $theme) {
-    if (module::get_var("ecard", "location") == "top") {
-      $item = $theme->item();
-      $menu->append(Menu::factory("link")
-                    ->id("ecard")
-                    ->label(t("Send as eCard"))
-                    ->url(url::site("ecard/form_send/{$item->id}"))
-                    ->css_class("g-dialog-link ui-icon-ecard")
-                    ->css_id("g-send-ecard"));
-    }
+               ->id("adsense_menu")
+               ->label(t("Adsense"))
+               ->url(url::site("admin/adsense")));
   }
 }

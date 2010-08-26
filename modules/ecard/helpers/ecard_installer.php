@@ -25,6 +25,6 @@ class ecard_installer {
                     "Click the image to be taken to the gallery.");
     module::set_var("ecard", "bcc", "");
     module::set_var("ecard", "access_permissions", "everybody");
-    module::set_version("ecard", 2);
+    module::set_version("ecard", 3);
   }
 }

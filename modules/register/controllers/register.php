@@ -146,6 +146,7 @@ class register_Controller extends Controller {
       ->rules("valid_url");
 
     module::event("register_add_form", $form);
+    module::event("captcha_protect_form", $form);
     $group->submit("")->value(t("Register"));
     return $form;
   }

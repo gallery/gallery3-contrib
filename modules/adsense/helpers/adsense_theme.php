@@ -17,24 +17,38 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class ecard_event_Core {
-  static function admin_menu($menu, $theme) {
-    $menu->get("settings_menu")
-      ->append(Menu::factory("link")
-               ->id("ecard")
-               ->label(t("eCard settings"))
-               ->url(url::site("admin/ecard")));
-  }
+ 
+ //header_bottom or footer
+class adsense_theme {
+  static function header_bottom($theme) {
+	if(module::get_var("adsense","location") == "header") {
+		$code = module::get_var("adsense", "code");
+		if (!$code) {
+		  return;
+		}
+		$google_code = '
+		<script type="text/javascript">' . $code . '</script>
+		<script type="text/javascript"
+			src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+		</script>';
 
-  static function photo_menu($menu, $theme) {
-    if (module::get_var("ecard", "location") == "top") {
-      $item = $theme->item();
-      $menu->append(Menu::factory("link")
-                    ->id("ecard")
-                    ->label(t("Send as eCard"))
-                    ->url(url::site("ecard/form_send/{$item->id}"))
-                    ->css_class("g-dialog-link ui-icon-ecard")
-                    ->css_id("g-send-ecard"));
-    }
+		return $google_code;
+	}
   }
+  
+  static function footer($theme) {
+	if(module::get_var("adsense","location") == "footer") {
+		$code = module::get_var("adsense", "code");
+		if (!$code) {
+		  return;
+		}
+		$google_code = '
+		<script type="text/javascript">' . $code . '</script>
+		<script type="text/javascript"
+			src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+		</script>';
+
+		return $google_code;
+	}
+  }  
 }
