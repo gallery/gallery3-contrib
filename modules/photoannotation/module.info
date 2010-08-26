@@ -1,0 +1,3 @@
+name = "Photo Annotation"
+description = "Spin-off of rWatcher's fantastic TagFaces module (fully compatible). You cannot run both modules at the same time."
+version = 1
