@@ -2,3 +2,6 @@
 tmp
 *~
 *.swp
+.settings
+.project
+.buildpath
