@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Embeds_Controller extends Items_Controller {
+class Embedded_video_Controller extends Items_Controller {
     public function show($movie) {
         if (!is_object($movie)) {
             // show() must be public because we route to it in url::parse_url(), so make
@@ -111,7 +111,7 @@ class Embeds_Controller extends Items_Controller {
                     $file = fopen($temp_filename, "wb");
                     fwrite($file, $content);
                     fclose($file);
-                    gallery_graphics::composite($temp_filename, $temp_filename, array("file" => "modules/embed/images/icon.png", "position" => "center", "transparency" => 95));
+                    gallery_graphics::composite($temp_filename, $temp_filename, array("file" => "modules/embed/images/embed_video_icon.png", "position" => "center", "transparency" => 95));
                     $item->set_data_file($temp_filename);
                     $path_info = @pathinfo($temp_filename);
                     $item->save();
