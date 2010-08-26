@@ -23,16 +23,16 @@
  *
  * Note: by design, this class does not do any permission checking.
  */
-class embed_Core {
+class embed_videos_Core {
  
   static function get_add_form($album) {
-    $form = new Forge("embeds/create/{$album->id}", "", "post", array("id" => "g-add-embed-form"));
-    $group = $form->group("add_embed")
+    $form = new Forge("embedded_videos/create/{$album->id}", "", "post", array("id" => "g-add-embed-form"));
+    $group = $form->group("add_embedded_video")
       ->label(t("Add embedded video to %album_title", array("album_title" => $album->title)));
     $group->input("title")->label(t("Title"))
       ->error_messages("required", t("You must provide a title"))
       ->error_messages("length", t("Your title is too long"));
-    $group->input("name")->label(t("Youtube ID"))
+    $group->input("video_url")->label(t("Video URL"))
       ->error_messages(
         "conflict", t("There is already a movie with this ID"))
       ->error_messages("required", t("You must provide a Youtube ID"))
@@ -47,9 +47,8 @@ class embed_Core {
         t("The internet address should contain only letters, numbers, hyphens and underscores"))
       ->error_messages("required", t("You must provide an internet address"))
       ->error_messages("length", t("Your internet address is too long"));
-    $group->hidden("type")->value("embed");
 
-    module::event("embed_add_form", $album, $form);
+    module::event("item_add_form", $album, $form);
 
     $group = $form->group("buttons")->label("");
     $group->submit("")->value(t("Add"));
@@ -58,7 +57,7 @@ class embed_Core {
   }
   
    static function get_edit_form($photo) {
-    $form = new Forge("embeds/update/$photo->id", "", "post", array("id" => "g-edit-embed-form"));
+    $form = new Forge("embedded_videos/update/$photo->id", "", "post", array("id" => "g-edit-embed-form"));
     $form->hidden("from_id")->value($photo->id);
     $group = $form->group("edit_item")->label(t("Edit Embedded Video"));
     $group->input("title")->label(t("Title"))->value($photo->title)
