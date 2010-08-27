@@ -52,11 +52,13 @@ class Embedded_videos_Controller extends Controller {
             if ($content) {
               $valid_url = true;
               $sxml = simplexml_load_file("http://gdata.youtube.com/feeds/api/videos/$video_id");
-              if ($title == '') {
-                $title = (string)$sxml->title;
-              }
-              if ($description == '') {
-                $description = (string)$sxml->content;
+              if ($sxml) {
+                if ($title == '') {
+                  $title = (string)$sxml->title;
+                }
+                if ($description == '') {
+                  $description = (string)$sxml->content;
+                }
               }
             }
           }
@@ -76,7 +78,6 @@ class Embedded_videos_Controller extends Controller {
           $item->slug = $form->add_embedded_video->inputs['slug']->value;
           $path_info = @pathinfo($temp_filename);
           $item->save();
-          //db::query("UPDATE {items} SET `type` = 'embedded_video' WHERE `id` = $item->id")->execute();
           $embedded_video->item_id = $item->id;
           $embedded_video->validate();
           $embedded_video->save();

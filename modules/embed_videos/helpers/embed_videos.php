@@ -35,9 +35,8 @@ class embed_videos_Core {
     $group->input("video_url")->label(t("Video URL"))
     ->error_messages(
         "conflict", t("There is already a movie with this ID"))
-    ->error_messages("required", t("You must provide a Youtube ID"))
-    ->error_messages("length", t("Invalid Youtube ID"))
-    ->error_messages("invalid_id", t("Invalid Youtube ID"));
+    ->error_messages("required", t("You must provide a URL"))
+    ->error_messages("invalid_id", t("Invalid URL"));
     $group->textarea("description")->label(t("Description"));
     $group->input("slug")->label(t("Internet Address"))
     ->error_messages(
