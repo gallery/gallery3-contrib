@@ -25,24 +25,33 @@ class Embedded_videos_Controller extends Controller {
     access::verify_csrf();
     $form = embed_videos::get_add_form($album);
     $temp_filename = "";
-    //$form->add_rules('youtubeid', array('required', 'length[11]'));
-    //$form->add_callback('youtubeid', 'valid_youtubeid');
+
+    // Yes, this is a mess.
+    $youtubeUrlPattern="youtube";
+    $youtubeThumbnailUrl="http://img.youtube.com/vi/";
+    // End mess
+    
     batch::start();
     try {
       $valid = $form->validate();
       if ($form->add_embedded_video->inputs['video_url']->value != "") {
         $title = $form->add_embedded_video->inputs['title']->value;
         $description = $form->add_embedded_video->inputs['description']->value;
-        $youtubeUrlPattern="youtube";
-        $youtubeApiUrl="http://gdata.youtube.com/feeds/api/";
-        $youtubeThumbnailUrl="http://img.youtube.com/vi/";
         $valid_url=false;
         $embedded_video = ORM::factory("embedded_video");
         $item = ORM::factory("item");
         $item->type = "photo";
         $url = $form->add_embedded_video->inputs['video_url']->value;
         if(preg_match("/$youtubeUrlPattern/",$url)) {
-          if(preg_match("/watch\?v=(.*?)(&\S+=\S+)/",$url,$matches)) {
+          $video_id = 0;
+          if (preg_match("/watch\?v=(.*?)(&\S+=\S+)/",$url,$matches)) {
+            $video_id = $matches[1];
+          } else if (preg_match("/watch\?v=(.*)/",$url,$matches)) {
+            $video_id = $matches[1];
+          } else if (preg_match("/v\/(.*)/",$url,$matches)) {
+            $video_id = $matches[1];
+          }
+          if ($video_id) {
             $video_id = $matches[1];
             $embedded_video->embed_code = '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/' . $video_id . '" frameborder="0"></iframe>';
             $embedded_video->source = "YouTube";
