@@ -19,34 +19,34 @@
  */
 
 /**
- * This is the API for handling photos.
+ * This is the API for handling embedded videos.
  *
  * Note: by design, this class does not do any permission checking.
  */
 class embed_videos_Core {
- 
+
   static function get_add_form($album) {
     $form = new Forge("embedded_videos/create/{$album->id}", "", "post", array("id" => "g-add-embed-form"));
     $group = $form->group("add_embedded_video")
-      ->label(t("Add embedded video to %album_title", array("album_title" => $album->title)));
+    ->label(t("Add embedded video to %album_title", array("album_title" => $album->title)));
     $group->input("title")->label(t("Title"))
-      ->error_messages("required", t("You must provide a title"))
-      ->error_messages("length", t("Your title is too long"));
+    ->error_messages("required", t("You must provide a title"))
+    ->error_messages("length", t("Your title is too long"));
     $group->input("video_url")->label(t("Video URL"))
-      ->error_messages(
+    ->error_messages(
         "conflict", t("There is already a movie with this ID"))
-      ->error_messages("required", t("You must provide a Youtube ID"))
-      ->error_messages("length", t("Invalid Youtube ID"))
-      ->error_messages("invalid_id", t("Invalid Youtube ID"));
+    ->error_messages("required", t("You must provide a Youtube ID"))
+    ->error_messages("length", t("Invalid Youtube ID"))
+    ->error_messages("invalid_id", t("Invalid Youtube ID"));
     $group->textarea("description")->label(t("Description"));
     $group->input("slug")->label(t("Internet Address"))
-      ->error_messages(
+    ->error_messages(
         "conflict", t("There is already a movie, photo or album with this internet address"))
-      ->error_messages(
+    ->error_messages(
         "not_url_safe",
-        t("The internet address should contain only letters, numbers, hyphens and underscores"))
-      ->error_messages("required", t("You must provide an internet address"))
-      ->error_messages("length", t("Your internet address is too long"));
+    t("The internet address should contain only letters, numbers, hyphens and underscores"))
+    ->error_messages("required", t("You must provide an internet address"))
+    ->error_messages("length", t("Your internet address is too long"));
 
     module::event("item_add_form", $album, $form);
 
@@ -55,23 +55,23 @@ class embed_videos_Core {
 
     return $form;
   }
-  
-   static function get_edit_form($photo) {
+
+  static function get_edit_form($photo) {
     $form = new Forge("embedded_videos/update/$photo->id", "", "post", array("id" => "g-edit-embed-form"));
     $form->hidden("from_id")->value($photo->id);
     $group = $form->group("edit_item")->label(t("Edit Embedded Video"));
     $group->input("title")->label(t("Title"))->value($photo->title)
-      ->error_messages("required", t("You must provide a title"))
-      ->error_messages("length", t("Your title is too long"));
+    ->error_messages("required", t("You must provide a title"))
+    ->error_messages("length", t("Your title is too long"));
     $group->textarea("description")->label(t("Description"))->value($photo->description);
     $group->input("slug")->label(t("Internet Address"))->value($photo->slug)
-      ->error_messages(
+    ->error_messages(
         "conflict", t("There is already a movie, photo or album with this internet address"))
-      ->error_messages(
+    ->error_messages(
         "not_url_safe",
-        t("The internet address should contain only letters, numbers, hyphens and underscores"))
-      ->error_messages("required", t("You must provide an internet address"))
-      ->error_messages("length", t("Your internet address is too long"));
+    t("The internet address should contain only letters, numbers, hyphens and underscores"))
+    ->error_messages("required", t("You must provide an internet address"))
+    ->error_messages("length", t("Your internet address is too long"));
 
     module::event("item_edit_form", $photo, $form);
 
