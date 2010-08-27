@@ -31,6 +31,8 @@ class Embedded_videos_Controller extends Controller {
     try {
       $valid = $form->validate();
       if ($form->add_embedded_video->inputs['video_url']->value != "") {
+        $title = $form->add_embedded_video->inputs['title']->value;
+        $description = $form->add_embedded_video->inputs['description']->value;
         $youtubeUrlPattern="youtube";
         $youtubeApiUrl="http://gdata.youtube.com/feeds/api/";
         $youtubeThumbnailUrl="http://img.youtube.com/vi/";
@@ -49,6 +51,13 @@ class Embedded_videos_Controller extends Controller {
             $temp_filename = VARPATH . "tmp/$itemname";
             if ($content) {
               $valid_url = true;
+              $sxml = simplexml_load_file("http://gdata.youtube.com/feeds/api/videos/$video_id");
+              if ($title == '') {
+                $title = (string)$sxml->title;
+              }
+              if ($description == '') {
+                $description = (string)$sxml->content;
+              }
             }
           }
         }
@@ -61,10 +70,10 @@ class Embedded_videos_Controller extends Controller {
           gallery_graphics::composite($temp_filename, $temp_filename, array("file" => "modules/embed_videos/images/embed_video_icon.png", "position" => "center", "transparency" => 95));
           $item->set_data_file($temp_filename);
           $item->name = basename($itemname);
-          $item->title = $form->add_embedded_video->title->value;
+          $item->title = $title;
           $item->parent_id = $album->id;
-          $item->description = $form->add_embedded_video->description->value;
-          $item->slug = $form->add_embedded_video->slug->value;
+          $item->description = $description;
+          $item->slug = $form->add_embedded_video->inputs['slug']->value;
           $path_info = @pathinfo($temp_filename);
           $item->save();
           //db::query("UPDATE {items} SET `type` = 'embedded_video' WHERE `id` = $item->id")->execute();
