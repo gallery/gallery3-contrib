@@ -130,20 +130,22 @@ class Embedded_videos_Controller extends Controller {
                     fwrite($file, $content);
                     fclose($file);
                     gallery_graphics::composite($temp_filename, $temp_filename, array("file" => "modules/embed_videos/images/embed_video_icon.png", "position" => "center", "transparency" => 95));
-                    $item->set_data_file($temp_filename);
                     $item->name = basename($itemname);
                     $item->title = $form->add_embedded_video->title->value;
                     $item->parent_id = $album->id; 
                     $item->description = $form->add_embedded_video->description->value; 
                     $item->slug = $form->add_embedded_video->slug->value;
+                    $item->set_data_file($temp_filename);
                     $path_info = @pathinfo($temp_filename);
                     $item->save();
+                    //module::event("item_created", $item);
                     db::query("UPDATE {items} SET `type` = 'embedded_video' WHERE `id` = $item->id")->execute();
                     $embedded_video->item_id = $item->id;
                     $embedded_video->validate();
                     $embedded_video->save();
                     log::success("content", t("Added a embedded video"), html::anchor("embeds/$item->id", t("view video")));
                     module::event("add_event_form_completed", $item, $form);
+
                 } else {
                     $form->add_embedded_video->inputs['video_url']->add_error('invalid_id', 1);
                     $valid = false;
