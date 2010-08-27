@@ -18,77 +18,78 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class Embedded_videos_Controller extends Controller {
-    public function show($movie) {
-        if (!is_object($movie)) {
-            // show() must be public because we route to it in url::parse_url(), so make
-            // sure that we're actually receiving an object
-            throw new Kohana_404_Exception();
-        }
-        access::required("view", $movie);
-        $where = array(array("type", "!=", "album"));
-        $position = $movie->parent()->get_position($movie, $where);
-        if ($position > 1) {
-            list($previous_item, $ignore, $next_item) = $movie->parent()->children(3, $position - 2, $where);
-        } else {
-            $previous_item = null;
-            list($next_item) = $movie->parent()->viewable()->children(1, $position, $where);
-        }
-        $embedded_video = ORM::factory("embedded_video")->where("item_id", "=", $movie->id)->find();
-        //$db = Database::instance();
-        //$result = $db->from('embedded_videos')->select('embed_code')->where('item_id',$movie->id)->get();
-        $template = new Theme_View("page.html", "item", "embedded_video");
-        $template->set_global("item", $movie);
-        $template->set_global("embedded_video", $embedded_video->embed_code);
-        $template->set_global("children", array());
-        $template->set_global("children_count", 0);
-        $template->set_global("parents", $movie->parents());
-        $template->set_global("next_item", $next_item);
-        $template->set_global("previous_item", $previous_item);
-        $template->set_global("sibling_count", $movie->parent()->viewable()->children_count($where));
-        $template->set_global("position", $position);
-        $template->content = new View("embedded_video.html");
-        db::query("UPDATE {items} SET `view_count` = `view_count` + 1 WHERE `id` = $movie->id")->execute();
-        //$movie->view_count++;
-        //$movie->save();
-        print $template;
-    } 
-    public function update($movie_id) {
-        access::verify_csrf();
-        $movie = ORM::factory("item", $movie_id);
-        access::required("view", $movie);
-        access::required("edit", $movie);
-        $form = embed_videos::get_edit_form($movie);
-        try {
-            $valid = $form->validate();
-            $movie->title = $form->edit_item->title->value;
-            $movie->description = $form->edit_item->description->value;
-            $movie->slug = $form->edit_item->slug->value;
-            //$movie->name = $form->edit_item->inputs["name"]->value;
-            $movie->validate();
-        }
-        catch(ORM_Validation_Exception $e) {
-            // Translate ORM validation errors into form error messages
-            foreach($e->validation->errors() as $key => $error) {
-                $form->edit_item->inputs[$key]->add_error($error, 1);
-            }
-            $valid = false;
-        }
-        if ($valid) {
-            $movie->save();
-            module::event("item_edit_form_completed", $movie, $form);
-            log::success("content", "Updated embed", "<a href=\"{$movie->url() }\">view</a>");
-            message::success(t("Saved embed %movie_title", array("movie_title" => $movie->title)));
-            if ($form->from_id->value == $movie->id) {
-                // Use the new url; it might have changed.
-                print json_encode(array("result" => "success", "location" => $movie->url()));
-            } else {
-                // Stay on the same page
-                print json_encode(array("result" => "success"));
-            }
-        } else {
-            print json_encode(array("result" => "error", "form" => (string)$form));
-        }
+  public function show($movie) {
+    if (!is_object($movie)) {
+      // show() must be public because we route to it in url::parse_url(), so make
+      // sure that we're actually receiving an object
+      throw new Kohana_404_Exception();
     }
+    access::required("view", $movie);
+    $where = array(array("type", "!=", "album"));
+    $position = $movie->parent()->get_position($movie, $where);
+    if ($position > 1) {
+      list($previous_item, $ignore, $next_item) = $movie->parent()->children(3, $position - 2, $where);
+    } else {
+      $previous_item = null;
+      list($next_item) = $movie->parent()->viewable()->children(1, $position, $where);
+    }
+    $embedded_video = ORM::factory("embedded_video")->where("item_id", "=", $movie->id)->find();
+    //$db = Database::instance();
+    //$result = $db->from('embedded_videos')->select('embed_code')->where('item_id',$movie->id)->get();
+    $template = new Theme_View("page.html", "item", "embedded_video");
+    $template->set_global("item", $movie);
+    $template->set_global("embedded_video", $embedded_video->embed_code);
+    $template->set_global("children", array());
+    $template->set_global("children_count", 0);
+    $template->set_global("parents", $movie->parents());
+    $template->set_global("next_item", $next_item);
+    $template->set_global("previous_item", $previous_item);
+    $template->set_global("sibling_count", $movie->parent()->viewable()->children_count($where));
+    $template->set_global("position", $position);
+    $template->content = new View("embedded_video.html");
+    db::query("UPDATE {items} SET `view_count` = `view_count` + 1 WHERE `id` = $movie->id")->execute();
+    //$movie->view_count++;
+    //$movie->save();
+    print $template;
+  }
+  public function update($movie_id) {
+    access::verify_csrf();
+    $movie = ORM::factory("item", $movie_id);
+    access::required("view", $movie);
+    access::required("edit", $movie);
+    $form = embed_videos::get_edit_form($movie);
+    try {
+      $valid = $form->validate();
+      $movie->title = $form->edit_item->title->value;
+      $movie->description = $form->edit_item->description->value;
+      $movie->slug = $form->edit_item->slug->value;
+      //$movie->name = $form->edit_item->inputs["name"]->value;
+      $movie->validate();
+    }
+    catch(ORM_Validation_Exception $e) {
+      // Translate ORM validation errors into form error messages
+      foreach($e->validation->errors() as $key => $error) {
+        $form->edit_item->inputs[$key]->add_error($error, 1);
+      }
+      $valid = false;
+    }
+    if ($valid) {
+      $movie->save();
+      module::event("item_edit_form_completed", $movie, $form);
+      log::success("content", "Updated embed", "<a href=\"{$movie->url() }\">view</a>");
+      message::success(t("Saved embed %movie_title", array("movie_title" => $movie->title)));
+      if ($form->from_id->value == $movie->id) {
+        // Use the new url; it might have changed.
+        print json_encode(array("result" => "success", "location" => $movie->url()));
+      } else {
+        // Stay on the same page
+        print json_encode(array("result" => "success"));
+      }
+    } else {
+      print json_encode(array("result" => "error", "form" => (string)$form));
+    }
+  }
+
     public function create($id) {
         $album = ORM::factory("item", $id);
         access::required("view", $album);
@@ -181,18 +182,18 @@ class Embedded_videos_Controller extends Controller {
         } else {
             //json::reply(array("result" => "error", "form" => (string)$form));
             print $form;
-        }
     }
-    public function form_add($album_id) {
-        $album = ORM::factory("item", $album_id);
-        access::required("view", $album);
-        access::required("add", $album);
-        print embed_videos::get_add_form($album);
-    }
-    public function form_edit($id) {
-        $embed = ORM::factory("item", $id);
-        access::required("view", $embed);
-        access::required("edit", $embed);
-        print embed_videos::get_edit_form($embed);
-    }
+  }
+  public function form_add($album_id) {
+    $album = ORM::factory("item", $album_id);
+    access::required("view", $album);
+    access::required("add", $album);
+    print embed_videos::get_add_form($album);
+  }
+  public function form_edit($id) {
+    $embed = ORM::factory("item", $id);
+    access::required("view", $embed);
+    access::required("edit", $embed);
+    print embed_videos::get_edit_form($embed);
+  }
 }
