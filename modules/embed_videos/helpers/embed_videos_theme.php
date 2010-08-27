@@ -18,12 +18,17 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class embed_videos_theme_Core {
-  static function head($theme) {
+  static function photo_bottom($theme) {
     $item = $theme->item();
-    if ($item) {
-      $view = new View("embed_video_js.html");
-      $view->item = $item;
-      return $view;
+    if ($item && $item->is_photo()) {
+      $embedded_video = ORM::factory("embedded_video")
+      ->where("item_id", "=", $item->id)
+      ->find();
+      if ($embedded_video->loaded()) {
+        $view = new View("embed_video_js.html");
+        $view->embed_code = addslashes($embedded_video->embed_code);
+        return $view;
+      }
     }
   }
 }
