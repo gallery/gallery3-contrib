@@ -17,22 +17,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-class embed_videos_event_Core {
-  static function item_deleted($item) {
-    ORM::factory("embedded_video")
-    ->where("item_id", "=", $item->id)
-    ->find()
-    ->delete();
-  }
-  static function site_menu($menu, $theme) {
+class embed_videos_theme_Core {
+  static function photo_bottom($theme) {
     $item = $theme->item();
-    if ($can_add = $item && access::can("add", $item)) {
-      $menu->get("add_menu")
-      ->append(Menu::factory("dialog")
-      ->id("embed_add")
-      ->label(t("Embed Video"))
-      ->url(url::site("form/add/embedded_videos/$item->id")));
+    if ($item && $item->is_photo()) {
+      $embedded_video = ORM::factory("embedded_video")
+      ->where("item_id", "=", $item->id)
+      ->find();
+      if ($embedded_video->loaded()) {
+        $view = new View("embed_video_js.html");
+        $view->embed_code = addslashes($embedded_video->embed_code);
+        return $view;
+      }
     }
   }
 }
