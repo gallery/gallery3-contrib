@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class embed_videos_theme_Core {
-  static function photo_bottom($theme) {
+  static function head($theme) {
     $item = $theme->item();
     if ($item && $item->is_photo()) {
       $embedded_video = ORM::factory("embedded_video")

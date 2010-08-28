@@ -20,8 +20,8 @@
 ?>
 <? if (isset($embed_code)): ?>
 <script type="text/javascript">
-//$(document).ready(function() {
-$("#g-photo").replaceWith("<?= $embed_code ?>");
-//});
+$(document).ready(function() {
+$("#g-photo").replaceWith("<div id=\"g-movie\" class=\"ui-helper-clearfix\"><?= $embed_code ?></div>");
+});
 </script>
 <? endif ?>
