@@ -59,7 +59,7 @@
         if (this.useAjax) {
             $.fn.annotateImage.ajaxLoad(this);
         } else {
-            $.fn.annotateImage.load(this, this.labels, this.editable, this.csrf, this.deleteUrl);
+            $.fn.annotateImage.load(this, this.labels, this.editable, this.csrf, this.deleteUrl, this.currentUrl);
         }
 
         // Add the "Add a note" button
@@ -111,13 +111,13 @@
         });
     };
 
-    $.fn.annotateImage.load = function(image, labels, editable, csrf, deleteUrl) {
+    $.fn.annotateImage.load = function(image, labels, editable, csrf, deleteUrl, currentUrl) {
         ///	<summary>
         ///		Loads the annotations from the notes property passed in on the
         ///     options object.
         ///	</summary>
         for (var i = 0; i < image.notes.length; i++) {
-            image.notes[image.notes[i]] = new $.fn.annotateView(image, image.notes[i], labels, editable, csrf, deleteUrl);
+            image.notes[image.notes[i]] = new $.fn.annotateView(image, image.notes[i], labels, editable, csrf, deleteUrl, currentUrl);
         }
     };
 
@@ -280,7 +280,7 @@
         this.form.remove();
     }
 
-    $.fn.annotateView = function(image, note, labels, editable, csrf, deleteUrl) {
+    $.fn.annotateView = function(image, note, labels, editable, csrf, deleteUrl, currentUrl) {
         ///	<summary>
         ///		Defines a annotation area.
         ///	</summary>
@@ -293,7 +293,7 @@
         image.canvas.children('.image-annotate-view').prepend(this.area);
         
         if (editable) {
-          this.delarea = $('<div class="image-annotate-area photoannotation-del-button"><div></div></div>');
+          this.delarea = $('<div id="photoannotation-del-' + this.note.noteid + '" class="image-annotate-area photoannotation-del-button"><div><form method="post" action="' + deleteUrl + '"><input type="hidden" name="notetype" value="' + this.note.notetype + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="currenturl" value="' + currentUrl + '" /></form></div></div>');
           image.canvas.children('.image-annotate-view').prepend(this.delarea);
           this.delarea.bind('click',function () {
             if (confirm(labels[3])) {
@@ -301,7 +301,8 @@
               alink.unbind();
               alink.attr ('href', '#');
               alink.removeAttr ('rel');
-              window.location = deleteUrl + "/" + csrf;
+              var delform = $(this).children('div').children('form');
+              delform.submit();
             }
           })
           this.delarea.hide();

@@ -57,12 +57,6 @@ class photoannotation_event_Core {
              ->label(t("Add annotation"))
              ->css_id("g-photoannotation-link")
              ->url("#"));
-        $menu->get("options_menu")
-             ->append(Menu::factory("link")
-             ->id("photoannotation_edit")
-             ->label(t("Edit annotations"))
-             ->css_id("g-photoannotation-edit-link")
-             ->url(url::site("photoannotation/drawfaces/" . $item->id)));
       }
     }
   }
@@ -82,5 +76,13 @@ class photoannotation_event_Core {
     if (count($existingNotes) > 0) {
       db::build()->delete("items_notes")->where("item_id", "=", $item->id)->execute();
     }
+  }
+  
+  static function admin_menu($menu, $theme) {
+    $menu->get("settings_menu")
+      ->append(Menu::factory("link")
+               ->id("photoannotation_menu")
+               ->label(t("Photo Annotation"))
+               ->url(url::site("admin/photoannotation")));
   }
 }
