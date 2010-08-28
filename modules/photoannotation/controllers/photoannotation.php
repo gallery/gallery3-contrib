@@ -23,7 +23,8 @@ class photoannotation_Controller extends Controller {
     access::verify_csrf();
 
     //Get form data
-    $id = $_POST["id"];   //Not yet needed since we are only creating new tagfaces will be needed when editing of existing ones is implemented
+    $noteid = $_POST["noteid"];  
+    $notetype = $_POST["notetype"]; 
     $str_y1 = $_POST["top"];
     $str_x1 = $_POST["left"];
     $str_y2 = $_POST["height"] + $str_y1;  //Annotation uses area size, tagfaces uses positions
@@ -33,30 +34,25 @@ class photoannotation_Controller extends Controller {
     $str_face_description = $_POST["desc"];
     $redir_uri = $_POST["currenturl"];
     // Decide if we are saving a face or a note.
-    if ($tag_data == -1) {
-      if ($str_face_title == "") {
-        message::error(t("Please select a Tag or specify a Title."));
-        url::redirect($redir_uri);
-        return;
-      }
-      //Save note
-      $newnote = ORM::factory("items_note");
-      $newnote->item_id = $item_data;
-      $newnote->x1 = $str_x1;
-      $newnote->y1 = $str_y1;
-      $newnote->x2 = $str_x2;
-      $newnote->y2 = $str_y2;
-      $newnote->title = $str_face_title;
-      $newnote->description = $str_face_description;
-      $newnote->save();
-    } else {
-      // Check to see if the tag already has a face associated with it.
-      $existingFace = ORM::factory("items_face")
-                           ->where("tag_id", "=", $tag_data)
-                           ->where("item_id", "=", $item_data)
-                           ->find_all();
-
-      if (count($existingFace) == 0) {
+    
+    if ($noteid == "new") {
+      if ($tag_data == -1) {
+        if ($str_face_title == "") {
+          message::error(t("Please select a Tag or specify a Title."));
+          url::redirect($redir_uri);
+          return;
+        }
+        //Save note
+        $newnote = ORM::factory("items_note");
+        $newnote->item_id = $item_data;
+        $newnote->x1 = $str_x1;
+        $newnote->y1 = $str_y1;
+        $newnote->x2 = $str_x2;
+        $newnote->y2 = $str_y2;
+        $newnote->title = $str_face_title;
+        $newnote->description = $str_face_description;
+        $newnote->save();
+      } else {
         // Save the new face to the database.
         $newface = ORM::factory("items_face");
         $newface->tag_id = $tag_data;
@@ -67,16 +63,70 @@ class photoannotation_Controller extends Controller {
         $newface->y2 = $str_y2;
         $newface->description = $str_face_description;
         $newface->save();
-      } else {
-        // Update the coordinates of an existing face.
-        $updatedFace = ORM::factory("items_face", $existingFace[0]->id);
-        $updatedFace->x1 = $str_x1;
-        $updatedFace->y1 = $str_y1;
-        $updatedFace->x2 = $str_x2;
-        $updatedFace->y2 = $str_y2;
-        $updatedFace->description = $str_face_description;
-        $updatedFace->save();
       }
+    } else { //update existing annotation
+      if ($notetype == "face") { //this is a face
+        $updatedAnnotation = ORM::factory("items_face")
+                            ->where("id", "=", $noteid)
+                            ->find();
+        if ($tag_data == -1) { //needs conversion to note
+          if ($str_face_title == "") {
+            message::error(t("Please select a Tag or specify a Title."));
+            url::redirect($redir_uri);
+            return;
+          }
+          //Save note
+          $newnote = ORM::factory("items_note");
+          $newnote->item_id = $item_data;
+          $newnote->x1 = $str_x1;
+          $newnote->y1 = $str_y1;
+          $newnote->x2 = $str_x2;
+          $newnote->y2 = $str_y2;
+          $newnote->title = $str_face_title;
+          $newnote->description = $str_face_description;
+          $newnote->save();
+          $updatedAnnotation->delete();       
+        } else { //stays a face
+          $updatedAnnotation->tag_id = $tag_data;
+          $updatedAnnotation->item_id = $item_data;
+          $updatedAnnotation->x1 = $str_x1;
+          $updatedAnnotation->y1 = $str_y1;
+          $updatedAnnotation->x2 = $str_x2;
+          $updatedAnnotation->y2 = $str_y2;
+          $updatedAnnotation->description = $str_face_description;
+          $updatedAnnotation->save();
+        }                 
+      } else { //this is a note
+        $updatedAnnotation = ORM::factory("items_note")
+                            ->where("id", "=", $noteid)
+                            ->find();
+        if ($tag_data == -1) { //stays a note
+          if ($str_face_title == "") {
+            message::error(t("Please select a Tag or specify a Title."));
+            url::redirect($redir_uri);
+            return;
+          }
+          $updatedAnnotation->item_id = $item_data;
+          $updatedAnnotation->x1 = $str_x1;
+          $updatedAnnotation->y1 = $str_y1;
+          $updatedAnnotation->x2 = $str_x2;
+          $updatedAnnotation->y2 = $str_y2;
+          $updatedAnnotation->title = $str_face_title;
+          $updatedAnnotation->description = $str_face_description;
+          $updatedAnnotation->save();
+        } else { //needs conversion to a face
+          $newface = ORM::factory("items_face");
+          $newface->tag_id = $tag_data;
+          $newface->item_id = $item_data;
+          $newface->x1 = $str_x1;
+          $newface->y1 = $str_y1;
+          $newface->x2 = $str_x2;
+          $newface->y2 = $str_y2;
+          $newface->description = $str_face_description;
+          $newface->save();
+          $updatedAnnotation->delete();
+        }
+      }                 
     }
     message::success(t("Annotation saved."));
     url::redirect($redir_uri);

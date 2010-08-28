@@ -17,10 +17,6 @@
     $jscode = "notes: [ ";
     foreach ($existingFaces as $oneFace) {
       $oneTag = ORM::factory("tag", $oneFace->tag_id);
-      $tagdesc = "";
-      if ($oneFace->description) {
-        $tagdesc = "<br />". html::clean($oneFace->description);
-      }
       if (module::get_var("photoannotation", "showfaces", false)) {
         $legend_faces .= "<a href=\"". $oneTag->url() ."\">". html::clean($oneTag->name) ."</a>, ";
       }
@@ -28,7 +24,8 @@
       $jscode .= "\"left\": ". $oneFace->x1 .",\n";
       $jscode .= "\"width\": ". ($oneFace->x2 - $oneFace->x1) .",\n";
       $jscode .= "\"height\": ". ($oneFace->y2 - $oneFace->y1) .",\n";
-      $jscode .= "\"text\": \"". html::clean($oneTag->name) . $tagdesc ."\",\n";
+      $jscode .= "\"text\": \"". html::clean($oneTag->name) ."\",\n";
+      $jscode .= "\"description\": \"". html::clean($oneFace->description) ."\",\n";
       $jscode .= "\"noteid\": ". $oneFace->id .",\n";
       $jscode .= "\"notetype\": \"face\",\n";
       $jscode .= "\"editable\": true,\n";
@@ -39,10 +36,6 @@
       $legend_faces = t("Faces on this photo: ") . $legend_faces;
     }
     foreach ($existingNotes as $oneNote) {
-      $tagdesc = "";
-      if ($oneNote->description) {
-        $tagdesc = "<br />". html::clean($oneNote->description);
-      }
       if (module::get_var("photoannotation", "shownotes", false)) {
         $legend_notes .= html::clean($oneNote->title) .", ";
       }
@@ -50,7 +43,8 @@
       $jscode .= "\"left\": ". $oneNote->x1 .",\n";
       $jscode .= "\"width\": ". ($oneNote->x2 - $oneNote->x1) .",\n";
       $jscode .= "\"height\": ". ($oneNote->y2 - $oneNote->y1) .",\n";
-      $jscode .= "\"text\": \"". html::clean($oneNote->title) . $tagdesc ."\",\n";
+      $jscode .= "\"text\": \"". html::clean($oneNote->title) ."\",\n";
+      $jscode .= "\"description\": \"". html::clean($oneNote->description) ."\",\n";
       $jscode .= "\"noteid\": ". $oneNote->id .",\n";
       $jscode .= "\"notetype\": \"note\",\n";
       $jscode .= "\"editable\": false,\n";

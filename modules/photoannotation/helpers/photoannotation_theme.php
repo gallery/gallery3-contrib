@@ -22,7 +22,7 @@ class photoannotation_theme_Core {
     // If it does, add an image map to the page to display them.
     $theme->css("photoannotation.css");
     $theme->script("jquery.annotate.js");
-    //Return "<script type=\"text/javascript\" src=\"/modules/photoannotation/js/jquery.annotate.js\"></script>";
+    //Return "<script type=\"text/javascript\" src=\"/gallery3/modules/photoannotation/js/jquery.annotate.js\"></script>";
   }
 
   static function photo_bottom($theme) {

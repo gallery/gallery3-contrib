@@ -180,3 +180,7 @@
     background-image: url('../images/delete.png');
     cursor: pointer;
 }
+.photoannotation-edit-button {
+    background-image: url('../images/edit.png');
+    cursor: pointer;
+}

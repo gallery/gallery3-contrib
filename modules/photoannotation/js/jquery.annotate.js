@@ -59,7 +59,7 @@
         if (this.useAjax) {
             $.fn.annotateImage.ajaxLoad(this);
         } else {
-            $.fn.annotateImage.load(this, this.labels, this.editable, this.csrf, this.deleteUrl, this.currentUrl);
+            $.fn.annotateImage.load(this, this.labels, this.editable, this.csrf, this.deleteUrl, this.currentUrl, this.tags, this.saveUrl);
         }
 
         // Add the "Add a note" button
@@ -111,13 +111,13 @@
         });
     };
 
-    $.fn.annotateImage.load = function(image, labels, editable, csrf, deleteUrl, currentUrl) {
+    $.fn.annotateImage.load = function(image, labels, editable, csrf, deleteUrl, currentUrl, tags, saveUrl) {
         ///	<summary>
         ///		Loads the annotations from the notes property passed in on the
         ///     options object.
         ///	</summary>
         for (var i = 0; i < image.notes.length; i++) {
-            image.notes[image.notes[i]] = new $.fn.annotateView(image, image.notes[i], labels, editable, csrf, deleteUrl, currentUrl);
+            image.notes[image.notes[i]] = new $.fn.annotateView(image, image.notes[i], tags, labels, editable, csrf, deleteUrl, currentUrl, saveUrl);
         }
     };
 
@@ -203,12 +203,14 @@
             this.note = note;
         } else {
             var newNote = new Object();
-            newNote.id = "new";
+            newNote.noteid = "new";
             newNote.top = 30;
             newNote.left = 30;
             newNote.width = 30;
             newNote.height = 30;
             newNote.text = "";
+            newNote.description = "";
+            newNote.notetype = "";
             this.note = newNote;
         }
 
@@ -225,17 +227,30 @@
         image.canvas.children('.image-annotate-edit').show();
 
         // Add the note (which we'll load with the form afterwards)
-        var tagdropdown = labels[0] + '<select id="tagsList" class="dropdown" name="tagsList"><option value="-1" selected="selected">No Tag</option>';
+        var selectedtag = "";
+        if (this.note.text == "" || this.note.notetype == "note")
+        {
+          selectedtag = " selected=\"selected\"";
+        }
+        var tagdropdown = labels[0] + '<select id="tagsList" class="dropdown" name="tagsList"><option value="-1"' + selectedtag + '>No Tag</option>';
         if (tags)
         {
           for (var tag in tags)
           {
             var tagval = tags[tag];
-            tagdropdown += '<option value="' + tagval.id + '">' + tagval.name + '</option>';
+            selectedtag = "";
+            if (tagval.name == this.note.text && this.note.notetype == "face") {
+              selectedtag = " selected=\"selected\"";
+            }
+            tagdropdown += '<option value="' + tagval.id + '"' + selectedtag + '>' + tagval.name + '</option>';
           }
         }
         tagdropdown += '</select>';
-        var form = $('<div id="image-annotate-edit-form"><form action="' + saveUrl + '" method="post"><input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="currenturl" value="' + currentUrl + '" />' + tagdropdown + labels[1] + '<textarea id="image-annotate-text" name="text" rows="3" cols="30">' + this.note.text + '</textarea>' + labels[2] + '<textarea id="image-annotate-desc" name="desc" rows="3" cols="30"></textarea></form></div>');
+        var notetitle = "";
+        if (this.note.notetype == "note") {
+          notetitle = this.note.text;
+        }
+        var form = $('<div id="image-annotate-edit-form"><form action="' + saveUrl + '" method="post"><input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="notetype" value="' + this.note.notetype + '" /><input type="hidden" name="currenturl" value="' + currentUrl + '" />' + tagdropdown + labels[1] + '<textarea id="image-annotate-text" name="text" rows="3" cols="30">' + notetitle + '</textarea>' + labels[2] + '<textarea id="image-annotate-desc" name="desc" rows="3" cols="30">' + this.note.description + '</textarea></form></div>');
         this.form = form;
 
         $('body').append(this.form);
@@ -280,7 +295,7 @@
         this.form.remove();
     }
 
-    $.fn.annotateView = function(image, note, labels, editable, csrf, deleteUrl, currentUrl) {
+    $.fn.annotateView = function(image, note, tags, labels, editable, csrf, deleteUrl, currentUrl, saveUrl) {
         ///	<summary>
         ///		Defines a annotation area.
         ///	</summary>
@@ -294,7 +309,9 @@
         
         if (editable) {
           this.delarea = $('<div id="photoannotation-del-' + this.note.noteid + '" class="image-annotate-area photoannotation-del-button"><div><form method="post" action="' + deleteUrl + '"><input type="hidden" name="notetype" value="' + this.note.notetype + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="currenturl" value="' + currentUrl + '" /></form></div></div>');
+          this.editarea = $('<div id="photoannotation-edit-' + this.note.noteid + '" class="image-annotate-area photoannotation-edit-button"><div></div></div>');
           image.canvas.children('.image-annotate-view').prepend(this.delarea);
+          image.canvas.children('.image-annotate-view').prepend(this.editarea);
           this.delarea.bind('click',function () {
             if (confirm(labels[3])) {
               var alink = $(".g-fullsize-link");
@@ -305,11 +322,24 @@
               delform.submit();
             }
           })
+          var form = this;
+          this.editarea.bind('click',function () {
+            var alink = $(".g-fullsize-link");
+            alink.unbind();
+            alink.attr ('href', '#');
+            alink.removeAttr ('rel');
+            form.edit(tags, labels, saveUrl, currentUrl, csrf);
+          })
           this.delarea.hide();
+          this.editarea.hide();
         }
         
         // Add the note
-        this.form = $('<div class="image-annotate-note">' + note.text + '</div>');
+        var notedescription = "";
+        if (note.description != "") {
+          notedescription = "<br />" + note.description;
+        }
+        this.form = $('<div class="image-annotate-note">' + note.text + notedescription + '</div>');
         this.form.hide();
         image.canvas.children('.image-annotate-view').append(this.form);
         this.form.children('span.actions').hide();
@@ -323,19 +353,30 @@
             annotation.show();
             if (annotation.delarea != undefined) {
               annotation.delarea.show();
+              annotation.editarea.show();
             }
         }, function() {
             annotation.hide();
             if (annotation.delarea != undefined) {
               annotation.delarea.hide();
+              annotation.editarea.hide();
             }
         });
 
         if (editable) {
           this.delarea.hover(function() {
               annotation.delarea.show();
+              annotation.editarea.show();
           }, function() {
               annotation.delarea.hide();
+              annotation.editarea.hide();
+          });
+          this.editarea.hover(function() {
+              annotation.delarea.show();
+              annotation.editarea.show();
+          }, function() {
+              annotation.delarea.hide();
+              annotation.editarea.hide();
           });
         }
         // Edit a note feature
@@ -348,9 +389,6 @@
               window.location = note.url;
             })
         }
-        
-        
-        
     };
 
     $.fn.annotateView.prototype.setPosition = function() {
@@ -369,6 +407,10 @@
           this.delarea.children('div').width('14px');
           this.delarea.css('left', (this.note.left + parseInt(this.note.width)) + 'px');
           this.delarea.css('top', (this.note.top) + 'px');
+          this.editarea.children('div').height('14px');
+          this.editarea.children('div').width('14px');
+          this.editarea.css('left', (this.note.left + parseInt(this.note.width)) + 'px');
+          this.editarea.css('top', (this.note.top + 16) + 'px');
         }
     };
 
@@ -401,7 +443,7 @@
         this.form.remove();
     }
 
-    $.fn.annotateView.prototype.edit = function() {
+    $.fn.annotateView.prototype.edit = function(tags, labels, saveUrl, currentUrl, csrf) {
         ///	<summary>
         ///		Edits the annotation.
         ///	</summary>      
@@ -410,31 +452,8 @@
             var annotation = this;
 
             // Create/prepare the editable note elements
-            var editable = new $.fn.annotateEdit(this.image, this.note);
-
+            var editable = new $.fn.annotateEdit(this.image, this.note, tags, labels, saveUrl, currentUrl, csrf);
             $.fn.annotateImage.createSaveButton(editable, this.image, annotation);
-
-            // Add the delete button
-            var del = $('<a class="image-annotate-edit-delete">Delete</a>');
-            del.click(function() {
-                var form = $('#image-annotate-edit-form form');
-
-                $.fn.annotateImage.appendPosition(form, editable)
-
-                if (annotation.image.useAjax) {
-                    $.ajax({
-                        url: annotation.image.deleteUrl,
-                        data: form.serialize(),
-                        error: function(e) { alert("An error occured deleting that note.") }
-                    });
-                }
-
-                annotation.image.mode = 'view';
-                editable.destroy();
-                annotation.destroy();
-            });
-            editable.form.append(del);
-
             $.fn.annotateImage.createCancelButton(editable, this.image);
         }
     };
