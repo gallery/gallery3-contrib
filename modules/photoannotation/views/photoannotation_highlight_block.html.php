@@ -11,6 +11,13 @@
   $jscode = "";
   $legend_faces = "";
   $legend_notes = "";
+  if (module::get_var("gallery", "active_site_theme") == "greydragon") {
+    $css_item_id = "#g-photo-id-". $item->id;
+    $css_a_class = ".g-sb-preview";
+  } else {
+    $css_item_id = "#g-item-id-". $item->id;
+    $css_a_class = ".g-fullsize-link";
+  }
   // If it does, then insert some javascript and display an image map
   //   to show where the faces are at.
   if ((count($existingFaces) > 0) || (count($existingNotes) > 0)) {
@@ -80,7 +87,7 @@
 
 		<script language="javascript">
 			$(document).ready(function() {
-				$("#g-item-id-<?= $item->id ?>").annotateImage({
+				$("<?= $css_item_id ?>").annotateImage({
           <? if ((access::can("view", $item)) && (access::can("edit", $item))): ?>
 					editable: true,
           <? else: ?>
@@ -93,6 +100,7 @@
           <?= $labels_arraystring ?>
 					<?= $jscode ?>
 					useAjax: false,
+          cssaclass: '<?= $css_a_class ?>',
           csrf: '<?= $csrf ?>'
 				});
 			});
