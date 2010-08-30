@@ -1,4 +1,25 @@
-<?php defined("SYSPATH") or die("No direct script access.") ?>
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
+ * Grey Dragon Theme - a custom theme for Gallery 3
+ * This theme was designed and built by Serguei Dosyukov,
+ * whose blog you will find at http://blog.dragonsoft.us/
+ * Copyright (C) 2009-2010 Serguei Dosyukov
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+?>
 <div id="g-album-header">
   <div id="g-album-header-buttons">
     <?= $theme->dynamic_top() ?>
@@ -6,30 +27,13 @@
   <h1><?= html::clean($title) ?></h1>
 </div>
 
-<? if (module::get_var("th_greydragon", "photonav_top")): ?>
-<?= $theme->paginator() ?>
-<? endif ?>
+<?= $theme->add_paginator("top"); ?>
 
 <ul id="g-album-grid">
   <? foreach ($children as $i => $child): ?>
-  <li class="g-item <?= $child->is_album() ? "g-album" : "" ?>">
-    <?= $theme->thumb_top($child) ?>
-    <p class="g-thumbcrop"><a href="<?= $child->url() ?>">
-      <img id="g-photo-id-<?= $child->id ?>" class="g-thumbnail"
-           alt="photo" src="<?= $child->thumb_url() ?>"
-           width="<?= $child->thumb_width ?>"
-           height="<?= $child->thumb_height ?>" />
-    </a></p>
-    <h2><a href="<?= $child->url() ?>"><?= html::purify($child->title) ?></a></h2>
-    <?= $theme->thumb_bottom($child) ?>
-    <ul class="g-metadata">
-      <?= $theme->thumb_info($child) ?>
-    </ul>
-  </li>
+    <?= $theme->get_thumb_element($child) ?>
   <? endforeach ?>
 </ul>
 <?= $theme->dynamic_bottom() ?>
 
-<? if (module::get_var("th_greydragon", "photonav_bottom")): ?>
-<?= $theme->paginator() ?>
-<? endif ?>
+<?= $theme->add_paginator("bottom"); ?>

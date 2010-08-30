@@ -1,42 +1,44 @@
-<?php defined("SYSPATH") or die("No direct script access.") ?>
-
-<div id="g-info">
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
+ * Grey Dragon Theme - a custom theme for Gallery 3
+ * This theme was designed and built by Serguei Dosyukov,
+ * whose blog you will find at http://blog.dragonsoft.us/
+ * Copyright (C) 2009-2010 Serguei Dosyukov
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+?>
+<div id="g-album-header">
   <?= $theme->album_top() ?>
-  <h1><?= html::purify($item->title) ?></h1>
-  <div class="g-description"><?= ($item->description)? bb2html(html::purify($item->description), 1) : null; ?></div>
+  <h1><?= $theme->bb2html(html::purify($item->title), 1) ?></h1>
 </div>
 
-<? if (module::get_var("th_greydragon", "photonav_top")): ?>
-<?= $theme->paginator() ?>
-<? endif ?>
+<?= $theme->add_paginator("top"); ?>
+
+<? if (($theme->photo_descmode == "top") and ($item->description)): ?>
+  <div id="g-info"><div class="g-description"><?= $theme->bb2html(html::purify($item->description), 1) ?></div></div>
+<? endif; ?>
 
 <ul id="g-album-grid">
 <? if (count($children)): ?>
   <? foreach ($children as $i => $child): ?>
-    <? $item_class = "g-photo"; ?>
-    <? if ($child->is_album()): ?>
-      <? $item_class = "g-album"; ?>
-    <? endif ?>
-
-  <li id="g-item-id-<?= $child->id ?>" class="g-item <?= $item_class ?>">
-    <?= $theme->thumb_top($child) ?>
-    <p class="g-thumbcrop"><a href="<?= $child->url() ?>">
-      <?= $child->thumb_img() ?>
-    </a></p>
-    <?= $theme->thumb_bottom($child) ?>
-    <h2><a href="<?= $child->url() ?>"><?= html::purify($child->title) ?></a></h2>
-    <? $_text = $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
-    <?= (stripos($_text, '<li>'))? $_text : null; ?>
-    <? if (module::is_active("info")): ?>
-    <ul class="g-metadata">
-    <?= $theme->thumb_info($child); ?>
-    </ul>
-    <? endif ?>
-  </li>
+    <?= $theme->get_thumb_element($child, TRUE) ?>
   <? endforeach ?>
 <? else: ?>
   <? if ($user->admin || access::can("add", $item)): ?>
-  <? $addurl = url::file("index.php/simple_uploader/app/$item->id") ?>
+  <? $addurl = url::site("uploader/index/$item->id") ?>
   <li><?= t("There aren't any photos here yet! <a %attrs>Add some</a>.",
             array("attrs" => html::mark_clean("href=\"$addurl\" class=\"g-dialog-link\""))) ?></li>
   <? else: ?>
@@ -46,6 +48,8 @@
 </ul>
 <?= $theme->album_bottom() ?>
 
-<? if (module::get_var("th_greydragon", "photonav_bottom")): ?>
-<?= $theme->paginator() ?>
-<? endif ?>
+<? if (($theme->photo_descmode == "bottom") and ($item->description)): ?>
+  <div id="g-info"><div class="g-description"><?= $theme->bb2html(html::purify($item->description), 1) ?></div></div>
+<? endif; ?>
+
+<?= $theme->add_paginator("bottom"); ?>
