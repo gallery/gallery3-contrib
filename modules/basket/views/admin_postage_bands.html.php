@@ -21,7 +21,7 @@
 <div class="gBlock">
 
   <a href="<?= url::site("admin/postage_bands/add_postage_band_form") ?>"
-      class="gDialogLink gButtonLink right ui-icon-left ui-state-default ui-corner-all"
+      class="g-dialog-link g-button right ui-icon-left ui-state-default ui-corner-all"
       title="<?= t("Create a new Postage Band") ?>">
     <span class="ui-icon ui-icon-circle-plus"></span>
     <?= t("Add a new Postage Band") ?>
@@ -31,8 +31,8 @@
     <?= t("Postage Bands") ?>
   </h2>
 
-  <div class="gBlockContent">
-    <table id="gPostageAdminList">
+  <div class="g-block-content">
+    <table id="g-postage-admin-list">
       <tr>
   <th><?= t("Name") ?></th>
         <th><?= t("Flat Rate") ?></th>
@@ -41,25 +41,26 @@
 
       </tr>
       <? foreach ($postage_bands as $i => $postage_band): ?>
-      <tr id="gProduct-<?= $postage_band->id ?>" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
+      <tr id="g-product-<?= $postage_band->id ?>" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
         <td id="product-<?= $postage_band->id ?>" class="core-info ">
           <?= html::clean($postage_band->name) ?>
   </td>
   <td>
-    <?= basket::formatMoney($postage_band->flat_rate) ?>
+    <?= basket::formatMoneyForWeb($postage_band->flat_rate) ?>
         </td>
   <td>
-    <?= basket::formatMoney($postage_band->per_item) ?>
+    <?= basket::formatMoneyForWeb($postage_band->per_item) ?>
   </td>
-    <td class="gActions">
+    <td class="g-actions">
       <a href="<?= url::site("admin/postage_bands/edit_postage_band_form/$postage_band->id") ?>"
           open_text="<?= t("close") ?>"
-          class="gPanelLink gButtonLink ui-state-default ui-corner-all ui-icon-left">
-          <span class="ui-icon ui-icon-pencil"></span><span class="gButtonText"><?= t("edit") ?></span></a>
+          class="g-panel-link g-button ui-state-default ui-corner-all ui-icon-left">
+          <span class="ui-icon ui-icon-pencil"></span><?= t("edit") ?></a>
 
       <a href="<?= url::site("admin/postage_bands/delete_postage_band_form/$postage_band->id") ?>"
-          class="gDialogLink gButtonLink ui-state-default ui-corner-all ui-icon-left">
+          class="g-dialog-link g-button ui-state-default ui-corner-all ui-icon-left">
             <span class="ui-icon ui-icon-trash"></span><?= t("delete") ?></a>
+
       </td>
 
   </tr>

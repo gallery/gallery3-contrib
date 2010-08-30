@@ -31,11 +31,11 @@ class product_Core {
         ->options(postage_band::getPostageArray());
     $group->submit("")->value(t("Add Product"));
     $product = ORM::factory("product");
-    $form->add_rules_from($product);
     return $form;
   }
 
   static function get_edit_form_admin($product) {
+
     $form = new Forge("admin/product_lines/edit_product/$product->id", "", "post",
         array("id" => "gEditProductForm"));
     $group = $form->group("edit_product")->label(t("Edit Product"));
@@ -51,7 +51,6 @@ class product_Core {
         ->selected($product->postage_band_id);
 
     $group->submit("")->value(t("Modify Product"));
-    $form->add_rules_from($product);
     return $form;
   }
 
@@ -74,8 +73,8 @@ class product_Core {
    * @return User_Model
    */
   static function create($name, $cost, $description, $postage_band) {
-    $product = ORM::factory("product")->where("name", $name)->find();
-    if ($product->loaded) {
+    $product = ORM::factory("product")->where("name", "=", $name)->find();
+    if ($product->loaded()) {
       throw new Exception("@todo USER_ALREADY_EXISTS $name");
     }
 
@@ -90,9 +89,9 @@ class product_Core {
   static function getProductArray($id){
     $producta = array();
     // check for product override
-    $product_override = ORM::factory("product_override")->where('item_id', $id)->find();
+    $product_override = ORM::factory("product_override")->where('item_id', "=",  $id)->find();
 
-    if (!$product_override->loaded){
+    if (!$product_override->loaded()){
       // no override found so check parents
       // check parents for product override
       $item = ORM::factory("item",$id);
@@ -100,24 +99,25 @@ class product_Core {
       $parents = $item->parents();
       foreach ($parents as $parent){
         // check for product override
-        $product_override = ORM::factory("product_override")->where('item_id', $parent->id)->find();
-        if ($product_override->loaded){
-          break;
+        $temp_override = ORM::factory("product_override")->where('item_id', "=", $parent->id)->find();
+        if ($temp_override ->loaded()){
+          $product_override = $temp_override;
+          //break;
         }
-      }
+              }
     }
 
     $products = ORM::factory("product")->find_all();
     foreach ($products as $product){
       $show = true;
       $cost = $product->cost;
-      if ($product_override->loaded){
+      if ($product_override->loaded()){
         $show = !$product_override->none;
         $item_product = ORM::factory("item_product")
-            ->where('product_override_id', $product_override->id)
-            ->where('product_id', $product->id)->find();
+            ->where('product_override_id', "=", $product_override->id)
+            ->where('product_id', "=", $product->id)->find();
 
-        if ($item_product->loaded){
+        if ($item_product->loaded()){
           $cost = $item_product->cost;
           if (!$show){
             $show = $item_product->include;
@@ -127,7 +127,7 @@ class product_Core {
 
       if ($show)
       {
-        $producta[$product->id] = $product->description." (".basket::formatMoney($cost).")";
+        $producta[$product->id] = html::clean($product->description)." (".basket::formatMoneyForWeb($cost).")";
       }
     }
 
@@ -136,10 +136,12 @@ class product_Core {
 
   static function isForSale($id){
 
+    try
+    {
     // check for product override
-    $product_override = ORM::factory("product_override")->where('item_id', $id)->find();
+    $product_override = ORM::factory("product_override")->where('item_id', "=", $id)->find();
 
-    if (!$product_override->loaded){
+    if (!$product_override->loaded()){
       // no override found so check parents
       // check parents for product override
       $item = ORM::factory("item",$id);
@@ -147,24 +149,25 @@ class product_Core {
       $parents = $item->parents();
       foreach ($parents as $parent){
         // check for product override
-        $product_override = ORM::factory("product_override")->where('item_id', $parent->id)->find();
-        if ($product_override->loaded){
-          break;
+        $temp_override = ORM::factory("product_override")->where('item_id', "=", $parent->id)->find();
+        if ($temp_override ->loaded()){
+          $product_override = $temp_override;
+          //break;
         }
       }
     }
 
     $products = ORM::factory("product")->find_all();
 
-    if ($product_override->loaded && $product_override->none){
+    if ($product_override->loaded() && $product_override->none){
 
       foreach ($products as $product){
 
         $item_product = ORM::factory("item_product")
-            ->where('product_override_id', $product_override->id)
-            ->where('product_id', $product->id)->find();
+            ->where('product_override_id', "=", $product_override->id)
+            ->where('product_id', "=", $product->id)->find();
 
-        if ($item_product->loaded){
+        if ($item_product->loaded()){
 
           if ($item_product->include){
             return true;
@@ -176,6 +179,11 @@ class product_Core {
 
     } else {
       return count($products) > 0;
+    }
+    }
+    catch (Exception $e)
+    {
+      echo $e;
     }
   }
 }

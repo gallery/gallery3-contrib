@@ -18,18 +18,29 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 ?>
+<h1>IPN Messages for <?= $order->title()?></h1>
+<a href="<?=url::site("basket/view_orders");?>">Back to orders</a>
+<div class="left" style="width:150px;float:left;font-size:10px;">
 
-  <? if ($theme->page_type != 'basket'): ?>
-  <? if (basket::can_view_orders()): ?>
-    <a href="<?= url::site("basket/view_Orders") ?>"
-       title="<?= t("View Orders") ?>">View Orders</a>
-  <? endif?>
-  <? if (isset($basket) && isset($basket->contents) && ($basket->size() > 0)): ?>
-<div id="basket">
-    <a href="<?= url::site("basket/view_basket") ?>"
-       title="<?= t("View Basket") ?>">
-       <img src="<?= url::file("modules/basket/images/basket.png") ?>"><br/>
-       <?= $basket->size()?> items</a>
+<ul>
+<?
+  foreach ($ipn_messages as $i => $ipn_message){
+    ?><li><a href="javascript:ld(<?=$ipn_message->id?>)"><?= $ipn_message->date." ".$ipn_message->status ?></a></li><?
+  }
+?>
+</ul>
 </div>
-  <? endif ?>
-  <? endif ?>
+<div class="scrollable" style="text-align:left;float:left;padding:0;font-size:12px;display:block;"><pre id="ipn_text"></pre>
+</div>
+<SCRIPT language="JavaScript">
+var ot,csrf;
+$(window).load(new function(){ot=$("#ipn_text");csrf="?csrf=<?= $csrf ?>"});
+function ld(n){
+ot.html("Loading...");
+ot.load('<?=url::site("basket/show_ipn")?>/'+n+csrf,
+function (responseText, textStatus, XMLHttpRequest) {
+if (textStatus == "error") {ot.html(responseText);}
+});
+}
+
+</SCRIPT>

@@ -27,7 +27,7 @@ class Admin_Product_Lines_Controller extends Controller
   {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_product_lines.html");
-    $view->content->products = ORM::factory("product")->orderby("name")->find_all();
+    $view->content->products = ORM::factory("product")->order_by("name")->find_all();
 
     print $view;
   }
@@ -43,8 +43,8 @@ class Admin_Product_Lines_Controller extends Controller
     $form = product::get_add_form_admin();
     $valid = $form->validate();
     $name = $form->add_product->inputs["name"]->value;
-    $product = ORM::factory("product")->where("name", $name)->find();
-    if ($product->loaded) {
+    $product = ORM::factory("product")->where("name", "=", $name)->find();
+    if ($product->loaded()) {
       $form->add_product->inputs["name"]->add_error("in_use", 1);
       $valid = false;
     }
@@ -60,16 +60,15 @@ class Admin_Product_Lines_Controller extends Controller
       $product->save();
       message::success(t("Created product %product_name", array(
         "product_name" => html::clean($product->name))));
-      print json_encode(array("result" => "success"));
+      print json::reply(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error",
-                              "form" => $form->__toString()));
+      print $form;
     }
   }
 
   public function delete_product_form($id) {
     $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
+    if (!$product->loaded()) {
       kohana::show_404();
     }
     print product::get_delete_form_admin($product);
@@ -83,7 +82,7 @@ class Admin_Product_Lines_Controller extends Controller
     }
 
     $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
+    if (!$product->loaded()) {
       kohana::show_404();
     }
 
@@ -92,21 +91,20 @@ class Admin_Product_Lines_Controller extends Controller
       $name = $product->name;
       $product->delete();
     } else {
-      print json_encode(array("result" => "error",
-                              "form" => $form->__toString()));
+      print $form;
     }
 
     $message = t("Deleted user %product_name", array("product_name" => html::clean($name)));
     log::success("user", $message);
     message::success($message);
-    print json_encode(array("result" => "success"));
+    print json::reply(array("result" => "success"));
   }
 
   public function edit_product($id) {
     access::verify_csrf();
 
     $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
+    if (!$product->loaded()) {
       kohana::show_404();
     }
 
@@ -116,10 +114,10 @@ class Admin_Product_Lines_Controller extends Controller
       $new_name = $form->edit_product->inputs["name"]->value;
       if ($new_name != $product->name &&
           ORM::factory("product")
-          ->where("name", $new_name)
-          ->where("id !=", $product->id)
+          ->where("name", "=", $new_name)
+          ->where("id","!=", $product->id)
           ->find()
-          ->loaded) {
+          ->loaded()) {
         $form->edit_product->inputs["name"]->add_error("in_use", 1);
         $valid = false;
       } else {
@@ -135,16 +133,15 @@ class Admin_Product_Lines_Controller extends Controller
 
       message::success(t("Changed product %product_name",
           array("product_name" => html::clean($product->name))));
-      print json_encode(array("result" => "success"));
+      print json::reply(array("result" => "success"));
     } else {
-      print json_encode(array("result" => "error",
-                              "form" => $form->__toString()));
+      print $form;
     }
   }
 
   public function edit_product_form($id) {
     $product = ORM::factory("product", $id);
-    if (!$product->loaded) {
+    if (!$product->loaded()) {
       kohana::show_404();
     }
 

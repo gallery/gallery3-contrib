@@ -90,13 +90,31 @@ class Session_Basket_Core {
   public $email = "";
   public $phone = "";
 
+  public $ppenabled = true;
+
   public function clear(){
     if (isset($this->contents)){
       foreach ($this->contents as $key => $item){
         unset($this->contents[$key]);
       }
     }
+    $this->ppenabled = true;
   }
+
+  public function enablepp()
+  {
+    $this->ppenabled = true;
+  }
+
+  public function disablepp()
+  {
+    $this->ppenabled = false;
+  }
+
+  public function ispp(){
+    return $this->ppenabled;
+  }
+
 
   private function create_key($product, $id){
     return "$product _ $id";
@@ -116,7 +134,7 @@ class Session_Basket_Core {
 
     $key = $this->create_key($product, $id);
     if (isset($this->contents[$key])){
-      $this->contents[$key]->add($id, $quantity);
+      $this->contents[$key]->add($quantity);
     }
     else {
       $this->contents[$key] = new basket_item($product, $id, $quantity);

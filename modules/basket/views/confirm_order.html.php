@@ -24,8 +24,8 @@ function so(){document.confirm.submit();}
 <?= $form ?>
 <div class="gBlock">
 <h2>Basket Summary</h2>
-  <div class="gBlockContent">
-    <table id="gBasketList">
+  <div class="g-block-content scrollables">
+    <table id="g-basket-list">
       <tr>
         <th><?= t("Name") ?></th>
         <th><?= t("Product") ?></th>
@@ -48,18 +48,18 @@ function so(){document.confirm.submit();}
           <?= html::clean($prod_details->quantity) ?>
         </td>
         <td>
-          <?= html::clean(basket::formatMoney($prod_details->cost)) ?>
+          <?= basket::formatMoneyForWeb($prod_details->cost) ?>
         </td>
     </tr>
       <? endforeach ?>
       <? $postage = $basket->postage_cost();?>
       <? if ($postage > 0):?>
       <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
-        <td></td><td></td><td>Postage and Packaging</td><td><?= html::clean(basket::formatMoney($postage))?></td><td></td>
+        <td></td><td></td><td  <?=$basket->ispp()?"":"style=\"text-decoration:line-through\""; ?>>Postage and Packaging</td><td  <?=$basket->ispp()?"":"style=\"text-decoration:line-through\""; ?>><?= basket::formatMoneyForWeb($postage)?></td>
       </tr>
       <? endif;?>
       <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
-        <td></td><td></td><td>Total Cost</td><td><?= html::clean(basket::formatMoney($basket->cost() + $postage))?></td>
+        <td></td><td></td><td>Total Cost</td><td><?= $basket->ispp()?basket::formatMoneyForWeb($basket->cost() + $postage):basket::formatMoneyForWeb($basket->cost()); ?></td>
       </tr>
 
    </table>
@@ -80,9 +80,10 @@ E-mail : <?= $basket->email ?><br/>
 Telephone : <?= $basket->phone ?>
 </td></tr>
 </table>
-<a href="<?= url::site("basket/checkout") ?>" class="left gButtonLink ui-state-default ui-corner-all ui-icon-left">
+<div class="basketbuttons">
+<a href="<?= url::site("basket/checkout") ?>" class="left g-button ui-state-default ui-corner-all ui-icon-left">
 <span class="ui-icon ui-icon-arrow-1-w"></span><?= t("Back to Checkout") ?></a>
-<a href="javascript: so()" class="right gButtonLink ui-state-default ui-corner-all ui-icon-right">
+<a href="javascript: so()" class="right g-button ui-state-default ui-corner-all ui-icon-right">
 <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Confirm Order") ?></a>
-
+</div>
 </div>

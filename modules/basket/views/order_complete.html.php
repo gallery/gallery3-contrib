@@ -18,7 +18,13 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 ?>
-<div class="gBlock">
+<div class="g-block">
+<div id="b-complete">
 <h2>Thankyou for your order</h2>
-You will be contacted soon to arrange payment and delivery.
+<? if ($order->method == Order_Model::PAYMENT_PAYPAL){
+?>Your order will be confirmed when Paypal has finished processing your order.<?
+}else {
+?><?= basket::replaceStrings(basket::getOrderCompletePage(),Array("order_number"=>$ordernumber, "total_cost"=>basket::formatMoneyForWeb($total_cost)));?><?
+
+}?></div>
 </div>

@@ -35,6 +35,11 @@ class basket_event_Core{
         ->url(url::site("admin/configure")));
     $basket_menu->append(
       Menu::factory("link")
+        ->id("templates")
+        ->label(t("Templates"))
+        ->url(url::site("admin/configure/templates")));
+        $basket_menu->append(
+      Menu::factory("link")
         ->id("product_line")
         ->label(t("Product Lines"))
         ->url(url::site("admin/product_lines")));
@@ -43,15 +48,20 @@ class basket_event_Core{
         ->id("postage_bands")
         ->label(t("Postage Bands"))
         ->url(url::site("admin/postage_bands")));
+    $basket_menu->append(
+      Menu::factory("link")
+        ->id("view_orders")
+        ->label(t("View Orders"))
+        ->url(url::site("basket/view_orders")));
 
   }
 
   static function item_edit_form($item, $form){
    $group = $form->group("products")->label(t("Available Products"));
 
-   $product_override = ORM::factory("product_override")->where('item_id', $item->id)->find();
+   $product_override = ORM::factory("product_override")->where('item_id', "=", $item->id)->find();
    $group->checkbox("all")->label("No products except..");
-   if ($product_override->loaded){
+   if ($product_override->loaded()){
      $group->all->checked($product_override->none);
    }
 
@@ -63,11 +73,11 @@ class basket_event_Core{
       $cost = $product->cost;
       $checked = false;
 
-      if ($product_override->loaded){
+      if ($product_override->loaded()){
         $item_product = ORM::factory("item_product")
-            ->where('product_override_id', $product_override->id)
-            ->where('product_id', $product->id)->find();
-        if ($item_product->loaded){
+            ->where('product_override_id', "=", $product_override->id)
+            ->where('product_id', "=", $product->id)->find();
+        if ($item_product->loaded()){
           $checked = $item_product->include;
           if ($item_product->cost != -1){
             $cost = $item_product->cost;
@@ -82,7 +92,7 @@ class basket_event_Core{
   }
 
   static function item_edit_form_completed($item, $form){
-    $product_override = ORM::factory("product_override")->where('item_id', $item->id)->find();
+    $product_override = ORM::factory("product_override")->where('item_id', "=", $item->id)->find();
 
     if ($form->products->all->checked)
     {
@@ -93,8 +103,8 @@ class basket_event_Core{
       foreach ($products as $product){
           $p_group = $form->products->__get("product_$product->id");
           $item_product = ORM::factory("item_product")
-            ->where('product_override_id', $product_override->id)
-            ->where('product_id', $product->id)->find();
+            ->where('product_override_id', "=", $product_override->id)
+            ->where('product_id', "=", $product->id)->find();
 
           $item_product->include = $p_group->__get("exclude_$product->id")->checked;
           $item_product->cost = $p_group->__get("cost_$product->id")->value;
@@ -105,7 +115,7 @@ class basket_event_Core{
     }
     else
     {
-      if ($product_override->loaded){
+      if ($product_override->loaded()){
         $product_override->delete();
       }
     }

@@ -18,10 +18,10 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 ?>
-<div class="gBlock">
+<div class="g-block">
 
   <a href="<?= url::site("admin/product_lines/add_product_form") ?>"
-      class="gDialogLink gButtonLink right ui-icon-left ui-state-default ui-corner-all"
+      class="g-dialog-link g-button right ui-icon-left ui-state-default ui-corner-all"
       title="<?= t("Create a new Product") ?>">
     <span class="ui-icon ui-icon-circle-plus"></span>
     <?= t("Add a new Product") ?>
@@ -31,8 +31,8 @@
     <?= t("Product Lines") ?>
   </h2>
 
-  <div class="gBlockContent">
-    <table id="gProductAdminList">
+  <div class="g-block-content">
+    <table id="g-product-admin-list">
       <tr>
   <th><?= t("Name") ?></th>
         <th><?= t("Cost") ?></th>
@@ -47,7 +47,7 @@
           <?= html::clean($product->name) ?>
   </td>
   <td>
-    <?= basket::formatMoney($product->cost) ?>
+    <?= basket::formatMoneyForWeb($product->cost) ?>
         </td>
   <td>
     <?= html::clean($product->description) ?>
@@ -57,14 +57,14 @@
   </td>
 
 
-    <td class="gActions">
+    <td class="g-actions">
       <a href="<?= url::site("admin/product_lines/edit_product_form/$product->id") ?>"
           open_text="<?= t("close") ?>"
-          class="gPanelLink gButtonLink ui-state-default ui-corner-all ui-icon-left">
+          class="g-panel-link g-button ui-state-default ui-corner-all ui-icon-left">
           <span class="ui-icon ui-icon-pencil"></span><span class="gButtonText"><?= t("edit") ?></span></a>
 
       <a href="<?= url::site("admin/product_lines/delete_product_form/$product->id") ?>"
-          class="gDialogLink gButtonLink ui-state-default ui-corner-all ui-icon-left">
+          class="g-dialog-link g-button ui-state-default ui-corner-all ui-icon-left">
             <span class="ui-icon ui-icon-trash"></span><?= t("delete") ?></a>
       </td>
 

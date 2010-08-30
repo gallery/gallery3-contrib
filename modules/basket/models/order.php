@@ -17,40 +17,40 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class basket_theme_Core {
+class Order_Model extends ORM {
+  const WAITING_PAYMENT = 1;
+  const PAYMENT_CONFIRMED= 2;
 
-  static function head($theme) {
-    $theme->css("basket.css");
+  const PAYMENT_PAYPAL = 1;
+  const PAYMENT_OFFLINE = 2;
+
+  public function title(){
+    return  basket::getOrderPrefix().$this->id." ".$this->name." ".$this->status();
   }
 
-  static function header_top($theme) {
+  public function status(){
+    switch ($this->status){
+      case 1:
+        return "Waiting Payment";
+      case 2:
+        return "Payment Confirmed";
+      case 20:
+        return "Complete";
 
-    if (!basket::is_side_bar_only())
-    {
-      $view = new View("basket.html");
-
-      $view->basket = Session_Basket::get();
-      return $view->render();
-    }
-    return "";
-  }
-
-  static function admin_head($theme) {
-    if (strpos(Router::$current_uri, "admin/product_lines") !== false) {
-      $theme->script("gallery.panel.js");
+      default:
+        return "Unknown";
     }
   }
-  static function photo_top($theme){
-    if (!basket::is_side_bar_only())
-    {
-        if ( product::isForSale($theme->item()->id)){
-        $view = new View("add_to_basket.html");
 
-        $view->item = $theme->item();
+  public function payment_method(){
+    switch ($this->method){
+      case 1:
+        return "through Paypal";
+      case 2:
+        return "offline";
 
-        return $view->render();
-      }
+      default:
+        return "Unknown";
     }
-    return "";
   }
 }
