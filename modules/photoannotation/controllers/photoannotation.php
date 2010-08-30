@@ -23,6 +23,7 @@ class photoannotation_Controller extends Controller {
     access::verify_csrf();
 
     //Get form data
+    $item = ORM::factory("item", $item_data);
     $noteid = $_POST["noteid"];  
     $notetype = $_POST["notetype"]; 
     $str_y1 = $_POST["top"];
@@ -32,7 +33,8 @@ class photoannotation_Controller extends Controller {
     $str_face_title = $_POST["text"];
     $tag_data = $_POST["tagsList"];
     $str_face_description = $_POST["desc"];
-    $redir_uri = $_POST["currenturl"];
+    $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
+
     // Decide if we are saving a face or a note.
     
     if ($noteid == "new") {
@@ -133,14 +135,15 @@ class photoannotation_Controller extends Controller {
     return;
   }
   
-  public function delete() {
+  public function delete($item_data) {
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
     //Get form data
+    $item = ORM::factory("item", $item_data);
     $noteid = $_POST["noteid"];
     $notetype = $_POST["notetype"];
-    $redir_uri = $_POST["currenturl"];
+    $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
     
     if ($noteid == "" || $notetype == "") {
       message::error(t("Please select a tag or note to delete."));

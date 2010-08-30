@@ -46,9 +46,7 @@ class photoannotation_event_Core {
     if (!$theme->item()) {
       return;
     }
-
     $item = $theme->item();
-
     if ($item->is_photo()) {
       if ((access::can("view", $item)) && (access::can("edit", $item))) {
         $menu->get("options_menu")

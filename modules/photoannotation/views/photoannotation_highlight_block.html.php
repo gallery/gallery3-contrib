@@ -94,8 +94,7 @@
           editable: false,
           <? endif ?>
           saveUrl: '<?= url::site("photoannotation/save/". $item->id) ?>',
-          deleteUrl: '<?= url::site("photoannotation/delete") ?>',
-          currentUrl: '<?= url::site(Router::$complete_uri, $protocol); ?>',
+          deleteUrl: '<?= url::site("photoannotation/delete/". $item->id) ?>',
           <?= $tags_arraystring ?>
           <?= $labels_arraystring ?>
 					<?= $jscode ?>

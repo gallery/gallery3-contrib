@@ -19,14 +19,16 @@
  */
 class photoannotation_theme_Core {
   static function head($theme) {
-    // If it does, add an image map to the page to display them.
-    $theme->css("photoannotation.css");
-    $theme->script("jquery.annotate.js");
-    //Return "<script type=\"text/javascript\" src=\"/gallery3/modules/photoannotation/js/jquery.annotate.js\"></script>";
+    if ($theme->page_subtype == "photo") {
+      $theme->css("photoannotation.css");
+      $theme->script("jquery.annotate.js");
+      //Return "<script type=\"text/javascript\" src=\"/gallery3/modules/photoannotation/js/jquery.annotate.js\"></script>";
+    }
   }
 
   static function photo_bottom($theme) {
-    // If it does, add an image map to the page to display them.
-    return new View("photoannotation_highlight_block.html");
+    if ($theme->page_subtype == "photo") {
+      return new View("photoannotation_highlight_block.html");
+    }
   }
 }
