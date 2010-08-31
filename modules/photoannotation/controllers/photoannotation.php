@@ -35,6 +35,23 @@ class photoannotation_Controller extends Controller {
     $str_face_description = $_POST["desc"];
     $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
 
+    //Add tag to item, create tag if not exists
+    if ($tag_data != "") {
+      $tag = ORM::factory("tag")->where("name", "=", $tag_data)->find();
+      if (!$tag->loaded()) {
+        $tag->name = $tag_data;
+        $tag->count = 0;
+      }
+
+      $tag->add($item);
+      $tag->count++;
+      $tag->save();
+      $tag_data = $tag->id;
+    } else {
+      $tag_data = -1;
+    }
+    
+    
     // Decide if we are saving a face or a note.
     
     if ($noteid == "new") {
@@ -150,7 +167,6 @@ class photoannotation_Controller extends Controller {
       url::redirect($redir_uri);
       return;
     }
-    
     if ($notetype == "face") {
       db::build()->delete("items_faces")->where("id", "=", $noteid)->execute();    
       message::success(t("Annotation deleted."));
