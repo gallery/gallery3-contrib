@@ -1,0 +1,3 @@
+name = "Photo Annotation"
+description = "Allows you to assign tags and notes to areas on your photos. Fully compatible with TagFaces module by rWatcher but you cannot run both modules at the same time."
+version = 1

@@ -1,6 +1,6 @@
 name = "Grey Dragon Theme"
-description = "A Crisp theme uses on clear grey colors and minimized on JS overhead"
-version = 1.5.8
-author = "2009 Serguei Dosyukov"
+description = "A Crisp flexible theme with support of Color Packs and minimized on JS overhead"
+version = 2.3.1
+author = "2010 Serguei Dosyukov"
 site = 1
 admin = 0

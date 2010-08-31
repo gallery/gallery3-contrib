@@ -1,20 +1,28 @@
-#g-site-menu                   { position: absolute; bottom: 0px; left: 310px; }
-#g-site-menu ul                { float: left; padding: 0px; margin: 0px; width: 100%; border: #000000 0px solid; white-space: nowrap; z-index: 100; }
-#g-site-menu a                 { display: block; padding: 3px 5px 4px 5px; text-align: center; width: auto; letter-spacing: 0px; cursor: pointer; }
-#g-site-menu li                { float: left; padding: 0px; background-color: transparent; border: transparent 1px solid; }
-#g-site-menu li a:hover        { color: #000000; cursor: pointer; background-color: #303030; }
-#g-site-menu li:hover,
-#g-site-menu li.iemhover       { border: #303030 1px solid; background-color: #303030; border-bottom: #000000 1px solid; }
-#g-site-menu li ul a           { text-align: left; padding: 4px 0px; text-indent: 8px; letter-spacing: 0px; cursor: pointer; }
-#g-site-menu li ul a:hover     { background-image: none; cursor: pointer; }
-#g-site-menu li ul             { border: #000000 1px solid; position: absolute; margin: 0px 0px 0px -1px; width: 135px; height: auto; left: -999em; }
-#g-site-menu li ul li          { border: #C0C0C0 0px solid; background-color: #212121; }
-#g-site-menu li ul li:hover,
-#g-site-menu li ul li.iemhover { border: #C0C0C0 0px solid; background-color: #303030; }
+/**
+ * Gallery 3 Grey Dragon Theme
+ * Copyright (C) 2006-2010 Serguei Dosyukov
+ *
+ * CSS rules related to menus
+ */
 
-#g-site-menu li li             { width: 135px; padding-right: 0px; }
-#g-site-menu li ul a           { width: 135px; }
-#g-site-menu li ul ul          { margin: -21px 0px 0px 135px; }
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/* menus.css - Main menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+#g-site-menu { position: absolute; left: 24em; }
+#g-site-menu.default { bottom: 0; }
+#g-site-menu.top { top: 0; }
+#g-site-menu ul { float: left; padding-left: 0; width: 100%; white-space: nowrap; z-index: 10; }
+#g-site-menu ul ul ul { padding-top: 0; }
+#g-site-menu a  { display: block; padding: 0.2em 0.4em; text-align: center; width: auto; letter-spacing: 0; cursor: pointer; }
+#g-site-menu li { float: left; padding: 0; background-color: transparent; border: transparent 1px solid; z-index: 10; }
+#g-site-menu li a:hover { cursor: pointer; }
+#g-site-menu li ul a { text-align: left; padding: 0.3em 0; text-indent: 0.8em; letter-spacing: 0; cursor: pointer; }
+#g-site-menu li ul a:hover { background-image: none; cursor: pointer; }
+#g-site-menu li ul { position: absolute; margin: 0 0 0 -1px; width: 14em; height: auto; left: -999em; }
+
+#g-site-menu li li { width: 14em; padding-right: 0; }
+#g-site-menu li ul a { width: 14em; }
+#g-site-menu li ul ul { margin: -1.9em 0 0 14em; }
 #g-site-menu li:hover ul ul,
 #g-site-menu li:hover ul ul ul,
 #g-site-menu li.iemhover ul ul,
@@ -25,3 +33,24 @@
 #g-site-menu li.iemhover ul,
 #g-site-menu li li.iemhover ul,
 #g-site-menu li li li.iemhover ul { left: auto; }
+
+#g-site-menu>ul>li>ul { display: none; }
+
+#g-site-menu .ui-icon-rotate-ccw,
+#g-site-menu .ui-icon-rotate-cw { display: none; }
+
+/* menus.css - Context menu ~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+.g-item .g-context-menu { position: absolute; margin: 0; padding: 0; top: 6px; left: 196px; width: 14px; height: 14px; background-position: -178px -144px; z-index: 3; } 
+.g-item .g-context-menu li { width: 100%; padding: 0; margin: 0; text-indent: -9999px; }
+.g-item .g-context-menu>li>a { font-size: 0em; }
+.g-item .g-context-menu:hover { top: 4px; left: 6px; width: 200px; height: auto; z-index: 100; }
+.g-item .g-context-menu ul { padding: 0; margin: 0; }
+.g-item .g-context-menu li li { display: none; }
+.g-item .g-context-menu li li a { display: block; padding: 4px 6px; }
+.g-item .g-context-menu:hover li li { display: block; text-indent: 0px; } 
+.g-item .g-context-menu li li a.ui-icon-rotate-ccw,
+.g-item .g-context-menu li li a.ui-icon-rotate-cw { display: none; }
+
+.g-item.g-detail .g-context-menu { left: auto; right: 6px; }
+.g-item.g-detail .g-context-menu:hover { left: auto; right: 6px; }
