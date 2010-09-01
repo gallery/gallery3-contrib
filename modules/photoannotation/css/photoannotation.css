@@ -93,6 +93,12 @@
     float: right !important;    
     margin: 3px 0 3px 6px !important;
 }
+.inmage-annotate-dialog button{
+    float: left !important;
+}
+.inmage-annotate-dialog-rtl button{
+    float: left !important;
+}
 .image-annotate-edit-area {
     border: 1px solid black;
     cursor: move;

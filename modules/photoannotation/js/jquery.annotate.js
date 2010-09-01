@@ -276,20 +276,24 @@
         area.resizable({
             handles: 'all',
 
+            start: function(e, ui) {
+                form.hide();
+            },
             stop: function(e, ui) {
                 form.css('left', area.offset().left + 'px');
                 form.css('top', (parseInt(area.offset().top) + parseInt(area.height()) + 7) + 'px');
+                form.show();
             }
         })
         .draggable({
             containment: image.canvas,
             drag: function(e, ui) {
-                form.css('left', area.offset().left + 'px');
-                form.css('top', (parseInt(area.offset().top) + parseInt(area.height()) + 7) + 'px');
+                form.hide();
             },
             stop: function(e, ui) {
                 form.css('left', area.offset().left + 'px');
                 form.css('top', (parseInt(area.offset().top) + parseInt(area.height()) + 7) + 'px');
+                form.show();
             }
         });
         return this;
@@ -334,11 +338,17 @@
             var confdialog = '<div id="image-annotate-conf-dialog" rel="' + $(this).find('form.photoannotation-del-form').attr('id') + '">' + labels[3] + '<div />';
             $('body').append(confdialog);
             var btns = {};
-            btns[labels[6]] = function(){ location.reload(); };
+            if (rtlsupport == "") {
+              diagclass = "inmage-annotate-dialog";
+            } else {
+              diagclass = "inmage-annotate-dialog-rtl";
+            }
             btns[labels[5]] = function(){ var delform = $(this).attr("rel"); $("form#" + delform).submit(); };
+            btns[labels[6]] = function(){ location.reload(); };
             $('#image-annotate-conf-dialog').dialog({
                 modal: true,
                 resizable: false,
+                dialogClass: diagclass,
                 title: labels[7],
                 close: function(event, ui) { location.reload(); },
                 buttons: btns
