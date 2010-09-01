@@ -29,6 +29,7 @@ class Embedded_videos_Controller extends Controller {
     // Yes, this is a mess.
     $youtubeUrlPattern="youtube";
     $youtubeThumbnailUrl="http://img.youtube.com/vi/";
+    $vimeoUrlPattern="vimeo.com";
     // End mess
     
     batch::start();
@@ -70,6 +71,27 @@ class Embedded_videos_Controller extends Controller {
                 }
               }
             }
+          }
+        } else if(preg_match("/$vimeoUrlPattern/",$url)) {
+          if(preg_match("/$vimeoUrlPattern\/(.*)/",$url,$matches)) {
+		   $video_id = $matches[1];
+		   if ($video_id) {
+		     $sxml = simplexml_load_file("http://vimeo.com/api/v2/video/$video_id.xml");
+		     if ($sxml) {
+		       $valid_url = true;
+		       if ($title == '') {
+		         $title = (string)$sxml->video->title;
+		       }
+		       if ($description == '') {
+		         $description = strip_tags((string)$sxml->video->description);
+		       }
+		       $embedded_video->source = "Vimeo";
+		       $content = file_get_contents((string)$sxml->video->thumbnail_large);
+		       $itemname = "vimeo_" . $video_id . ".jpg";
+		       $temp_filename = VARPATH . "tmp/$itemname";
+		       $embedded_video->embed_code = '<iframe src="http://player.vimeo.com/video/' . $video_id . '" width="640" height="385" frameborder="0"></iframe>';
+		     }
+	        }
           }
         }
         //$item->validate();
