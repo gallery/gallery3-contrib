@@ -25,6 +25,10 @@ class Embedded_videos_Controller extends Controller {
     access::verify_csrf();
     $form = embed_videos::get_add_form($album);
     $temp_filename = "";
+    
+    // TODO: Add admin page options for these.
+    $maxwidth = 650;
+    $maxheight = 480;
 
     // Yes, this is a mess.
     $youtubeUrlPattern="youtube";
@@ -54,7 +58,7 @@ class Embedded_videos_Controller extends Controller {
           }
           if ($video_id) {
             $video_id = $matches[1];
-            $embedded_video->embed_code = '<iframe class="youtube-player" type="text/html" width="640" height="385" src="http://www.youtube.com/embed/' . $video_id . '" frameborder="0"></iframe>';
+            $embedded_video->embed_code = '<iframe class="youtube-player" type="text/html" width="'. $maxwidth .'" height="'. $maxheight .'" src="http://www.youtube.com/embed/' . $video_id . '" frameborder="0"></iframe>';
             $embedded_video->source = "YouTube";
             $content = file_get_contents("http://img.youtube.com/vi/" . $video_id . "/0.jpg");
             $itemname = "youtube_" . $video_id . ".jpg";
@@ -78,7 +82,6 @@ class Embedded_videos_Controller extends Controller {
             if ($video_id) {
               $sxml = simplexml_load_file("http://vimeo.com/api/v2/video/$video_id.xml");
               if ($sxml) {
-                $valid_url = true;
                 if ($title == '') {
                   $title = (string)$sxml->video->title;
                 }
@@ -89,7 +92,10 @@ class Embedded_videos_Controller extends Controller {
                 $content = file_get_contents((string)$sxml->video->thumbnail_large);
                 $itemname = "vimeo_" . $video_id . ".jpg";
                 $temp_filename = VARPATH . "tmp/$itemname";
-                $embedded_video->embed_code = '<iframe src="http://player.vimeo.com/video/' . $video_id . '" width="640" height="385" frameborder="0"></iframe>';
+                $width = min((int)$sxml->video->width, $maxwidth);
+                $height = min((int)$sxml->video->height, $maxheight);
+                $embedded_video->embed_code = '<iframe src="http://player.vimeo.com/video/' . $video_id . '" width="'. (string)$width .'" height="'. (string)$height .'" frameborder="0"></iframe>';
+                $valid_url = true;
               }
             }
           }
