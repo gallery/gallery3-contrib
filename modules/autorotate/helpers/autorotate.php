@@ -19,6 +19,11 @@
  */
 class autorotate {
 	static function rotate_item($item) {
+		
+		require_once(MODPATH . 'autorotate/lib/pel/PelDataWindow.php');
+		require_once(MODPATH . 'autorotate/lib/pel/PelJpeg.php');
+		require_once(MODPATH . 'autorotate/lib/pel/PelTiff.php');
+		
 		// Only try to rotate photos based on EXIF 
 		if ($item->is_photo() && $item->mime_type == "image/jpeg") {
 		  require_once(MODPATH . "exif/lib/exif.php");
@@ -38,9 +43,23 @@ class autorotate {
 			if($degrees) {
 				$tmpfile = tempnam(TMPPATH, "rotate");
 				gallery_graphics::rotate($item->file_path(), $tmpfile, array("degrees" => $degrees));
+				// Update EXIF info
+				$data = new PelDataWindow(file_get_contents($tmpfile));
+				if (PelJpeg::isValid($data)) {
+					$jpeg = $file = new PelJpeg();
+					$jpeg->load($data);
+					$exif = $jpeg->getExif();
+					if($exif !== null) {
+						$tiff = $exif->getTiff();
+						$ifd0 = $tiff->getIfd();
+						$orientation = $ifd0->getEntry(PelTag::ORIENTATION);
+						$orientation->setValue(1);
+						file_put_contents($tmpfile, $file->getBytes());
+					}
+				}
 				$item->set_data_file($tmpfile);
 				$item->save();
-				unlink($tmpfile);			
+				unlink($tmpfile);
 			}
 		  }
 		}
