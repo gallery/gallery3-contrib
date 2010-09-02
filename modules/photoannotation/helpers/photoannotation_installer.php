@@ -46,27 +46,12 @@ class photoannotation_installer {
                DEFAULT CHARSET=utf8;");
 
     // Set the module's version number.
-    module::set_version("photoannotation", 1);
+    module::set_version("photoannotation", 2);
   }
 
   static function upgrade($version) {
-    $db = Database::instance();
-    if ($version == 1) {
-      $db->query("ALTER TABLE {items_faces} ADD `description` varchar(2048) default NULL");
-
-      $db->query("CREATE TABLE IF NOT EXISTS {items_notes} (
-               `id` int(9) NOT NULL auto_increment,
-               `item_id` int(9) NOT NULL,
-               `x1` int(9) NOT NULL,
-               `y1` int(9) NOT NULL,
-               `x2` int(9) NOT NULL,
-               `y2` int(9) NOT NULL,
-               `title` varchar(64) NOT NULL,
-               `description` varchar(2048) default NULL,
-               PRIMARY KEY (`id`))
-               DEFAULT CHARSET=utf8;");
-
-      module::set_version("photoannotation", $version = 1);
+    if ($version == 1) { 
+      module::set_version("photoannotation", $version = 2);
     }
   }
 

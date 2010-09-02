@@ -17,17 +17,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class photoannotation_theme_Core {
+class embed_videos_theme_Core {
   static function head($theme) {
-    if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
-      $theme->script("jquery.annotate.js");
-    }
-  }
-
-  static function photo_bottom($theme) {
-    if ($theme->page_subtype == "photo") {
-      return new View("photoannotation_highlight_block.html");
+    $item = $theme->item();
+    if ($item && $item->is_photo()) {
+      $embedded_video = ORM::factory("embedded_video")
+      ->where("item_id", "=", $item->id)
+      ->find();
+      if ($embedded_video->loaded()) {
+        $view = new View("embed_video_js.html");
+        $view->embed_code = addslashes($embedded_video->embed_code);
+        return $view;
+      }
     }
   }
 }

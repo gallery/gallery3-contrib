@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,17 +17,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class photoannotation_theme_Core {
-  static function head($theme) {
-    if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
-      $theme->script("jquery.annotate.js");
-    }
+class iptc_installer {
+  static function install() {
+    $db = Database::instance();
+    $db->query("CREATE TABLE IF NOT EXISTS {iptc_records} (
+                 `id` int(9) NOT NULL auto_increment,
+                 `item_id` INTEGER(9) NOT NULL,
+                 `key_count` INTEGER(9) default 0,
+                 `data` TEXT,
+                 `dirty` BOOLEAN default 1,
+                 PRIMARY KEY (`id`),
+                 KEY(`item_id`))
+               DEFAULT CHARSET=utf8;");
+    module::set_version("iptc", 1);
   }
 
-  static function photo_bottom($theme) {
-    if ($theme->page_subtype == "photo") {
-      return new View("photoannotation_highlight_block.html");
-    }
+  static function activate() {
+    iptc::check_index();
+  }
+
+  static function deactivate() {
+    site_status::clear("iptc_index_out_of_date");
+  }
+
+  static function uninstall() {
+    Database::instance()->query("DROP TABLE IF EXISTS {iptc_records};");
   }
 }

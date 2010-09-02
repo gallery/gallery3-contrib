@@ -17,17 +17,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class photoannotation_theme_Core {
-  static function head($theme) {
-    if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
-      $theme->script("jquery.annotate.js");
-    }
+
+class embed_videos_installer {
+  static function install() {
+    $db = Database::instance();
+    $db->query("CREATE TABLE {embedded_videos} (
+						`id` int(9) NOT NULL auto_increment,
+						`embed_code` varchar(2048) DEFAULT NULL,
+						`source` varchar(64) DEFAULT NULL,
+						`item_id` int(9) NOT NULL,
+						PRIMARY KEY (`id`),
+						KEY (`item_id`, `id`))
+						DEFAULT CHARSET=utf8;");
+    module::set_version("embed_videos", 2);
+    //exec("cd modules/gallery/controllers/; ln -s ../../embed/controllers/embeds.php embeds.php");
   }
 
-  static function photo_bottom($theme) {
-    if ($theme->page_subtype == "photo") {
-      return new View("photoannotation_highlight_block.html");
-    }
+  static function deactivate() {
+
+  }
+  static function uninstall() {
+    $db = Database::instance();
+    $db->query("DROP TABLE IF EXISTS {embedded_videos};");
+    module::delete("embed_videos");
   }
 }

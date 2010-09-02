@@ -7,6 +7,11 @@
   $existingNotes = ORM::factory("items_note")
                         ->where("item_id", "=", $item->id)
                         ->find_all();
+  if (locales::is_rtl()) {
+    $rtl_support = "image-annotate-rtl";
+  } else {
+    $rtl_support = "";
+  }
   $tags_arraystring = "";
   $jscode = "";
   $legend_faces = "";
@@ -72,21 +77,10 @@
       $legend_display = $legend_display ."<br />". $legend_notes;
     }
   }
-  $item_tags = ORM::factory("tag")
-    ->join("items_tags", "tags.id", "items_tags.tag_id")
-    ->where("items_tags.item_id", "=", $item->id)
-    ->find_all();
-  $tags_arraystring = "tags: [ ";
-  foreach ($item_tags as $current_tag) {
-    $tags_arraystring .= "{'name':'". html::clean($current_tag->name) ."','id':'". $current_tag->id ."'},";
-  }
-  $tags_arraystring = trim($tags_arraystring, ",");
-  $tags_arraystring .= " ],";
-  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional):") ."','". t("Are you sure you want to delete this annotation?") ."' ],";
+  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional):") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."' ],";
 ?>
-
-		<script language="javascript">
-			$(document).ready(function() {
+<script type="text/javascript">
+      $(document).ready(function() {
 				$("<?= $css_item_id ?>").annotateImage({
           <? if ((access::can("view", $item)) && (access::can("edit", $item))): ?>
 					editable: true,
@@ -94,11 +88,11 @@
           editable: false,
           <? endif ?>
           saveUrl: '<?= url::site("photoannotation/save/". $item->id) ?>',
-          deleteUrl: '<?= url::site("photoannotation/delete") ?>',
-          currentUrl: '<?= url::site(Router::$complete_uri, $protocol); ?>',
-          <?= $tags_arraystring ?>
+          deleteUrl: '<?= url::site("photoannotation/delete/". $item->id) ?>',
+          tags: '<?= url::site("tags/autocomplete") ?>',
           <?= $labels_arraystring ?>
 					<?= $jscode ?>
+          rtlsupport: '<?= $rtl_support ?>',
 					useAjax: false,
           cssaclass: '<?= $css_a_class ?>',
           csrf: '<?= $csrf ?>'

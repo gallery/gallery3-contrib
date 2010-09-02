@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,17 +17,27 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class photoannotation_theme_Core {
-  static function head($theme) {
-    if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
-      $theme->script("jquery.annotate.js");
-    }
+class iptc_block_Core {
+  static function get_site_list() {
+    return array("iptc" => t("IPTC info"));
   }
 
-  static function photo_bottom($theme) {
-    if ($theme->page_subtype == "photo") {
-      return new View("photoannotation_highlight_block.html");
+  static function get($block_id, $theme) {
+    $block = "";
+    switch ($block_id) {
+    case "iptc":
+      if ($theme->item()) {
+        $details = iptc::get($theme->item());
+        if (count($details) > 0) {
+          $block = new Block();
+          $block->css_id = "g-metadata";
+          $block->title = t("IPTC info");
+          $block->content = new View("iptc_block.html");
+          $block->content->details = $details;
+        }
+      }
+      break;
     }
+    return $block;
   }
 }

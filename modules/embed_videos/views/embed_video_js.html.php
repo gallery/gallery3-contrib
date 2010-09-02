@@ -1,4 +1,4 @@
-<?php defined("SYSPATH") or die("No direct script access.");
+<?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2010 Bharat Mediratta
@@ -17,17 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class photoannotation_theme_Core {
-  static function head($theme) {
-    if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
-      $theme->script("jquery.annotate.js");
-    }
-  }
-
-  static function photo_bottom($theme) {
-    if ($theme->page_subtype == "photo") {
-      return new View("photoannotation_highlight_block.html");
-    }
-  }
-}
+?>
+<? if (isset($embed_code)): ?>
+<script type="text/javascript">
+$(document).ready(function() {
+$("#g-photo").replaceWith("<div id=\"g-movie\" class=\"ui-helper-clearfix\"><?= $embed_code ?></div>");
+});
+</script>
+<? endif ?>

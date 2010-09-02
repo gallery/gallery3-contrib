@@ -17,17 +17,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class photoannotation_theme_Core {
-  static function head($theme) {
-    if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
-      $theme->script("jquery.annotate.js");
-    }
-  }
 
-  static function photo_bottom($theme) {
-    if ($theme->page_subtype == "photo") {
-      return new View("photoannotation_highlight_block.html");
+class embed_videos_event_Core {
+  static function item_deleted($item) {
+    ORM::factory("embedded_video")
+    ->where("item_id", "=", $item->id)
+    ->find()
+    ->delete();
+  }
+  static function site_menu($menu, $theme) {
+    $item = $theme->item();
+    if ($can_add = $item && access::can("add", $item)) {
+      $menu->get("add_menu")
+      ->append(Menu::factory("dialog")
+      ->id("embed_add")
+      ->label(t("Embed Video"))
+      ->url(url::site("form/add/embedded_videos/$item->id")));
     }
   }
 }

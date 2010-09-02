@@ -40,14 +40,18 @@
 }
 .image-annotate-edit {
     display: none;
+    direction: ltr !important;
 }
 #image-annotate-edit-form {
     background: #FFFFFF none repeat scroll 0 0;
     border: 1px solid #000000;
-    height: 220px;
+    height: 230px;
     padding: 7px;
     position: absolute;
     width: 250px;
+}
+.image-annotate-rtl form {
+    text-align: right !important;
 }
 #image-annotate-edit-form form {
     clear: right;
@@ -68,6 +72,7 @@
     font-family: Verdana, Sans-Serif;
     font-size: 12px;    
     width: 248px;
+    resize: none;
 }
 #image-annotate-edit-form fieldset {
     background: transparent none repeat scroll 0 0;
@@ -83,6 +88,16 @@
     display: block;
     float: left;    
     margin: 3px 6px 3px 0;
+}
+.image-annotate-rtl a {
+    float: right !important;    
+    margin: 3px 0 3px 6px !important;
+}
+.inmage-annotate-dialog button{
+    float: left !important;
+}
+.inmage-annotate-dialog-rtl button{
+    float: left !important;
 }
 .image-annotate-edit-area {
     border: 1px solid black;
