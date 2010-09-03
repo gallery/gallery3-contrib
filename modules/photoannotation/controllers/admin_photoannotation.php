@@ -28,9 +28,13 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
     $form = $this->_get_form();
     if ($form->validate()) {
       module::set_var(
+        "photoannotation", "showusers", $form->photoannotation->showusers->value, true);
+      module::set_var(
         "photoannotation", "showfaces", $form->photoannotation->showfaces->value, true);
       module::set_var(
         "photoannotation", "shownotes", $form->photoannotation->shownotes->value, true);
+      module::set_var(
+        "photoannotation", "fullname", $form->photoannotation->fullname->value, true);
       message::success(t("Your settings have been saved."));
       url::redirect("admin/photoannotation");
     }
@@ -47,10 +51,14 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
   private function _get_form() {
     $form = new Forge("admin/photoannotation/handler", "", "post", array("id" => "g-admin-form"));
     $group = $form->group("photoannotation")->label(t("Photo annotation settings"));
+    $group->checkbox("showusers")->label(t("Show face annotation below photo."))
+      ->checked(module::get_var("photoannotation", "showusers", false));	
     $group->checkbox("showfaces")->label(t("Show face annotation below photo."))
       ->checked(module::get_var("photoannotation", "showfaces", false));	
     $group->checkbox("shownotes")->label(t("Show note annotations below photo."))
       ->checked(module::get_var("photoannotation", "shownotes", false));	
+    $group->checkbox("fullname")->label(t("Show full name of a user instead of the username on annotations (username will be dispayed for users without a full name)."))
+      ->checked(module::get_var("photoannotation", "fullname", false));	
     $form->submit("submit")->value(t("Save"));
     return $form;
   }

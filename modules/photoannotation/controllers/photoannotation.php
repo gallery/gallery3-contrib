@@ -18,23 +18,22 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class photoannotation_Controller extends Controller {
-  public function save($item_data) {
+  public function save($item_id) {
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
-
     //Get form data
-    $item = ORM::factory("item", $item_data);
-    $noteid = $_POST["noteid"];  
+    $item = ORM::factory("item", $item_id);
+    $annotate_id = $_POST["noteid"];  
     $notetype = $_POST["notetype"]; 
     $str_y1 = $_POST["top"];
     $str_x1 = $_POST["left"];
     $str_y2 = $_POST["height"] + $str_y1;  //Annotation uses area size, tagfaces uses positions
     $str_x2 = $_POST["width"] + $str_x1;  //Annotation uses area size, tagfaces uses positions
-    $str_face_title = $_POST["text"];
+    $item_title = $_POST["text"];
     $tag_data = $_POST["tagsList"];
-    $str_face_description = $_POST["desc"];
+    $user_id = $_POST["userlist"];
+    $description = $_POST["desc"];
     $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
-
     //Add tag to item, create tag if not exists
     if ($tag_data != "") {
       $tag = ORM::factory("tag")->where("name", "=", $tag_data)->find();
@@ -42,7 +41,6 @@ class photoannotation_Controller extends Controller {
         $tag->name = $tag_data;
         $tag->count = 0;
       }
-
       $tag->add($item);
       $tag->count++;
       $tag->save();
@@ -50,102 +48,80 @@ class photoannotation_Controller extends Controller {
     } else {
       $tag_data = -1;
     }
-    
-    
-    // Decide if we are saving a face or a note.
-    
-    if ($noteid == "new") {
-      if ($tag_data == -1) {
-        if ($str_face_title == "") {
-          message::error(t("Please select a Tag or specify a Title."));
+    //Save annotation
+    if ($annotate_id == "new") {   //This is a new annotation
+      if ($user_id > -1) {              //Save user
+        $this->_saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+      } elseif ($tag_data > -1) {         //Conversion user -> face
+        $this->_saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+      } elseif ($item_title != "") {   //Conversion user -> note
+        $this->_savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+      } else {                            //Somethings wrong
+        message::error(t("Please select a User or Tag or specify a Title."));
+        url::redirect($redir_uri);
+        return;
+      }
+    } else {    //This is an update to an existing annotation
+      switch ($notetype) {
+        case "user":   //the original annotation is a user
+          $updateduser = ORM::factory("items_user")    //load the existing user
+                            ->where("id", "=", $annotate_id)
+                            ->find();
+          if ($user_id > -1) {              //Conversion user -> user
+            $this->_saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+          } elseif ($tag_data > -1) {         //Conversion user -> face
+            $this->_saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $updateduser->delete();   //delete old user
+          } elseif ($item_title != "") {   //Conversion user -> note
+            $this->_savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $updateduser->delete();   //delete old user
+          } else {                            //Somethings wrong
+            message::error(t("Please select a User or Tag or specify a Title."));
+            url::redirect($redir_uri);
+            return;
+          }
+          break;
+        case "face":   //the original annotation is a face
+          $updatedface = ORM::factory("items_face")    //load the existing user
+                            ->where("id", "=", $annotate_id)
+                            ->find();
+          if ($user_id > -1) {              //Conversion face -> user
+            $this->_saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $updatedface->delete();   //delete old face
+          } elseif ($tag_data > -1) {         //Conversion face -> face
+            $this->_saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+          } elseif ($item_title != "") {   //Conversion face -> note
+            $this->_savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $updatedface->delete();   //delete old face
+          } else {                            //Somethings wrong
+            message::error(t("Please select a User or Tag or specify a Title."));
+            url::redirect($redir_uri);
+            return;
+          }
+          break;
+        case "note":   //the original annotation is a note
+          $updatednote = ORM::factory("items_note")    //load the existing user
+                            ->where("id", "=", $annotate_id)
+                            ->find();
+          if ($user_id > -1) {              //Conversion note -> user
+            $this->_saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $updatednote->delete();   //delete old note
+          } elseif ($tag_data > -1) {         //Conversion note -> face
+            $this->_saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $updatednote->delete();   //delete old note
+          } elseif ($item_title != "") {   //Conversion note -> note
+            $this->_savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+          } else {                            //Somethings wrong
+            message::error(t("Please select a User or Tag or specify a Title."));
+            url::redirect($redir_uri);
+            return;
+          }
+          break;
+        default:
+          message::error(t("Please select a User or Tag or specify a Title."));
           url::redirect($redir_uri);
           return;
-        }
-        //Save note
-        $newnote = ORM::factory("items_note");
-        $newnote->item_id = $item_data;
-        $newnote->x1 = $str_x1;
-        $newnote->y1 = $str_y1;
-        $newnote->x2 = $str_x2;
-        $newnote->y2 = $str_y2;
-        $newnote->title = $str_face_title;
-        $newnote->description = $str_face_description;
-        $newnote->save();
-      } else {
-        // Save the new face to the database.
-        $newface = ORM::factory("items_face");
-        $newface->tag_id = $tag_data;
-        $newface->item_id = $item_data;
-        $newface->x1 = $str_x1;
-        $newface->y1 = $str_y1;
-        $newface->x2 = $str_x2;
-        $newface->y2 = $str_y2;
-        $newface->description = $str_face_description;
-        $newface->save();
       }
-    } else { //update existing annotation
-      if ($notetype == "face") { //this is a face
-        $updatedAnnotation = ORM::factory("items_face")
-                            ->where("id", "=", $noteid)
-                            ->find();
-        if ($tag_data == -1) { //needs conversion to note
-          if ($str_face_title == "") {
-            message::error(t("Please select a Tag or specify a Title."));
-            url::redirect($redir_uri);
-            return;
-          }
-          //Save note
-          $newnote = ORM::factory("items_note");
-          $newnote->item_id = $item_data;
-          $newnote->x1 = $str_x1;
-          $newnote->y1 = $str_y1;
-          $newnote->x2 = $str_x2;
-          $newnote->y2 = $str_y2;
-          $newnote->title = $str_face_title;
-          $newnote->description = $str_face_description;
-          $newnote->save();
-          $updatedAnnotation->delete();       
-        } else { //stays a face
-          $updatedAnnotation->tag_id = $tag_data;
-          $updatedAnnotation->item_id = $item_data;
-          $updatedAnnotation->x1 = $str_x1;
-          $updatedAnnotation->y1 = $str_y1;
-          $updatedAnnotation->x2 = $str_x2;
-          $updatedAnnotation->y2 = $str_y2;
-          $updatedAnnotation->description = $str_face_description;
-          $updatedAnnotation->save();
-        }                 
-      } else { //this is a note
-        $updatedAnnotation = ORM::factory("items_note")
-                            ->where("id", "=", $noteid)
-                            ->find();
-        if ($tag_data == -1) { //stays a note
-          if ($str_face_title == "") {
-            message::error(t("Please select a Tag or specify a Title."));
-            url::redirect($redir_uri);
-            return;
-          }
-          $updatedAnnotation->item_id = $item_data;
-          $updatedAnnotation->x1 = $str_x1;
-          $updatedAnnotation->y1 = $str_y1;
-          $updatedAnnotation->x2 = $str_x2;
-          $updatedAnnotation->y2 = $str_y2;
-          $updatedAnnotation->title = $str_face_title;
-          $updatedAnnotation->description = $str_face_description;
-          $updatedAnnotation->save();
-        } else { //needs conversion to a face
-          $newface = ORM::factory("items_face");
-          $newface->tag_id = $tag_data;
-          $newface->item_id = $item_data;
-          $newface->x1 = $str_x1;
-          $newface->y1 = $str_y1;
-          $newface->x2 = $str_x2;
-          $newface->y2 = $str_y2;
-          $newface->description = $str_face_description;
-          $newface->save();
-          $updatedAnnotation->delete();
-        }
-      }                 
     }
     message::success(t("Annotation saved."));
     url::redirect($redir_uri);
@@ -162,20 +138,81 @@ class photoannotation_Controller extends Controller {
     $notetype = $_POST["notetype"];
     $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
     
-    if ($noteid == "" || $notetype == "") {
+    if ($noteid == "") {
       message::error(t("Please select a tag or note to delete."));
       url::redirect($redir_uri);
       return;
     }
-    if ($notetype == "face") {
-      db::build()->delete("items_faces")->where("id", "=", $noteid)->execute();    
-      message::success(t("Annotation deleted."));
-    } elseif ($notetype == "note") {
-      db::build()->delete("items_notes")->where("id", "=", $noteid)->execute();    
-      message::success(t("Annotation deleted."));
-    } else {
-      message::error(t("Please select a tag or note to delete."));
+    switch ($notetype) {
+      case "user":
+        db::build()->delete("items_users")->where("id", "=", $noteid)->execute();
+        break;
+      case "face":
+        db::build()->delete("items_faces")->where("id", "=", $noteid)->execute();
+        break;
+      case "note":
+        db::build()->delete("items_notes")->where("id", "=", $noteid)->execute();
+        break;
+      default:
+        message::error(t("Please select a tag or note to delete."));
+        url::redirect($redir_uri);
+        return;
     }
+    message::success(t("Annotation deleted."));
     url::redirect($redir_uri);
+  }
+
+  private function _saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id = "") {
+    if ($annotate_id == "") {
+      $item_user = ORM::factory("items_user");
+    } else {
+      $item_user = ORM::factory("items_user")
+                      ->where("id", "=", $annotate_id)
+                      ->find();
+    }
+    $item_user->user_id = $user_id;
+    $item_user->item_id = $item_id;
+    $item_user->x1 = $str_x1;
+    $item_user->y1 = $str_y1;
+    $item_user->x2 = $str_x2;
+    $item_user->y2 = $str_y2;
+    $item_user->description = $description;
+    $item_user->save();
+  }
+  
+  private function _saveface($tag_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id = "") {
+    if ($annotate_id == "") {
+      $item_face = ORM::factory("items_face");
+    } else {
+      $item_face = ORM::factory("items_face")
+                      ->where("id", "=", $annotate_id)
+                      ->find();
+    }
+    $item_face->tag_id = $tag_id;
+    $item_face->item_id = $item_id;
+    $item_face->x1 = $str_x1;
+    $item_face->y1 = $str_y1;
+    $item_face->x2 = $str_x2;
+    $item_face->y2 = $str_y2;
+    $item_face->description = $description;
+    $item_face->save();
+  }
+
+  private function _savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id = "") {
+    if ($annotate_id == "") {
+      $item_note = ORM::factory("items_note");
+    } else {
+      $item_note = ORM::factory("items_note")
+                      ->where("id", "=", $annotate_id)
+                      ->find();
+    }
+    $item_note->item_id = $item_id;
+    $item_note->x1 = $str_x1;
+    $item_note->y1 = $str_y1;
+    $item_note->x2 = $str_x2;
+    $item_note->y2 = $str_y2;
+    $item_note->title = $item_title;
+    $item_note->description = $description;
+    $item_note->save();
   }
 }
