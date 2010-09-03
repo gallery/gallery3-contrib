@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ class Admin_Google_Analytics_Controller extends Admin_Controller {
   }
 
   private function _get_form() {
-    $form = new Forge("admin/google_analytics/handler", "", "post", array("id" => "gAdminForm"));
+    $form = new Forge("admin/google_analytics/handler", "", "post", array("id" => "g-admin-form"));
     $group = $form->group("google_analytics_code");
     $group->input("analytics_code")->label(t('Enter the <a href="http://www.google.com/support/googleanalytics/bin/answer.py?answer=113500" target="_blank">Web-Property-ID</a> given by Google.'))->rules("required")->value(module::get_var("google_analytics", "code"));
     $group->submit("submit")->value(t("Save"));

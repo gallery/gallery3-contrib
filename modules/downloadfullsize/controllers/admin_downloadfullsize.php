@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,19 +33,25 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
 
     // Figure out which boxes where checked
     $dlLinks_array = Input::instance()->post("DownloadLinkOptions");
-    $tButton = false;
     $fButton = false;
+    $download_original_button = false;
     for ($i = 0; $i < count($dlLinks_array); $i++) {
-      if ($dlLinks_array[$i] == "tButton") {
-        $tButton = true;
-      }
       if ($dlLinks_array[$i] == "fButton") {
         $fButton = true;
       }
     }
 
+    if (module::is_active("keeporiginal")) {
+      $keeporiginal_array = Input::instance()->post("DownloadOriginalOptions");
+      for ($i = 0; $i < count($keeporiginal_array); $i++) {
+        if ($keeporiginal_array[$i] == "DownloadOriginalImage") {
+          $download_original_button = true;
+        }
+      }
+      module::set_var("downloadfullsize", "DownloadOriginalImage", $download_original_button);
+    }
+
     // Save Settings.
-    module::set_var("downloadfullsize", "tButton", $tButton);
     module::set_var("downloadfullsize", "fButton", $fButton);
     message::success(t("Your Selection Has Been Saved."));
 
@@ -60,19 +66,26 @@ class Admin_DownloadFullsize_Controller extends Admin_Controller {
   private function _get_admin_form() {
     // Make a new Form.
     $form = new Forge("admin/downloadfullsize/saveprefs", "", "post",
-                      array("id" => "gDownloadFullsizeAdminForm"));
+                      array("id" => "g-download-fullsize-adminForm"));
 
     // Make an array for the different types of download links.
-    $linkOptions["fButton"] = array("Show Floppy Disk Link", module::get_var("downloadfullsize", "fButton"));
-    $linkOptions["tButton"] = array("Show Text Download Text Link", module::get_var("downloadfullsize", "tButton"));
+    $linkOptions["fButton"] = array(t("Show Floppy Disk Picture Link"), module::get_var("downloadfullsize", "fButton"));
 
     // Setup a few checkboxes on the form.
     $add_links = $form->group("DownloadLinks");
     $add_links->checklist("DownloadLinkOptions")
       ->options($linkOptions);
 
+    if (module::is_active("keeporiginal")) {
+      $KeepOriginalOptions["DownloadOriginalImage"] = array(t("Allow visitors to download the original image when available?"), module::get_var("downloadfullsize", "DownloadOriginalImage"));
+      $keeporiginal_group = $form->group("KeepOriginalPrefs")
+                               ->label(t("KeepOriginal Preferences"));
+      $keeporiginal_group->checklist("DownloadOriginalOptions")
+                       ->options($KeepOriginalOptions);
+    }
+
     // Add a save button to the form.
-    $add_links->submit("SaveLinks")->value(t("Save"));
+    $form->submit("SaveLinks")->value(t("Save"));
 
     // Return the newly generated form.
     return $form;

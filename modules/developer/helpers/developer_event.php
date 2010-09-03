@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,21 +21,21 @@ class developer_event_Core {
   static function admin_menu($menu, $theme) {
     $developer_menu = Menu::factory("submenu")
         ->id("developer_menu")
-      ->label(t("Developer Tools"));
+      ->label(t("Developer tools"));
     $menu->append($developer_menu);
 
     $developer_menu
       ->append(Menu::factory("link")
           ->id("generate_menu")
-          ->label(t("Generate Module"))
+          ->label(t("Generate module"))
           ->url(url::site("admin/developer/module")))
       ->append(Menu::factory("link")
           ->id("generate_data")
-          ->label(t("Generate Test Data"))
+          ->label(t("Generate test data"))
           ->url(url::site("admin/developer/test_data")))
       ->append(Menu::factory("link")
           ->id("mptt_tree_menu")
-          ->label(t("MPTT Tree"))
+          ->label(t("MPTT tree"))
           ->url(url::site("admin/developer/mptt")));
 
     $csrf = access::csrf_token();
@@ -43,13 +43,13 @@ class developer_event_Core {
       $developer_menu->append(
         Menu::factory("link")
         ->id("scaffold_profiler")
-        ->label("Profiling off")
+        ->label(t("Profiling off"))
         ->url(url::site("admin/developer/session/profiler?value=0&csrf=$csrf")));
     } else {
       $developer_menu->append(
         Menu::factory("link")
         ->id("scaffold_profiler")
-        ->label("Profiling on")
+        ->label(t("Profiling on"))
         ->url(url::site("admin/developer/session/profiler?value=1&csrf=$csrf")));
     }
 
@@ -57,13 +57,13 @@ class developer_event_Core {
       $developer_menu->append(
         Menu::factory("link")
         ->id("scaffold_debugger")
-        ->label("Debugging off")
+        ->label(t("Debugging off"))
         ->url(url::site("admin/developer/session/debug?value=0&csrf=$csrf")));
     } else {
       $developer_menu->append(
         Menu::factory("link")
         ->id("scaffold_debugger")
-        ->label("Debugging on")
+        ->label(t("Debugging on"))
         ->url(url::site("admin/developer/session/debug?value=1&csrf=$csrf")));
     }
   }

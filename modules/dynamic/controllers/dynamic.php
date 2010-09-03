@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.");/**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,23 +18,23 @@
  */
 class Dynamic_Controller extends Controller {
   public function updates() {
-    print $this->_show("updates");
+    print $this->_show("updates", t("Recent changes"));
   }
 
   public function popular() {
-    print $this->_show("popular");
+    print $this->_show("popular", t("Most viewed"));
   }
 
   private function _show($album) {
     $page_size = module::get_var("gallery", "page_size", 9);
-    $page = $this->input->get("page", "1");
+    $page = Input::instance()->get("page", "1");
 
     $album_defn = unserialize(module::get_var("dynamic", $album));
     $children_count = $album_defn->limit;
     if (empty($children_count)) {
       $children_count = ORM::factory("item")
         ->viewable()
-        ->where("type !=", "album")
+        ->where("type", "!=", "album")
         ->count_all();
     }
 
@@ -44,15 +44,17 @@ class Dynamic_Controller extends Controller {
 
     // Make sure that the page references a valid offset
     if ($page < 1 || ($children_count && $page > ceil($children_count / $page_size))) {
-      Kohana::show_404();
+      throw new Kohana_404_Exception();
     }
 
-    $template = new Theme_View("page.html", "dynamic");
+    $template = new Theme_View("page.html", "collection", "dynamic");
+    $template->set_global("page", $page);
     $template->set_global("page_size", $page_size);
+    $template->set_global("max_pages", $max_pages);
     $template->set_global("children", ORM::factory("item")
                           ->viewable()
-                          ->where("type !=", "album")
-                          ->orderby($album_defn->key_field, "DESC")
+                          ->where("type", "!=", "album")
+                          ->order_by($album_defn->key_field, "DESC")
                           ->find_all($page_size, $offset));
     $template->set_global("children_count", $children_count);
     $template->content = new View("dynamic.html");

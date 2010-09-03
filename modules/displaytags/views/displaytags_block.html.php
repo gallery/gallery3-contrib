@@ -1,10 +1,8 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<div class="gDisplayTagsBlock">
-  <? for ($counter=0; $counter<count($tags); $counter++) { ?>
-    <? if ($counter < count($tags)-1) { ?>
-      <a href="<?= url::site("tags/$tags[$counter]") ?>"><?= p::clean($tags[$counter]->name) ?></a>,
-    <? } else {?>
-      <a href="<?= url::site("tags/$tags[$counter]") ?>"><?= p::clean($tags[$counter]->name) ?></a>
-    <? } ?>
-  <? } ?>
+<div class="g-display-tags-block">
+  <? $not_first = 0; ?>
+  <? foreach ($tags as $tag): ?>
+  <?= ($not_first++) ? "," : "" ?>
+    <a href="<?= $tag->url() ?>"><?= html::clean($tag->name) ?></a>
+  <? endforeach ?>
 </div>

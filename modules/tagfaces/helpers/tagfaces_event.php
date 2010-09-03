@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,23 +32,40 @@ class tagfaces_event_Core {
     }
   }
 
-  static function site_menu($menu, $theme) {  
+  static function site_menu($menu, $theme) {
     // Create a menu option for adding face data.
     if (!$theme->item()) {
       return;
     }
-  
+
     $item = $theme->item();
 
-    if ($item->is_photo()) {        
+    if ($item->is_photo()) {
       if ((access::can("view", $item)) && (access::can("edit", $item))) {
         $menu->get("options_menu")
              ->append(Menu::factory("link")
              ->id("tagfaces")
              ->label(t("Tag faces"))
-             ->css_id("gTagFacesLink")
+             ->css_id("g-tag-faces-link")
              ->url(url::site("tagfaces/drawfaces/" . $item->id)));
       }
+    }
+  }
+
+  static function item_deleted($item) {
+    // Check for and delete existing Faces and Notes.
+    $existingFaces = ORM::factory("items_face")
+                          ->where("item_id", "=", $item->id)
+                          ->find_all();
+    if (count($existingFaces) > 0) {
+      db::build()->delete("items_faces")->where("item_id", "=", $item->id)->execute();
+    }
+
+    $existingNotes = ORM::factory("items_note")
+                          ->where("item_id", "=", $item->id)
+                          ->find_all();
+    if (count($existingNotes) > 0) {
+      db::build()->delete("items_notes")->where("item_id", "=", $item->id)->execute();
     }
   }
 }

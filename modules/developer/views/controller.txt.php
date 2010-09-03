@@ -2,7 +2,7 @@
 <?= "<?php defined(\"SYSPATH\") or die(\"No direct script access.\");" ?>
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,18 +32,15 @@ class <?= $class_name ?>_Controller extends Controller {
 
       message::success(t("<?= $name ?> Processing Successfully"));
 
-      print json_encode(
-        array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(
-        array("result" => "error",
-              "form" => $form->__toString()));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
- 
+
   private function _get_form() {
     $form = new Forge("<?= $module ?>/handler", "", "post",
-                      array("id" => "g<?= $css_id ?>Form"));
+                      array("id" => "g-<?= $css_id ?>-form"));
     $group = $form->group("group")->label(t("<?= $name ?> Handler"));
     $group->input("text")->label(t("Text"))->rules("required");
     $group->submit("submit")->value(t("Submit"));

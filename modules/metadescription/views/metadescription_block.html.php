@@ -5,28 +5,28 @@
   if (count($tags) > 0) {
     for ($counter=0; $counter<count($tags); $counter++) {
       if ($counter < count($tags)-1) {
-        $metaTags = $metaTags . p::clean($tags[$counter]->name) . ",";
+        $metaTags = $metaTags . html::clean($tags[$counter]->name) . ",";
       } else {
-        $metaTags = $metaTags . p::clean($tags[$counter]->name);
+        $metaTags = $metaTags . html::clean($tags[$counter]->name);
       }
-    }  
+    }
   }
 
   // If $metaTags is empty, use the item's title instead.
   if ($metaTags == "") {
-    $metaTags = p::clean($item->title);
+    $metaTags = html::clean($item->title);
   }
-  
+
   $metaDescription = "";
-  $metaDescription = trim(nl2br(p::purify($item->description)));
+  $metaDescription = trim(nl2br(html::purify($item->description)));
   // If description is empty, use title instead.
   if ($metaDescription == "") {
-    $metaDescription = p::clean($item->title);
+    $metaDescription = html::clean($item->title);
   }
   // If this page belongs to a tag, use the description of the first item instead.
   if ($theme->tag()) {
     if (count($children) > 0) {
-      $metaDescription = trim(nl2br(p::purify($children[0]->description)));
+      $metaDescription = trim(nl2br(html::purify($children[0]->description)));
     }
   }
   // If it's still empty, use $metaTags.
@@ -41,5 +41,5 @@
   // Limit Description to 150 characters.
   $metaDescription = substr($metaDescription, 0,150);
 ?>
-<META NAME="KEYWORDS" CONTENT="<?= $metaTags ?>">
-<META NAME="DESCRIPTION" CONTENT="<?= $metaDescription ?>">
+<meta name="KEYWORDS" content="<?= $metaTags ?>" />
+<meta name="DESCRIPTION" content="<?= $metaDescription ?>" />

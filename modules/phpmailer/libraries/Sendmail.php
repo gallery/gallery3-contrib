@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ class Sendmail_Core {
       break;
     case  "header":
       if (count($value) != 2) {
+        Kohana_Log::add("error", wordwrap("Invalid header parameters\n" . Kohana::debug($value)));
         throw new Exception("@todo INVALID_HEADER_PARAMETERS");
       }
       $this->headers[$value[0]] = $value[1];
@@ -70,6 +71,7 @@ class Sendmail_Core {
 
   public function send() {
     if (empty($this->to)) {
+      Kohana_Log::add("error", wordwrap("Sending mail failed:\nNo to address specified"));
       throw new Exception("@todo TO_IS_REQUIRED_FOR_MAIL");
     }
     $to = implode(", ", $this->to);
@@ -84,8 +86,6 @@ class Sendmail_Core {
     $headers = implode($this->header_separator, $headers);
     $message = wordwrap($this->message, $this->line_length, "\n");
     if (!$this->mail($to, $this->subject, $message, $headers)) {
-      Kohana::log("error", wordwrap("Sending mail failed:\nTo: $to\n $this->subject\n" .
-                                    "Headers: $headers\n $this->message"));
       throw new Exception("@todo SEND_MAIL_FAILED");
     }
     return $this;
@@ -117,10 +117,6 @@ class Sendmail_Core {
     $mail->Subject = $subject;
     $mail->Body = $message;
 
-    if ($mail->Send()) {
-      return true;
-    } else {
-      return false;
-    }
+    return $mail->Send();
   }
 }

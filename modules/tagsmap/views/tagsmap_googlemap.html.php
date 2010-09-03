@@ -1,9 +1,10 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+
 <? if ($map_fullsize == true) { ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
   <head> 
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" /> 
-    <title>Gallery: Map</title> 
+    <title><?= t("Gallery :: Map") ?></title> 
   </head>
   <body>
 <? } ?>
@@ -20,6 +21,7 @@
       map.addMapType(G_SATELLITE_3D_MAP);
       var mapControl = new GMapTypeControl();
       map.addControl(mapControl);
+      map.enableScrollWheelZoom();
 
       // Set map defaults.
       map.setCenter(new GLatLng(<?=$google_map_latitude ?>, 
@@ -42,12 +44,13 @@
       // Create markers for each tag with GPS coordinates.
       <? $counter = 0; ?>
       <? foreach ($tags_gps as $oneGPS): ?>
+        <? $one_tag = ORM::factory("tag", $oneGPS->tag_id); ?>
         var myGeographicCoordinates<?=$counter; ?> = new GLatLng(<?= $oneGPS->latitude ?>, 
                                                   <?= $oneGPS->longitude ?>);
         map.addOverlay(createMarker(myGeographicCoordinates<?=$counter; ?>, 
-                                      "<?= $oneGPS->description ?>", 
-                                      "<?= url::site("tags/$oneGPS->tag_id")?>", 
-                                      "<?= ORM::factory("tag", $oneGPS->tag_id)->name ?>"
+                                      "<?= $oneGPS->description; ?>", 
+                                      "<?= $one_tag->url(); ?>", 
+                                      "<?= html::clean($one_tag->name); ?>"
                                     ));
         <? $counter++; ?>
       <? endforeach ?>

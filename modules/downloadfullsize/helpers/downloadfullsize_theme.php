@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,9 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class downloadfullsize_theme {
-  static function sidebar_blocks($theme) {
-    $item = $theme->item();
-    if ($item && $item->is_photo() && access::can("view_full", $item)) {
-      if (module::get_var("downloadfullsize", "tButton")) {
-        $block = new Block();
-        $block->css_id = "gDownloadFullsize";
-        $block->title = t("Download");
-        $block->content = new View("downloadfullsize_block.html");
-
-        $block->content->item = ORM::factory("item", 1);
-
-        return $block;
-      }
+  static function head($theme) {
+    if ($theme->item && access::can("view_full", $theme->item)) {
+      $theme->css("downloadfullsize_menu.css");
     }
   }
 }

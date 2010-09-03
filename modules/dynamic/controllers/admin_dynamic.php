@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.");/**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ class Admin_Dynamic_Controller extends Admin_Controller {
   private function _get_form() {
 
     $form = new Forge("admin/dynamic/handler", "", "post",
-                      array("id" => "gAdminForm"));
+                      array("id" => "g-admin-form"));
 
     foreach (array("updates", "popular") as $album) {
       $album_defn = unserialize(module::get_var("dynamic", $album));

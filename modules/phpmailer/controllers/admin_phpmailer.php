@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ class Admin_PHPMailer_Controller extends Admin_Controller {
   private function _get_admin_form() {
     // Make a new Form.
     $form = new Forge("admin/phpmailer/saveprefs", "", "post",
-                      array("id" => "gPHPMailerAdminForm"));
+                      array("id" => "g-php-mailer-admin-form"));
                       
     // Create the input boxes for the PHPMailer Settings                      
     $phpmailerGroup = $form->group("PHPMailerSettings");

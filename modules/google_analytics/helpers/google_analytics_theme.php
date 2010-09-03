@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,11 @@
  */
 class google_analytics_theme {
   static function page_bottom($theme) {
+    $code = module::get_var("google_analytics", "code");
+    if (!$code) {
+      return;
+    }
+
     $google_code = '
   	<!-- Begin Google Analytics -->
 	<script type="text/javascript">
@@ -29,7 +34,7 @@ class google_analytics_theme {
 	<script type="text/javascript">
 		try
 		{
-			var pageTracker = _gat._getTracker("'.module::get_var("google_analytics", "code").'");
+			var pageTracker = _gat._getTracker("' . $code . '");
 			pageTracker._trackPageview();
 		}
 		catch(err){}

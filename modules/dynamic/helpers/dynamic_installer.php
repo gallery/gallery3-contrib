@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.");/**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,19 +26,15 @@ class dynamic_installer {
                                 "limit" => null,
                                 "description" => "",
                                 "key_field" => "view_count",
-                                "title" => t("Most Viewed"))));
+                                "title" => t("Most viewed"))));
       module::set_var(
         "dynamic", "updates",
         serialize((object)array("enabled" => false,
                                 "limit" => null,
                                 "description" => "",
                                 "key_field" => "created",
-                                "title" => t("Recent Changes"))));
+                                "title" => t("Recent changes"))));
       module::set_version("dynamic", 1);
     }
-  }
-
-  static function uninstall() {
-    module::delete("dynamic");
   }
 }

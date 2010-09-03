@@ -1,6 +1,7 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +19,17 @@
  */
 class contactowner_installer {
   static function install() {
-    module::set_version("contactowner", 1);
+    // Set some default values
+    module::set_var("contactowner", "contact_owner_link", false);
+    module::set_var("contactowner", "contact_user_link", true);
+    module::set_var("contactowner", "contact_button_text", "Email The Webmaster");
+    module::set_var("contactowner", "contact_owner_name", "Webmaster");
+    module::set_var("contactowner", "contact_owner_header", "You have received a message through your website:");
+
+    module::set_version("contactowner", 2);
+  }
+
+  static function uninstall() {
+    module::delete("contactowner");
   }
 }

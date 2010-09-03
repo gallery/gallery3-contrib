@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@ class developer_task_Core {
 
     switch ($context["step"]) {
     case 0:               // Create directory tree
-      foreach (array("", "controllers", "helpers", "js", "views") as $dir) {
+      foreach (array("", "controllers", "helpers", "views") as $dir) {
         $path = "{$context['module_path']}/$dir";
         if (!file_exists($path)) {
           mkdir($path);
-          chmod($path, 0777);
+          chmod($path, 0755);
          }
       }
       break;
@@ -54,14 +54,10 @@ class developer_task_Core {
       $context["block"] = array();
       self::_render_helper_file($context, "block");
       break;
-    case 4:               // Generate menu helper
-      $context["menu"] = !isset($context["menu"]) ? array() : $context["menu"];
-      self::_render_helper_file($context, "menu");
-      break;
-    case 5:               // Generate event helper
+    case 4:               // Generate event helper
       self::_render_helper_file($context, "event");
       break;
-    case 6:               // Generate admin controller
+    case 5:               // Generate admin controller
       $file = "{$context['module_path']}/controllers/admin_{$context['module']}.php";
       ob_start();
       $v = new View("admin_controller.txt");
@@ -72,7 +68,7 @@ class developer_task_Core {
       file_put_contents($file, ob_get_contents());
       ob_end_clean();
       break;
-    case 7:               // Generate admin form
+    case 6:               // Generate admin form
       $file = "{$context['module_path']}/views/admin_{$context['module']}.html.php";
       ob_start();
       $v = new View("admin_html.txt");
@@ -83,7 +79,7 @@ class developer_task_Core {
       file_put_contents($file, ob_get_contents());
       ob_end_clean();
       break;
-    case 8:               // Generate controller
+    case 7:               // Generate controller
       $file = "{$context['module_path']}/controllers/{$context['module']}.php";
       ob_start();
       $v = new View("controller.txt");
@@ -95,10 +91,22 @@ class developer_task_Core {
       file_put_contents($file, ob_get_contents());
       ob_end_clean();
       break;
-    case 9:               // Generate sidebar block view
+    case 8:               // Generate sidebar block view
       $file = "{$context['module_path']}/views/{$context['module']}_block.html.php";
       ob_start();
       $v = new View("block_html.txt");
+      $v->name = $context["name"];
+      $v->module = $context["module"];
+      $v->class_name = $context["class_name"];
+      $v->css_id = preg_replace("#\s+#", "", $context["name"]);
+      print $v->render();
+      file_put_contents($file, ob_get_contents());
+      ob_end_clean();
+      break;
+    case 9:               // Generate dashboard block view
+      $file = "{$context['module_path']}/views/admin_{$context['module']}_block.html.php";
+      ob_start();
+      $v = new View("dashboard_block_html.txt");
       $v->name = $context["name"];
       $v->module = $context["module"];
       $v->class_name = $context["class_name"];
@@ -111,7 +119,7 @@ class developer_task_Core {
       $file = "{$context["module_path"]}/module.info";
       ob_start();
       $v = new View("module_info.txt");
-      $v->module_name = $context["name"];
+      $v->module_name = $context["display_name"];
       $v->module_description = $context["description"];
       print $v->render();
       file_put_contents($file, ob_get_contents());
@@ -119,7 +127,7 @@ class developer_task_Core {
       break;
     }
     if (isset($file)) {
-      chmod($file, 0666);
+      chmod($file, 0765);
     }
     $task->done = (++$context["step"]) >= 11;
     $task->context = serialize($context);
@@ -132,7 +140,6 @@ class developer_task_Core {
       $config = Kohana::config("developer.methods");
       $file = "{$context["module_path"]}/helpers/{$context["module"]}_{$helper}.php";
       touch($file);
-      chmod($file, 0666);
       ob_start();
       $v = new View("$helper.txt");
       $v->helper = $helper;
@@ -187,8 +194,8 @@ class developer_task_Core {
 
   private static function _add_album_or_photo($desired_type=null) {
     srand(time());
-    $parents = ORM::factory("item")->where("type", "album")->find_all()->as_array();
-    $owner_id = user::active()->id;
+    $parents = ORM::factory("item")->where("type", "=", "album")->find_all()->as_array();
+    $owner_id = identity::active_user()->id;
 
     $test_images = glob(dirname(dirname(__FILE__)) . "/data/*.[Jj][Pp][Gg]");
 
@@ -201,19 +208,31 @@ class developer_task_Core {
     if ($type == "album") {
       $thumb_size = module::get_var("core", "thumb_size");
       $rand = rand();
-      $parents[] = album::create(
-        $parent, "rnd_$rand", "Rnd $rand", "random album $rand", $owner_id)
-        ->save();
+      $item = ORM::factory("item");
+      $item->type = "album";
+      $item->parent_id = $parent->id;
+      $item->name = "rnd_$rand";
+      $item->title = "Rnd $rand";
+      $item->description = "random album $rand";
+      $item->owner_id = $owner_id;
+      $parents[] = $item->save();
     } else {
       $photo_index = rand(0, count($test_images) - 1);
-      photo::create($parent, $test_images[$photo_index], basename($test_images[$photo_index]),
-                    "rnd_" . rand(), "sample thumb", $owner_id);
+      $item = ORM::factory("item");
+      $item->type = "photo";
+      $item->parent_id = $parent->id;
+      $item->set_data_file($test_images[$photo_index]);
+      $item->name = basename($test_images[$photo_index]);
+      $item->title = "rnd_" . rand();
+      $item->description = "sample thumb";
+      $item->owner_id = $owner_id;
+      $item->save();
     }
   }
 
   private static function _add_comment() {
     srand(time());
-    $photos = ORM::factory("item")->where("type", "photo")->find_all()->as_array();
+    $photos = ORM::factory("item")->where("type", "=", "photo")->find_all()->as_array();
     $users = ORM::factory("user")->find_all()->as_array();
 
     if (empty($photos)) {
@@ -229,8 +248,15 @@ class developer_task_Core {
     $guest_name = ucfirst(self::_random_phrase(rand(1, 3)));
     $guest_email = sprintf("%s@%s.com", self::_random_phrase(1), self::_random_phrase(1));
     $guest_url = sprintf("http://www.%s.com", self::_random_phrase(1));
-    comment::create($photo, $author, self::_random_phrase(rand(8, 500)),
-                    $guest_name, $guest_email, $guest_url);
+
+    $comment = ORM::factory("comment");
+    $comment->author_id = $author->id;
+    $comment->item_id = $photo->id;
+    $comment->text = self::_random_phrase(rand(8, 500));
+    $comment->guest_name = $guest_name;
+    $comment->guest_email = $guest_email;
+    $comment->guest_url = $guest_url;
+    $comment->save();
   }
 
   private static function _add_tag() {

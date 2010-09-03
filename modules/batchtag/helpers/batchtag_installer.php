@@ -1,6 +1,7 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +19,13 @@
  */
 class batchtag_installer {
   static function install() {
+    // Set the module's version number.
     module::set_version("batchtag", 1);
+  }
+
+  static function deactivate() {
+  // Clear the require tags message when metadescription is deactivated.
+    site_status::clear("batchtag_needs_tag");
   }
 
   static function uninstall() {

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class Admin_Developer_Controller extends Admin_Controller {
+  static $event_list = array();
+
   public function module() {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_developer.html");
@@ -49,7 +51,10 @@ class Admin_Developer_Controller extends Admin_Controller {
 
     $post = new Validation($_POST);
     $post->add_rules("name", "required");
+    $post->add_rules("display_name", "required");
     $post->add_rules("description", "required");
+    $post->add_callbacks("theme", array($this, "_noop_validation"));
+    $post->add_callbacks("event", array($this, "_noop_validation"));
     $post->add_callbacks("name", array($this, "_is_module_defined"));
 
     if ($post->validate()) {
@@ -57,23 +62,25 @@ class Admin_Developer_Controller extends Admin_Controller {
         ->callback("developer_task::create_module")
         ->description(t("Create a new module"))
         ->name(t("Create Module"));
-      $task = task::create($task_def, array_merge(array("step" => 0), $post->as_array()));
-
       $success_msg = t("Generation of %module completed successfully",
                        array("module" => $post->name));
       $error_msg = t("Generation of %module failed.", array("module" => $post->name));
-      print json_encode(array("result" => "started",
-                              "max_iterations" => 15,
-                              "success_msg" => $success_msg, "error_msg" => $error_msg,
-                              "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
-                                                 access::csrf_token()),
-                              "task" => $task->as_array()));
+      $task_context = array("step" => 0, "success_msg" => $success_msg, "error_msg" => $error_msg);
+      $task = task::create($task_def, array_merge($task_context, $post->as_array()));
+
+      json::reply(array("result" => "started",
+                        "max_iterations" => 15,
+                        "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
+                                           access::csrf_token()),
+                        "task" => $task->as_array()));
     } else {
       $v = $this->_get_module_create_content(arr::overwrite($form, $post->as_array()),
         arr::overwrite($errors, $post->errors()));
-      print json_encode(array("result" => "error",
-                              "form" => $v->__toString()));
+      json::reply(array("result" => "error", "html" => (string)$v));
     }
+  }
+
+  public function _noop_validation(Validation $array, $field) {
   }
 
   public function session($key) {
@@ -84,8 +91,6 @@ class Admin_Developer_Controller extends Admin_Controller {
   }
 
   public function test_data_create() {
-    access::verify_csrf();
-
     list ($form, $errors) = $this->_get_test_data_form();
 
     $post = new Validation($_POST);
@@ -113,22 +118,19 @@ class Admin_Developer_Controller extends Admin_Controller {
                                             "comments" => $post->comments, "tags" => $post->tags));
       batch::start();
 
-      print json_encode(array("result" => "started",
-                              "max_iterations" => $total + 5,
-                              "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
-                                                 access::csrf_token()),
-                              "task" => $task->as_array()));
+      json::reply(array("result" => "started",
+                        "max_iterations" => $total + 5,
+                        "url" => url::site("admin/developer/run_task/{$task->id}?csrf=" .
+                                           access::csrf_token()),
+                        "task" => $task->as_array()));
     } else {
       $v = $this->_get_test_data_view(arr::overwrite($form, $post->as_array()),
-        arr::overwrite($errors, $post->errors()));
-       print json_encode(array("result" => "error",
-                              "form" => $v->__toString()));
+                                      arr::overwrite($errors, $post->errors()));
+      json::reply(array("result" => "error", "html" => (string)$v));
     }
   }
 
   public function run_task($task_id) {
-    access::verify_csrf();
-
     try {
       $task = task::run($task_id);
     } catch (Exception $e) {
@@ -148,12 +150,10 @@ class Admin_Developer_Controller extends Admin_Controller {
         message::success(empty($error_msg) ? $context["error_msg"] : $error_msg);
         break;
       }
-      print json_encode(array("result" => "success",
-                              "task" => $task->as_array()));
+      json::reply(array("result" => "success", "task" => $task->as_array()));
 
     } else {
-      print json_encode(array("result" => "in_progress",
-                              "task" => $task->as_array()));
+      json::reply(array("result" => "in_progress", "task" => $task->as_array()));
     }
   }
 
@@ -173,7 +173,7 @@ class Admin_Developer_Controller extends Admin_Controller {
   }
 
   function mptt_graph() {
-    $items = ORM::factory("item")->orderby("id")->find_all();
+    $items = ORM::factory("item")->order_by("id")->find_all();
     $data = $this->_build_tree();
 
     $proc = proc_open("/usr/bin/dot -Tsvg",
@@ -191,11 +191,12 @@ class Admin_Developer_Controller extends Admin_Controller {
   }
 
   private function _build_tree() {
-    $items = ORM::factory("item")->orderby("id")->find_all();
+    $items = ORM::factory("item")->order_by("id")->find_all();
     $data = "digraph G {\n";
     foreach ($items as $item) {
       $data .= "  $item->parent_id -> $item->id\n";
-      $data .= "  $item->id [label=\"$item->id [$item->level] <$item->left, $item->right>\"]\n";
+      $data .=
+        "  $item->id [label=\"$item->id [$item->level] <$item->left_ptr, $item->right_ptr>\"]\n";
     }
     $data .= "}\n";
     return $data;
@@ -215,7 +216,7 @@ class Admin_Developer_Controller extends Admin_Controller {
   }
 
   private function _get_module_form() {
-    $form = array("name" => "", "description" => "", "theme[]" => array(), "menu[]" => array(),
+    $form = array("name" => "", "display_name" => "", "description" => "", "theme[]" => array(),
                   "event[]" => array());
     $errors = array_fill_keys(array_keys($form), "");
 
@@ -227,13 +228,51 @@ class Admin_Developer_Controller extends Admin_Controller {
 
     $v = new View("developer_module.html");
     $v->action = "admin/developer/module_create";
-    $v->hidden = array("csrf" => access::csrf_token());
     $v->theme = $config["theme"];
-    $v->event = $config["event"];
-    $v->menu = $config["menu"];
+    $v->event = $this->_get_events();
     $v->form = $form;
     $v->errors = $errors;
+    $submit_attributes = array(
+      "id" => "g-generate-module",
+      "name" => "generate",
+      "class" => "ui-state-default ui-corner-all",
+      "style" => "clear:both!important");
+
+    if (!is_writable(MODPATH)) {
+      $submit_attributes["class"] .= " ui-state-disabled";
+      $submit_attributes["disabled"]  = "disabled";
+    }
+    $v->submit_attributes = $submit_attributes;
     return $v;
+  }
+
+  private function _get_events() {
+    if (empty(self::$event_list)) {
+      $dir = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(MODPATH));
+      foreach ($dir as $file) {
+        $file_as_string = file_get_contents($file);
+        if (preg_match_all('#module::event\("(.*?)"(.*)\);#mU', $file_as_string, $matches, PREG_SET_ORDER) > 0) {
+          foreach ($matches as $match) {
+            $event_name = $match[1];
+            $display_name = ucwords(str_replace("_", " ", $event_name));
+            if (!in_array($display_name, self::$event_list)) {
+              $parameters = array();
+              if (!empty($match[2]) &&
+                  preg_match_all('#\$[a-zA-Z_]*#', $match[2], $param_names)) {
+
+                foreach ($param_names[0] as $name) {
+                  $parameters[] = $name != '$this' ? $name : '$' . $event_name;
+                }
+              }
+              self::$event_list["static function $event_name(" . implode(", ", $parameters) . ")"] = $display_name;
+            }
+          }
+          ksort(self::$event_list);
+        }
+      }
+    }
+    return self::$event_list;
   }
 
   private function _get_test_data_form() {
@@ -247,9 +286,8 @@ class Admin_Developer_Controller extends Admin_Controller {
   private function _get_test_data_view($form, $errors) {
     $v = new View("admin_developer_test_data.html");
     $v->action = "admin/developer/test_data_create";
-    $v->hidden = array("csrf" => access::csrf_token());
-    $album_count = ORM::factory("item")->where("type", "album")->count_all();
-    $photo_count = ORM::factory("item")->where("type", "photo")->count_all();
+    $album_count = ORM::factory("item")->where("type", "=", "album")->count_all();
+    $photo_count = ORM::factory("item")->where("type", "=", "photo")->count_all();
 
     $v->comment_installed = module::is_active("comment");
     $comment_count = empty($v->comment_installed) ? 0 : ORM::factory("comment")->count_all();

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,8 +30,10 @@ class videodimensions_event_Core {
 
   static function item_edit_form_completed($item, $form) {
     // Save the new height and width to the database.
-    $item->height = $form->edit_item->vidheight->value;
-    $item->width = $form->edit_item->vidwidth->value;
-    $item->save();
+    if ($item->is_movie()) {
+      $item->height = $form->edit_item->vidheight->value;
+      $item->width = $form->edit_item->vidwidth->value;
+      $item->save();
+    }
   }
 }

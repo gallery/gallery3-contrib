@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,15 +23,15 @@ class metadescription_theme_Core {
       // If the current page belongs to a tag, look up
       //   the information for that tag.
       $tagsItem = ORM::factory("tag")
-      ->where("id", $theme->tag())
+      ->where("id", "=", $theme->tag()->id)
       ->find_all();
 
-    }elseif ($theme->item()) {
+    } elseif ($theme->item()) {
       // If the current page belongs to an item (album, photo, etc.),
       //   look up any tags that have been applied to that item.
       $tagsItem = ORM::factory("tag")
         ->join("items_tags", "tags.id", "items_tags.tag_id")
-        ->where("items_tags.item_id", $theme->item->id)
+        ->where("items_tags.item_id", "=", $theme->item->id)
         ->find_all();
 
     } else {
@@ -40,8 +40,12 @@ class metadescription_theme_Core {
     }
 
     // Load the meta tags into the top of the page.
-    $metaView = new View("metadescription_block.html");
-    $metaView->tags = $tagsItem;
-    return $metaView; 
+    // @todo: metadescription_block.html requires an item so for now, don't render it unless we
+    // have one.
+    if ($theme->item()) {
+      $metaView = new View("metadescription_block.html");
+      $metaView->tags = $tagsItem;
+      return $metaView;
+    }
   }
 }
