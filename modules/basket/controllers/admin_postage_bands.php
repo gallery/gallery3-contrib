@@ -76,10 +76,6 @@ class Admin_Postage_Bands_Controller extends Controller
   public function delete_postage_band($id) {
     access::verify_csrf();
 
-    if ($id == user::active()->id || $id == user::guest()->id) {
-      access::forbidden();
-    }
-
     $postage  = ORM::factory("postage_band", $id);
     if (!$postage->loaded()) {
       kohana::show_404();

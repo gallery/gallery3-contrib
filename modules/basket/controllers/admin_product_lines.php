@@ -77,10 +77,6 @@ class Admin_Product_Lines_Controller extends Controller
   public function delete_product($id) {
     access::verify_csrf();
 
-    if ($id == user::active()->id || $id == user::guest()->id) {
-      access::forbidden();
-    }
-
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
       kohana::show_404();
