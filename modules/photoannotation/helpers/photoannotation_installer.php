@@ -44,29 +44,41 @@ class photoannotation_installer {
                `description` varchar(2048) default NULL,
                PRIMARY KEY (`id`))
                DEFAULT CHARSET=utf8;");
-
-    // Set the module's version number.
-    module::set_version("photoannotation", 1);
-  }
-
-  static function upgrade($version) {
-    $db = Database::instance();
-    if ($version == 1) {
-      $db->query("ALTER TABLE {items_faces} ADD `description` varchar(2048) default NULL");
-
-      $db->query("CREATE TABLE IF NOT EXISTS {items_notes} (
+               
+    $db->query("CREATE TABLE IF NOT EXISTS {items_users} (
                `id` int(9) NOT NULL auto_increment,
+               `user_id` int(9) NOT NULL,
                `item_id` int(9) NOT NULL,
                `x1` int(9) NOT NULL,
                `y1` int(9) NOT NULL,
                `x2` int(9) NOT NULL,
                `y2` int(9) NOT NULL,
-               `title` varchar(64) NOT NULL,
                `description` varchar(2048) default NULL,
                PRIMARY KEY (`id`))
                DEFAULT CHARSET=utf8;");
 
-      module::set_version("photoannotation", $version = 1);
+    // Set the module's version number.
+    module::set_version("photoannotation", 3);
+  }
+
+  static function upgrade($version) {
+    if ($version == 1) { 
+      module::set_version("photoannotation", $version = 2);
+    }
+    if ($version == 2) { 
+      $db = Database::instance();
+      $db->query("CREATE TABLE IF NOT EXISTS {items_users} (
+                 `id` int(9) NOT NULL auto_increment,
+                 `user_id` int(9) NOT NULL,
+                 `item_id` int(9) NOT NULL,
+                 `x1` int(9) NOT NULL,
+                 `y1` int(9) NOT NULL,
+                 `x2` int(9) NOT NULL,
+                 `y2` int(9) NOT NULL,
+                 `description` varchar(2048) default NULL,
+                 PRIMARY KEY (`id`))
+                 DEFAULT CHARSET=utf8;");
+      module::set_version("photoannotation", $version = 3);
     }
   }
 
@@ -81,6 +93,7 @@ class photoannotation_installer {
     $db = Database::instance();
     $db->query("DROP TABLE IF EXISTS {items_faces};");
     $db->query("DROP TABLE IF EXISTS {items_notes};");
+    $db->query("DROP TABLE IF EXISTS {items_users};");
     module::delete("photoannotation");
   }
 }

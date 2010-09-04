@@ -17,24 +17,5 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class photoannotation_theme_Core {
-  static function head($theme) {
-    if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
-      $theme->script("jquery.annotate.js");
-    }
-  }
-
-  static function resize_bottom($theme) {
-    if ($theme->page_subtype == "photo") {
-      return new View("photoannotation_highlight_block.html");
-    }
-  }
-  
-  static function dynamic_top($theme) {
-  return new View("photoannotation_user_profile.html");
-    if ($theme->page_type == "photoannotationuserprofile")  {
-      return new View("photoannotation_user_profile.html");
-    }
-  }
+class Items_User_Model extends ORM {
 }
