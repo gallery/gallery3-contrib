@@ -28,13 +28,25 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
     $form = $this->_get_form();
     if ($form->validate()) {
       module::set_var(
-        "photoannotation", "showusers", $form->photoannotation->showusers->value, true);
+        "photoannotation", "noborder", $form->hoverphoto->noborder->value, true);
       module::set_var(
-        "photoannotation", "showfaces", $form->photoannotation->showfaces->value, true);
+        "photoannotation", "bordercolor", $form->hoverphoto->bordercolor->value);
       module::set_var(
-        "photoannotation", "shownotes", $form->photoannotation->shownotes->value, true);
+        "photoannotation", "noclickablehover", $form->hoverclickable->noclickablehover->value, true);
       module::set_var(
-        "photoannotation", "fullname", $form->photoannotation->fullname->value, true);
+        "photoannotation", "clickablehovercolor", $form->hoverclickable->clickablehovercolor->value);
+      module::set_var(
+        "photoannotation", "nohover", $form->hovernoclickable->nohover->value, true);
+      module::set_var(
+        "photoannotation", "hovercolor", $form->hovernoclickable->hovercolor->value);
+      module::set_var(
+        "photoannotation", "showusers", $form->legendsettings->showusers->value, true);
+      module::set_var(
+        "photoannotation", "showfaces", $form->legendsettings->showfaces->value, true);
+      module::set_var(
+        "photoannotation", "shownotes", $form->legendsettings->shownotes->value, true);
+      module::set_var(
+        "photoannotation", "fullname", $form->legendsettings->fullname->value, true);
       message::success(t("Your settings have been saved."));
       url::redirect("admin/photoannotation");
     }
@@ -50,7 +62,25 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
 
   private function _get_form() {
     $form = new Forge("admin/photoannotation/handler", "", "post", array("id" => "g-admin-form"));
-    $group = $form->group("photoannotation")->label(t("Photo annotation settings"));
+    $group = $form->group("hoverphoto")->label(t("Hovering over the photo"));
+    $group->checkbox("noborder")->label(t("Don't show borders."))
+      ->checked(module::get_var("photoannotation", "noborder", false));	
+    $group->input("bordercolor")->label(t('Border color'))
+      ->value(module::get_var("photoannotation", "bordercolor", "000000"))
+      ->rules("valid_alpha_numeric|length[6]");
+    $group = $form->group("hoverclickable")->label(t("Hovering over a clickable annotation"));
+    $group->checkbox("noclickablehover")->label(t("Don't show borders."))
+      ->checked(module::get_var("photoannotation", "noclickablehover", false));	
+    $group->input("clickablehovercolor")->label(t('Border color'))
+      ->value(module::get_var("photoannotation", "clickablehovercolor", "00AD00"))
+      ->rules("valid_alpha_numeric|length[6]");
+    $group = $form->group("hovernoclickable")->label(t("Hovering over a non-clickable annotation"));
+    $group->checkbox("nohover")->label(t("Don't show borders."))
+      ->checked(module::get_var("photoannotation", "nohover", false));	
+    $group->input("hovercolor")->label(t('Border color'))
+      ->value(module::get_var("photoannotation", "hovercolor", "990000"))
+      ->rules("valid_alpha_numeric|length[6]");
+    $group = $form->group("legendsettings")->label(t("Legend settings"));
     $group->checkbox("showusers")->label(t("Show face annotation below photo."))
       ->checked(module::get_var("photoannotation", "showusers", false));	
     $group->checkbox("showfaces")->label(t("Show face annotation below photo."))

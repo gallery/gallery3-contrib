@@ -117,7 +117,7 @@
   }
   $users_arraystring = trim($users_arraystring, ",");
   $users_arraystring .= " ],";
-  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional):") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("User") ."','". t("No user selected") ."' ],";
+  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("User:") ."','". t("No user selected") ."','". t("Select one of the following") ."' ],";
 ?>
 <script type="text/javascript">
       $(document).ready(function() {

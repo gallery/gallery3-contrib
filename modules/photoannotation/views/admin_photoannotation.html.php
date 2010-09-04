@@ -9,3 +9,17 @@
     please download and install the <a href=\"http://codex.gallery2.org/Gallery3:Modules:moduleorder\">Module order module</a>.") ?></p>
     <?= $form ?>
 </div>
+<script type="text/javascript">
+  $("input[name='bordercolor'], input[name='clickablehovercolor'], input[name='hovercolor']").ColorPicker({
+    onSubmit: function(hsb, hex, rgb, el) {
+      $(el).val(hex);
+      $(el).ColorPickerHide();
+    },
+    onBeforeShow: function () {
+      $(this).ColorPickerSetColor(this.value);
+    }
+  })
+  .bind('keyup', function(){
+    $(this).ColorPickerSetColor(this.value);
+  });
+</script>

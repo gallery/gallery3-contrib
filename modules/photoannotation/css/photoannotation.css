@@ -10,19 +10,14 @@
     position: relative;
 }
 .image-annotate-area {
-    border: 1px solid #000000;
     position: absolute;
     cursor: default;
 }
 .image-annotate-area div {
-    border: 1px solid #FFFFFF;
     display: block;
 }
 .image-annotate-area-editable {
     cursor: pointer;
-}
-.image-annotate-area-editable-hover div {
-    border-color: #00AD00 !important;
 }
 .image-annotate-note {
     background: #000000 none repeat scroll 0 0;
@@ -45,7 +40,6 @@
 #image-annotate-edit-form {
     background: #FFFFFF none repeat scroll 0 0;
     border: 1px solid #000000;
-    height: 300px;
     padding: 7px;
     position: absolute;
     width: 250px;

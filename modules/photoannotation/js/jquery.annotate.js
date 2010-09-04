@@ -243,7 +243,7 @@
           notetitle = this.note.text;
           selecteduser = " selected=\"selected\"";
         }
-        var userdropdown = '<select id="photoannotation-user-list" class="dropdown" style="width: 240px;" name="userlist"><option value="-1"' + selecteduser + '>' + labels[11] + '</option>';
+        var userdropdown = '<select id="photoannotation-user-list" class="dropdown" style="width: 210px;" name="userlist"><option value="-1"' + selecteduser + '>' + labels[11] + '</option>';
         for (var user in users)
         {
           var userval = users[user];
@@ -254,7 +254,23 @@
           userdropdown += '<option value="' + userval.id + '"' + selecteduser + '>' + userval.name + '</option>';
         }
         userdropdown += '</select>';
-        var form = $('<div id="image-annotate-edit-form" class="' + rtlsupport + '"><form id="photoannotation-form" action="' + saveUrl + '" method="post"><input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="notetype" value="' + this.note.notetype + '" />' + labels[10] + userdropdown + '<hr /><strong>' + labels[4] + '</strong><br />' + labels[0] + '<input id="image-annotate-tag-text" type="text" name="tagsList" style="width: 240px;" value="' + selectedtag + '" />' + '<hr /><strong>' + labels[4] + '</strong><br />' + labels[1] + '<input id="image-annotate-text" type="text" name="text" style="width: 240px;" value="' + notetitle + '" /><hr />' + labels[2] + '<textarea id="image-annotate-desc" name="desc" rows="3" style="width: 240px;">' + this.note.description + '</textarea></form></div>');
+        var form = $('<div id="image-annotate-edit-form" class="ui-dialog-content ui-widget-content ' + rtlsupport + '">\
+              <form id="photoannotation-form" action="' + saveUrl + '" method="post">\
+                <input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" />\
+                <input type="hidden" name="notetype" value="' + this.note.notetype + '" />\
+                <fieldset><legend>' + labels[12] + '</legend>\
+                <label for="photoannotation-user-list">' + labels[10] + '</label>' + userdropdown + 
+                '<div style="text-align: center"><strong>' + labels[4] + '</strong></div>\
+                <label for="image-annotate-tag-text">' + labels[0] + '</label>\
+                <input id="image-annotate-tag-text" class="textbox ui-corner-left ui-corner-right" type="text" name="tagsList" style="width: 210px;" value="' + selectedtag + '" />' + 
+                '<div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-text">' + labels[1] + '</label>\
+                <input id="image-annotate-text" class="textbox ui-corner-left ui-corner-right" type="text" name="text" style="width: 210px;" value="' + notetitle + '" />\
+                </fieldset>\
+                <fieldset><legend>' + labels[2] + '</legend>\
+                <textarea id="image-annotate-desc" name="desc" rows="3" style="width: 210px;">' + this.note.description + '</textarea></fieldset</form></div>');
+        
+        
+        
         this.form = form;
         $('body').append(this.form);
         $("#photoannotation-form").ready(function() {

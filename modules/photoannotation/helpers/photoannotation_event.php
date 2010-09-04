@@ -74,6 +74,13 @@ class photoannotation_event_Core {
     if (count($existingNotes) > 0) {
       db::build()->delete("items_notes")->where("item_id", "=", $item->id)->execute();
     }
+
+    $existingUsers = ORM::factory("items_user")
+                          ->where("item_id", "=", $item->id)
+                          ->find_all();
+    if (count($existingUsers) > 0) {
+      db::build()->delete("items_users")->where("item_id", "=", $item->id)->execute();
+    }
   }
 
   static function user_deleted($old) {
@@ -93,4 +100,42 @@ class photoannotation_event_Core {
                ->label(t("Photo Annotation"))
                ->url(url::site("admin/photoannotation")));
   }
+  
+  static function show_user_profile($data) {
+    $view = new View("dynamic.html");
+    //load thumbs
+    $item_users = ORM::factory("items_user")->where("user_id", "=", $data->user->id)->find_all();
+    $children_count = count($item_users);
+    foreach ($item_users as $item_user) {
+      $item_thumb = ORM::factory("item")
+          ->viewable()
+          ->where("type", "!=", "album")
+          ->where("id", ">=", $item_user->item_id)
+          ->find();
+      $item_thumbs[] = $item_thumb;
+    }
+    $page_size = module::get_var("gallery", "page_size", 9);
+    $page = (int) Input::instance()->get("page", "1");
+    $offset = ($page-1) * $page_size;
+    $max_pages = max(ceil($children_count / $page_size), 1);
+
+    // Make sure that the page references a valid offset
+    if ($page < 1) {
+      url::redirect($album->abs_url());
+    } else if ($page > $max_pages) {
+      url::redirect($album->abs_url("page=$max_pages"));
+    }
+    $view->set_global("page", $page);
+    $view->set_global("max_pages", $max_pages);
+    $view->set_global("page_size", $page_size);
+    $view->set_global("children", array_slice($item_thumbs, $offset, $page_size));;
+    $view->set_global("children_count", $children_count);
+    $view->set_global("total", $max_pages);
+    $view->set_global("position", t("Page") ." ". $page);
+    if ($children_count > 0) {
+      $data->content[] = (object)array("title" => t("Photos"), "view" => $view);
+    }
+  }
+  
+  
 }

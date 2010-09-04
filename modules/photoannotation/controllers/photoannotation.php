@@ -68,7 +68,7 @@ class photoannotation_Controller extends Controller {
                             ->where("id", "=", $annotate_id)
                             ->find();
           if ($user_id > -1) {              //Conversion user -> user
-            $this->_saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+            $this->_saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
           } elseif ($tag_data > -1) {         //Conversion user -> face
             $this->_saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updateduser->delete();   //delete old user
@@ -162,13 +162,21 @@ class photoannotation_Controller extends Controller {
     url::redirect($redir_uri);
   }
 
-  private function _saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id = "") {
-    if ($annotate_id == "") {
+  private function _saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description) {
+    //Since we are associating a user we will remove any old annotation of this user on this photo
+    $item_old_users = ORM::factory("items_user")
+                    ->where("user_id", "=", $user_id)
+                    ->where("item_id", "=", $item_id)
+                    ->find_all();
+    if (count($item_old_users) > 1) {
+      foreach ($item_old_users as $item_old_user) {
+        $item_old_user->delete();
+      }
       $item_user = ORM::factory("items_user");
+    } elseif (count($item_old_users) > 0) {
+      $item_user = ORM::factory("items_user", $item_old_users[0]->id);
     } else {
-      $item_user = ORM::factory("items_user")
-                      ->where("id", "=", $annotate_id)
-                      ->find();
+      $item_user = ORM::factory("items_user");
     }
     $item_user->user_id = $user_id;
     $item_user->item_id = $item_id;
