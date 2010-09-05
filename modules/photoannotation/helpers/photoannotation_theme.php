@@ -33,6 +33,11 @@ class photoannotation_theme_Core {
       $v .= ".photoannotation-edit-button {\n
               border:1px solid ". $bordercolor ." !important;\n
               }";
+      if ($noborder) {
+        $border_thickness = "2px";
+      } else {
+        $border_thickness = "1px";
+      }
       if (!$noborder || !$noeditablehover || !$nohover) {
         if (!$noborder) {
           $v .= ".image-annotate-area {\n
@@ -45,13 +50,13 @@ class photoannotation_theme_Core {
         if (!$noclickablehover) {
           $clickablehovercolor = "#". module::get_var("photoannotation", "clickablehovercolor", "00AD00");
           $v .= ".image-annotate-area-editable-hover div {\n
-                  border-color: ". $clickablehovercolor ." !important;\n
+                  border: ". $border_thickness ." solid ". $clickablehovercolor ." !important;\n
                   }\n";
         }
         if (!$nohover) {
           $hovercolor = "#". module::get_var("photoannotation", "hovercolor", "990000");
           $v .= ".image-annotate-area-hover div {\n
-                  border-color: ". $hovercolor ." !important;\n
+                  border: ". $border_thickness ." solid ". $hovercolor ." !important;\n
                   }\n";
         }
       }

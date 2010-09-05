@@ -36,24 +36,26 @@
     $jscode = "notes: [ ";
     foreach ($existingUsers as $oneUser) {
       $oneTag =  ORM::factory("user", $oneUser->user_id);
-      if ($fullname && ($oneTag->full_name != "")) {
-        $user_text = $oneTag->full_name;
-      } else {
-        $user_text = $oneTag->name;
+      if ($oneTag->loaded()) {
+        if ($fullname && ($oneTag->full_name != "")) {
+          $user_text = $oneTag->full_name;
+        } else {
+          $user_text = $oneTag->name;
+        }
+        if ($showusers) {
+          $legend_users .= "<span id=\"photoannotation-legend-user-". $oneUser->id . "\"><a href=\"". user_profile::url($oneUser->user_id) ."\">". html::clean($user_text) ."</a></span>, ";
+        }
+        $jscode .= "{ \"top\": ". $oneUser->y1 .",\n";
+        $jscode .= "\"left\": ". $oneUser->x1 .",\n";
+        $jscode .= "\"width\": ". ($oneUser->x2 - $oneUser->x1) .",\n";
+        $jscode .= "\"height\": ". ($oneUser->y2 - $oneUser->y1) .",\n";
+        $jscode .= "\"text\": \"". html::clean($user_text) ."\",\n";
+        $jscode .= "\"description\": \"". html::clean($oneUser->description) ."\",\n";
+        $jscode .= "\"noteid\": ". $oneUser->id .",\n";
+        $jscode .= "\"notetype\": \"user\",\n";
+        $jscode .= "\"editable\": true,\n";
+        $jscode .= "\"url\": \"". user_profile::url($oneUser->user_id) ."\" },\n";
       }
-      if ($showusers) {
-        $legend_users .= "<span id=\"photoannotation-legend-user-". $oneUser->id . "\"><a href=\"". user_profile::url($oneUser->user_id) ."\">". html::clean($user_text) ."</a></span>, ";
-      }
-      $jscode .= "{ \"top\": ". $oneUser->y1 .",\n";
-      $jscode .= "\"left\": ". $oneUser->x1 .",\n";
-      $jscode .= "\"width\": ". ($oneUser->x2 - $oneUser->x1) .",\n";
-      $jscode .= "\"height\": ". ($oneUser->y2 - $oneUser->y1) .",\n";
-      $jscode .= "\"text\": \"". html::clean($user_text) ."\",\n";
-      $jscode .= "\"description\": \"". html::clean($oneUser->description) ."\",\n";
-      $jscode .= "\"noteid\": ". $oneUser->id .",\n";
-      $jscode .= "\"notetype\": \"user\",\n";
-      $jscode .= "\"editable\": true,\n";
-      $jscode .= "\"url\": \"". user_profile::url($oneUser->user_id) ."\" },\n";
     }
     if ($legend_users != "") {
       $legend_users = trim($legend_users, ", ");
@@ -61,19 +63,21 @@
     }
     foreach ($existingFaces as $oneFace) {
       $oneTag = ORM::factory("tag", $oneFace->tag_id);
-      if ($showfaces) {
-        $legend_faces .= "<span id=\"photoannotation-legend-face-". $oneFace->id . "\"><a href=\"". $oneTag->url() ."\">". html::clean($oneTag->name) ."</a></span>, ";
+      if ($oneTag->loaded()) {
+        if ($showfaces) {
+          $legend_faces .= "<span id=\"photoannotation-legend-face-". $oneFace->id . "\"><a href=\"". $oneTag->url() ."\">". html::clean($oneTag->name) ."</a></span>, ";
+        }
+        $jscode .= "{ \"top\": ". $oneFace->y1 .",\n";
+        $jscode .= "\"left\": ". $oneFace->x1 .",\n";
+        $jscode .= "\"width\": ". ($oneFace->x2 - $oneFace->x1) .",\n";
+        $jscode .= "\"height\": ". ($oneFace->y2 - $oneFace->y1) .",\n";
+        $jscode .= "\"text\": \"". html::clean($oneTag->name) ."\",\n";
+        $jscode .= "\"description\": \"". html::clean($oneFace->description) ."\",\n";
+        $jscode .= "\"noteid\": ". $oneFace->id .",\n";
+        $jscode .= "\"notetype\": \"face\",\n";
+        $jscode .= "\"editable\": true,\n";
+        $jscode .= "\"url\": \"". $oneTag->url() ."\" },\n";
       }
-      $jscode .= "{ \"top\": ". $oneFace->y1 .",\n";
-      $jscode .= "\"left\": ". $oneFace->x1 .",\n";
-      $jscode .= "\"width\": ". ($oneFace->x2 - $oneFace->x1) .",\n";
-      $jscode .= "\"height\": ". ($oneFace->y2 - $oneFace->y1) .",\n";
-      $jscode .= "\"text\": \"". html::clean($oneTag->name) ."\",\n";
-      $jscode .= "\"description\": \"". html::clean($oneFace->description) ."\",\n";
-      $jscode .= "\"noteid\": ". $oneFace->id .",\n";
-      $jscode .= "\"notetype\": \"face\",\n";
-      $jscode .= "\"editable\": true,\n";
-      $jscode .= "\"url\": \"". $oneTag->url() ."\" },\n";
     }
     if ($legend_faces != "") {
       $legend_faces = trim($legend_faces, ", ");
@@ -113,7 +117,9 @@
     } else {
       $user_text = $user->name;
     }
-    $users_arraystring .= "{'name':'". html::clean($user_text) ."','id':'". $user->id ."'},";
+    if ($user->name != "guest") {
+      $users_arraystring .= "{'name':'". html::clean($user_text) ."','id':'". $user->id ."'},";
+    }
   }
   $users_arraystring = trim($users_arraystring, ",");
   $users_arraystring .= " ],";

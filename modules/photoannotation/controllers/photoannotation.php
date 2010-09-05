@@ -173,10 +173,37 @@ class photoannotation_Controller extends Controller {
         $item_old_user->delete();
       }
       $item_user = ORM::factory("items_user");
-    } elseif (count($item_old_users) > 0) {
+    } elseif (count($item_old_users) == 1) {
       $item_user = ORM::factory("items_user", $item_old_users[0]->id);
     } else {
       $item_user = ORM::factory("items_user");
+      if (!module::get_var("photoannotation", "nonotifications", false)) {
+        $notification_settings = ORM::factory("photoannotation_notification")->where("user_id", "=", $user_id)->find();
+        if (!$notification_settings->loaded()) {
+          $notify = module::get_var("photoannotation", "notificationoptout", false);
+          $notification_settings = ORM::factory("photoannotation_notification");
+          $notification_settings->user_id = $user_id;
+          $notification_settings->newtag = $notify;
+          $notification_settings->comment = $notify;
+          $notification_settings->save();
+        }
+        if ($notification_settings->newtag) {
+          $user_recipient = ORM::factory("user")->where("id", "=", $user_id)->find();
+          if ($user_recipient->email != "") {
+            $recipient = $user_recipient->email;
+            $subject = t("Somebody has tagged a photo of you");
+            $item_notify = ORM::factory("item")->where("id", "=", $item_id)->find();
+            $body = t("Please visit <a href=\"%url\">the gallery</a> to view the photo.", array("url" => $item_notify->resize_url(true)));
+            Sendmail::factory()
+              ->to($recipient)
+              ->subject($subject)
+              ->header("Mime-Version", "1.0")
+              ->header("Content-type", "text/html; charset=utf-8")
+              ->message($body)
+              ->send();
+          }
+        }
+      }
     }
     $item_user->user_id = $user_id;
     $item_user->item_id = $item_id;
@@ -222,5 +249,18 @@ class photoannotation_Controller extends Controller {
     $item_note->title = $item_title;
     $item_note->description = $description;
     $item_note->save();
+  }
+  
+  private function _send_tag_created($user_id, $item_id) {
+    $recipient = ORM::factory("user", $user_id);
+    if ($recipient->email) {
+      Sendmail::factory()
+              ->to($recipient->email)
+              ->subject($t("Someone has tagged a photo with you on it"))
+              ->header("Mime-Version", "1.0")
+              ->header("Content-Type", "text/html; charset=UTF-8")
+              ->message($text)
+              ->send();
+    }
   }
 }

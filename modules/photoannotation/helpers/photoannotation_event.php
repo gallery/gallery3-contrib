@@ -89,8 +89,70 @@ class photoannotation_event_Core {
                           ->where("user_id", "=", $old->id)
                           ->find_all();
     if (count($existingFaces) > 0) {
+      $onuserdelete = module::get_var("photoannotation", "onuserdelete", "0");
+      if (module::get_var("photoannotation", "fullname", false)) {
+        $new_tag_name = $old->display_name();
+      } else {
+        $new_tag_name = $old->name;
+      }
+      switch ($onuserdelete) {
+        case "1":
+          //convert to tag
+          $tag = ORM::factory("tag")->where("name", "=", $new_tag_name)->find();
+          if (!$tag->loaded()) {
+            $tag->name = $new_tag_name;
+            $tag->count = 0;
+          }
+          foreach ($existingFaces as $existingFace) {
+            $item = ORM::factory("item")->where("id", "=", $existingFace->item_id)->find();
+            $tag->add($item);
+            $tag->count++;
+            $tag->save();
+            $new_items_tag = ORM::factory("items_face");
+            $new_items_tag->item_id = $existingFace->item_id;
+            $new_items_tag->tag_id = $tag->id;
+            $new_items_tag->x1 = $existingFace->x1;
+            $new_items_tag->y1 = $existingFace->y1;
+            $new_items_tag->x2 = $existingFace->x2;
+            $new_items_tag->y2 = $existingFace->y2;
+            $new_items_tag->description = $existingFace->description;
+            $new_items_tag->save();
+          }
+          break;
+        case "2":
+          //convert to note
+          foreach ($existingFaces as $existingFace) {
+            $item = ORM::factory("item")->where("id", "=", $existingFace->item_id)->find();
+            $new_items_tag = ORM::factory("items_note");
+            $new_items_tag->item_id = $existingFace->item_id;
+            $new_items_tag->title = $new_tag_name;
+            $new_items_tag->x1 = $existingFace->x1;
+            $new_items_tag->y1 = $existingFace->y1;
+            $new_items_tag->x2 = $existingFace->x2;
+            $new_items_tag->y2 = $existingFace->y2;
+            $new_items_tag->description = $existingFace->description;
+            $new_items_tag->save();
+          }
+      }
       db::build()->delete("items_users")->where("user_id", "=", $old->id)->execute();
     }
+    // Delete notification settings
+    $notification_settings = ORM::factory("photoannotation_notification")
+                          ->where("user_id", "=", $old->id)
+                          ->find();
+    if ($notification_settings->loaded()) {
+      $notification_settings->delete();
+    }
+  }
+
+  static function user_created($user) {
+    // Write notification settings
+    $notify = module::get_var("photoannotation", "notificationoptout", false);
+    $notification_settings = ORM::factory("photoannotation_notification");
+    $notification_settings->user_id = $user->id;
+    $notification_settings->newtag = $notify;
+    $notification_settings->comment = $notify;
+    $notification_settings->save();
   }
   
   static function admin_menu($menu, $theme) {
@@ -102,7 +164,7 @@ class photoannotation_event_Core {
   }
   
   static function show_user_profile($data) {
-    $view = new View("dynamic.html");
+    $view = new Theme_View("dynamic.html", "collection", "userprofiles");
     //load thumbs
     $item_users = ORM::factory("items_user")->where("user_id", "=", $data->user->id)->find_all();
     $children_count = count($item_users);
@@ -110,7 +172,7 @@ class photoannotation_event_Core {
       $item_thumb = ORM::factory("item")
           ->viewable()
           ->where("type", "!=", "album")
-          ->where("id", ">=", $item_user->item_id)
+          ->where("id", "=", $item_user->item_id)
           ->find();
       $item_thumbs[] = $item_thumb;
     }
@@ -118,12 +180,22 @@ class photoannotation_event_Core {
     $page = (int) Input::instance()->get("page", "1");
     $offset = ($page-1) * $page_size;
     $max_pages = max(ceil($children_count / $page_size), 1);
-
+    
     // Make sure that the page references a valid offset
     if ($page < 1) {
       url::redirect($album->abs_url());
     } else if ($page > $max_pages) {
       url::redirect($album->abs_url("page=$max_pages"));
+    }
+    if ($page < $max_pages) {
+      $next_page_url = url::site("user_profile/show/". $data->user->id ."?page=". ($page + 1));
+      $view->set_global("next_page_url", $next_page_url);
+      $view->set_global("first_page_url", url::site("user_profile/show/". $data->user->id ."?page=". $max_pages));
+    }
+    
+    if ($page > 1) {
+      $view->set_global("previous_page_url", url::site("user_profile/show/". $data->user->id ."?page=". ($page - 1)));
+      $view->set_global("first_page_url", url::site("user_profile/show/". $data->user->id ."?page=1"));
     }
     $view->set_global("page", $page);
     $view->set_global("max_pages", $max_pages);
@@ -136,6 +208,111 @@ class photoannotation_event_Core {
       $data->content[] = (object)array("title" => t("Photos"), "view" => $view);
     }
   }
-  
-  
+
+  static function user_edit_form($user, $form) {
+    // Allow users to modify notification settings.
+    if (!module::get_var("photoannotation", "nonotifications", false)) {
+      $notification_settings = ORM::factory("photoannotation_notification")->where("user_id", "=", $user->id)->find();
+      if (!$notification_settings->loaded()) {
+        $notify = module::get_var("photoannotation", "notificationoptout", false);
+        $notification_settings = ORM::factory("photoannotation_notification");
+        $notification_settings->user_id = $user->id;
+        $notification_settings->newtag = $notify;
+        $notification_settings->comment = $notify;
+        $notification_settings->save();
+      }
+      $user_notification = $form->edit_user->group("edit_notification")->label("Tag notifications");
+      $user_notification->checkbox("photoannotation_newtag")->label(t("Notify me when a tag is added to a photo with me"))
+           ->checked($notification_settings->newtag);
+      $user_notification->checkbox("photoannotation_comment")->label(t("Notify me if someone comments on a photo with me on it"))
+           ->checked($notification_settings->comment);
+    }
+  }
+
+  static function user_edit_form_completed($user, $form) {
+    // Save notification settings.
+    if (!module::get_var("photoannotation", "nonotifications", false)) {
+      $notification_settings = ORM::factory("photoannotation_notification")->where("user_id", "=", $user->id)->find();
+      if (!$notification_settings->loaded()) {
+        $notification_settings->user_id = $user->id;
+      }
+      $notification_settings->newtag = $form->edit_user->edit_notification->photoannotation_newtag->value;
+      $notification_settings->comment = $form->edit_user->edit_notification->photoannotation_comment->value;
+      $notification_settings->save();
+    }
+  }
+
+  static function comment_created($comment) {
+    //@todo: clean this up
+    $comment = ORM::factory("comment")->where("id", "=", "52")->find();
+    if (!module::get_var("photoannotation", "nonotifications", false)) {
+      $item_users = ORM::factory("items_user")->where("item_id", "=", $comment->item_id)->find_all();
+      if (count($item_users) > 0) {
+        foreach ($item_users as $item_user) {
+          $notification_settings = ORM::factory("photoannotation_notification")->where("user_id", "=", $item_user-user_id)->find();
+          if (!$notification_settings->loaded()) {
+            $notify = module::get_var("photoannotation", "notificationoptout", false);
+            $notification_settings = ORM::factory("photoannotation_notification");
+            $notification_settings->user_id = $item_user-user_id;
+            $notification_settings->newtag = $notify;
+            $notification_settings->comment = $notify;
+            $notification_settings->save();
+          }
+          if ($notification_settings->newtag) {
+            $user_recipient = ORM::factory("user")->where("id", "=", $item_user-user_id)->find();
+            if ($user_recipient->email != "") {
+              $recipient = $user_recipient->email;
+              $subject = t("Somebody has commented on a photo of you");
+              $item_notify = ORM::factory("item")->where("id", "=", $comment->item_id)->find();
+              $body = t("Please visit <a href=\"%url\">the gallery</a> to view the photo.", array("url" => $item_notify->resize_url(true)));
+              Sendmail::factory()
+                ->to($recipient)
+                ->subject($subject)
+                ->header("Mime-Version", "1.0")
+                ->header("Content-type", "text/html; charset=utf-8")
+                ->message($body)
+                ->send();
+            }
+          }
+        }
+      }
+    }
+  }
+
+  static function comment_updated($comment) {
+    //@todo: clean this up
+    $comment = ORM::factory("comment")->where("id", "=", "52")->find();
+    if (!module::get_var("photoannotation", "nonotifications", false)) {
+      $item_users = ORM::factory("items_user")->where("item_id", "=", $comment->item_id)->find_all();
+      if (count($item_users) > 0) {
+        foreach ($item_users as $item_user) {
+          $notification_settings = ORM::factory("photoannotation_notification")->where("user_id", "=", $item_user-user_id)->find();
+          if (!$notification_settings->loaded()) {
+            $notify = module::get_var("photoannotation", "notificationoptout", false);
+            $notification_settings = ORM::factory("photoannotation_notification");
+            $notification_settings->user_id = $item_user-user_id;
+            $notification_settings->newtag = $notify;
+            $notification_settings->comment = $notify;
+            $notification_settings->save();
+          }
+          if ($notification_settings->newtag) {
+            $user_recipient = ORM::factory("user")->where("id", "=", $item_user-user_id)->find();
+            if ($user_recipient->email != "") {
+              $recipient = $user_recipient->email;
+              $subject = t("Somebody has updated a commented on a photo of you");
+              $item_notify = ORM::factory("item")->where("id", "=", $comment->item_id)->find();
+              $body = t("Please visit <a href=\"%url\">the gallery</a> to view the photo.", array("url" => $item_notify->resize_url(true)));
+              Sendmail::factory()
+                ->to($recipient)
+                ->subject($subject)
+                ->header("Mime-Version", "1.0")
+                ->header("Content-type", "text/html; charset=utf-8")
+                ->message($body)
+                ->send();
+            }
+          }
+        }
+      }
+    }
+  }
 }

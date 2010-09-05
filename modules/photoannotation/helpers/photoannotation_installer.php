@@ -56,6 +56,14 @@ class photoannotation_installer {
                `description` varchar(2048) default NULL,
                PRIMARY KEY (`id`))
                DEFAULT CHARSET=utf8;");
+               
+    $db->query("CREATE TABLE IF NOT EXISTS {photoannotation_notifications} (
+               `id` int(9) NOT NULL auto_increment,
+               `user_id` int(9) NOT NULL unique,
+               `newtag` int(2) default NULL,
+               `comment` int(2) default NULL,
+               PRIMARY KEY (`id`))
+               DEFAULT CHARSET=utf8;");
 
     // Set the module's version number.
     module::set_version("photoannotation", 3);
@@ -80,6 +88,16 @@ class photoannotation_installer {
                  DEFAULT CHARSET=utf8;");
       module::set_version("photoannotation", $version = 3);
     }
+    if ($version == 3) { 
+          $db->query("CREATE TABLE IF NOT EXISTS {photoannotation_notifications} (
+                 `id` int(9) NOT NULL auto_increment,
+                 `user_id` int(9) NOT NULL unique,
+                 `newtag` int(2) default NULL,
+                 `comment` int(2) default NULL,
+                 PRIMARY KEY (`id`))
+                 DEFAULT CHARSET=utf8;");
+      module::set_version("photoannotation", $version = 4);
+    }
   }
 
   static function deactivate() {
@@ -94,6 +112,7 @@ class photoannotation_installer {
     $db->query("DROP TABLE IF EXISTS {items_faces};");
     $db->query("DROP TABLE IF EXISTS {items_notes};");
     $db->query("DROP TABLE IF EXISTS {items_users};");
+    $db->query("DROP TABLE IF EXISTS {photoannotation_notifications};");
     module::delete("photoannotation");
   }
 }
