@@ -89,13 +89,14 @@ class photoannotation_installer {
       module::set_version("photoannotation", $version = 3);
     }
     if ($version == 3) { 
-          $db->query("CREATE TABLE IF NOT EXISTS {photoannotation_notifications} (
-                 `id` int(9) NOT NULL auto_increment,
-                 `user_id` int(9) NOT NULL unique,
-                 `newtag` int(2) default NULL,
-                 `comment` int(2) default NULL,
-                 PRIMARY KEY (`id`))
-                 DEFAULT CHARSET=utf8;");
+      $db = Database::instance();
+      $db->query("CREATE TABLE IF NOT EXISTS {photoannotation_notifications} (
+             `id` int(9) NOT NULL auto_increment,
+             `user_id` int(9) NOT NULL unique,
+             `newtag` int(2) default NULL,
+             `comment` int(2) default NULL,
+             PRIMARY KEY (`id`))
+             DEFAULT CHARSET=utf8;");
       module::set_version("photoannotation", $version = 4);
     }
   }
