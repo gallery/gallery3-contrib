@@ -22,4 +22,9 @@
   .bind('keyup', function(){
     $(this).ColorPickerSetColor(this.value);
   });
+  <? if (!module::is_active("comment")): ?>
+  $(document).ready(function(){
+    $("input[name='newcommentsubject'], input[name='updatedcommentsubject'], textarea[name='newcommentbody'], textarea[name='updatedcommentbody']").attr("disabled", true);
+  });
+  <? endif ?>
 </script>

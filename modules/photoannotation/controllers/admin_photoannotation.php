@@ -50,33 +50,7 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       $tag_annotations = ORM::factory("items_face")->where("tag_id", "=", $sourcetag->id)->find_all();
       
       foreach ($tag_annotations as $tag_annotation) {
-        //Check if there are already user annotations of the target user on photo
-        $user_annotations = ORM::factory("items_user")
-                              ->where("item_id", "=", $tag_annotation->item_id)
-                              ->where("user_id", "=", $targetuser->id)
-                              ->find_all();
-        if (count($user_annotations) > 1) {
-          //If there are more than one existing annotations, delete all and create a new one
-          foreach ($user_annotations as $user_annotation) {
-            $user_annotation->delete();
-          }
-          $target_annotation = ORM::factory("items_user");
-        } elseif (count($user_annotations) == 1) {
-          //If there is only one existing annotation, load it and update it
-          $target_annotation = ORM::factory("items_user", $user_annotations[0]->id);
-        } else {
-          //If there are no existing annotations create one
-          $target_annotation = ORM::factory("items_user");
-        }
-        //Save values from tag annotation to user annotation and save it
-        $target_annotation->user_id = $targetuser->id;
-        $target_annotation->item_id = $tag_annotation->item_id;
-        $target_annotation->x1 = $tag_annotation->x1;
-        $target_annotation->y1 = $tag_annotation->y1;
-        $target_annotation->x2 = $tag_annotation->x2;
-        $target_annotation->y2 = $tag_annotation->y2;
-        $target_annotation->description = $tag_annotation->description;
-        $target_annotation->save();
+        photoannotation::saveuser($targetuser->id, $tag_annotation->item_id, $tag_annotation->x1, $tag_annotation->y1, $tag_annotation->x2, $tag_annotation->y2, $tag_annotation->description);
         //Delete the old annotation
         $tag_annotation->delete();
       }
@@ -115,6 +89,18 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
         "photoannotation", "nonotifications", $form->notifications->nonotifications->value, true);
       module::set_var(
         "photoannotation", "notificationoptout", $form->notifications->notificationoptout->value, true);
+      module::set_var(
+        "photoannotation", "newtagsubject", $form->newtagmail->newtagsubject->value);
+      module::set_var(
+        "photoannotation", "newtagbody", $form->newtagmail->newtagbody->value);
+      module::set_var(
+        "photoannotation", "newcommentsubject", $form->newcommentmail->newcommentsubject->value);
+      module::set_var(
+        "photoannotation", "newcommentbody", $form->newcommentmail->newcommentbody->value);
+      module::set_var(
+        "photoannotation", "updatedcommentsubject", $form->updatedcommentmail->updatedcommentsubject->value);
+      module::set_var(
+        "photoannotation", "updatedcommentbody", $form->updatedcommentmail->updatedcommentbody->value);
       module::set_var(
         "photoannotation", "onuserdelete", $form->onuserdelete->onuserdelete->value);
       message::success(t("Your settings have been saved."));
@@ -240,6 +226,11 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
   }
 
   private function _get_form() {
+    if (module::is_active("comment")) {
+      $comment_required = "";
+    } else {
+      $comment_required = " (comment module required)";
+    }
     $form = new Forge("admin/photoannotation/handler", "", "post", array("id" => "g-admin-form"));
     $group = $form->group("hoverphoto")->label(t("Hovering over the photo"));
     $group->checkbox("noborder")->label(t("Don't show borders."))
@@ -273,6 +264,21 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       ->checked(module::get_var("photoannotation", "nonotifications", false));	
     $group->checkbox("notificationoptout")->label(t("Notify users by default (only applies to new users and user who have not saved their profile after installing this module)."))
       ->checked(module::get_var("photoannotation", "notificationoptout", false));	
+    $group = $form->group("newtagmail")->label(t("Customize the mail sent to users when a user annotation is created"));
+    $group->input("newtagsubject")->label(t("Subject"))
+      ->value(module::get_var("photoannotation", "newtagsubject", "Someone tagged a photo of you"));	
+    $group->textarea("newtagbody")->label(t("Body (allowed placeholders: %name = name of the recipient, %url = link to the item that was tagged)"))
+      ->value(module::get_var("photoannotation", "newtagbody", "Hello %name, please visit %url to view the photo."));	
+    $group = $form->group("newcommentmail")->label(t("Customize the mail sent to users when a comment is added". $comment_required));
+    $group->input("newcommentsubject")->label(t("Subject"))
+      ->value(module::get_var("photoannotation", "newcommentsubject", "Someone added a comment to photo of you"));	
+    $group->textarea("newcommentbody")->label(t("Body (allowed placeholders: %name = name of the recipient, %url = link to the item that was commented on)"))
+      ->value(module::get_var("photoannotation", "newcommentbody", "Hello %name, please visit %url to read the comment."));	
+    $group = $form->group("updatedcommentmail")->label(t("Customize the mail sent to users when a comment is updated". $comment_required));
+    $group->input("updatedcommentsubject")->label(t("Subject"))
+      ->value(module::get_var("photoannotation", "updatedcommentsubject", "Someone updated a comment to photo of you"));	
+    $group->textarea("updatedcommentbody")->label(t("Body (allowed placeholders: %name = name of the recipient, %url = link to the item that was commented on)"))
+      ->value(module::get_var("photoannotation", "updatedcommentbody", "Hello %name, please visit %url to read the comment."));	
     $group = $form->group("onuserdelete")->label(t("Auto conversion settings"));
     $group->dropdown("onuserdelete")->label(t("When deleting a user do the following with all annotations associated with this user"))
       ->options(array("0" => t("Delete annotation"), "1" => t("Convert to tag annotation"), "2" =>  t("Convert to note annotation")))
