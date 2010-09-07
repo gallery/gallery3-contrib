@@ -214,6 +214,7 @@
             newNote.text = "";
             newNote.description = "";
             newNote.notetype = "";
+            newNote.internaltext = "";
             this.note = newNote;
         }
 
@@ -236,31 +237,19 @@
         var selecteduser = "";
         if (this.note.notetype == "face") {
           selectedtag = this.note.text;
-          selecteduser = " selected=\"selected\"";
         } else if (this.note.notetype == "user") {
-          username = this.note.text;
+          username = this.note.internaltext;
         } else {
           notetitle = this.note.text;
-          selecteduser = " selected=\"selected\"";
         }
-        var userdropdown = '<select id="photoannotation-user-list" class="dropdown" style="width: 210px;" name="userlist"><option value="-1"' + selecteduser + '>' + labels[11] + '</option>';
-        for (var user in users)
-        {
-          var userval = users[user];
-          selecteduser = "";
-          if (userval.name == this.note.text && this.note.notetype == "user") {
-            selecteduser = " selected=\"selected\"";
-          }
-          userdropdown += '<option value="' + userval.id + '"' + selecteduser + '>' + userval.name + '</option>';
-        }
-        userdropdown += '</select>';
         var form = $('<div id="image-annotate-edit-form" class="ui-dialog-content ui-widget-content ' + rtlsupport + '">\
               <form id="photoannotation-form" action="' + saveUrl + '" method="post">\
                 <input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" />\
                 <input type="hidden" name="notetype" value="' + this.note.notetype + '" />\
                 <fieldset><legend>' + labels[12] + '</legend>\
-                <label for="photoannotation-user-list">' + labels[10] + '</label>' + userdropdown + 
-                '<div style="text-align: center"><strong>' + labels[4] + '</strong></div>\
+                <label for="photoannotation-user-list">' + labels[10] + '</label>\
+                <input id="photoannotation-user-list" class="textbox ui-corner-left ui-corner-right" type="text" name="userlist" style="width: 210px;" value="' + username + '" />\
+                <div style="text-align: center"><strong>' + labels[4] + '</strong></div>\
                 <label for="image-annotate-tag-text">' + labels[0] + '</label>\
                 <input id="image-annotate-tag-text" class="textbox ui-corner-left ui-corner-right" type="text" name="tagsList" style="width: 210px;" value="' + selectedtag + '" />' + 
                 '<div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-text">' + labels[1] + '</label>\
@@ -282,13 +271,23 @@
               cacheLength: 1
             }
           );
+          var urlusers = users;
+          $("input#photoannotation-user-list").autocomplete(
+            urlusers, {
+              max: 30,
+              multiple: false,
+              cacheLength: 1
+            }
+          );
         });
-        $("input#image-annotate-tag-text").change(function() {
+        $("input#image-annotate-tag-text").keyup(function() {
           if ($("input#image-annotate-tag-text").val() != "") {
             $("input#image-annotate-text").html("");
             $("input#image-annotate-text").val("");
             $("input#image-annotate-text").text("");
-            $("select#photoannotation-user-list").val('-1');
+            $("input#photoannotation-user-list").html("");
+            $("input#photoannotation-user-list").val("");
+            $("input#photoannotation-user-list").text("");
           }
         });
         $("input#image-annotate-text").keyup(function() {
@@ -296,7 +295,9 @@
             $("input#image-annotate-tag-text").html("");
             $("input#image-annotate-tag-text").val("");
             $("input#image-annotate-tag-text").text("");
-            $("select#photoannotation-user-list").val('-1');
+            $("input#photoannotation-user-list").html("");
+            $("input#photoannotation-user-list").val("");
+            $("input#photoannotation-user-list").text("");
           }
         });
         $("select#photoannotation-user-list").keyup(function() {

@@ -94,6 +94,10 @@ class photoannotation_Core {
     }
     //Only send mail if the notifications are switched on globally
     if (!module::get_var("photoannotation", "nonotifications", false)) {
+      //Check if the use has a valid e-mail
+      if (!valid::email($recipient->email)) {
+        return false;
+      }
       //Get the users settings
       $notification_settings = self::get_user_notification_settings($recipient);
       //Check which type of mail to send
@@ -134,6 +138,7 @@ class photoannotation_Core {
   
   private static function _send_mail($mailto, $subject, $message) {
     //Send the notification mail
+    $message = nl2br($message);
     return Sendmail::factory()
       ->to($mailto)
       ->subject($subject)
@@ -167,5 +172,34 @@ class photoannotation_Core {
       }
     }
     return $user_array;
+  }
+  
+  static function cloud($count) {
+    $users = ORM::factory("user")->order_by("name", "ASC")->find_all();
+    if ($users) {
+      $cloud = new View("photoannotation_cloud.html");
+      $fullname = module::get_var("photoannotation", "fullname", false);
+      foreach ($users as $user) {
+        $annotations = ORM::factory("items_user")->where("user_id", "=", $user->id)->count_all();
+        if ($annotations > 0) {
+          if ($annotations > $maxcount) {
+            $maxcount = $annotations;
+          }
+          if ($fullname) {
+            $user_array[$user->name]->name = $user->display_name();
+          } else {
+            $user_array[$user->name]->name = $user->name;
+          }
+          $user_array[$user->name]->size = $annotations;
+          $user_array[$user->name]->url = user_profile::url($user->id);
+        }
+      }
+      $cloud->users = array_slice($user_array, 0, $count);
+      $cloud->max_count = $maxcount;
+      if (!$cloud->max_count) {
+        return;
+      }
+      return $cloud;
+    }
   }
 }

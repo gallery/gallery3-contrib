@@ -31,9 +31,29 @@ class photoannotation_Controller extends Controller {
     $str_x2 = $_POST["width"] + $str_x1;  //Annotation uses area size, tagfaces uses positions
     $item_title = $_POST["text"];
     $tag_data = $_POST["tagsList"];
+    $user_id = "";
     $user_id = $_POST["userlist"];
     $description = $_POST["desc"];
     $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
+    //If this is a user then get the id
+    if ($user_id != "") {
+      $user_parts = explode("(", $user_id);
+      $user_part = rtrim(ltrim(end($user_parts)), ")");
+      $user = ORM::factory("user")->where("name", "=", $user_part)->find();
+      $user_firstpart = trim(implode(array_slice($user_parts, 0, count($user_parts)-1)));
+      if (!$user->loaded() || strcasecmp($user_firstpart, $user->display_name()) <> 0) {
+        message::error(t("Could not find user %user.", array("user" => $user_id)));
+        url::redirect($redir_uri);
+        return;
+      }
+      if (strcasecmp($user->name, "guest") == 0) {
+        message::error(t("You cannot create an annotation for the guest user."));
+        url::redirect($redir_uri);
+        return;
+      }
+      $user_id = $user->id;
+    }
+    
     //Add tag to item, create tag if not exists
     if ($tag_data != "") {
       $tag = ORM::factory("tag")->where("name", "=", $tag_data)->find();
@@ -160,5 +180,23 @@ class photoannotation_Controller extends Controller {
     }
     message::success(t("Annotation deleted."));
     url::redirect($redir_uri);
+  }
+  
+  public function autocomplete() {
+    $users = array();
+    $user_parts = explode(",", Input::instance()->get("q"));
+    $limit = Input::instance()->get("limit");
+    $user_part = ltrim(end($user_parts));
+    $user_list = ORM::factory("user")
+      ->where("name", "LIKE", "{$user_part}%")
+      ->order_by("name", "ASC")
+      ->limit($limit)
+      ->find_all();
+    foreach ($user_list as $user) {
+      if ($user->name != "guest") {
+        $users[] = $user->display_name() ." (". $user->name .")";
+      }
+    }
+    print implode("\n", $users);
   }
 }

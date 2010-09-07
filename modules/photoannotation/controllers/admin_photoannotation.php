@@ -90,17 +90,17 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       module::set_var(
         "photoannotation", "notificationoptout", $form->notifications->notificationoptout->value, true);
       module::set_var(
-        "photoannotation", "newtagsubject", $form->newtagmail->newtagsubject->value);
+        "photoannotation", "newtagsubject", strip_tags($form->newtagmail->newtagsubject->value));
       module::set_var(
-        "photoannotation", "newtagbody", $form->newtagmail->newtagbody->value);
+        "photoannotation", "newtagbody", strip_tags($form->newtagmail->newtagbody->value));
       module::set_var(
-        "photoannotation", "newcommentsubject", $form->newcommentmail->newcommentsubject->value);
+        "photoannotation", "newcommentsubject", strip_tags($form->newcommentmail->newcommentsubject->value));
       module::set_var(
-        "photoannotation", "newcommentbody", $form->newcommentmail->newcommentbody->value);
+        "photoannotation", "newcommentbody", strip_tags($form->newcommentmail->newcommentbody->value));
       module::set_var(
-        "photoannotation", "updatedcommentsubject", $form->updatedcommentmail->updatedcommentsubject->value);
+        "photoannotation", "updatedcommentsubject", strip_tags($form->updatedcommentmail->updatedcommentsubject->value));
       module::set_var(
-        "photoannotation", "updatedcommentbody", $form->updatedcommentmail->updatedcommentbody->value);
+        "photoannotation", "updatedcommentbody", strip_tags($form->updatedcommentmail->updatedcommentbody->value));
       module::set_var(
         "photoannotation", "onuserdelete", $form->onuserdelete->onuserdelete->value);
       message::success(t("Your settings have been saved."));

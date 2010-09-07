@@ -233,7 +233,7 @@ class photoannotation_event_Core {
     $item_users = ORM::factory("items_user")->where("item_id", "=", $comment->item_id)->find_all();
     if (count($item_users) > 0) {
       foreach ($item_users as $item_user) {
-        photoannotation::send_notifications($item_user->user_id, $comment->item_id, "updatecomment");
+        photoannotation::send_notifications($item_user->user_id, $comment->item_id, "updatedcomment");
       }
     }
   }

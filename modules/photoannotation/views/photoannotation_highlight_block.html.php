@@ -9,7 +9,6 @@
   $existingNotes = ORM::factory("items_note")
                         ->where("item_id", "=", $item->id)
                         ->find_all();
-  $users = ORM::factory("user")->order_by("name", "ASC")->find_all();
   $fullname = module::get_var("photoannotation", "fullname", false);
   $showusers = module::get_var("photoannotation", "showusers", false);
   $showfaces = module::get_var("photoannotation", "showfaces", false);
@@ -37,8 +36,8 @@
     foreach ($existingUsers as $oneUser) {
       $oneTag =  ORM::factory("user", $oneUser->user_id);
       if ($oneTag->loaded()) {
-        if ($fullname && ($oneTag->full_name != "")) {
-          $user_text = $oneTag->full_name;
+        if ($fullname) {
+          $user_text = $oneTag->display_name();
         } else {
           $user_text = $oneTag->name;
         }
@@ -50,6 +49,7 @@
         $jscode .= "\"width\": ". ($oneUser->x2 - $oneUser->x1) .",\n";
         $jscode .= "\"height\": ". ($oneUser->y2 - $oneUser->y1) .",\n";
         $jscode .= "\"text\": \"". html::clean($user_text) ."\",\n";
+        $jscode .= "\"internaltext\": \"". $oneTag->display_name() ." (". $oneTag->name .")\",\n";
         $jscode .= "\"description\": \"". html::clean($oneUser->description) ."\",\n";
         $jscode .= "\"noteid\": ". $oneUser->id .",\n";
         $jscode .= "\"notetype\": \"user\",\n";
@@ -110,19 +110,6 @@
     $legend_display = $legend_users . "<br />" . $legend_faces . "<br />" . $legend_notes;
     $legend_display = str_replace("<br /><br />", "<br />", $legend_display);
   }
-  $users_arraystring = "users: [ ";
-  foreach ($users as $user) {
-    if ($fullname && ($user->full_name != "")) {
-      $user_text = $user->full_name;
-    } else {
-      $user_text = $user->name;
-    }
-    if ($user->name != "guest") {
-      $users_arraystring .= "{'name':'". html::clean($user_text) ."','id':'". $user->id ."'},";
-    }
-  }
-  $users_arraystring = trim($users_arraystring, ",");
-  $users_arraystring .= " ],";
   $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("User:") ."','". t("No user selected") ."','". t("Select one of the following") ."' ],";
 ?>
 <script type="text/javascript">
@@ -138,7 +125,7 @@
           tags: '<?= url::site("tags/autocomplete") ?>',
           <?= $labels_arraystring ?>
 					<?= $jscode ?>
-          <?= $users_arraystring ?>
+          users: '<?= url::site("photoannotation/autocomplete") ?>',
           rtlsupport: '<?= $rtl_support ?>',
 					useAjax: false,
           cssaclass: '<?= $css_a_class ?>',

@@ -19,8 +19,8 @@
  */
 class photoannotation_theme_Core {
   static function head($theme) {
+    $theme->css("photoannotation.css");
     if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
       $theme->script("jquery.annotate.js");
       $noborder = module::get_var("photoannotation", "noborder", false);
       $noclickablehover = module::get_var("photoannotation", "noclickablehover", false);
