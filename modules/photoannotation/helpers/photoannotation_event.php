@@ -75,6 +75,16 @@ class photoannotation_event_Core {
       db::build()->delete("items_notes")->where("item_id", "=", $item->id)->execute();
     }
   }
+
+  static function user_deleted($old) {
+    // Check for and delete existing Annotations linked to that user.
+    $existingFaces = ORM::factory("items_user")
+                          ->where("user_id", "=", $old->id)
+                          ->find_all();
+    if (count($existingFaces) > 0) {
+      db::build()->delete("items_users")->where("user_id", "=", $old->id)->execute();
+    }
+  }
   
   static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")

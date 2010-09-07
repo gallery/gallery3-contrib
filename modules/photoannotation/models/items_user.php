@@ -17,23 +17,5 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class ecard_block_Core {
-  static function get_site_list() {
-    return array("ecard" => t("eCard"));
-  }
-
-  static function get($block_id, $theme) {
-    $block = "";
-    switch ($block_id) {
-    case "ecard":
-      if ($theme->item() && $theme->item()->is_photo() && module::get_var("ecard", "location") == "sidebar") {
-        $block = new Block();
-        $block->css_id = "g-send-ecard";
-        $block->title = t("eCard");
-        $block->content = new View("ecard_block.html");
-      }
-      break;
-    }
-    return $block;
-  }
+class Items_User_Model extends ORM {
 }

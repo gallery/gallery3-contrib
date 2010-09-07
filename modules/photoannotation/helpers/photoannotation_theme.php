@@ -25,9 +25,16 @@ class photoannotation_theme_Core {
     }
   }
 
-  static function photo_bottom($theme) {
+  static function resize_bottom($theme) {
     if ($theme->page_subtype == "photo") {
       return new View("photoannotation_highlight_block.html");
+    }
+  }
+  
+  static function dynamic_top($theme) {
+  return new View("photoannotation_user_profile.html");
+    if ($theme->page_type == "photoannotationuserprofile")  {
+      return new View("photoannotation_user_profile.html");
     }
   }
 }
