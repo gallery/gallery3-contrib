@@ -300,7 +300,7 @@
             $("input#photoannotation-user-list").text("");
           }
         });
-        $("select#photoannotation-user-list").keyup(function() {
+        $("input#photoannotation-user-list").keyup(function() {
           if ($("select#photoannotation-user-list").val() != "-1") {
             $("input#image-annotate-tag-text").html("");
             $("input#image-annotate-tag-text").val("");
