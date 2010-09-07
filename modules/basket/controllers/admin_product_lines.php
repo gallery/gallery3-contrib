@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,35 +41,35 @@ class Admin_Product_Lines_Controller extends Controller
     access::verify_csrf();
 
     $form = product::get_add_form_admin();
-    try {
-      $valid = $form->validate();
-      $product = ORM::factory("product");
-      $product->name = $form->add_product->inputs["name"]->value;
-      $product->description = $form->add_product->description->value;
-      $product->postage_band_id = $form->add_product->postage_band->value;
-      $product->validate();
-    } catch (ORM_Validation_Exception $e) {
-      // Translate ORM validation errors into form error messages
-      foreach ($e->validation->errors() as $key => $error) {
-        $form->add_product->inputs[$key]->add_error($error, 1);
-      }
+    $valid = $form->validate();
+    $name = $form->add_product->inputs["name"]->value;
+    $product = ORM::factory("product")->where("name", "=", $name)->find();
+    if ($product->loaded()) {
+      $form->add_product->inputs["name"]->add_error("in_use", 1);
       $valid = false;
     }
 
     if ($valid) {
+      $product = product::create(
+        $name,
+        $form->add_product->cost->value,
+        $form->add_product->description->value,
+        $form->add_product->postage_band->value
+        );
+
       $product->save();
       message::success(t("Created product %product_name", array(
         "product_name" => html::clean($product->name))));
-      json::reply(array("result" => "success"));
+      print json::reply(array("result" => "success"));
     } else {
-      json::reply(array("result" => "error", "html" => (string)$form));
+      print $form;
     }
   }
 
   public function delete_product_form($id) {
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
-      throw new Kohana_404_Exception();
+      kohana::show_404();
     }
     print product::get_delete_form_admin($product);
   }
@@ -77,13 +77,9 @@ class Admin_Product_Lines_Controller extends Controller
   public function delete_product($id) {
     access::verify_csrf();
 
-    if ($id == user::active()->id || $id == user::guest()->id) {
-      access::forbidden();
-    }
-
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
-      throw new Kohana_404_Exception();
+      kohana::show_404();
     }
 
     $form = product::get_delete_form_admin($product);
@@ -91,13 +87,13 @@ class Admin_Product_Lines_Controller extends Controller
       $name = $product->name;
       $product->delete();
     } else {
-      json::reply(array("result" => "error", "html" => (string)$form));
+      print $form;
     }
 
     $message = t("Deleted user %product_name", array("product_name" => html::clean($name)));
     log::success("user", $message);
     message::success($message);
-    json::reply(array("result" => "success"));
+    print json::reply(array("result" => "success"));
   }
 
   public function edit_product($id) {
@@ -105,39 +101,44 @@ class Admin_Product_Lines_Controller extends Controller
 
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
-      throw new Kohana_404_Exception();
+      kohana::show_404();
     }
 
     $form = product::get_edit_form_admin($product);
-    try {
-      $valid = $form->validate();
-      $product->name = $form->edit_product->inputs["name"]->value;
-      $product->cost = $form->edit_product->cost->value;
-      $product->description = $form->edit_product->description->value;
-      $product->postage_band_id = $form->edit_product->postage_band->value;
-      $product->validate();
-    } catch (ORM_Validation_Exception $e) {
-      // Translate ORM validation errors into form error messages
-      foreach ($e->validation->errors() as $key => $error) {
-        $form->edit_product->inputs[$key]->add_error($error, 1);
+    $valid = $form->validate();
+    if ($valid) {
+      $new_name = $form->edit_product->inputs["name"]->value;
+      if ($new_name != $product->name &&
+          ORM::factory("product")
+          ->where("name", "=", $new_name)
+          ->where("id","!=", $product->id)
+          ->find()
+          ->loaded()) {
+        $form->edit_product->inputs["name"]->add_error("in_use", 1);
+        $valid = false;
+      } else {
+        $product->name = $new_name;
       }
-      $valid = false;
     }
 
     if ($valid) {
+      $product->cost = $form->edit_product->cost->value;
+      $product->description = $form->edit_product->description->value;
+      $product->postage_band_id = $form->edit_product->postage_band->value;
       $product->save();
+
       message::success(t("Changed product %product_name",
           array("product_name" => html::clean($product->name))));
-      json::reply(array("result" => "success"));
+      print json::reply(array("result" => "success"));
     } else {
-      json::reply(array("result" => "error", "html" => (string)$form));
+      print $form;
     }
   }
 
   public function edit_product_form($id) {
     $product = ORM::factory("product", $id);
     if (!$product->loaded()) {
-      throw new Kohana_404_Exception();
+      kohana::show_404();
     }
 
     $form = product::get_edit_form_admin($product);

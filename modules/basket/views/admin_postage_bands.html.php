@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 <div class="gBlock">
 
   <a href="<?= url::site("admin/postage_bands/add_postage_band_form") ?>"
-     class="g-dialog-link g-button-link right ui-icon-left ui-state-default ui-corner-all"
-     title="<?= t("Create a new Postage Band") ?>">
+      class="g-dialog-link g-button right ui-icon-left ui-state-default ui-corner-all"
+      title="<?= t("Create a new Postage Band") ?>">
     <span class="ui-icon ui-icon-circle-plus"></span>
     <?= t("Add a new Postage Band") ?>
   </a>
@@ -31,44 +31,41 @@
     <?= t("Postage Bands") ?>
   </h2>
 
-  <div class="gBlockContent">
-    <table id="gPostageAdminList">
+  <div class="g-block-content">
+    <table id="g-postage-admin-list">
       <tr>
-        <th><?= t("Name") ?></th>
+  <th><?= t("Name") ?></th>
         <th><?= t("Flat Rate") ?></th>
         <th><?= t("Per Item") ?></th>
         <th><?= t("Actions") ?></th>
 
       </tr>
       <? foreach ($postage_bands as $i => $postage_band): ?>
-      <tr id="gProduct-<?= $postage_band->id ?>" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
+      <tr id="g-product-<?= $postage_band->id ?>" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
         <td id="product-<?= $postage_band->id ?>" class="core-info ">
           <?= html::clean($postage_band->name) ?>
+  </td>
+  <td>
+    <?= basket::formatMoneyForWeb($postage_band->flat_rate) ?>
         </td>
-        <td>
-          <?= basket::formatMoney($postage_band->flat_rate) ?>
-        </td>
-        <td>
-          <?= basket::formatMoney($postage_band->per_item) ?>
-        </td>
-        <td class="gActions">
-          <a href="<?= url::site("admin/postage_bands/edit_postage_band_form/$postage_band->id") ?>"
-            open_text="<?= t("close") ?>"
-            class="g-panel-link g-button-link ui-state-default ui-corner-all ui-icon-left">
-            <span class="ui-icon ui-icon-pencil"></span>
-            <?= t("edit") ?>
-          </a>
+  <td>
+    <?= basket::formatMoneyForWeb($postage_band->per_item) ?>
+  </td>
+    <td class="g-actions">
+      <a href="<?= url::site("admin/postage_bands/edit_postage_band_form/$postage_band->id") ?>"
+          open_text="<?= t("close") ?>"
+          class="g-panel-link g-button ui-state-default ui-corner-all ui-icon-left">
+          <span class="ui-icon ui-icon-pencil"></span><?= t("edit") ?></a>
 
-          <a href="<?= url::site("admin/postage_bands/delete_postage_band_form/$postage_band->id") ?>"
-            class="g-dialog-link g-button-link ui-state-default ui-corner-all ui-icon-left">
-            <span class="ui-icon ui-icon-trash"></span>
-            <?= t("delete") ?>
-          </a>
-        </td>
+      <a href="<?= url::site("admin/postage_bands/delete_postage_band_form/$postage_band->id") ?>"
+          class="g-dialog-link g-button ui-state-default ui-corner-all ui-icon-left">
+            <span class="ui-icon ui-icon-trash"></span><?= t("delete") ?></a>
 
-      </tr>
+      </td>
+
+  </tr>
       <? endforeach ?>
-    </table>
+   </table>
   </div>
 
 </div>
