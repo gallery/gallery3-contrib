@@ -18,6 +18,62 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class photoannotation_Core {
+  static function search_user($q, $page_size, $offset) {
+    $db = Database::instance();
+    $q = trim($q, "*");
+    $q = $db->escape($q) ."*";
+    if ($q == "*") {
+      $users = ORM::factory("user");
+      $count = $users->count_all();
+      $data = $users->order_by("name", "ASC")->find_all($page_size, $offset);
+      return array($count, $data);
+    } else {
+      $query =
+        "SELECT SQL_CALC_FOUND_ROWS {users}.*, " .
+        "  MATCH({users}.`name`) AGAINST ('$q' IN BOOLEAN MODE) AS `score` " .
+        "FROM {users} " .
+        "WHERE MATCH({users}.`name`) AGAINST ('$q' IN BOOLEAN MODE) " .
+        "ORDER BY `score` DESC " .
+        "LIMIT $page_size OFFSET $offset";
+      $data = $db->query($query);
+      $count = $db->query("SELECT FOUND_ROWS() as c")->current()->c;
+      return array($count, new ORM_Iterator(ORM::factory("user"), $data));
+    }
+  }
+
+  static function get_user_search_form($form_id) {
+    $form = new Forge("photoannotation/showuser/{$item->id}", "", "post", array("id" => $form_id, "class" => "g-short-form"));
+    $label = t("Type user name");
+
+    $group = $form->group("showuser")->label("Search for a user");
+    $group->input("name")->label($label)->id("name");
+    $group->submit("")->value(t("Search"));
+    return $form;
+  }
+
+  public static function getuser($user_string) {
+    $user_parts = explode("(", $user_string);
+    $user_part = rtrim(ltrim(end($user_parts)), ")");
+    $user = ORM::factory("user")->where("name", "=", $user_part)->find();
+    $user_firstpart = trim(implode(array_slice($user_parts, 0, count($user_parts)-1)));
+    if (!$user->loaded() || strcasecmp($user_firstpart, $user->display_name()) <> 0) {
+      $result->found = false;
+      $result->isguest = false;
+      $result->user = "";
+      return $result;
+    }
+    if (identity::guest()->id == $user->id) {
+      $result->found = true;
+      $result->isguest = true;
+      $result->user = "";
+      return $result;
+    }
+    $result->found = true;
+    $result->isguest = false;
+    $result->user = $user;
+    return $result;
+  }
+
   public static function saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description) {
     //Since we are associating a user we will remove any old annotation of this user on this photo
     $item_old_users = ORM::factory("items_user")
@@ -201,5 +257,17 @@ class photoannotation_Core {
       }
       return $cloud;
     }
+  }
+
+  static function comment_count($user_id) {
+    if (module::is_active("comment")) {
+      return ORM::factory("comment")->where("author_id", "=", $user_id)->count_all();
+    } else {
+      return false;
+    }
+  }
+  
+  static function annotation_count($user_id) {
+    return ORM::factory("items_user")->where("user_id", "=", $user_id)->count_all();
   }
 }

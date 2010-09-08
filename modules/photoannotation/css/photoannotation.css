@@ -1,4 +1,8 @@
-/* Tag cloud ~~~~~~~~~~~~~~~~~~~~~~~ */
+.photoannotation-user-search {
+  border-bottom-style:solid;
+  border-bottom-width:1px;
+  padding: 0.8em 0.8em !important;
+}
 
 #g-user-cloud ul {
   font-size: 1.2em;

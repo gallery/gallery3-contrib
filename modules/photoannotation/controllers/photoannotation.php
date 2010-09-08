@@ -18,6 +18,50 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class photoannotation_Controller extends Controller {
+  public function showuser($item_id) {
+    $form = photoannotation::get_user_search_form("g-user-cloud-form");
+    $user_id = Input::instance()->get("name", "");
+    if ($user_id == "") {
+      $user_id = Input::instance()->post("name", "");
+    }
+    $getuser = photoannotation::getuser($user_id);
+    if ($getuser->found) {
+      url::redirect(user_profile::url($getuser->user->id));
+      return;
+    }
+    $page_size = module::get_var("gallery", "page_size", 9);
+    $page = Input::instance()->get("page", 1);
+    $offset = ($page - 1) * $page_size;
+
+    // Make sure that the page references a valid offset
+    if ($page < 1) {
+      $page = 1;
+    }
+    list ($count, $result) = photoannotation::search_user($user_id, $page_size, $offset);
+    $max_pages = max(ceil($count / $page_size), 1);
+    if ($page > 1) {
+      $previous_page_url = url::site("photoannotation/showuser/". $item_id ."?name=". $user_id ."&amp;page=". ($page - 1));
+    }
+    if ($page < $max_pages) {
+      $next_page_url = url::site("photoannotation/showuser/". $item_id ."?name=". $user_id ."&amp;page=". ($page + 1));
+    }
+    if ($user_id == "") {
+      $user_id = "*";
+    }
+    $template = new Theme_View("page.html", "other", "usersearch");
+    $template->set_global("position", $page);
+    $template->set_global("total", $max_pages);
+    $template->content = new View("photoannotation_user_search.html");      
+    $template->content->search_form = photoannotation::get_user_search_form(g-user-search-form); 
+    $template->content->users = $result;
+    $template->content->q = $user_id;
+    $template->content->count = $count;
+    $template->content->paginator = new View("paginator.html");      
+    $template->content->paginator->previous_page_url = $previous_page_url;
+    $template->content->paginator->next_page_url = $next_page_url;      
+    print $template;
+  }
+
   public function save($item_id) {
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
@@ -37,21 +81,18 @@ class photoannotation_Controller extends Controller {
     $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
     //If this is a user then get the id
     if ($user_id != "") {
-      $user_parts = explode("(", $user_id);
-      $user_part = rtrim(ltrim(end($user_parts)), ")");
-      $user = ORM::factory("user")->where("name", "=", $user_part)->find();
-      $user_firstpart = trim(implode(array_slice($user_parts, 0, count($user_parts)-1)));
-      if (!$user->loaded() || strcasecmp($user_firstpart, $user->display_name()) <> 0) {
+      $getuser = photoannotation::getuser($user_id);
+      if (!$getuser->found) {
         message::error(t("Could not find user %user.", array("user" => $user_id)));
         url::redirect($redir_uri);
         return;
       }
-      if (strcasecmp($user->name, "guest") == 0) {
+      if ($getuser->isguest) {
         message::error(t("You cannot create an annotation for the guest user."));
         url::redirect($redir_uri);
         return;
       }
-      $user_id = $user->id;
+      $user_id = $getuser->user->id;
     }
     
     //Add tag to item, create tag if not exists

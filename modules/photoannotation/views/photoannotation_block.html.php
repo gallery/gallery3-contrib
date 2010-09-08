@@ -9,15 +9,6 @@
         cacheLength: 1
       }
     );
-    $("#g-user-cloud-form").ajaxForm({
-      dataType: "json",
-      success: function(data) {
-        if (data.result == "success") {
-          $("#g-user-cloud").html(data.cloud);
-        }
-        $("#g-add-user-form").resetForm();
-      }
-    });
   });
 </script>
 <div id="g-user-cloud" ref="<?= url::site("photoannotation") ?>">
