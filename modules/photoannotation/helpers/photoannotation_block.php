@@ -24,15 +24,17 @@ class photoannotation_block_Core {
 
   static function get($block_id, $theme) {
     $block = "";
-    switch ($block_id) {
-    case "photoannotation":
-      $block = new Block();
-      $block->css_id = "g-photoannotation";
-      $block->title = t("Users");
-      $block->content = new View("photoannotation_block.html");
-      $block->content->cloud = photoannotation::cloud(30);
-      $block->content->form = photoannotation::get_user_search_form("g-user-cloud-form");
+    if (!identity::active_user()->guest || module::get_var("photoannotation", "allowguestsearch", false)) {
+      switch ($block_id) {
+      case "photoannotation":
+        $block = new Block();
+        $block->css_id = "g-photoannotation";
+        $block->title = t("Users");
+        $block->content = new View("photoannotation_block.html");
+        $block->content->cloud = photoannotation::cloud(30);
+        $block->content->form = photoannotation::get_user_search_form("g-user-cloud-form");
       }
+    }
     return $block;
   }
 }

@@ -171,6 +171,12 @@ class photoannotation_Core {
         case "newcomment":
           //Only send if user has this option enabled
           if ($notification_settings->comment) {
+            //Don't send if the notification module is active and the user is watching this item
+            if (module::is_active("notification")) {
+              if (notification::is_watching($item, $recipient)) {
+                return false;
+              }
+            }
             //Get subject and body and send the mail
             $subject = module::get_var("photoannotation", "newcommentsubject", "Someone added a comment to photo of you");
             $body = module::get_var("photoannotation", "newcommentbody", "Hello %name, please visit %url to read the comment.");
@@ -181,6 +187,12 @@ class photoannotation_Core {
         case "updatecomment":
           //Only send if user has this option enabled
           if ($notification_settings->comment) {
+            //Don't send if the notification module is active and the user is watching this item
+            if (module::is_active("notification")) {
+              if (notification::is_watching($item, $recipient)) {
+                return false;
+              }
+            }
             //Get subject and body and send the mail
             $subject = module::get_var("photoannotation", "updatedcommentsubject", "Someone updated a comment to photo of you");
             $body = module::get_var("photoannotation", "updatedcommentbody", "Hello %name, please visit %url to read the comment.");

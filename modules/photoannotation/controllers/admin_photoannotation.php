@@ -90,6 +90,8 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       module::set_var(
         "photoannotation", "notificationoptout", $form->notifications->notificationoptout->value, true);
       module::set_var(
+        "photoannotation", "allowguestsearch", $form->notifications->allowguestsearch->value, true);
+      module::set_var(
         "photoannotation", "newtagsubject", strip_tags($form->newtagmail->newtagsubject->value));
       module::set_var(
         "photoannotation", "newtagbody", strip_tags($form->newtagmail->newtagbody->value));
@@ -251,19 +253,21 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       ->value(module::get_var("photoannotation", "hovercolor", "990000"))
       ->rules("valid_alpha_numeric|length[6]");
     $group = $form->group("legendsettings")->label(t("Legend settings"));
-    $group->checkbox("showusers")->label(t("Show face annotation below photo."))
+    $group->checkbox("showusers")->label(t("Show user annotations below photo."))
       ->checked(module::get_var("photoannotation", "showusers", false));	
-    $group->checkbox("showfaces")->label(t("Show face annotation below photo."))
+    $group->checkbox("showfaces")->label(t("Show tag annotations below photo."))
       ->checked(module::get_var("photoannotation", "showfaces", false));	
     $group->checkbox("shownotes")->label(t("Show note annotations below photo."))
       ->checked(module::get_var("photoannotation", "shownotes", false));	
     $group->checkbox("fullname")->label(t("Show full name of a user instead of the username on annotations (username will be dispayed for users without a full name)."))
       ->checked(module::get_var("photoannotation", "fullname", false));	
-    $group = $form->group("notifications")->label(t("Notification settings"));
+    $group = $form->group("notifications")->label(t("Notification and user cloud settings"));
     $group->checkbox("nonotifications")->label(t("Disable user notifications."))
       ->checked(module::get_var("photoannotation", "nonotifications", false));	
     $group->checkbox("notificationoptout")->label(t("Notify users by default (only applies to new users and user who have not saved their profile after installing this module)."))
       ->checked(module::get_var("photoannotation", "notificationoptout", false));	
+    $group->checkbox("allowguestsearch")->label(t("Show user cloud and allow user search for guests."))
+      ->checked(module::get_var("photoannotation", "allowguestsearch", false));	
     $group = $form->group("newtagmail")->label(t("Customize the mail sent to users when a user annotation is created"));
     $group->input("newtagsubject")->label(t("Subject"))
       ->value(module::get_var("photoannotation", "newtagsubject", "Someone tagged a photo of you"));	

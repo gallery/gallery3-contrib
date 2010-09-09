@@ -18,7 +18,12 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class photoannotation_Controller extends Controller {
-  public function showuser($item_id) {
+  public function showuser() {
+    if (identity::active_user()->guest && !module::get_var("photoannotation", "allowguestsearch", false)) {
+      message::error(t("You have to log in to perform a user search."));
+      url::redirect(url::site());
+      return;
+    }
     $form = photoannotation::get_user_search_form("g-user-cloud-form");
     $user_id = Input::instance()->get("name", "");
     if ($user_id == "") {
@@ -40,10 +45,10 @@ class photoannotation_Controller extends Controller {
     list ($count, $result) = photoannotation::search_user($user_id, $page_size, $offset);
     $max_pages = max(ceil($count / $page_size), 1);
     if ($page > 1) {
-      $previous_page_url = url::site("photoannotation/showuser/". $item_id ."?name=". $user_id ."&amp;page=". ($page - 1));
+      $previous_page_url = url::site("photoannotation/showuser?name=". $user_id ."&amp;page=". ($page - 1));
     }
     if ($page < $max_pages) {
-      $next_page_url = url::site("photoannotation/showuser/". $item_id ."?name=". $user_id ."&amp;page=". ($page + 1));
+      $next_page_url = url::site("photoannotation/showuser?name=". $user_id ."&amp;page=". ($page + 1));
     }
     if ($user_id == "") {
       $user_id = "*";
