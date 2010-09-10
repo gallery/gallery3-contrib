@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,12 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 ?>
-  <? if ($theme->page_subtype != 'basket'): ?>
+
+  <? if ($theme->page_type != 'basket'): ?>
+  <? if (basket::can_view_orders()): ?>
+    <a href="<?= url::site("basket/view_Orders") ?>"
+       title="<?= t("View Orders") ?>">View Orders</a>
+  <? endif?>
   <? if (isset($basket) && isset($basket->contents) && ($basket->size() > 0)): ?>
 <div id="basket">
     <a href="<?= url::site("basket/view_basket") ?>"

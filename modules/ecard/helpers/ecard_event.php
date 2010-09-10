@@ -22,7 +22,7 @@ class ecard_event_Core {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
                ->id("ecard")
-               ->label(t("eCard Settings"))
+               ->label(t("eCard settings"))
                ->url(url::site("admin/ecard")));
   }
 

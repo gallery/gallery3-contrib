@@ -56,6 +56,7 @@ class ecard_Core {
       ->error_messages("required", t("You must enter a message"));
     $group->hidden("item_id")->value($item->id);
     module::event("ecard_send_form", $form);
+    module::event("captcha_protect_form", $form);
     $group->submit("")->value(t("Send"))->class("ui-state-default ui-corner-all");
 
     return $form;

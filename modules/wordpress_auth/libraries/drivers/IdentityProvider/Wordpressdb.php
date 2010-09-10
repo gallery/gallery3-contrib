@@ -205,14 +205,14 @@ class IdentityProvider_Wordpressdb_Driver implements IdentityProvider_Driver {
     /**
      * @see IdentityProvider_Driver::add_user_to_group.
      */
-    static function add_user_to_group($user, $group_id) {
+    function add_user_to_group($user, $group) {
         throw new Exception("@todo INVALID OPERATION");
     }
 
     /**
      * @see IdentityProvider_Driver::remove_user_to_group.
      */
-    static function remove_user_from_group($user, $group_id) {
+    function remove_user_from_group($user, $group) {
         throw new Exception("@todo INVALID OPERATION");
     }
 } // End Identity Gallery Driver
@@ -267,7 +267,7 @@ class Wordpress_User implements User_Definition {
                 }
                 $this->admin = false;
                 return $this->admin;
-                
+
             case "email":
                 return $this->user_info['user_email'];
 

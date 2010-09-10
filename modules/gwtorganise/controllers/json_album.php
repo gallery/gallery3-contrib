@@ -310,7 +310,7 @@ class Json_Album_Controller extends Controller {
       $i++;
     }
 
-    json::reply($toreturn);
+    print json_encode($toreturn);
   }
 
 
@@ -322,7 +322,7 @@ class Json_Album_Controller extends Controller {
 
     $item = $this->p_rotate($item, $dir);
 
-    json::reply(self::child_json_encode($item));
+    print json_encode(self::child_json_encode($item));
   }
 
   public function resize_config(){
@@ -338,5 +338,4 @@ class Json_Album_Controller extends Controller {
       json::reply(array("resize" => false));
     }
   }
-
 }
