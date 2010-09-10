@@ -13,7 +13,8 @@
  *  6)  jQuery and jQuery UI
  *  7)  Forms
  *  8)  States and interactions
- *  9)  Right-to-left language styles
+ *  9)  Organize module style
+ * 10)  Right-to-left language styles
  */
 
 /** *******************************************************************
@@ -762,7 +763,27 @@ form .g-error {
 }
 
 /** *******************************************************************
- * 9) Right to left language styles
+ * 9) Organize module style
+ *********************************************************************/
+#g-organize {
+  background-color: #<?= $bgColorContent ?>;
+  border: 0px solid #<?= $borderColorContent ?>;
+  color: #<?= $fcContent ?>;
+}
+
+#g-organize-hover {
+  background-color: #<?= $bgColorHover ?>;
+  display: none;
+}
+
+#g-organize-active {
+  background-color: #<?= $bgColorHighlight ?>;
+  display: none;
+}
+
+
+/** *******************************************************************
+ * 10) Right to left language styles
  *********************************************************************/
 
 .rtl #g-header #g-login-menu,
