@@ -433,12 +433,25 @@ td {
 
 .g-allowed a {
   background-image: url("themeroller/images/ui-icons_<?= $iconColorHighlight ?>_256x240.png") !important;
+  display:inline-block;
   margin: auto;
 }
 
 .g-denied a {
   background-image: url("themeroller/images/ui-icons_<?= $iconColorError ?>_256x240.png") !important;
+  display:inline-block;
   margin: auto;
+}
+
+.g-denied a.g-passive,
+.g-allowed a.g-passive {
+  filter:Alpha(Opacity=35);
+  opacity: .55;
+}
+
+#g-permissions .g-active a {
+  border: 1px solid #<?= $borderColorActive ?>;
+  background: #<?= $bgColorActive ?>;
 }
 
 /** *******************************************************************
