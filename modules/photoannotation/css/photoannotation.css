@@ -1,3 +1,75 @@
+.photoannotation-user-search {
+  border-bottom-style:solid;
+  border-bottom-width:1px;
+  padding: 0.8em 0.8em !important;
+}
+
+#g-user-cloud ul {
+  font-size: 1.2em;
+  text-align: justify;
+}
+
+#g-user-cloud ul li {
+  display: inline;
+  line-height: 1.5em;
+  text-align: justify;
+}
+
+#g-user-cloud ul li a {
+  text-decoration: none;
+}
+
+#g-user-cloud ul li span {
+  display: none;
+}
+
+#g-user-cloud ul li.size1 a {
+  color: #9cf;
+  font-size: 80%;
+  font-weight: 100;
+}
+
+#g-user-cloud ul li.size2 a {
+  color: #69f;
+  font-size: 90%;
+  font-weight: 300;
+}
+
+#g-user-cloud ul li.size3 a {
+  color: #69c;
+  font-size: 100%;
+  font-weight: 500;
+}
+
+#g-user-cloud ul li.size4 a {
+  color: #369;
+  font-size: 110%;
+  font-weight: 700;
+}
+
+#g-user-cloud ul li.size5 a {
+  color: #0e2b52;
+  font-size: 120%;
+  font-weight: 900;
+}
+
+#g-user-cloud ul li.size6 a {
+  color: #0e2b52;
+  font-size: 130%;
+  font-weight: 900;
+}
+
+#g-user-cloud ul li.size7 a {
+  color: #0e2b52;
+  font-size: 140%;
+  font-weight: 900;
+}
+
+#g-user-cloud ul li a:hover {
+  color: #f30;
+  text-decoration: underline;
+}
+
 .image-annotate-canvas {
     background-position: left top;
     background-repeat: no-repeat;

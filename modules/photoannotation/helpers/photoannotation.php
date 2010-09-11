@@ -18,6 +18,62 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class photoannotation_Core {
+  static function search_user($q, $page_size, $offset) {
+    $db = Database::instance();
+    $q = trim($q, "*");
+    $q = $db->escape($q) ."*";
+    if ($q == "*") {
+      $users = ORM::factory("user");
+      $count = $users->count_all();
+      $data = $users->order_by("name", "ASC")->find_all($page_size, $offset);
+      return array($count, $data);
+    } else {
+      $query =
+        "SELECT SQL_CALC_FOUND_ROWS {users}.*, " .
+        "  MATCH({users}.`name`) AGAINST ('$q' IN BOOLEAN MODE) AS `score` " .
+        "FROM {users} " .
+        "WHERE MATCH({users}.`name`) AGAINST ('$q' IN BOOLEAN MODE) " .
+        "ORDER BY `score` DESC " .
+        "LIMIT $page_size OFFSET $offset";
+      $data = $db->query($query);
+      $count = $db->query("SELECT FOUND_ROWS() as c")->current()->c;
+      return array($count, new ORM_Iterator(ORM::factory("user"), $data));
+    }
+  }
+
+  static function get_user_search_form($form_id) {
+    $form = new Forge("photoannotation/showuser/{$item->id}", "", "post", array("id" => $form_id, "class" => "g-short-form"));
+    $label = t("Type user name");
+
+    $group = $form->group("showuser")->label("Search for a user");
+    $group->input("name")->label($label)->id("name");
+    $group->submit("")->value(t("Search"));
+    return $form;
+  }
+
+  public static function getuser($user_string) {
+    $user_parts = explode("(", $user_string);
+    $user_part = rtrim(ltrim(end($user_parts)), ")");
+    $user = ORM::factory("user")->where("name", "=", $user_part)->find();
+    $user_firstpart = trim(implode(array_slice($user_parts, 0, count($user_parts)-1)));
+    if (!$user->loaded() || strcasecmp($user_firstpart, $user->display_name()) <> 0) {
+      $result->found = false;
+      $result->isguest = false;
+      $result->user = "";
+      return $result;
+    }
+    if (identity::guest()->id == $user->id) {
+      $result->found = true;
+      $result->isguest = true;
+      $result->user = "";
+      return $result;
+    }
+    $result->found = true;
+    $result->isguest = false;
+    $result->user = $user;
+    return $result;
+  }
+
   public static function saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description) {
     //Since we are associating a user we will remove any old annotation of this user on this photo
     $item_old_users = ORM::factory("items_user")
@@ -94,6 +150,10 @@ class photoannotation_Core {
     }
     //Only send mail if the notifications are switched on globally
     if (!module::get_var("photoannotation", "nonotifications", false)) {
+      //Check if the use has a valid e-mail
+      if (!valid::email($recipient->email)) {
+        return false;
+      }
       //Get the users settings
       $notification_settings = self::get_user_notification_settings($recipient);
       //Check which type of mail to send
@@ -111,6 +171,12 @@ class photoannotation_Core {
         case "newcomment":
           //Only send if user has this option enabled
           if ($notification_settings->comment) {
+            //Don't send if the notification module is active and the user is watching this item
+            if (module::is_active("notification")) {
+              if (notification::is_watching($item, $recipient)) {
+                return false;
+              }
+            }
             //Get subject and body and send the mail
             $subject = module::get_var("photoannotation", "newcommentsubject", "Someone added a comment to photo of you");
             $body = module::get_var("photoannotation", "newcommentbody", "Hello %name, please visit %url to read the comment.");
@@ -121,6 +187,12 @@ class photoannotation_Core {
         case "updatecomment":
           //Only send if user has this option enabled
           if ($notification_settings->comment) {
+            //Don't send if the notification module is active and the user is watching this item
+            if (module::is_active("notification")) {
+              if (notification::is_watching($item, $recipient)) {
+                return false;
+              }
+            }
             //Get subject and body and send the mail
             $subject = module::get_var("photoannotation", "updatedcommentsubject", "Someone updated a comment to photo of you");
             $body = module::get_var("photoannotation", "updatedcommentbody", "Hello %name, please visit %url to read the comment.");
@@ -134,6 +206,7 @@ class photoannotation_Core {
   
   private static function _send_mail($mailto, $subject, $message) {
     //Send the notification mail
+    $message = nl2br($message);
     return Sendmail::factory()
       ->to($mailto)
       ->subject($subject)
@@ -167,5 +240,46 @@ class photoannotation_Core {
       }
     }
     return $user_array;
+  }
+  
+  static function cloud($count) {
+    $users = ORM::factory("user")->order_by("name", "ASC")->find_all();
+    if ($users) {
+      $cloud = new View("photoannotation_cloud.html");
+      $fullname = module::get_var("photoannotation", "fullname", false);
+      foreach ($users as $user) {
+        $annotations = ORM::factory("items_user")->where("user_id", "=", $user->id)->count_all();
+        if ($annotations > 0) {
+          if ($annotations > $maxcount) {
+            $maxcount = $annotations;
+          }
+          if ($fullname) {
+            $user_array[$user->name]->name = $user->display_name();
+          } else {
+            $user_array[$user->name]->name = $user->name;
+          }
+          $user_array[$user->name]->size = $annotations;
+          $user_array[$user->name]->url = user_profile::url($user->id);
+        }
+      }
+      $cloud->users = array_slice($user_array, 0, $count);
+      $cloud->max_count = $maxcount;
+      if (!$cloud->max_count) {
+        return;
+      }
+      return $cloud;
+    }
+  }
+
+  static function comment_count($user_id) {
+    if (module::is_active("comment")) {
+      return ORM::factory("comment")->where("author_id", "=", $user_id)->count_all();
+    } else {
+      return false;
+    }
+  }
+  
+  static function annotation_count($user_id) {
+    return ORM::factory("items_user")->where("user_id", "=", $user_id)->count_all();
   }
 }

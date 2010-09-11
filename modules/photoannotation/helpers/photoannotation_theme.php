@@ -19,9 +19,9 @@
  */
 class photoannotation_theme_Core {
   static function head($theme) {
+    $theme->css("photoannotation.css");
     if ($theme->page_subtype == "photo") {
-      $theme->css("photoannotation.css");
-      $theme->script("jquery.annotate.js");
+      $theme->script("jquery.annotate.min.js");
       $noborder = module::get_var("photoannotation", "noborder", false);
       $noclickablehover = module::get_var("photoannotation", "noclickablehover", false);
       $nohover = module::get_var("photoannotation", "nohover", false);
@@ -74,7 +74,7 @@ class photoannotation_theme_Core {
   static function admin_head($theme) {
     if (strpos($theme->content->kohana_filename, "admin_photoannotation.html.php")) {
       $theme->css("colorpicker.css");
-      $theme->script("colorpicker.js");
+      $theme->script("jquery.colorpicker.min.js");
     }
   }
 

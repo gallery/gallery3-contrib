@@ -48,16 +48,33 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       }
       //Load all existing tag annotations
       $tag_annotations = ORM::factory("items_face")->where("tag_id", "=", $sourcetag->id)->find_all();
-      
+      //Disable user notifications so that users don't get flooded with mails
+      $old_notification_setting = module::get_var("photoannotation", "nonotifications", false);
+      module::set_var("photoannotation", "nonotifications", true, true);
       foreach ($tag_annotations as $tag_annotation) {
         photoannotation::saveuser($targetuser->id, $tag_annotation->item_id, $tag_annotation->x1, $tag_annotation->y1, $tag_annotation->x2, $tag_annotation->y2, $tag_annotation->description);
         //Delete the old annotation
         $tag_annotation->delete();
       }
+      //Remove and delete old tag
+      if ($form->deletetag->value) {
+        $this->_remove_tag($sourcetag, true);
+      } elseif ($form->removetag->value) {
+        $this->_remove_tag($sourcetag, false);
+      }
+      module::set_var("photoannotation", "nonotifications", $old_notification_setting, true);
       message::success(t("%count tag annotations (%tagname) have been converted to user annotations (%username)", array("count" => count($tag_annotations), "tagname" => $sourcetag->name, "username" => $targetuser->display_name())));
       url::redirect("admin/photoannotation/converter");
     }
     print $this->_get_converter_view($form);
+  }
+  
+  private function _remove_tag($tag, $delete) {
+    $name = $tag->name;
+    db::build()->delete("items_tags")->where("tag_id", "=", $tag->id)->execute();
+    if ($delete) {
+      $tag->delete();
+    }
   }
 
   public function handler() {
@@ -90,17 +107,19 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       module::set_var(
         "photoannotation", "notificationoptout", $form->notifications->notificationoptout->value, true);
       module::set_var(
-        "photoannotation", "newtagsubject", $form->newtagmail->newtagsubject->value);
+        "photoannotation", "allowguestsearch", $form->notifications->allowguestsearch->value, true);
       module::set_var(
-        "photoannotation", "newtagbody", $form->newtagmail->newtagbody->value);
+        "photoannotation", "newtagsubject", strip_tags($form->newtagmail->newtagsubject->value));
       module::set_var(
-        "photoannotation", "newcommentsubject", $form->newcommentmail->newcommentsubject->value);
+        "photoannotation", "newtagbody", strip_tags($form->newtagmail->newtagbody->value));
       module::set_var(
-        "photoannotation", "newcommentbody", $form->newcommentmail->newcommentbody->value);
+        "photoannotation", "newcommentsubject", strip_tags($form->newcommentmail->newcommentsubject->value));
       module::set_var(
-        "photoannotation", "updatedcommentsubject", $form->updatedcommentmail->updatedcommentsubject->value);
+        "photoannotation", "newcommentbody", strip_tags($form->newcommentmail->newcommentbody->value));
       module::set_var(
-        "photoannotation", "updatedcommentbody", $form->updatedcommentmail->updatedcommentbody->value);
+        "photoannotation", "updatedcommentsubject", strip_tags($form->updatedcommentmail->updatedcommentsubject->value));
+      module::set_var(
+        "photoannotation", "updatedcommentbody", strip_tags($form->updatedcommentmail->updatedcommentbody->value));
       module::set_var(
         "photoannotation", "onuserdelete", $form->onuserdelete->onuserdelete->value);
       message::success(t("Your settings have been saved."));
@@ -221,6 +240,8 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       ->options($tag_array);	
     $form->dropdown("targetuser")->label(t("Select user"))
       ->options($user_array);	
+    $form->checkbox("deletetag")->label(t("Delete the tag after conversion."));	
+    $form->checkbox("removetag")->label(t("Remove the tag from photos after conversion."));	
     $form->submit("submit")->value(t("Convert"));
     return $form;
   }
@@ -251,19 +272,21 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       ->value(module::get_var("photoannotation", "hovercolor", "990000"))
       ->rules("valid_alpha_numeric|length[6]");
     $group = $form->group("legendsettings")->label(t("Legend settings"));
-    $group->checkbox("showusers")->label(t("Show face annotation below photo."))
+    $group->checkbox("showusers")->label(t("Show user annotations below photo."))
       ->checked(module::get_var("photoannotation", "showusers", false));	
-    $group->checkbox("showfaces")->label(t("Show face annotation below photo."))
+    $group->checkbox("showfaces")->label(t("Show tag annotations below photo."))
       ->checked(module::get_var("photoannotation", "showfaces", false));	
     $group->checkbox("shownotes")->label(t("Show note annotations below photo."))
       ->checked(module::get_var("photoannotation", "shownotes", false));	
     $group->checkbox("fullname")->label(t("Show full name of a user instead of the username on annotations (username will be dispayed for users without a full name)."))
       ->checked(module::get_var("photoannotation", "fullname", false));	
-    $group = $form->group("notifications")->label(t("Notification settings"));
+    $group = $form->group("notifications")->label(t("Notification and user cloud settings"));
     $group->checkbox("nonotifications")->label(t("Disable user notifications."))
       ->checked(module::get_var("photoannotation", "nonotifications", false));	
     $group->checkbox("notificationoptout")->label(t("Notify users by default (only applies to new users and user who have not saved their profile after installing this module)."))
       ->checked(module::get_var("photoannotation", "notificationoptout", false));	
+    $group->checkbox("allowguestsearch")->label(t("Show user cloud and allow user search for guests."))
+      ->checked(module::get_var("photoannotation", "allowguestsearch", false));	
     $group = $form->group("newtagmail")->label(t("Customize the mail sent to users when a user annotation is created"));
     $group->input("newtagsubject")->label(t("Subject"))
       ->value(module::get_var("photoannotation", "newtagsubject", "Someone tagged a photo of you"));	
