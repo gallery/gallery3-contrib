@@ -59,7 +59,7 @@
     }
     if ($legend_users != "") {
       $legend_users = trim($legend_users, ", ");
-      $legend_users = t("Users on this photo: ") . $legend_users;
+      $legend_users = t("People on this photo: ") . $legend_users;
     }
     foreach ($existingFaces as $oneFace) {
       $oneTag = ORM::factory("tag", $oneFace->tag_id);
@@ -110,7 +110,7 @@
     $legend_display = $legend_users . "<br />" . $legend_faces . "<br />" . $legend_notes;
     $legend_display = str_replace("<br /><br />", "<br />", $legend_display);
   }
-  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("User:") ."','". t("No user selected") ."','". t("Select one of the following") ."' ],";
+  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("Person:") ."','". t("No user selected") ."','". t("Select one of the following") ."' ],";
 ?>
 <script type="text/javascript">
       $(document).ready(function() {

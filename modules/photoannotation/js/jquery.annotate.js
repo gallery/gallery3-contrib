@@ -209,8 +209,8 @@
             newNote.noteid = "new";
             newNote.top = 30;
             newNote.left = 30;
-            newNote.width = 30;
-            newNote.height = 30;
+            newNote.width = 60;
+            newNote.height = 60;
             newNote.text = "";
             newNote.description = "";
             newNote.notetype = "";

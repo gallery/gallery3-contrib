@@ -43,9 +43,9 @@ class photoannotation_Core {
 
   static function get_user_search_form($form_id) {
     $form = new Forge("photoannotation/showuser/{$item->id}", "", "post", array("id" => $form_id, "class" => "g-short-form"));
-    $label = t("Type user name");
+    $label = t("Search for a person");
 
-    $group = $form->group("showuser")->label("Search for a user");
+    $group = $form->group("showuser")->label("Search for a person");
     $group->input("name")->label($label)->id("name");
     $group->submit("")->value(t("Search"));
     return $form;

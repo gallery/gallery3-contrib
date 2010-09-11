@@ -20,7 +20,7 @@
 class photoannotation_Controller extends Controller {
   public function showuser() {
     if (identity::active_user()->guest && !module::get_var("photoannotation", "allowguestsearch", false)) {
-      message::error(t("You have to log in to perform a user search."));
+      message::error(t("You have to log in to perform a people search."));
       url::redirect(url::site());
       return;
     }
@@ -88,7 +88,7 @@ class photoannotation_Controller extends Controller {
     if ($user_id != "") {
       $getuser = photoannotation::getuser($user_id);
       if (!$getuser->found) {
-        message::error(t("Could not find user %user.", array("user" => $user_id)));
+        message::error(t("Could not find anyone with the name %user.", array("user" => $user_id)));
         url::redirect($redir_uri);
         return;
       }
@@ -112,18 +112,18 @@ class photoannotation_Controller extends Controller {
       $tag->save();
       $tag_data = $tag->id;
     } else {
-      $tag_data = -1;
+      $tag_data = "";
     }
     //Save annotation
     if ($annotate_id == "new") {   //This is a new annotation
-      if ($user_id > -1) {              //Save user
+      if ($user_id != "") {              //Save user
         photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
-      } elseif ($tag_data > -1) {         //Conversion user -> face
-        photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
-      } elseif ($item_title != "") {   //Conversion user -> note
+      } elseif ($tag_data != "") {         //Save face
+         photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+      } elseif ($item_title != "") {   //Save note
         photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
-      } else {                            //Somethings wrong
-        message::error(t("Please select a User or Tag or specify a Title."));
+      } else {                            //Something's wrong
+        message::error(t("Please select a person or tag or specify a title."));
         url::redirect($redir_uri);
         return;
       }
@@ -133,16 +133,16 @@ class photoannotation_Controller extends Controller {
           $updateduser = ORM::factory("items_user")    //load the existing user
                             ->where("id", "=", $annotate_id)
                             ->find();
-          if ($user_id > -1) {              //Conversion user -> user
+          if ($user_id != "") {              //Conversion user -> user
             photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
-          } elseif ($tag_data > -1) {         //Conversion user -> face
+          } elseif ($tag_data != "") {         //Conversion user -> face
             photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updateduser->delete();   //delete old user
           } elseif ($item_title != "") {   //Conversion user -> note
             photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updateduser->delete();   //delete old user
           } else {                            //Somethings wrong
-            message::error(t("Please select a User or Tag or specify a Title."));
+            message::error(t("Please select a person or tag or specify a title."));
             url::redirect($redir_uri);
             return;
           }
@@ -151,16 +151,16 @@ class photoannotation_Controller extends Controller {
           $updatedface = ORM::factory("items_face")    //load the existing user
                             ->where("id", "=", $annotate_id)
                             ->find();
-          if ($user_id > -1) {              //Conversion face -> user
+          if ($user_id != "") {              //Conversion face -> user
             photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updatedface->delete();   //delete old face
-          } elseif ($tag_data > -1) {         //Conversion face -> face
+          } elseif ($tag_data != "") {         //Conversion face -> face
             photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
           } elseif ($item_title != "") {   //Conversion face -> note
             photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updatedface->delete();   //delete old face
           } else {                            //Somethings wrong
-            message::error(t("Please select a User or Tag or specify a Title."));
+            message::error(t("Please select a person or tag or specify a title."));
             url::redirect($redir_uri);
             return;
           }
@@ -169,22 +169,22 @@ class photoannotation_Controller extends Controller {
           $updatednote = ORM::factory("items_note")    //load the existing user
                             ->where("id", "=", $annotate_id)
                             ->find();
-          if ($user_id > -1) {              //Conversion note -> user
+          if ($user_id != "") {              //Conversion note -> user
             photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updatednote->delete();   //delete old note
-          } elseif ($tag_data > -1) {         //Conversion note -> face
+          } elseif ($tag_data != "") {         //Conversion note -> face
             photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updatednote->delete();   //delete old note
           } elseif ($item_title != "") {   //Conversion note -> note
             photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
           } else {                            //Somethings wrong
-            message::error(t("Please select a User or Tag or specify a Title."));
+            message::error(t("Please select a person or tag or specify a title."));
             url::redirect($redir_uri);
             return;
           }
           break;
         default:
-          message::error(t("Please select a User or Tag or specify a Title."));
+          message::error(t("Please select a person or tag or specify a title."));
           url::redirect($redir_uri);
           return;
       }
@@ -235,7 +235,8 @@ class photoannotation_Controller extends Controller {
     $user_part = ltrim(end($user_parts));
     $user_list = ORM::factory("user")
       ->where("name", "LIKE", "{$user_part}%")
-      ->order_by("name", "ASC")
+      ->or_where("full_name", "LIKE", "{$user_part}%")
+      ->order_by("full_name", "ASC")
       ->limit($limit)
       ->find_all();
     foreach ($user_list as $user) {
