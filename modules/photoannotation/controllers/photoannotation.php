@@ -229,21 +229,23 @@ class photoannotation_Controller extends Controller {
   }
   
   public function autocomplete() {
-    $users = array();
-    $user_parts = explode(",", Input::instance()->get("q"));
-    $limit = Input::instance()->get("limit");
-    $user_part = ltrim(end($user_parts));
-    $user_list = ORM::factory("user")
-      ->where("name", "LIKE", "{$user_part}%")
-      ->or_where("full_name", "LIKE", "{$user_part}%")
-      ->order_by("full_name", "ASC")
-      ->limit($limit)
-      ->find_all();
-    foreach ($user_list as $user) {
-      if ($user->name != "guest") {
-        $users[] = $user->display_name() ." (". $user->name .")";
+    if (!identity::active_user()->guest || module::get_var("photoannotation", "allowguestsearch", false)) {
+      $users = array();
+      $user_parts = explode(",", Input::instance()->get("q"));
+      $limit = Input::instance()->get("limit");
+      $user_part = ltrim(end($user_parts));
+      $user_list = ORM::factory("user")
+        ->where("name", "LIKE", "{$user_part}%")
+        ->or_where("full_name", "LIKE", "{$user_part}%")
+        ->order_by("full_name", "ASC")
+        ->limit($limit)
+        ->find_all();
+      foreach ($user_list as $user) {
+        if ($user->name != "guest") {
+          $users[] = $user->display_name() ." (". $user->name .")";
+        }
       }
+      print implode("\n", $users);
     }
-    print implode("\n", $users);
   }
 }
