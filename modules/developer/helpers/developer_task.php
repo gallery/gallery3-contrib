@@ -25,7 +25,6 @@ class developer_task_Core {
 
   static function create_module($task) {
     $context = unserialize($task->context);
-    Kohana_Log::add("error", "task context:\n" . Kohana::debug($context));
 
     if (empty($context["module"])) {
       $context["class_name"] = strtr($context["name"], " ", "_");

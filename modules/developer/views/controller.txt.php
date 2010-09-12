@@ -32,15 +32,12 @@ class <?= $class_name ?>_Controller extends Controller {
 
       message::success(t("<?= $name ?> Processing Successfully"));
 
-      print json_encode(
-        array("result" => "success"));
+      json::reply(array("result" => "success"));
     } else {
-      print json_encode(
-        array("result" => "error",
-              "form" => $form->__toString()));
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
- 
+
   private function _get_form() {
     $form = new Forge("<?= $module ?>/handler", "", "post",
                       array("id" => "g-<?= $css_id ?>-form"));

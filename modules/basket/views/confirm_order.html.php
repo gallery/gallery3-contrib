@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@
 function so(){document.confirm.submit();}
 </SCRIPT>
 <?= $form ?>
-<div class="g-block">
+<div class="gBlock">
 <h2>Basket Summary</h2>
-  <div class="g-block-content">
+  <div class="g-block-content scrollables">
     <table id="g-basket-list">
       <tr>
         <th><?= t("Name") ?></th>
@@ -33,7 +33,8 @@ function so(){document.confirm.submit();}
         <th><?= t("Cost") ?></th>
       </tr>
       <? foreach ($basket->contents as $key => $prod_details): ?>
-      <tr id="" class="<?= text::alternate("g-odd", "g-even") ?>">
+      <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
+
         <td id="item-<?= $prod_details->item ?>" class="core-info ">
           <?  $item = $prod_details->getItem(); ?>
         <div>
@@ -47,19 +48,20 @@ function so(){document.confirm.submit();}
           <?= html::clean($prod_details->quantity) ?>
         </td>
         <td>
-          <?= html::clean(basket::formatMoney($prod_details->cost)) ?>
+          <?= basket::formatMoneyForWeb($prod_details->cost) ?>
         </td>
-      </tr>
+    </tr>
       <? endforeach ?>
       <? $postage = $basket->postage_cost();?>
       <? if ($postage > 0):?>
-      <tr id="" class="<?= text::alternate("g-odd", "g-even") ?>">
-        <td></td><td></td><td>Postage and Packaging</td><td><?= html::clean(basket::formatMoney($postage))?></td><td></td>
+      <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
+        <td></td><td></td><td  <?=$basket->ispp()?"":"style=\"text-decoration:line-through\""; ?>>Postage and Packaging</td><td  <?=$basket->ispp()?"":"style=\"text-decoration:line-through\""; ?>><?= basket::formatMoneyForWeb($postage)?></td>
       </tr>
       <? endif;?>
-      <tr id="" class="<?= text::alternate("g-odd", "g-even") ?>">
-        <td></td><td></td><td>Total Cost</td><td><?= html::clean(basket::formatMoney($basket->cost() + $postage))?></td>
+      <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
+        <td></td><td></td><td>Total Cost</td><td><?= $basket->ispp()?basket::formatMoneyForWeb($basket->cost() + $postage):basket::formatMoneyForWeb($basket->cost()); ?></td>
       </tr>
+
    </table>
   </div>
   <table>
@@ -78,9 +80,10 @@ E-mail : <?= $basket->email ?><br/>
 Telephone : <?= $basket->phone ?>
 </td></tr>
 </table>
-<a href="<?= url::site("basket/checkout") ?>" class="g-left g-button ui-state-default ui-corner-all ui-icon-left">
+<div class="basketbuttons">
+<a href="<?= url::site("basket/checkout") ?>" class="left g-button ui-state-default ui-corner-all ui-icon-left">
 <span class="ui-icon ui-icon-arrow-1-w"></span><?= t("Back to Checkout") ?></a>
-<a href="javascript: so()" class="g-right g-button ui-state-default ui-corner-all ui-icon-right">
+<a href="javascript: so()" class="right g-button ui-state-default ui-corner-all ui-icon-right">
 <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Confirm Order") ?></a>
-
+</div>
 </div>

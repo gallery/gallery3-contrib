@@ -26,7 +26,7 @@
          success: function(data) {
            if (data.result == "success") {
              $.get($("#g-tag-cloud").attr("ref"), function(data, textStatus) {
-               swfobject.removeSWF("g-tag-cloud-movie");
+               $("#g-tag-cloud-movie").remove();
                $("#g-tag-cloud").append("<div id='g-tag-cloud-movie'>" + data + "</div>");
                self._set_tag_cloud();
 	     });
@@ -39,9 +39,14 @@
 
      _set_tag_cloud: function() {
        var self = this;
+       var taglist = $("#g-tag-cloud a");
+
+       if (taglist.length == 0) {
+         return;
+       }
        var width = $("#g-tag-cloud").width();
        var tags = document.createElement("tags");
-       $("#g-tag-cloud a").each(function(i) {
+       taglist.each(function(i) {
          var addr = $(this).clone();
          $(addr).attr("style", "font-size: 14pt;");
          $(tags).append(addr);

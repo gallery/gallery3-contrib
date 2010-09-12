@@ -1,0 +1,3 @@
+name = "Autorotate"
+description = "Rotate an image automatically on upload based on EXIF data"
+version = 2
