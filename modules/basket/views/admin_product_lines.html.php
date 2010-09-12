@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 <div class="g-block">
 
   <a href="<?= url::site("admin/product_lines/add_product_form") ?>"
-      class="g-dialog-link g-button g-right ui-icon-left ui-state-default ui-corner-all"
+      class="g-dialog-link g-button right ui-icon-left ui-state-default ui-corner-all"
       title="<?= t("Create a new Product") ?>">
     <span class="ui-icon ui-icon-circle-plus"></span>
     <?= t("Add a new Product") ?>
@@ -42,12 +42,12 @@
 
       </tr>
       <? foreach ($products as $i => $product): ?>
-      <tr id="g-product-<?= $product->id ?>" class="<?= text::alternate("g-odd", "g-even") ?>">
+      <tr id="gProduct-<?= $product->id ?>" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
         <td id="product-<?= $product->id ?>" class="core-info ">
           <?= html::clean($product->name) ?>
   </td>
   <td>
-    <?= basket::formatMoney($product->cost) ?>
+    <?= basket::formatMoneyForWeb($product->cost) ?>
         </td>
   <td>
     <?= html::clean($product->description) ?>
@@ -57,11 +57,11 @@
   </td>
 
 
-    <td>
+    <td class="g-actions">
       <a href="<?= url::site("admin/product_lines/edit_product_form/$product->id") ?>"
           open_text="<?= t("close") ?>"
           class="g-panel-link g-button ui-state-default ui-corner-all ui-icon-left">
-          <span class="ui-icon ui-icon-pencil"></span><span class="g-button-text"><?= t("edit") ?></span></a>
+          <span class="ui-icon ui-icon-pencil"></span><span class="gButtonText"><?= t("edit") ?></span></a>
 
       <a href="<?= url::site("admin/product_lines/delete_product_form/$product->id") ?>"
           class="g-dialog-link g-button ui-state-default ui-corner-all ui-icon-left">

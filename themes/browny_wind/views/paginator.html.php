@@ -26,11 +26,38 @@
 //
 ?>
 
+<?
+// @mamouneyya
+// in order to add 'first' & 'last' navigation buttons for item pages. code inspired from GreyDragon Wind theme
+  if ($page_type == "item"): {
+    if ($item):
+      $parent = $item->parent();
+    endif;
+    $current_page = $position; 
+    $total_pages = $total;
+    $siblings = $item->parent()->children();
+    for ($i = 1; $i <= $total; $i++):
+      $_pagelist[$i] = $siblings[$i-1]->url();
+    endfor;
+  }
+  endif; 
+?>
+  
 <ul class="g-paginator ui-helper-clearfix">
   <li class="g-first">
   <? if ($page_type == "collection"): ?>
     <? if (isset($first_page_url)): ?>
-      <a href="<?= $first_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all">
+      <a href="<?= $first_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all" id="g-navi-first">
+        <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
+    <? else: ?>
+      <a class="g-button ui-icon-left ui-state-disabled ui-corner-all">
+        <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
+    <? endif ?>
+  <? endif ?>
+  
+  <? if ($page_type == "item"): ?>
+    <? if ($current_page > 1): ?>
+      <a href="<?= $_pagelist[1] ?>" class="g-button ui-icon-left ui-state-default ui-corner-all" id="g-navi-first">
         <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
     <? else: ?>
       <a class="g-button ui-icon-left ui-state-disabled ui-corner-all">
@@ -39,7 +66,7 @@
   <? endif ?>
 
   <? if (isset($previous_page_url)): ?>
-    <a href="<?= $previous_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all">
+    <a href="<?= $previous_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all" id="g-navi-prev">
       <span class="ui-icon ui-icon-seek-prev"></span><?= t("Previous") ?></a>
   <? else: ?>
     <a class="g-button ui-icon-left ui-state-disabled ui-corner-all">
@@ -67,7 +94,7 @@
 
   <li class="g-text-right">
   <? if (isset($next_page_url)): ?>
-    <a href="<?= $next_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
+    <a href="<?= $next_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all" id="g-navi-next">
       <span class="ui-icon ui-icon-seek-next"></span><?= t("Next") ?></a>
   <? else: ?>
     <a class="g-button ui-state-disabled ui-icon-right ui-corner-all">
@@ -76,7 +103,17 @@
 
   <? if ($page_type == "collection"): ?>
     <? if (isset($last_page_url)): ?>
-      <a href="<?= $last_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
+      <a href="<?= $last_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all" id="g-navi-last">
+        <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
+    <? else: ?>
+      <a class="g-button ui-state-disabled ui-icon-right ui-corner-all">
+        <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
+    <? endif ?>
+  <? endif ?>
+  
+  <? if ($page_type == "item"): ?>
+    <? if ($current_page < $total_pages): ?>
+      <a href="<?= $_pagelist[$total_pages] ?>" class="g-button ui-icon-right ui-state-default ui-corner-all" id="g-navi-last">
         <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
     <? else: ?>
       <a class="g-button ui-state-disabled ui-icon-right ui-corner-all">

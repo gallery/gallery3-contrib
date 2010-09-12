@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ function ci(v)
   return true;
 }
 
-function so(){
+function so(g){
 	  var p=true;
 	  var d=document.checkout;
 	  if(!ci(d.fullname)){p=false;}
@@ -49,16 +49,38 @@ function so(){
 	  if(!ci(d.phone)){p=false;}
 	  if (p)
 	  {
+		  d.paypal.value=g;
 		  d.submit();
 	  }
 }
 </SCRIPT>
 <div class="g-block">
-<?= $form ?>
+<?
+$payment_details = basket::getPaymentDetails();
+if ($payment_details):
+?>
+<div class="basket-right" id="payment">
 <h2>Payment Details</h2>
-<p>After you have confirmed the order we will get in contact with you to arrange payment.</p>
+<?= $payment_details; ?>
+</div>
+<? endif; ?>
+<?= $form ?>
+<div class="basketbuttons">
 <a href="<?= url::site("basket/view_basket") ?>" class="left g-button ui-state-default ui-corner-all ui-icon-left">
 <span class="ui-icon ui-icon-arrow-1-w"></span><?= t("Back to Basket") ?></a>
-<a href="javascript: so()" class="g-right g-button ui-state-default ui-corner-all ui-icon-right">
+
+<? if (basket::isPaypal()): ?>
+<a href="javascript: so(true)"
+    class="right g-button ui-state-default ui-corner-all ui-icon-right">
+      <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Pay with Credit Card or Paypal") ?></a>
+  <a href="javascript: so(false)"
+    class="right g-button ui-state-default ui-corner-all ui-icon-right">
+      <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Pay off line") ?></a>
+<? else: ?>
+
+<a href="javascript: so(false)" class="right g-button ui-state-default ui-corner-all ui-icon-right">
 <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Proceed to Confirmation") ?></a>
+<? endif?>
+</div>
+
 </div>

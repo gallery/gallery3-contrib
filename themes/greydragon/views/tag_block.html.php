@@ -6,9 +6,19 @@
       url, {
         max: 30,
         multiple: true,
-          multipleSeparator: ',',
-          cacheLength: 1}
+        multipleSeparator: ',',
+        cacheLength: 1}
     );
+
+    $("#g-add-tag-form").ajaxForm({
+      dataType: "json",
+      success: function(data) {
+        if (data.result == "success") {
+          $("#g-tag-cloud").html(data.cloud);
+        }
+        $("#g-add-tag-form").resetForm();
+      }
+    });
   });
 </script>
 <div id="g-tag-cloud" title="<?= url::site("tags") ?>">

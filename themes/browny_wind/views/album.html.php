@@ -16,7 +16,9 @@
   <li id="g-item-id-<?= $child->id ?>" class="g-item <?= $item_class ?>">
     <?= $theme->thumb_top($child) ?>
     <a href="<?= $child->url() ?>">
+      <? if ($child->has_thumb()): ?>
       <?= $child->thumb_img(array("class" => "g-thumbnail")) ?>
+      <? endif ?>
     </a>
     <?= $theme->thumb_bottom($child) ?>
     <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
@@ -29,7 +31,7 @@
   <? endforeach ?>
 <? else: ?>
   <? if ($user->admin || access::can("add", $item)): ?>
-  <? $addurl = url::file("index.php/simple_uploader/app/$item->id") ?>
+  <? $addurl = url::site("uploader/index/$item->id") ?>
   <li><?= t("There aren't any photos here yet! <a %attrs>Add some</a>.",
             array("attrs" => html::mark_clean("href=\"$addurl\" class=\"g-dialog-link\""))) ?></li>
   <? else: ?>
