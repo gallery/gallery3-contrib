@@ -14,7 +14,8 @@
  *  7)  Forms
  *  8)  States and interactions
  *  9)  Organize module style
- * 10)  Right-to-left language styles
+ * 10)  Tag module styles
+ * 11)  Right-to-left language styles
  */
 
 /** *******************************************************************
@@ -794,9 +795,69 @@ form .g-error {
   display: none;
 }
 
+/** *******************************************************************
+ * 10) Tag module styles
+ *********************************************************************/
+/* Tag cloud ~~~~~~~~~~~~~~~~~~~~~~~ */
+#g-tag-cloud ul li a {
+  text-decoration: none;
+}
+
+#g-tag-cloud ul li.size0 a {
+  color: #<?= $fcContent ?>;
+  font-size: 70%;
+  font-weight: 100;
+}
+
+#g-tag-cloud ul li.size1 a {
+  color: #<?= $fcContent ?>;
+  font-size: 80%;
+  font-weight: 100;
+}
+
+#g-tag-cloud ul li.size2 a {
+  color: #<?= $fcContent ?>;
+  font-size: 90%;
+  font-weight: 300;
+}
+
+#g-tag-cloud ul li.size3 a {
+  color: #<?= $fcContent ?>;
+  font-size: 100%;
+  font-weight: 500;
+}
+
+#g-tag-cloud ul li.size4 a {
+  color: #<?= $fcContent ?>;
+  font-size: 110%;
+  font-weight: 700;
+}
+
+#g-tag-cloud ul li.size5 a {
+  color: #<?= $fcContent ?>;
+  font-size: 120%;
+  font-weight: 900;
+}
+
+#g-tag-cloud ul li.size6 a {
+  color: #<?= $fcContent ?>;
+  font-size: 130%;
+  font-weight: 900;
+}
+
+#g-tag-cloud ul li.size7 a {
+  color: #<?= $fcContent ?>;
+  font-size: 140%;
+  font-weight: 900;
+}
+
+#g-tag-cloud ul li a:hover {
+  color: #f30;
+  text-decoration: underline;
+}
 
 /** *******************************************************************
- * 10) Right to left language styles
+ * 11) Right to left language styles
  *********************************************************************/
 
 .rtl #g-header #g-login-menu,
