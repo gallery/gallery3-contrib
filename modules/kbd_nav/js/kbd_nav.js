@@ -27,6 +27,11 @@ $.fn.KbdNavigation = function(options, callback) {
     if ($('#sb-body-inner>img#sb-content').is(':visible')) {
       return false;
     }
+    // ignore shortcuts when inside a jQuery dialog; otherwise it becomes impossible
+    // to navigate the cursor inside an input box
+    if ($('.ui-widget-overlay').is(':visible')) {
+      return true;
+    }
 
     var direction = "ltr";
     if (document.body) {
