@@ -48,16 +48,33 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       }
       //Load all existing tag annotations
       $tag_annotations = ORM::factory("items_face")->where("tag_id", "=", $sourcetag->id)->find_all();
-      
+      //Disable user notifications so that users don't get flooded with mails
+      $old_notification_setting = module::get_var("photoannotation", "nonotifications", false);
+      module::set_var("photoannotation", "nonotifications", true, true);
       foreach ($tag_annotations as $tag_annotation) {
         photoannotation::saveuser($targetuser->id, $tag_annotation->item_id, $tag_annotation->x1, $tag_annotation->y1, $tag_annotation->x2, $tag_annotation->y2, $tag_annotation->description);
         //Delete the old annotation
         $tag_annotation->delete();
       }
+      //Remove and delete old tag
+      if ($form->deletetag->value) {
+        $this->_remove_tag($sourcetag, true);
+      } elseif ($form->removetag->value) {
+        $this->_remove_tag($sourcetag, false);
+      }
+      module::set_var("photoannotation", "nonotifications", $old_notification_setting, true);
       message::success(t("%count tag annotations (%tagname) have been converted to user annotations (%username)", array("count" => count($tag_annotations), "tagname" => $sourcetag->name, "username" => $targetuser->display_name())));
       url::redirect("admin/photoannotation/converter");
     }
     print $this->_get_converter_view($form);
+  }
+  
+  private function _remove_tag($tag, $delete) {
+    $name = $tag->name;
+    db::build()->delete("items_tags")->where("tag_id", "=", $tag->id)->execute();
+    if ($delete) {
+      $tag->delete();
+    }
   }
 
   public function handler() {
@@ -223,6 +240,8 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       ->options($tag_array);	
     $form->dropdown("targetuser")->label(t("Select user"))
       ->options($user_array);	
+    $form->checkbox("deletetag")->label(t("Delete the tag after conversion."));	
+    $form->checkbox("removetag")->label(t("Remove the tag from photos after conversion."));	
     $form->submit("submit")->value(t("Convert"));
     return $form;
   }
