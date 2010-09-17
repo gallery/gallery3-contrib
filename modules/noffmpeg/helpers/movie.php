@@ -23,6 +23,9 @@
  *
  * Note: by design, this class does not do any permission checking.
  */
+ 
+include MODPATH . "noffmpeg/libraries/MP4Info.php";
+
 class movie_Core {
   static function get_edit_form($movie) {
     $form = new Forge("movies/update/$movie->id", "", "post", array("id" => "g-edit-movie-form"));
@@ -113,7 +116,17 @@ class movie_Core {
       $extension = isset($pi["extension"]) ? $pi["extension"] : "flv"; // No extension?  Assume FLV.
       $mime_type = in_array(strtolower($extension), array("mp4", "m4v")) ?
         "video/mp4" : "video/x-flv";
-      return array(320, 240, $mime_type, $extension);
+      $vid_width = 320;
+      $vid_height = 240;
+      if (strtolower($extension) == "flv") {
+        $flvinfo = new FLVMetaData($file_path);
+        $info = $flvinfo->getMetaData();
+        if (($info["width"] != "") && ($info["height"] != "")) {
+          $vid_width = $info["width"];
+          $vid_height = $info["height"];
+        }
+      }
+      return array($vid_width, $vid_height, $mime_type, $extension);
       //throw new Exception("@todo MISSING_FFMPEG");
       // END rWatcher Edit.
     }
