@@ -21,7 +21,7 @@ class autorotate_event_Core {
   // The assumption is that the exception was logged at a lower level, but we
   // don't want to screw up the processing that was generating the notification
   // so we don't pass the exception up the call stack
-  static function add_photos_form_completed($item, $form) {
+  static function item_created($item) {
     try {
       autorotate::rotate_item($item);
     } catch (Exception $e) {
