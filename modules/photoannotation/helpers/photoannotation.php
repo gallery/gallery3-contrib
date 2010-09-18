@@ -230,17 +230,6 @@ class photoannotation_Core {
     }
     return $notification_settings;
   }
-
-  public static function get_user_cloud() {
-    $users = ORM::factory("user")->order_by("name", "ASC")->find_all();
-    foreach ($users as $user) {
-      $items_users_count = ORM::factory("items_user")->where("user_id", "=", $user->id)->count_all();
-      if ($items_users_count > 0) {
-        $user_array[] = $user->display_name();
-      }
-    }
-    return $user_array;
-  }
   
   static function cloud($count) {
     $users = ORM::factory("user")->order_by("name", "ASC")->find_all();
@@ -262,12 +251,13 @@ class photoannotation_Core {
           $user_array[$user->name]->url = user_profile::url($user->id);
         }
       }
-      $cloud->users = array_slice($user_array, 0, $count);
-      $cloud->max_count = $maxcount;
-      if (!$cloud->max_count) {
-        return;
+      if (isset($user_array)) {
+        $cloud->users = array_slice($user_array, 0, $count);
+        $cloud->max_count = $maxcount;
+        return $cloud;
+      } else {
+        return "";
       }
-      return $cloud;
     }
   }
 
