@@ -74,6 +74,68 @@ class photoannotation_event_Core {
     if (count($existingNotes) > 0) {
       db::build()->delete("items_notes")->where("item_id", "=", $item->id)->execute();
     }
+
+    $existingUsers = ORM::factory("items_user")
+                          ->where("item_id", "=", $item->id)
+                          ->find_all();
+    if (count($existingUsers) > 0) {
+      db::build()->delete("items_users")->where("item_id", "=", $item->id)->execute();
+    }
+  }
+
+  static function user_deleted($old) {
+    // Check for and delete existing Annotations linked to that user.
+    $existingFaces = ORM::factory("items_user")
+                          ->where("user_id", "=", $old->id)
+                          ->find_all();
+    if (count($existingFaces) > 0) {
+      $onuserdelete = module::get_var("photoannotation", "onuserdelete", "0");
+      if (module::get_var("photoannotation", "fullname", false)) {
+        $new_tag_name = $old->display_name();
+      } else {
+        $new_tag_name = $old->name;
+      }
+      switch ($onuserdelete) {
+        case "1":
+          //convert to tag
+          $tag = ORM::factory("tag")->where("name", "=", $new_tag_name)->find();
+          if (!$tag->loaded()) {
+            $tag->name = $new_tag_name;
+            $tag->count = 0;
+          }
+          foreach ($existingFaces as $existingFace) {
+            $item = ORM::factory("item")->where("id", "=", $existingFace->item_id)->find();
+            $tag->add($item);
+            $tag->count++;
+            $tag->save();
+            photoannotation::saveface($tag->id, $existingFace->item_id, $existingFace->x1, $existingFace->y1, $existingFace->x2, $existingFace->y2, $existingFace->description);
+          }
+          break;
+        case "2":
+          //convert to note
+          foreach ($existingFaces as $existingFace) {
+            photoannotation::savenote($new_tag_name, $existingFace->item_id, $existingFace->x1, $existingFace->y1, $existingFace->x2, $existingFace->y2, $existingFace->description);
+          }
+      }
+      db::build()->delete("items_users")->where("user_id", "=", $old->id)->execute();
+    }
+    // Delete notification settings
+    $notification_settings = ORM::factory("photoannotation_notification")
+                          ->where("user_id", "=", $old->id)
+                          ->find();
+    if ($notification_settings->loaded()) {
+      $notification_settings->delete();
+    }
+  }
+
+  static function user_created($user) {
+    // Write notification settings
+    $notify = module::get_var("photoannotation", "notificationoptout", false);
+    $notification_settings = ORM::factory("photoannotation_notification");
+    $notification_settings->user_id = $user->id;
+    $notification_settings->newtag = $notify;
+    $notification_settings->comment = $notify;
+    $notification_settings->save();
   }
   
   static function admin_menu($menu, $theme) {
@@ -82,5 +144,97 @@ class photoannotation_event_Core {
                ->id("photoannotation_menu")
                ->label(t("Photo Annotation"))
                ->url(url::site("admin/photoannotation")));
+  }
+  
+  static function show_user_profile($data) {
+    $view = new Theme_View("dynamic.html", "collection", "userprofiles");
+    //load thumbs
+    $item_users = ORM::factory("items_user")->where("user_id", "=", $data->user->id)->find_all();
+    $children_count = count($item_users);
+    foreach ($item_users as $item_user) {
+      $item_thumb = ORM::factory("item")
+          ->viewable()
+          ->where("type", "!=", "album")
+          ->where("id", "=", $item_user->item_id)
+          ->find();
+      $item_thumbs[] = $item_thumb;
+    }
+    $page_size = module::get_var("gallery", "page_size", 9);
+    $page = (int) Input::instance()->get("page", "1");
+    $offset = ($page-1) * $page_size;
+    $max_pages = max(ceil($children_count / $page_size), 1);
+    
+    // Make sure that the page references a valid offset
+    if ($page < 1) {
+      url::redirect($album->abs_url());
+    } else if ($page > $max_pages) {
+      url::redirect($album->abs_url("page=$max_pages"));
+    }
+    if ($page < $max_pages) {
+      $next_page_url = url::site("user_profile/show/". $data->user->id ."?page=". ($page + 1));
+      $view->set_global("next_page_url", $next_page_url);
+      $view->set_global("first_page_url", url::site("user_profile/show/". $data->user->id ."?page=". $max_pages));
+    }
+    
+    if ($page > 1) {
+      $view->set_global("previous_page_url", url::site("user_profile/show/". $data->user->id ."?page=". ($page - 1)));
+      $view->set_global("first_page_url", url::site("user_profile/show/". $data->user->id ."?page=1"));
+    }
+    $view->set_global("page", $page);
+    $view->set_global("max_pages", $max_pages);
+    $view->set_global("page_size", $page_size);
+    $view->set_global("children", array_slice($item_thumbs, $offset, $page_size));;
+    $view->set_global("children_count", $children_count);
+    $view->set_global("total", $max_pages);
+    $view->set_global("position", t("Page") ." ". $page);
+    if ($children_count > 0) {
+      $data->content[] = (object)array("title" => t("Photos"), "view" => $view);
+    }
+  }
+
+  static function user_edit_form($user, $form) {
+    // Allow users to modify notification settings.
+    if (!module::get_var("photoannotation", "nonotifications", false)) {
+      $notification_settings = photoannotation::get_user_notification_settings($user);
+      $user_notification = $form->edit_user->group("edit_notification")->label("Tag notifications");
+      $user_notification->checkbox("photoannotation_newtag")->label(t("Notify me when a tag is added to a photo with me"))
+           ->checked($notification_settings->newtag);
+      $user_notification->checkbox("photoannotation_comment")->label(t("Notify me if someone comments on a photo with me on it"))
+           ->checked($notification_settings->comment);
+    }
+  }
+
+  static function user_edit_form_completed($user, $form) {
+    // Save notification settings.
+    if (!module::get_var("photoannotation", "nonotifications", false)) {
+      $notification_settings = ORM::factory("photoannotation_notification")->where("user_id", "=", $user->id)->find();
+      if (!$notification_settings->loaded()) {
+        $notification_settings = ORM::factory("photoannotation_notification");
+        $notification_settings->user_id = $user->id;
+      }
+      $notification_settings->newtag = $form->edit_user->edit_notification->photoannotation_newtag->value;
+      $notification_settings->comment = $form->edit_user->edit_notification->photoannotation_comment->value;
+      $notification_settings->save();
+    }
+  }
+
+  static function comment_created($comment) {
+    //Check if there are any user annotations on the photo and send notification if applicable
+    $item_users = ORM::factory("items_user")->where("item_id", "=", $comment->item_id)->find_all();
+    if (count($item_users) > 0) {
+      foreach ($item_users as $item_user) {
+        photoannotation::send_notifications($item_user->user_id, $comment->item_id, "newcomment");
+      }
+    }
+  }
+
+  static function comment_updated($comment) {
+    //Check if there are any user annotations on the photo and send notification if applicable
+    $item_users = ORM::factory("items_user")->where("item_id", "=", $comment->item_id)->find_all();
+    if (count($item_users) > 0) {
+      foreach ($item_users as $item_user) {
+        photoannotation::send_notifications($item_user->user_id, $comment->item_id, "updatedcomment");
+      }
+    }
   }
 }

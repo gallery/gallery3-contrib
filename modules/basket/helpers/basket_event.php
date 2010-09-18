@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,11 @@ class basket_event_Core{
         ->url(url::site("admin/configure")));
     $basket_menu->append(
       Menu::factory("link")
+        ->id("templates")
+        ->label(t("Templates"))
+        ->url(url::site("admin/configure/templates")));
+        $basket_menu->append(
+      Menu::factory("link")
         ->id("product_line")
         ->label(t("Product Lines"))
         ->url(url::site("admin/product_lines")));
@@ -43,6 +48,11 @@ class basket_event_Core{
         ->id("postage_bands")
         ->label(t("Postage Bands"))
         ->url(url::site("admin/postage_bands")));
+    $basket_menu->append(
+      Menu::factory("link")
+        ->id("view_orders")
+        ->label(t("View Orders"))
+        ->url(url::site("basket/view_orders")));
 
   }
 
@@ -65,8 +75,8 @@ class basket_event_Core{
 
       if ($product_override->loaded()){
         $item_product = ORM::factory("item_product")
-          ->where('product_override_id', "=", $product_override->id)
-          ->where('product_id', "=", $product->id)->find();
+            ->where('product_override_id', "=", $product_override->id)
+            ->where('product_id', "=", $product->id)->find();
         if ($item_product->loaded()){
           $checked = $item_product->include;
           if ($item_product->cost != -1){

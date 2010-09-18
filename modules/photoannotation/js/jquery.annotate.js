@@ -25,6 +25,7 @@
         this.csrf = opts.csrf;
         this.cssaclass = opts.cssaclass;
         this.rtlsupport = opts.rtlsupport;
+        this.users = opts.users;
 
         // Add the canvas
         this.canvas = $('<div class="image-annotate-canvas g-thumbnail"><div class="image-annotate-view"></div><div class="image-annotate-edit"><div class="image-annotate-edit-area"></div></div></div>');
@@ -60,14 +61,14 @@
         if (this.useAjax) {
             $.fn.annotateImage.ajaxLoad(this);
         } else {
-            $.fn.annotateImage.load(this, this.labels, this.editable, this.csrf, this.deleteUrl, this.tags, this.saveUrl, this.cssaclass, this.rtlsupport);
+            $.fn.annotateImage.load(this, this.labels, this.editable, this.csrf, this.deleteUrl, this.tags, this.saveUrl, this.cssaclass, this.rtlsupport, this.users);
         }
 
         // Add the "Add a note" button
-        if ($('#g-photoannotation-link').length != 0) {
+        if ($('#g-photoannotation-link').length !== 0) {
             this.button = $('#g-photoannotation-link');
             this.button.click(function() {
-                $.fn.annotateImage.add(image, opts.tags, opts.labels, opts.saveUrl, opts.csrf, opts.rtlsupport);
+                $.fn.annotateImage.add(image, opts.tags, opts.labels, opts.saveUrl, opts.csrf, opts.rtlsupport, opts.users);
             });
             //this.canvas.after(this.button);
         }
@@ -112,13 +113,13 @@
         });
     };
 
-    $.fn.annotateImage.load = function(image, labels, editable, csrf, deleteUrl, tags, saveUrl, cssaclass, rtlsupport) {
+    $.fn.annotateImage.load = function(image, labels, editable, csrf, deleteUrl, tags, saveUrl, cssaclass, rtlsupport, users) {
         ///	<summary>
         ///		Loads the annotations from the notes property passed in on the
         ///     options object.
         ///	</summary>
         for (var i = 0; i < image.notes.length; i++) {
-            image.notes[image.notes[i]] = new $.fn.annotateView(image, image.notes[i], tags, labels, editable, csrf, deleteUrl, saveUrl, cssaclass, rtlsupport);
+            image.notes[image.notes[i]] = new $.fn.annotateView(image, image.notes[i], tags, labels, editable, csrf, deleteUrl, saveUrl, cssaclass, rtlsupport, users);
         }
     };
 
@@ -131,7 +132,7 @@
         return now.getTime();
     };
 
-    $.fn.annotateImage.add = function(image, tags, labels, saveUrl, csrf, rtlsupport) {
+    $.fn.annotateImage.add = function(image, tags, labels, saveUrl, csrf, rtlsupport, users) {
         ///	<summary>
         ///		Adds a note to the image.
         ///	</summary>        
@@ -139,23 +140,23 @@
             image.mode = 'edit';
 
             // Create/prepare the editable note elements
-            var editable = new $.fn.annotateEdit(image, null, tags, labels, saveUrl, csrf, rtlsupport);
+            var editable = new $.fn.annotateEdit(image, null, tags, labels, saveUrl, csrf, rtlsupport, users);
 
-            $.fn.annotateImage.createSaveButton(editable, image, null, rtlsupport);
-            $.fn.annotateImage.createCancelButton(editable, image, rtlsupport);
+            $.fn.annotateImage.createSaveButton(editable, image, null, rtlsupport, labels);
+            $.fn.annotateImage.createCancelButton(editable, image, rtlsupport, labels);
         }
     };
 
-    $.fn.annotateImage.createSaveButton = function(editable, image, note, rtlsupport) {
+    $.fn.annotateImage.createSaveButton = function(editable, image, note, rtlsupport, labels) {
         ///	<summary>
         ///		Creates a Save button on the editable note.
         ///	</summary>
-        var ok = $('<a class="image-annotate-edit-ok g-button ui-corner-all ui-icon-left ui-state-default ' + rtlsupport + '">OK</a>');
+        var ok = $('<a class="image-annotate-edit-ok g-button ui-corner-all ui-icon-left ui-state-default ' + rtlsupport + '">' + labels[8] + '</a>');
 
         ok.click(function() {
             var form = $('#image-annotate-edit-form form');
             var text = $('#image-annotate-text').val();
-            $.fn.annotateImage.appendPosition(form, editable)
+            $.fn.annotateImage.appendPosition(form, editable);
             image.mode = 'view';
 
             form.submit();
@@ -165,11 +166,11 @@
         editable.form.append(ok);
     };
 
-    $.fn.annotateImage.createCancelButton = function(editable, image, rtlsupport) {
+    $.fn.annotateImage.createCancelButton = function(editable, image, rtlsupport, labels) {
         ///	<summary>
         ///		Creates a Cancel button on the editable note.
         ///	</summary>
-        var cancel = $('<a class="image-annotate-edit-close g-button ui-corner-all ui-icon-left ui-state-default ' + rtlsupport + '">Cancel</a>');
+        var cancel = $('<a class="image-annotate-edit-close g-button ui-corner-all ui-icon-left ui-state-default ' + rtlsupport + '">' + labels[9] + '</a>');
         cancel.click(function() {
             editable.destroy();
             image.mode = 'view';
@@ -195,7 +196,7 @@
         return '&lt;input type="hidden" name="' + name + '" value="' + value + '" /&gt;<br />';
     };
 
-    $.fn.annotateEdit = function(image, note, tags, labels, saveUrl, csrf, rtlsupport) {
+    $.fn.annotateEdit = function(image, note, tags, labels, saveUrl, csrf, rtlsupport, users) {
         ///	<summary>
         ///		Defines an editable annotation area.
         ///	</summary>
@@ -213,6 +214,7 @@
             newNote.text = "";
             newNote.description = "";
             newNote.notetype = "";
+            newNote.internaltext = "";
             this.note = newNote;
         }
 
@@ -231,16 +233,18 @@
         // Add the note (which we'll load with the form afterwards)
         var selectedtag = "";
         var notetitle = "";
+        var username = "";
+        var selecteduser = "";
         if (this.note.notetype == "face") {
           selectedtag = this.note.text;
+        } else if (this.note.notetype == "user") {
+          username = this.note.internaltext;
         } else {
           notetitle = this.note.text;
         }
-        var form = $('<div id="image-annotate-edit-form" class="' + rtlsupport + '"><form id="photoannotation-form" action="' + saveUrl + '" method="post"><input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="notetype" value="' + this.note.notetype + '" />' + labels[0] + '<input id="image-annotate-tag-text" type="text" name="tagsList" value="' + selectedtag + '" />' + '<strong>' + labels[4] + '</strong><br />' + labels[1] + '<textarea id="image-annotate-text" name="text" rows="3" cols="30">' + notetitle + '</textarea>' + labels[2] + '<textarea id="image-annotate-desc" name="desc" rows="3" cols="30">' + this.note.description + '</textarea></form></div>');
+        var form = $('<div id="image-annotate-edit-form" class="ui-dialog-content ui-widget-content ' + rtlsupport + '"><form id="photoannotation-form" action="' + saveUrl + '" method="post"><input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="notetype" value="' + this.note.notetype + '" /><fieldset><legend>' + labels[12] + '</legend><label for="photoannotation-user-list">' + labels[10] + '</label><input id="photoannotation-user-list" class="textbox ui-corner-left ui-corner-right" type="text" name="userlist" style="width: 210px;" value="' + username + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-tag-text">' + labels[0] + '</label><input id="image-annotate-tag-text" class="textbox ui-corner-left ui-corner-right" type="text" name="tagsList" style="width: 210px;" value="' + selectedtag + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-text">' + labels[1] + '</label><input id="image-annotate-text" class="textbox ui-corner-left ui-corner-right" type="text" name="text" style="width: 210px;" value="' + notetitle + '" /></fieldset><fieldset><legend>' + labels[2] + '</legend><textarea id="image-annotate-desc" name="desc" rows="3" style="width: 210px;">' + this.note.description + '</textarea></fieldset</form></div>');
         this.form = form;
-
         $('body').append(this.form);
-
         $("#photoannotation-form").ready(function() {
           var url = tags;
           $("input#image-annotate-tag-text").autocomplete(
@@ -250,24 +254,45 @@
               cacheLength: 1
             }
           );
+          var urlusers = users;
+          $("input#photoannotation-user-list").autocomplete(
+            urlusers, {
+              max: 30,
+              multiple: false,
+              cacheLength: 1
+            }
+          );
         });
-        
         $("input#image-annotate-tag-text").keyup(function() {
           if ($("input#image-annotate-tag-text").val() != "") {
-            $("textarea#image-annotate-text").html("");
-            $("textarea#image-annotate-text").val("");
-            $("textarea#image-annotate-text").text("");
+            $("input#image-annotate-text").html("");
+            $("input#image-annotate-text").val("");
+            $("input#image-annotate-text").text("");
+            $("input#photoannotation-user-list").html("");
+            $("input#photoannotation-user-list").val("");
+            $("input#photoannotation-user-list").text("");
           }
         });
-        
-        $("textarea#image-annotate-text").keyup(function() {
-          if ($("textarea#image-annotate-text").val() != "") {
+        $("input#image-annotate-text").keyup(function() {
+          if ($("input#image-annotate-text").val() != "") {
             $("input#image-annotate-tag-text").html("");
             $("input#image-annotate-tag-text").val("");
             $("input#image-annotate-tag-text").text("");
+            $("input#photoannotation-user-list").html("");
+            $("input#photoannotation-user-list").val("");
+            $("input#photoannotation-user-list").text("");
           }
         });
-        
+        $("input#photoannotation-user-list").keyup(function() {
+          if ($("select#photoannotation-user-list").val() != "-1") {
+            $("input#image-annotate-tag-text").html("");
+            $("input#image-annotate-tag-text").val("");
+            $("input#image-annotate-tag-text").text("");
+            $("input#image-annotate-text").html("");
+            $("input#image-annotate-text").val("");
+            $("input#image-annotate-text").text("");
+          }
+        });
         this.form.css('left', this.area.offset().left + 'px');
         this.form.css('top', (parseInt(this.area.offset().top) + parseInt(this.area.height()) + 7) + 'px');
 
@@ -311,9 +336,9 @@
         this.area.css('left', '');
         this.area.css('top', '');
         this.form.remove();
-    }
+    };
 
-    $.fn.annotateView = function(image, note, tags, labels, editable, csrf, deleteUrl, saveUrl, cssaclass, rtlsupport) {
+    $.fn.annotateView = function(image, note, tags, labels, editable, csrf, deleteUrl, saveUrl, cssaclass, rtlsupport, users) {
         ///	<summary>
         ///		Defines a annotation area.
         ///	</summary>
@@ -322,7 +347,7 @@
         this.note = note;
 
         // Add the area
-        this.area = $('<div class="image-annotate-area' + (this.note.editable ? ' image-annotate-area-editable' : '') + '"><div></div></div>');
+        this.area = $('<div id="photoannotation-area-' + this.note.notetype + "-" + this.note.noteid + '" class="image-annotate-area' + (this.note.editable ? ' image-annotate-area-editable' : '') + '"><div></div></div>');
         image.canvas.children('.image-annotate-view').prepend(this.area);
         
         if (editable) {
@@ -353,15 +378,15 @@
                 close: function(event, ui) { location.reload(); },
                 buttons: btns
             });
-          })
+          });
           var form = this;
           this.editarea.bind('click',function () {
             var alink = $(cssaclass);
             alink.unbind();
             alink.attr ('href', '#');
             alink.removeAttr ('rel');
-            form.edit(tags, labels, saveUrl, csrf, rtlsupport);
-          })
+            form.edit(tags, labels, saveUrl, csrf, rtlsupport, users);
+          });
           this.delarea.hide();
           this.editarea.hide();
         }
@@ -394,7 +419,21 @@
               annotation.editarea.hide();
             }
         });
-
+        var legendspan = "#photoannotation-legend-" + this.note.notetype + "-" + this.note.noteid;
+        if ($(legendspan).length > 0) {
+          $(legendspan).hover(function() {
+              var legendsarea = "#photoannotation-area-" + note.notetype + "-" + note.noteid;
+              $(legendsarea).children('.image-annotate-view').show();
+              $(".image-annotate-view").show();
+              $(legendsarea).show();
+              annotation.show();
+            }, function() {
+              var legendsarea = "#photoannotation-area-" + note.notetype + "-" + note.noteid;
+              annotation.hide();
+              $(legendsarea).children('.image-annotate-view').hide();
+              $(".image-annotate-view").hide();
+          });
+        }
         if (editable) {
           this.delarea.hover(function() {
               annotation.delarea.show();
@@ -419,7 +458,7 @@
               alink.attr ('href', '#');
               alink.removeAttr ('rel');
               window.location = note.url;
-            })
+            });
         }
     };
 
@@ -478,9 +517,9 @@
         ///	</summary>      
         this.area.remove();
         this.form.remove();
-    }
+    };
 
-    $.fn.annotateView.prototype.edit = function(tags, labels, saveUrl, csrf, rtlsupport) {
+    $.fn.annotateView.prototype.edit = function(tags, labels, saveUrl, csrf, rtlsupport, users) {
         ///	<summary>
         ///		Edits the annotation.
         ///	</summary>      
@@ -489,9 +528,9 @@
             var annotation = this;
 
             // Create/prepare the editable note elements
-            var editable = new $.fn.annotateEdit(this.image, this.note, tags, labels, saveUrl, csrf, rtlsupport);
-            $.fn.annotateImage.createSaveButton(editable, this.image, annotation, rtlsupport);
-            $.fn.annotateImage.createCancelButton(editable, this.image, rtlsupport);
+            var editable = new $.fn.annotateEdit(this.image, this.note, tags, labels, saveUrl, csrf, rtlsupport, users);
+            $.fn.annotateImage.createSaveButton(editable, this.image, annotation, rtlsupport, labels);
+            $.fn.annotateImage.createCancelButton(editable, this.image, rtlsupport, labels);
         }
     };
 
@@ -505,7 +544,7 @@
                            '<input type="hidden" value="' + editable.area.position().left + '" name="left"/>' +
                            '<input type="hidden" value="' + editable.note.id + '" name="id"/>');
         form.append(areaFields);
-    }
+    };
 
     $.fn.annotateView.prototype.resetPosition = function(editable, text) {
         ///	<summary>

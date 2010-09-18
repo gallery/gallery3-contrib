@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,28 @@ class postage_band_Core {
       t("Are you sure you want to delete postage band %name?", array("name" => $postage->name)));
     $group->submit("")->value(t("Delete postage band %name", array("name" => $postage->name)));
     return $form;
+  }
+
+  /**
+   * Create a new postage band
+   *
+   * @param string  $name
+   * @param string  $full_name
+   * @param string  $password
+   * @return User_Model
+   */
+  static function create($name, $flatrate, $peritemcost) {
+    $postage = ORM::factory("postage_band")->where("name", "=", $name)->find();
+    if ($postage->loaded()) {
+      throw new Exception("@todo postage already EXISTS $name");
+    }
+
+    $postage->name = $name;
+    $postage->flat_rate = $flatrate;
+    $postage->per_item = $peritemcost;
+
+    $postage->save();
+    return $postage;
   }
 
   /**
