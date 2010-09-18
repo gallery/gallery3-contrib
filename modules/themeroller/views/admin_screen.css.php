@@ -8,11 +8,11 @@
  *  2)  Reusable content blocks
  *  3)  Page layout containers
  *  4)  Content blocks in specific layout containers
- *  5)  Navigation and menus
- *  6)  jQuery and jQuery UI
- *  7)  Module color overrides
- *  8)  Forms
- *  9)  States and interactions
+ *  5)  States and interactions
+ *  6)  Positioning and order
+ *  7)  Navigation and menus
+ *  8)  jQuery and jQuery UI
+ *  9)  Module color overrides
  * 10)  Right-to-left language styles
  *
  * @todo Review g-buttonset-vertical
@@ -28,7 +28,7 @@ html {
 body, html {
   background-color: #<?= $bgColorDefault ?>;
   font-family: Lucida Grande, Lucida Sans, Arial, sans-serif; /* ffDefault */
-  font-size: 13px/1.231; /* fsDefault/ gallery_line_height */
+  //font-size: 13px/1.231; /* fsDefault/ gallery_line_height */
 }
 
 p {
@@ -99,6 +99,172 @@ a:hover,
 }
 
 /* Forms ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+form {
+  margin: 0;
+}
+
+fieldset {
+  border: 1px solid #<?= $borderColorContent ?>;
+  padding: 0 1em .8em 1em;
+}
+
+#g-banner fieldset,
+#g-sidebar fieldset {
+  border: none;
+  padding: 0;
+}
+
+legend {
+  font-weight: bold;
+  color: #<?= $fcDefault ?>;
+  padding: 0 .2em;
+}
+
+#g-banner legend,
+#g-sidebar legend,
+input[type="hidden"] {
+  display: none;
+}
+
+input.textbox,
+input[type="text"],
+input[type="password"],
+textarea {
+  background-color: #<?= $bgColorDefault ?>;
+  border: 1px solid #<?= $borderColorActive ?>;
+  border-top-color: #<?= $borderColorContent ?>;
+  border-left-color: #<?= $borderColorContent ?>;
+  clear: both;
+  color: #<?= $fcContent ?>;
+  width: 50%;
+}
+
+textarea {
+  height: 12em;
+  width: 97%;
+}
+
+input:focus,
+input.textbox:focus,
+input[type=text]:focus,
+textarea:focus,
+option:focus {
+  background-color: #<?= $bgColorActive ?>;
+  color: #<?= $fcContent ?>;
+}
+
+input.checkbox,
+input[type=checkbox],
+input.radio,
+input[type=radio] {
+  float: left;
+  margin-right: .4em;
+}
+
+/* Form layout ~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+form li {
+  margin: 0;
+  padding: 0 0 .2em 0;
+}
+
+form ul {
+  margin-top: 0;
+}
+
+form ul ul {
+  clear: both;
+}
+
+form ul ul li {
+  float: left;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  clear: both;
+  padding: .2em;
+}
+
+input[type="submit"],
+input[type="reset"] {
+  display: inline;
+  clear: none;
+  float: left;
+}
+
+/* Forms in dialogs and panels ~~~~~~~~~ */
+
+#g-dialog ul li {
+  padding-bottom: .8em;
+}
+
+#g-dialog fieldset,
+#g-panel fieldset {
+  border: none;
+  padding: 0;
+}
+
+#g-panel legend {
+  display: none;
+}
+
+label,
+input[readonly] {
+  background-color: #<?= $bgColorContent ?>;
+  color: #<?= $fcDefault ?>;
+}
+
+#g-dialog input.textbox,
+#g-dialog input[type=text],
+#g-dialog input[type=password],
+#g-dialog textarea {
+  width: 97%;
+}
+
+/* Short forms ~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-short-form legend,
+.g-short-form label {
+  display: none;
+}
+
+.g-short-form fieldset {
+  border: none;
+  padding: 0;
+}
+
+.g-short-form li {
+  float: left;
+  margin: 0 !important;
+  padding: .4em 0;
+}
+
+.g-short-form .textbox,
+.g-short-form input[type=text] {
+  background-color: <?= $bgColorDefault ?>;
+  color: #<?= $fcContent ?>;
+  padding: .3em .6em;
+  width: 100%;
+}
+
+.g-short-form .textbox.g-error {
+  border: 1px solid #<?= $borderColorError ?>;
+  color: #<?= $fcError ?>;
+  padding-left: 24px;
+}
+
+.g-short-form .g-cancel {
+  display: block;
+  margin: .3em .8em;
+}
+
+#g-sidebar .g-short-form li {
+  padding-left: 0;
+  padding-right: 0;
+}
 
 fieldset {
   margin-bottom: 1em;
@@ -144,12 +310,17 @@ th {
   white-space: nowrap;
 }
 
-.g-even {
-  background-color: #<?= $bgColorContent ?>;
+/* Text ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+.g-text-small {
+  font-size: .8em;
 }
 
-.g-odd {
-  background-color: #<?= $bgColorDefault ?>
+.g-text-big {
+  font-size: 1.2em;
+}
+
+.g-text-right {
+  text-align: right;
 }
 
 /** *******************************************************************
@@ -158,11 +329,13 @@ th {
 
 .g-block,
 #g-content #g-admin-dashboard .g-block {
+  background-color: #<?= $bgColorContent ?>;
   border: 1px solid #<?= $borderColorContent ?>;
   padding: 1em;
 }
 
 .g-block h2 {
+  background-color: #<?= $fcContent ?>;
   padding: .3em .8em;
 }
 
@@ -209,7 +382,8 @@ th {
 }
 
 .g-unavailable {
-  border-color: #<?= $fcHeader ?>;
+  border-color: #<?= $bgColorHeader ?>;
+  color: <?= $fcDefault ?>;
   opacity: 0.4;
 }
 
@@ -241,9 +415,38 @@ th {
   background-color: #<?= $bgColorContent ?>;
 }
 
+ul.enumeration li {
+  list-style-type: disc;
+  margin-left: 20px;
+}
+
 /*** ******************************************************************
  * 3) Page layout containers
  *********************************************************************/
+/* Dimension and scale ~~~~~~~~~~~~~~~~~~~ */
+.g-one-quarter {
+  width: 25%;
+}
+
+.g-one-third {
+  width: 33%;
+}
+
+.g-one-half {
+  width: 50%;
+}
+
+.g-two-thirds {
+  width: 66%;
+}
+
+.g-three-quarters {
+  width: 75%;
+}
+
+.g-whole {
+  width: 100%;
+}
 
 /* Header  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -339,10 +542,11 @@ th {
 /* Photo stream ~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 #g-photo-stream {
+  background-color: #<?= $bgColorDefault ?>;
 }
 
 #g-photo-stream .g-block-content ul {
-  border-right: 1px solid #e8e8e8;
+  border-right: 1px solid #<?= $bgColorDefault ?>;
   height: 135px;
   overflow: auto;
   overflow: -moz-scrollbars-horizontal; /* for FF */
@@ -450,178 +654,20 @@ th {
   color: #<?= $fcHighlight ?> !important;
 }
 
-/** *******************************************************************
- * 5) Navigation and menus
- *********************************************************************/
-
-/* Login menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-#g-banner #g-login-menu {
-  color: #<?= $fcHeader ?>;
-  float: right;
+/* Language options  ~~~~~~~~~~~~~~~~~~~~~~~~ */
+#g-share-translations-form fieldset {
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
-#g-banner #g-login-menu li {
-  padding-left: 1.2em;
-}
-
-/* Site Menu  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-#g-site-admin-menu {
-  bottom: 0;
-  font-size: 1.2em;
-  left: 140px;
-  position: absolute;
-}
-
-#g-site-admin-menu ul {
-  margin-bottom: 0;
+#g-share-translations-form fieldset legend {
+  display: none;
 }
 
 /** *******************************************************************
- * 6) jQuery and jQuery UI
- *********************************************************************/
-
-/* Superfish menu overrides ~~~~~~~~~~~~~~ */
-.sf-menu a {
-  border-left:1px solid #<?= $borderColorContent ?>;
-}
-
-.sf-menu li,
-.sf-menu li li,
-.sf-menu li li ul li {
-  background-color: #<?= $bgColorDefault ?>;
-}
-
-.sf-menu li:hover {
-  background-color: #<?= $bgColorHover ?>;
-}
-
-.sf-menu li:hover,
-.sf-menu li.sfHover,
-.sf-menu a:focus,
-.sf-menu a:hover,
-.sf-menu a:active {
-  background-color: #<?= $bgColorHover ?> !important;
-}
-
-.sf-sub-indicator {
-  background-image: url("themeroller/images/ui-icons_<?= $iconColorHighlight ?>_256x240.png");
-  height: 16px;
-  width: 16px;
-}
-
-a > .sf-sub-indicator {
-  background-position: -64px -16px !important;
-  top: 0.6em;
-}
-
-.sf-menu ul a > .sf-sub-indicator {
-  background-position: -32px -16px !important;
-}
-
-/* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
-
-.ui-widget-overlay {
-  background: #<?= $bgColorOverlay ?>;
-  opacity: .7;
-}
-
-#g-admin-dashboard .ui-state-highlight,
-#g-sidebar .ui-state-highlight {
-  height: 2em;
-  margin-bottom: 1em;
-}
-
-.g-buttonset-vertical a {
-  width: 8em !important;
-}
-
-#g-admin-dashboard .ui-dialog-titlebar,
-#g-admin-dashboard-sidebar .ui-dialog-titlebar {
-  padding: .2em .4em;
-}
-
-/** *******************************************************************
- * 7) Module color overrides
- *********************************************************************/
-
-/* User admin form ~~~~~~~~~~~~~~~~~~~~~~~~~ */
-#g-user-admin-list .g-admin {
-  color: #<?= $fcDefault ?> !important;
-  font-weight: bold;
-}
-
-.g-group {
-  border: 1px solid #<?= $borderColorContent ?> !important;
-}
-
-.g-group h4 {
-  background-color: #<?= $bgColorDefault ?> !important;
-  border-bottom: 1px dashed #<?= $fcDefault ?> !important;
-}
-
-.g-default-group h4,
-.g-default-group .g-user {
-  color: #<?= $fcDefault ?> !important;
-}
-
-/** *******************************************************************
- * 8) Forms
- *********************************************************************/
-fieldset {
-  border: 1px solid #<?= $borderColorContent ?>;
-}
-
-legend {
-  font-weight: bold;
-  color: #<?= $fcDefault ?>;
-}
-
-input.textbox,
-input[type="text"],
-input[type="password"],
-textarea {
-  background-color: #<?= $bgColorDefault ?>;
-  border: 1px solid #<?= $borderColorActive ?>;
-  border-top-color: #<?= $borderColorContent ?>;
-  border-left-color: #<?= $borderColorContent ?>;
-  color: #<?= $fcContent ?>;
-}
-
-input:focus,
-input.textbox:focus,
-input[type=text]:focus,
-textarea:focus,
-option:focus {
-  background-color: #<?= $bgColorActive ?>;
-  color: #<?= $fcContent ?>;
-}
-
-/* Forms in dialogs and panels ~~~~~~~~~ */
-
-label,
-input[readonly] {
-  background-color: #<?= $bgColorContent ?>;
-  color: #<?= $fcDefault ?>;
-}
-
-/* Short forms ~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.g-short-form .textbox,
-.g-short-form input[type=text] {
-  background-color: <?= $bgColorDefault ?>;
-  color: #<?= $fcContent ?>;
-}
-
-.g-short-form .textbox.g-error {
-  border: 1px solid #<?= $borderColorError ?>;
-  color: #<?= $fcError ?>;
-}
-
-/** *******************************************************************
- * 9) States and interactions
- *********************************************************************/
+ *  5) States and interactions
+ **********************************************************************/
 
 .g-draggable:hover {
   border: 1px dashed #<?= $bgColorHighlight ?>;
@@ -743,8 +789,605 @@ form .g-error {
 }
 
 /** *******************************************************************
- * 10) Right to left styles
+ *  6) Positioning and order
+ **********************************************************************/
+
+.g-left {
+  clear: none;
+  float: left;
+}
+
+.g-right {
+  clear: none;
+  float: right;
+}
+
+.g-first {
+}
+
+.g-last {
+}
+
+.g-even {
+  background-color: #<?= $bgColorContent ?>;
+}
+
+.g-odd {
+  background-color: #<?= $bgColorDefault ?>;
+}
+
+
+/** *******************************************************************
+ *  7) Navigation and menus
  *********************************************************************/
+
+/* Login menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#g-banner #g-login-menu {
+  color: #<?= $fcHeader ?>;
+  float: right;
+}
+
+#g-banner #g-login-menu li {
+  padding-left: 1.2em;
+}
+
+/* Site Menu  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#g-site-admin-menu {
+  bottom: 0;
+  font-size: 1.2em;
+  left: 140px;
+  position: absolute;
+}
+
+#g-site-admin-menu ul {
+  margin-bottom: 0;
+}
+
+/** *******************************************************************
+ *  8) jQuery and jQuery UI
+ *********************************************************************/
+/* Generic block container ~~~~~~~~~~~~~~~ */
+
+.g-block {
+  clear: both;
+  margin-bottom: 2.5em;
+}
+
+.g-block-content {
+}
+
+/* Buttons ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-button {
+  display: inline-block;
+  margin: 0 4px 0 0;
+  padding: .2em .4em;
+}
+
+.g-button,
+.g-button:hover,
+.g-button:active {
+  cursor: pointer !important;
+  outline: 0;
+  text-decoration: none;
+  -moz-outline-style: none;
+}
+
+button {
+  padding: 2px 4px 2px 4px;
+}
+
+/* jQuery UI ThemeRoller buttons ~~~~~~~~~ */
+
+.g-buttonset {
+  padding-left: 1px;
+}
+
+.g-buttonset li {
+  float: left;
+}
+
+.g-buttonset .g-button {
+  margin: 0;
+}
+
+.ui-icon-left .ui-icon {
+  float: left;
+  margin-right: .2em;
+}
+
+.ui-icon-right .ui-icon {
+  float: right;
+  margin-left: .2em;
+}
+
+/* Rotate icon, ThemeRoller only provides one of these */
+
+.ui-icon-rotate-ccw {
+  background-position: -192px -64px;
+}
+
+.ui-icon-rotate-cw {
+  background-position: -208px -64px;
+}
+
+.g-progress-bar {
+  height: 1em;
+  width: 100%;
+  margin-top: .5em;
+  display: inline-block;
+}
+
+/* Status and validation messages ~~~~ */
+
+.g-message-block {
+  background-position: .4em .3em;
+  border: 1px solid #ccc;
+  padding: 0;
+}
+
+#g-action-status {
+  margin-bottom: 1em;
+}
+
+#g-action-status li,
+p#g-action-status,
+div#g-action-status {
+  padding: .3em .3em .3em 30px;
+}
+
+#g-site-status li {
+  border-bottom: 1px solid #ccc;
+  padding: .3em .3em .3em 30px;
+}
+
+.g-module-status {
+  clear: both;
+  margin-bottom: 1em;
+}
+
+.g-message {
+  background-position: 0 50%;
+}
+
+/* Breadcrumbs ~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-breadcrumbs {
+  clear: both;
+  padding: 0 20px;
+}
+
+.g-breadcrumbs li {
+  background: transparent url('images/ico-separator.gif') no-repeat scroll left center;
+  float: left;
+  padding: 1em 8px 1em 18px;
+}
+
+.g-breadcrumbs .g-first {
+  background: none;
+  padding-left: 0;
+}
+
+.g-breadcrumbs li a,
+.g-breadcrumbs li span {
+  display: block;
+}
+
+#g-dialog ul.g-breadcrumbs {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+/* Pagination ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-paginator {
+  padding: .2em 0;
+  width: 100%;
+}
+
+.g-paginator li {
+  float: left;
+  width: 30%;
+}
+
+.g-paginator .g-info {
+  background: none;
+  padding: .2em 0;
+  text-align: center;
+  width: 40%;
+}
+
+/* Dialogs and panels ~~~~~~~~~~~~~~~~~~ */
+
+#g-dialog {
+  text-align: left;
+}
+
+#g-dialog legend {
+  display: none;
+}
+
+#g-dialog .g-cancel {
+  margin: .4em 1em;
+}
+
+#g-panel {
+  display: none;
+  padding: 1em;
+}
+
+/* Inline layout  ~~~~~~~~~~ */
+
+.g-inline li {
+  float: left;
+  margin-left: 1.8em;
+  padding-left: 0 !important;
+}
+
+.g-inline li.g-first {
+  margin-left: 0;
+}
+
+/* Superfish menu overrides ~~~~~~~~~~~~~~ */
+.sf-menu ul {
+  width: 12em;
+}
+
+ul.sf-menu li li:hover ul,
+ul.sf-menu li li.sfHover ul {
+  left:	12em;
+}
+
+ul.sf-menu li li li:hover ul,
+ul.sf-menu li li li.sfHover ul {
+  left: 12em;
+}
+.sf-menu a {
+  border-left:1px solid #<?= $borderColorContent ?>;
+}
+
+.sf-menu li,
+.sf-menu li li,
+.sf-menu li li ul li {
+  background-color: #<?= $bgColorDefault ?>;
+}
+
+.sf-menu li:hover {
+  background-color: #<?= $bgColorHover ?>;
+}
+
+.sf-menu li:hover,
+.sf-menu li.sfHover,
+.sf-menu a:focus,
+.sf-menu a:hover,
+.sf-menu a:active {
+  background-color: #<?= $bgColorHover ?> !important;
+}
+
+.sf-sub-indicator {
+  background-image: url("themeroller/images/ui-icons_<?= $iconColorHighlight ?>_256x240.png");
+  height: 16px;
+  width: 16px;
+}
+
+a > .sf-sub-indicator {
+  background-position: -64px -16px !important;
+  top: 0.6em;
+}
+
+.sf-menu ul a > .sf-sub-indicator {
+  background-position: -32px -16px !important;
+}
+
+/* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
+
+.ui-widget-overlay {
+  background: #<?= $bgColorOverlay ?>;
+  opacity: .7;
+}
+
+#g-admin-dashboard .ui-state-highlight,
+#g-sidebar .ui-state-highlight {
+  height: 2em;
+  margin-bottom: 1em;
+}
+
+.g-buttonset-vertical a {
+  width: 8em !important;
+}
+
+#g-admin-dashboard .ui-dialog-titlebar,
+#g-admin-dashboard-sidebar .ui-dialog-titlebar {
+  padding: .2em .4em;
+}
+
+/** *******************************************************************
+ *  9) Module color overrides
+ *********************************************************************/
+
+/* User admin form ~~~~~~~~~~~~~~~~~~~~~~~~~ */
+#g-user-admin-list .g-admin {
+  color: #<?= $fcDefault ?> !important;
+  font-weight: bold;
+}
+
+.g-group {
+  border: 1px solid #<?= $borderColorContent ?> !important;
+}
+
+.g-group h4 {
+  background-color: #<?= $bgColorDefault ?> !important;
+  border-bottom: 1px dashed #<?= $fcDefault ?> !important;
+}
+
+.g-default-group h4,
+.g-default-group .g-user {
+  color: #<?= $fcDefault ?> !important;
+}
+
+/** *******************************************************************
+ *  10) Right to left styles
+ *********************************************************************/
+
+.rtl {
+  direction: rtl;
+}
+
+.rtl #g-header,
+.rtl #g-content,
+.rtl #g-sidebar,
+.rtl #g-footer,
+.rtl caption,
+.rtl th,
+.rtl #g-dialog,
+.rtl .g-context-menu li a,
+.rtl .g-message-box li,
+.rtl #g-site-status li {
+  text-align: right;
+}
+
+.rtl .g-text-right {
+  text-align: left;
+}
+
+.rtl .g-error,
+.rtl .g-info,
+.rtl .g-success,
+.rtl .g-warning,
+.rtl #g-add-photos-status .g-success,
+.rtl #g-add-photos-status .g-error {
+  background-position: center right;
+  padding-right: 30px !important;
+}
+
+.rtl form li.g-error,
+.rtl form li.g-info,
+.rtl form li.g-success,
+.rtl form li.g-warning {
+  padding-right: 0 !important;
+}
+
+.rtl .g-left,
+.rtl .g-inline li,
+.rtl #g-content #g-album-grid .g-item,
+.rtl .sf-menu li,
+.rtl .g-breadcrumbs li,
+.rtl .g-paginator li,
+.rtl .g-buttonset li,
+.rtl .ui-icon-left .ui-icon,
+.rtl .g-short-form li,
+.rtl form ul ul li,
+.rtl input[type="submit"],
+.rtl input[type="reset"],
+.rtl input.checkbox,
+.rtl input[type=checkbox],
+.rtl input.radio,
+.rtl input[type=radio] {
+  float: right;
+}
+
+.rtl .g-right,
+.rtl .ui-icon-right .ui-icon {
+  float: left;
+}
+
+.rtl .g-inline li {
+  margin-right: 1em;
+}
+
+.rtl .g-inline li.g-first {
+  margin-right: 0;
+}
+
+.rtl .g-breadcrumbs li {
+  background: transparent url('images/ico-separator-rtl.gif') no-repeat scroll right center;
+  padding: 1em 18px 1em 8px;
+}
+
+.rtl .g-breadcrumbs .g-first {
+  background: none;
+  padding-right: 0;
+}
+
+.rtl input.checkbox {
+  margin-left: .4em;
+}
+
+.rtl #g-add-comment {
+  right: inherit;
+  left: 0;
+}
+
+.rtl .ui-icon-left .ui-icon {
+  margin-left: .2em;
+}
+
+.rtl .ui-icon-right .ui-icon {
+  margin-right: .2em;
+}
+
+/* RTL Corner radius ~~~~~~~~~~~~~~~~~~~~~~ */
+.rtl .g-buttonset .ui-corner-tl {
+	-moz-border-radius-topleft: 0;
+	-webkit-border-top-left-radius: 0;
+	border-top-left-radius: 0;
+	-moz-border-radius-topright: 5px !important;
+	-webkit-border-top-right-radius: 5px !important;
+	border-top-right-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-tr {
+	-moz-border-radius-topright: 0;
+	-webkit-border-top-right-radius: 0;
+	border-top-right-radius: 0;
+	-moz-border-radius-topleft: 5px !important;
+	-webkit-border-top-left-radius: 5px !important;
+	border-top-left-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-bl {
+	-moz-border-radius-bottomleft: 0;
+	-webkit-border-bottom-left-radius: 0;
+	border-bottom-left-radius: 0;
+	-moz-border-radius-bottomright: 5px !important;
+	-webkit-border-bottom-right-radius: 5px !important;
+	border-bottom-right-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-br {
+	-moz-border-radius-bottomright: 0;
+	-webkit-border-bottom-right-radius: 0;
+	border-bottom-right-radius: 0;
+	-moz-border-radius-bottomleft: 5px !important;
+	-webkit-border-bottom-left-radius: 5px !important;
+	border-bottom-left-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-right,
+.rtl .ui-progressbar .ui-corner-right {
+	-moz-border-radius-topright: 0;
+	-webkit-border-top-right-radius: 0;
+	border-top-right-radius: 0;
+	-moz-border-radius-topleft: 5px !important;
+	-webkit-border-top-left-radius: 5px !important;
+	border-top-left-radius: 5px !important;
+	-moz-border-radius-bottomright: 0;
+	-webkit-border-bottom-right-radius: 0;
+	border-bottom-right-radius: 0;
+	-moz-border-radius-bottomleft: 5px !important;
+	-webkit-border-bottom-left-radius: 5px !important;
+	border-bottom-left-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-left,
+.rtl .ui-progressbar .ui-corner-left {
+	-moz-border-radius-topleft: 0;
+	-webkit-border-top-left-radius: 0;
+	border-top-left-radius: 0;
+	-moz-border-radius-topright: 5px !important;
+	-webkit-border-top-right-radius: 5px !important;
+	border-top-right-radius: 5px !important;
+	-moz-border-radius-bottomleft: 0;
+	-webkit-border-bottom-left-radius: 0;
+	border-bottom-left-radius: 0;
+	-moz-border-radius-bottomright: 5px !important;
+	-webkit-border-bottom-right-radius: 5px !important;
+	border-bottom-right-radius: 5px !important;
+}
+
+/* RTL Superfish ~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.rtl .sf-menu a {
+  border-left: none;
+  border-right:1px solid #<?= $borderColorContent ?>;
+}
+
+.rtl .sf-menu a.sf-with-ul {
+  padding-left: 2.25em;
+  padding-right: 1em;
+}
+
+.rtl .sf-sub-indicator {
+  background: url("themeroller/images/ui-icons_<?= $fcDefault ?>_256x240.png") no-repeat -96px -16px; /* 8-bit indexed alpha png. IE6 gets solid image only */
+  left: .75em !important;
+  right: auto;
+}
+
+.rtl a > .sf-sub-indicator {  /* give all except IE6 the correct values */
+  top: .8em;
+  background-position: -10px -100px; /* use translucent arrow for modern browsers*/
+}
+/* apply hovers to modern browsers */
+.rtl a:focus > .sf-sub-indicator,
+.rtl a:hover > .sf-sub-indicator,
+.rtl a:active > .sf-sub-indicator,
+.rtl li:hover > a > .sf-sub-indicator,
+.rtl li.sfHover > a > .sf-sub-indicator {
+  background-position: 0 -100px; /* arrow hovers for modern browsers*/
+}
+
+/* point right for anchors in subs */
+.rtl .sf-menu ul .sf-sub-indicator { background-position:  0 0; }
+.rtl .sf-menu ul a > .sf-sub-indicator { background-position:  -10px 0; }
+/* apply hovers to modern browsers */
+.rtl .sf-menu ul a:focus > .sf-sub-indicator,
+.rtl .sf-menu ul a:hover > .sf-sub-indicator,
+.rtl .sf-menu ul a:active > .sf-sub-indicator,
+.rtl .sf-menu ul li:hover > a > .sf-sub-indicator,
+.rtl .sf-menu ul li.sfHover > a > .sf-sub-indicator {
+  background-position: 0 0; /* arrow hovers for modern browsers*/
+}
+
+.rtl .sf-menu li:hover ul,
+.rtl .sf-menu li.sfHover ul {
+  right: 0;
+  left: auto;
+}
+
+.rtl ul.sf-menu li li:hover ul,
+.rtl ul.sf-menu li li.sfHover ul {
+  right: 12em; /* match ul width */
+  left: auto;
+}
+.rtl ul.sf-menu li li li:hover ul,
+.rtl ul.sf-menu li li li.sfHover ul {
+  right: 12em; /* match ul width */
+  left: auto;
+}
+
+/*** shadows for all but IE6 ***/
+.rtl .sf-shadow ul {
+  background: url('../images/superfish-shadow.png') no-repeat bottom left;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius-topleft: 17px;
+  -moz-border-radius-bottomright: 17px;
+  -webkit-border-top-left-radius: 17px;
+  -webkit-border-bottom-right-radius: 17px;
+  border-top-left-radius: 17px;
+  border-bottom-right-radius: 17px;
+}
+
+/* RTL ThemeRoller ~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.rtl .ui-dialog .ui-dialog-titlebar {
+  padding: 0.5em 1em 0.3em 0.3em;
+}
+
+.rtl .ui-dialog .ui-dialog-title {
+  float: right;
+}
+
+.rtl .ui-dialog .ui-dialog-titlebar-close {
+  left: 0.3em;
+  right: auto;
+}
 
 .rtl #g-content #g-album-grid .g-item,
 .rtl #g-site-theme,
@@ -783,29 +1426,3 @@ form .g-error {
   margin: 0 0 1em 1em;
 }
 
-/* RTL Superfish ~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.rtl .sf-menu a {
-  border-right:1px solid #<?= $borderColorContent ?>;
-}
-
-.rtl .sf-sub-indicator {
-  background: url("themeroller/images/ui-icons_<?= $fcDefault ?>_256x240.png") no-repeat -96px -16px; /* 8-bit indexed alpha png. IE6 gets solid image only */
-}
-
-/*** shadows for all but IE6 ***/
-.rtl .sf-shadow ul {
-  background: url('../images/superfish-shadow.png') no-repeat bottom left;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 0;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomleft: 0;
-  -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -moz-border-radius-topleft: 17px;
-  -moz-border-radius-bottomright: 17px;
-  -webkit-border-top-left-radius: 17px;
-  -webkit-border-bottom-right-radius: 17px;
-  border-top-left-radius: 17px;
-  border-bottom-right-radius: 17px;
-}
