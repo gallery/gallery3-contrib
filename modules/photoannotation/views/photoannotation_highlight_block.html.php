@@ -22,6 +22,7 @@
   $jscode = "";
   $legend_faces = "";
   $legend_notes = "";
+  $legend_users = "";
   if (module::get_var("gallery", "active_site_theme") == "greydragon") {
     $css_item_id = "#g-photo-id-". $item->id;
     $css_a_class = ".g-sb-preview";
