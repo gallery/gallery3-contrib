@@ -32,7 +32,7 @@ class photoannotation_Core {
         "SELECT SQL_CALC_FOUND_ROWS {users}.*, " .
         "  MATCH({users}.`name`) AGAINST ('$q' IN BOOLEAN MODE) AS `score` " .
         "FROM {users} " .
-        "WHERE MATCH({users}.`name`) AGAINST ('$q' IN BOOLEAN MODE) " .
+        "WHERE MATCH({users}.`name`, {users}.`full_name`) AGAINST ('$q' IN BOOLEAN MODE) " .
         "ORDER BY `score` DESC " .
         "LIMIT $page_size OFFSET $offset";
       $data = $db->query($query);
