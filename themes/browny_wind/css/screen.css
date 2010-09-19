@@ -7,9 +7,7 @@
  *  1)  Font sizes, base HTML elements
  *  2)  Reusable content blocks
  *  3)  Page layout containers
- *  4)  Content blocks in specific layout containers  
- *  5)  States and interactions
- *  6)  Positioning and order
+ *  4)  Content blocks in specific layout containers
  *  7)  Navigation and menus
  *  8)  ThemeRoller
  *  9)  jQuery and jQuery UI
@@ -630,19 +628,18 @@ li.g-error select {
 .g-denied,
 tr.g-error td.g-error,
 #g-add-photos-status .g-error {
-  background: #f6cbca url('../images/ico-error.png') no-repeat .4em 50%;
+  background: #f6cbca url('images/ico-error.png') no-repeat .4em 50%;
   color: #f00;
 }
 
 .g-info {
-  background: #e8e8e8 url('../images/ico-info.png') no-repeat .4em 50%;
+  background: #e8e8e8 url('images/ico-info.png') no-repeat .4em 50%;
 }
 
-/* ~browny~ */
 .g-success,
 .g-allowed,
 #g-add-photos-status .g-success {
-  background: #fcf9ce url('../images/ico-success.png') no-repeat .4em 50%;
+  background: #d9efc2 url('images/ico-success.png') no-repeat .4em 50%;
 }
 
 tr.g-success {
@@ -650,12 +647,12 @@ tr.g-success {
 }
 
 tr.g-success td.g-success {
-	background-image: url('../images/ico-success.png');
+	background-image: url('images/ico-success.png');
 }
 
 .g-warning,
 tr.g-warning td.g-warning {
-  background: #fcf9ce url('../images/ico-warning.png') no-repeat .4em 50%;
+  background: #fcf9ce url('images/ico-warning.png') no-repeat .4em 50%;
 }
 
 form .g-error {
@@ -698,11 +695,11 @@ form .g-error {
 
 .g-loading-large,
 .g-dialog-loading-large {
-  background: #e8e8e8 url('../images/loading-large.gif') no-repeat center center !important;
+  background: #e8e8e8 url('images/loading-large.gif') no-repeat center center !important;
 }
 
 .g-loading-small {
-  background: #e8e8e8 url('../images/loading-small.gif') no-repeat center center !important;
+  background: #e8e8e8 url('images/loading-small.gif') no-repeat center center !important;
 }
 
 /** *******************************************************************
@@ -729,9 +726,8 @@ form .g-error {
   background-color: #fff;
 }
 
-/* ~browny~ */
 .g-odd {
-  background-color: #EDE4D5;
+  background-color: #eee;
 }
 
 /** *******************************************************************
@@ -1009,11 +1005,10 @@ div#g-action-status {
   padding: 0 20px;
 }
 
-/* ~browny~ */
 .g-breadcrumbs li {
-  background: transparent url('../images/ico-separator.gif') no-repeat scroll left center;
+  background: transparent url('images/ico-separator.gif') no-repeat scroll left center;
   float: left;
-  padding: .5em 8px .5em 18px;
+  padding: 1em 8px 1em 18px;
 }
 
 .g-breadcrumbs .g-first {
@@ -1154,10 +1149,9 @@ div#g-action-status {
   margin-right: 0;
 }
 
-/* ~browny~ */
 .rtl .g-breadcrumbs li {
-  background: transparent url('../images/ico-separator-rtl.gif') no-repeat scroll right center;
-  padding: .5em 18px .5em 8px;
+  background: transparent url('images/ico-separator-rtl.gif') no-repeat scroll right center;
+  padding: 1em 18px 1em 8px;
 }
 
 .rtl .g-breadcrumbs .g-first {
@@ -1266,7 +1260,7 @@ div#g-action-status {
 .rtl .sf-sub-indicator {
 	left: .75em !important;
     right: auto;
-	background: url('../../../lib/superfish/images/arrows-ffffff-rtl.png') no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */
+	background: url('superfish/images/arrows-ffffff-rtl.png') no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */
 }
 .rtl a > .sf-sub-indicator {  /* give all except IE6 the correct values */
 	top:			.8em;
@@ -1312,7 +1306,7 @@ div#g-action-status {
 
 /*** shadows for all but IE6 ***/
 .rtl .sf-shadow ul {
-	background:	url('../../../lib/superfish/images/shadow.png') no-repeat bottom left;
+	background:	url('superfish/images/shadow.png') no-repeat bottom left;
 	padding: 0 0 9px 8px;
 	border-top-right-radius: 0;
 	border-bottom-left-radius: 0;
@@ -1405,6 +1399,34 @@ div#g-action-status {
  * 9) More Browny (Extra overrides for better Browny look)
  *********************************************************************/
 /* ~browny~ */
+
+/* /lib/gallery.common.css ~~~~~~~~~~~~~~~ */
+
+.g-info {
+  background: #e8e8e8 url('../images/ico-info.png') no-repeat .4em 50%;
+}
+
+.g-success,
+.g-allowed,
+#g-add-photos-status .g-success {
+  background: #fcf9ce url('../images/ico-success.png') no-repeat .4em 50%;
+}
+
+tr.g-success td.g-success {
+	background-image: url('../images/ico-success.png');
+}
+
+.g-odd {
+  background-color: #EDE4D5;
+}
+
+.g-breadcrumbs li {
+  padding: .5em 8px .5em 18px;
+}
+
+.rtl .g-breadcrumbs li {
+  padding: .5em 18px .5em 8px;
+}
 
 /* /modules/gallery/css/gallery.css ~~~~~~ */
 
