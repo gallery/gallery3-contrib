@@ -21,7 +21,7 @@ class photoannotation_theme_Core {
   static function head($theme) {
     $theme->css("photoannotation.css");
     if ($theme->page_subtype == "photo") {
-      $theme->script("jquery.annotate.min.js");
+      //$theme->script("jquery.annotate.min.js");
       $noborder = module::get_var("photoannotation", "noborder", false);
       $noclickablehover = module::get_var("photoannotation", "noclickablehover", false);
       $nohover = module::get_var("photoannotation", "nohover", false);
@@ -60,7 +60,7 @@ class photoannotation_theme_Core {
                   }\n";
         }
       }
-      $v .= "</style>\n";
+      $v .= "</style>\n<script type=\"text/javascript\" src=\"/gallery3/modules/photoannotation/js/jquery.annotate.js\"></script>";
       return $v;
     }
   }

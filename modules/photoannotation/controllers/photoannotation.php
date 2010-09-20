@@ -83,18 +83,17 @@ class photoannotation_Controller extends Controller {
     $user_id = "";
     $user_id = $_POST["userlist"];
     $description = $_POST["desc"];
+    $error_noselection = t("Please select a person or tag or specify a title.");
     $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
     //If this is a user then get the id
     if ($user_id != "") {
       $getuser = photoannotation::getuser($user_id);
       if (!$getuser->found) {
-        message::error(t("Could not find anyone with the name %user.", array("user" => $user_id)));
-        url::redirect($redir_uri);
+        json::reply(array("result" => "error", "message" => (string)t("Could not find anyone with the name %user.", array("user" => $user_id))));
         return;
       }
       if ($getuser->isguest) {
-        message::error(t("You cannot create an annotation for the guest user."));
-        url::redirect($redir_uri);
+        json::reply(array("result" => "error", "message" => (string)t("You cannot create an annotation for the guest user.")));
         return;
       }
       $user_id = $getuser->user->id;
@@ -123,8 +122,7 @@ class photoannotation_Controller extends Controller {
       } elseif ($item_title != "") {   //Save note
         photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
       } else {                            //Something's wrong
-        message::error(t("Please select a person or tag or specify a title."));
-        url::redirect($redir_uri);
+            json::reply(array("result" => "error", "message" => (string)$error_noselection));
         return;
       }
     } else {    //This is an update to an existing annotation
@@ -142,8 +140,7 @@ class photoannotation_Controller extends Controller {
             photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updateduser->delete();   //delete old user
           } else {                            //Somethings wrong
-            message::error(t("Please select a person or tag or specify a title."));
-            url::redirect($redir_uri);
+            json::reply(array("result" => "error", "message" => (string)$error_noselection));
             return;
           }
           break;
@@ -160,8 +157,7 @@ class photoannotation_Controller extends Controller {
             photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
             $updatedface->delete();   //delete old face
           } else {                            //Somethings wrong
-            message::error(t("Please select a person or tag or specify a title."));
-            url::redirect($redir_uri);
+            json::reply(array("result" => "error", "message" => (string)$error_noselection));
             return;
           }
           break;
@@ -178,19 +174,17 @@ class photoannotation_Controller extends Controller {
           } elseif ($item_title != "") {   //Conversion note -> note
             photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
           } else {                            //Somethings wrong
-            message::error(t("Please select a person or tag or specify a title."));
-            url::redirect($redir_uri);
+            json::reply(array("result" => "error", "message" => (string)$error_noselection));
             return;
           }
           break;
         default:
-          message::error(t("Please select a person or tag or specify a title."));
-          url::redirect($redir_uri);
+          json::reply(array("result" => "error", "message" => (string)$error_noselection));
           return;
       }
     }
-    message::success(t("Annotation saved."));
-    url::redirect($redir_uri);
+    //@todo: add needed data to the json reply
+    json::reply(array("result" => "success"));
     return;
   }
   
@@ -224,8 +218,8 @@ class photoannotation_Controller extends Controller {
         url::redirect($redir_uri);
         return;
     }
-    message::success(t("Annotation deleted."));
-    url::redirect($redir_uri);
+    $annotation_id = "photoannotation-area-". $notetype ."-". $noteid;
+    json::reply(array("result" => "success", "annotationid" => (string)$annotation_id));
   }
   
   public function autocomplete() {

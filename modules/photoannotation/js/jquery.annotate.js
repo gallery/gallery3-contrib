@@ -31,7 +31,8 @@
         this.canvas = $('<div class="image-annotate-canvas g-thumbnail"><div class="image-annotate-view"></div><div class="image-annotate-edit"><div class="image-annotate-edit-area"></div></div></div>');
         this.canvas.children('.image-annotate-edit').hide();
         this.canvas.children('.image-annotate-view').hide();
-        this.image.after(this.canvas);
+        $('#g-photo').after(this.canvas);
+        //this.image.after(this.canvas);
 
         // Give the canvas and the container their size and background
         this.canvas.height(this.height());
@@ -142,28 +143,84 @@
             // Create/prepare the editable note elements
             var editable = new $.fn.annotateEdit(image, null, tags, labels, saveUrl, csrf, rtlsupport, users);
 
-            $.fn.annotateImage.createSaveButton(editable, image, null, rtlsupport, labels);
+            $.fn.annotateImage.createSaveButton(editable, image, null, rtlsupport, labels, saveUrl);
             $.fn.annotateImage.createCancelButton(editable, image, rtlsupport, labels);
         }
     };
 
-    $.fn.annotateImage.createSaveButton = function(editable, image, note, rtlsupport, labels) {
+    $.fn.annotateImage.createSaveButton = function(editable, image, note, rtlsupport, labels, saveUrl) {
         ///	<summary>
         ///		Creates a Save button on the editable note.
         ///	</summary>
         var ok = $('<a class="image-annotate-edit-ok g-button ui-corner-all ui-icon-left ui-state-default ' + rtlsupport + '">' + labels[8] + '</a>');
 
         ok.click(function() {
-            var form = $('#image-annotate-edit-form form');
-            var text = $('#image-annotate-text').val();
-            $.fn.annotateImage.appendPosition(form, editable);
-            image.mode = 'view';
+          var form = $('#image-annotate-edit-form form');
+          $.fn.annotateImage.appendPosition(form, editable)
+          $.ajax({
+            url: saveUrl,
+            type: 'POST',
+            data: form.serialize(),
+            error: function(e) { 
+              var errordialog = '<div id="image-annotate-error-dialog">' + labels[13] + '<div />';
+              $('body').append(errordialog);
+              var btns = {};
+              if (rtlsupport == "") {
+                diagclass = "inmage-annotate-dialog";
+              } else {
+                diagclass = "inmage-annotate-dialog-rtl";
+              }
+              btns[labels[14]] = function(){ 
+                $('#image-annotate-error-dialog').remove();
+              };
+              $('#image-annotate-error-dialog').dialog({
+                  modal: true,
+                  resizable: false,
+                  dialogClass: diagclass,
+                  title: labels[13],
+                  close: function(event, ui) { $('#image-annotate-error-dialog').remove(); },
+                  width: 450,
+                  buttons: btns
+              });
+            },
+            success: function(data) {
+              if (data.result == "error") {
+                var errordialog = '<div id="image-annotate-error-dialog">' + data.message + '<div />';
+                $('body').append(errordialog);
+                var btns = {};
+                if (rtlsupport == "") {
+                  diagclass = "inmage-annotate-dialog";
+                } else {
+                  diagclass = "inmage-annotate-dialog-rtl";
+                }
+                btns[labels[14]] = function(){ 
+                  $('#image-annotate-error-dialog').remove();
+                };
+                $('#image-annotate-error-dialog').dialog({
+                    modal: true,
+                    resizable: false,
+                    dialogClass: diagclass,
+                    title: labels[13],
+                    close: function(event, ui) { $('#image-annotate-error-dialog').remove(); },
+                    width: 450,
+                    buttons: btns
+                });
+              } else {
+                //@todo: save new annotation / update existing annotation
+                //success
+              }
+              //if (data.annotation_id != undefined) {
+              //  editable.note.id = data.annotation_id;
+              //}
+            },
+            dataType: "json"
+          });
+          image.mode = 'view';
 
-            form.submit();
-
-            editable.destroy();
+          editable.destroy();
+            
        });
-        editable.form.append(ok);
+       editable.form.append(ok);
     };
 
     $.fn.annotateImage.createCancelButton = function(editable, image, rtlsupport, labels) {
@@ -174,7 +231,6 @@
         cancel.click(function() {
             editable.destroy();
             image.mode = 'view';
-            location.reload();
         });
         editable.form.append(cancel);
     };
@@ -242,7 +298,7 @@
         } else {
           notetitle = this.note.text;
         }
-        var form = $('<div id="image-annotate-edit-form" class="ui-dialog-content ui-widget-content ' + rtlsupport + '"><form id="photoannotation-form" action="' + saveUrl + '" method="post"><input type="hidden" name="csrf" value="' + csrf + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="notetype" value="' + this.note.notetype + '" /><fieldset><legend>' + labels[12] + '</legend><label for="photoannotation-user-list">' + labels[10] + '</label><input id="photoannotation-user-list" class="textbox ui-corner-left ui-corner-right" type="text" name="userlist" style="width: 210px;" value="' + username + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-tag-text">' + labels[0] + '</label><input id="image-annotate-tag-text" class="textbox ui-corner-left ui-corner-right" type="text" name="tagsList" style="width: 210px;" value="' + selectedtag + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-text">' + labels[1] + '</label><input id="image-annotate-text" class="textbox ui-corner-left ui-corner-right" type="text" name="text" style="width: 210px;" value="' + notetitle + '" /></fieldset><fieldset><legend>' + labels[2] + '</legend><textarea id="image-annotate-desc" name="desc" rows="3" style="width: 210px;">' + this.note.description + '</textarea></fieldset</form></div>');
+        var form = $('<div id="image-annotate-edit-form" class="ui-dialog-content ui-widget-content ' + rtlsupport + '"><form id="photoannotation-form" action="' + saveUrl + '" method="post"><input id="photoannotation-csrf" type="hidden" name="csrf" value="' + csrf + '" /><input id="photoannotation-noteid" type="hidden" name="noteid" value="' + this.note.noteid + '" /><input id="photoannotation-notetype" type="hidden" name="notetype" value="' + this.note.notetype + '" /><fieldset><legend>' + labels[12] + '</legend><label for="photoannotation-user-list">' + labels[10] + '</label><input id="photoannotation-user-list" class="textbox ui-corner-left ui-corner-right" type="text" name="userlist" style="width: 210px;" value="' + username + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-tag-text">' + labels[0] + '</label><input id="image-annotate-tag-text" class="textbox ui-corner-left ui-corner-right" type="text" name="tagsList" style="width: 210px;" value="' + selectedtag + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-text">' + labels[1] + '</label><input id="image-annotate-text" class="textbox ui-corner-left ui-corner-right" type="text" name="text" style="width: 210px;" value="' + notetitle + '" /></fieldset><fieldset><legend>' + labels[2] + '</legend><textarea id="image-annotate-desc" name="desc" rows="3" style="width: 210px;">' + this.note.description + '</textarea></fieldset</form></div>');
         this.form = form;
         $('body').append(this.form);
         $("#photoannotation-form").ready(function() {
@@ -351,16 +407,12 @@
         image.canvas.children('.image-annotate-view').prepend(this.area);
         
         if (editable) {
-          this.delarea = $('<div class="image-annotate-area photoannotation-del-button"><div><form id="photoannotation-del-' + this.note.noteid + '" class="photoannotation-del-form" method="post" action="' + deleteUrl + '"><input type="hidden" name="notetype" value="' + this.note.notetype + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="csrf" value="' + csrf + '" /></form></div></div>');
+          this.delarea = $('<div class="image-annotate-area photoannotation-del-button" rel="photoannotation-area-' + this.note.notetype + "-" + this.note.noteid + '"><div><form id="photoannotation-area-' + this.note.notetype + "-" + this.note.noteid + '-del-form" class="photoannotation-del-form" method="post" action="' + deleteUrl + '"><input type="hidden" name="notetype" value="' + this.note.notetype + '" /><input type="hidden" name="noteid" value="' + this.note.noteid + '" /><input type="hidden" name="csrf" value="' + csrf + '" /></form></div></div>');
           this.editarea = $('<div id="photoannotation-edit-' + this.note.noteid + '" class="image-annotate-area photoannotation-edit-button"><div></div></div>');
           image.canvas.children('.image-annotate-view').prepend(this.delarea);
           image.canvas.children('.image-annotate-view').prepend(this.editarea);
           this.delarea.bind('click',function () {
-            var alink = $(cssaclass);
-            alink.unbind();
-            alink.attr ('href', '#');
-            alink.removeAttr ('rel');
-            var confdialog = '<div id="image-annotate-conf-dialog" rel="' + $(this).find('form.photoannotation-del-form').attr('id') + '">' + labels[3] + '<div />';
+            var confdialog = '<div id="image-annotate-conf-dialog" rel="' + $(this).attr('rel') + '">' + labels[3] + '<div />';
             $('body').append(confdialog);
             var btns = {};
             if (rtlsupport == "") {
@@ -368,23 +420,55 @@
             } else {
               diagclass = "inmage-annotate-dialog-rtl";
             }
-            btns[labels[5]] = function(){ var delform = $(this).attr("rel"); $("form#" + delform).submit(); };
-            btns[labels[6]] = function(){ location.reload(); };
+            btns[labels[5]] = function(){ 
+              var delform = $("#" + $(this).attr("rel") + "-del-form");
+              $.ajax({
+                url: deleteUrl,
+                type: 'POST',
+                data: delform.serialize(),
+                error: function(e) { 
+                  var errordialog = '<div id="image-annotate-error-dialog">' + labels[15] + '<div />';
+                  $('body').append(errordialog);
+                  var btns = {};
+                  if (rtlsupport == "") {
+                    diagclass = "inmage-annotate-dialog";
+                  } else {
+                    diagclass = "inmage-annotate-dialog-rtl";
+                  }
+                  btns[labels[14]] = function(){ 
+                    $('#image-annotate-error-dialog').remove();
+                  };
+                  $('#image-annotate-error-dialog').dialog({
+                      modal: true,
+                      resizable: false,
+                      dialogClass: diagclass,
+                      title: labels[13],
+                      close: function(event, ui) { $('#image-annotate-error-dialog').remove(); },
+                      width: 450,
+                      buttons: btns
+                  });
+                },
+                success: function(data) {
+                  if (data.result == "success") {
+                    $("#" + data.annotationid).remove();
+                  }
+                },
+                dataType: "json"
+              });
+              $('#image-annotate-conf-dialog').remove();
+            };
+            btns[labels[6]] = function(){ $('#image-annotate-conf-dialog').remove(); };
             $('#image-annotate-conf-dialog').dialog({
                 modal: true,
                 resizable: false,
                 dialogClass: diagclass,
                 title: labels[7],
-                close: function(event, ui) { location.reload(); },
+                close: function(event, ui) { $('#image-annotate-conf-dialog').remove(); },
                 buttons: btns
             });
           });
           var form = this;
           this.editarea.bind('click',function () {
-            var alink = $(cssaclass);
-            alink.unbind();
-            alink.attr ('href', '#');
-            alink.removeAttr ('rel');
             form.edit(tags, labels, saveUrl, csrf, rtlsupport, users);
           });
           this.delarea.hide();
@@ -453,10 +537,6 @@
         // Edit a note feature
         if (note.url != "" && note.url != null) {
             this.area.bind('click',function () {
-              var alink = $(cssaclass);
-              alink.unbind();
-              alink.attr ('href', '#');
-              alink.removeAttr ('rel');
               window.location = note.url;
             });
         }
@@ -529,21 +609,9 @@
 
             // Create/prepare the editable note elements
             var editable = new $.fn.annotateEdit(this.image, this.note, tags, labels, saveUrl, csrf, rtlsupport, users);
-            $.fn.annotateImage.createSaveButton(editable, this.image, annotation, rtlsupport, labels);
+            $.fn.annotateImage.createSaveButton(editable, this.image, annotation, rtlsupport, labels, saveUrl);
             $.fn.annotateImage.createCancelButton(editable, this.image, rtlsupport, labels);
         }
-    };
-
-    $.fn.annotateImage.appendPosition = function(form, editable) {
-        ///	<summary>
-        ///		Appends the annotations coordinates to the given form that is posted to the server.
-        ///	</summary>
-        var areaFields = $('<input type="hidden" value="' + editable.area.height() + '" name="height"/>' +
-                           '<input type="hidden" value="' + editable.area.width() + '" name="width"/>' +
-                           '<input type="hidden" value="' + editable.area.position().top + '" name="top"/>' +
-                           '<input type="hidden" value="' + editable.area.position().left + '" name="left"/>' +
-                           '<input type="hidden" value="' + editable.note.id + '" name="id"/>');
-        form.append(areaFields);
     };
 
     $.fn.annotateView.prototype.resetPosition = function(editable, text) {
@@ -570,5 +638,17 @@
         this.note.id = editable.note.id;
         this.editable = true;
     };
+
+    $.fn.annotateImage.appendPosition = function(form, editable) {
+        ///	<summary>
+        ///		Appends the annotations coordinates to the given form that is posted to the server.
+        ///	</summary>
+        var areaFields = $('<input type="hidden" value="' + editable.area.height() + '" name="height"/>' +
+                           '<input type="hidden" value="' + editable.area.width() + '" name="width"/>' +
+                           '<input type="hidden" value="' + editable.area.position().top + '" name="top"/>' +
+                           '<input type="hidden" value="' + editable.area.position().left + '" name="left"/>' +
+                           '<input type="hidden" value="' + editable.note.id + '" name="id"/>');
+        form.append(areaFields);
+    }
 
 })(jQuery);
