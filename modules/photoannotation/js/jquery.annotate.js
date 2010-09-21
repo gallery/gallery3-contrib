@@ -206,6 +206,20 @@
                     buttons: btns
                 });
               } else {
+                var test = saveUrl;
+                var newnote = new array();
+                newnote.description = data.description;
+                newnote.editable = true;
+                newnote.height = data.height;
+                newnote.internaltext = data.internaltext;
+                newnote.left = data.left;
+                newnote.noteid = data.noteid;
+                newnote.notetype = data.notetype;
+                newnote.text = data.text;
+                newnote.top = data.top;
+                newnote.url = data.url;
+                newnote.width = data.width;
+                $.fn.annotateView(!image, newnote, !image.tags, !image.labels, !image.editable, !image.csrf, !image.deleteUrl, !image.saveUrl, !image.cssaclass, !image.rtlsupport, !image.users);
                 //@todo: save new annotation / update existing annotation
                 //success
               }
