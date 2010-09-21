@@ -99,6 +99,7 @@ class photoannotation_Core {
     $item_user->y2 = $str_y2;
     $item_user->description = $description;
     $item_user->save();
+    return $item_user->id;
   }
   
   public static function saveface($tag_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id = "") {
@@ -117,6 +118,7 @@ class photoannotation_Core {
     $item_face->y2 = $str_y2;
     $item_face->description = $description;
     $item_face->save();
+    return $item_face->id;
   }
 
   public static function savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id = "") {
@@ -135,6 +137,7 @@ class photoannotation_Core {
     $item_note->title = $item_title;
     $item_note->description = $description;
     $item_note->save();
+    return $item_note->id;
   }
 
   public static function send_notifications($recipient_id, $item_id, $mailtype) {

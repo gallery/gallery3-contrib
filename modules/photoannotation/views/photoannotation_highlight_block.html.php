@@ -107,7 +107,7 @@
     }
   }
   $legend_display = $legend_users . $legend_faces . $legend_notes;
-  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("Person:") ."','". t("No user selected") ."','". t("Select one of the following") ."','". t("An error ocurred while saving annotation") ."','". t("OK") ."','". t("An error ocurred while deleting annotation") ."' ],";
+  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("Person:") ."','". t("No user selected") ."','". t("Select one of the following") ."','". t("An error ocurred while saving annotation") ."','". t("OK") ."','". t("An error ocurred while deleting annotation") ."','". t("View fullsize") ."' ],";
 ?>
 <script type="text/javascript">
       $(document).ready(function() {

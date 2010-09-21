@@ -115,12 +115,16 @@ class photoannotation_Controller extends Controller {
     }
     //Save annotation
     if ($annotate_id == "new") {   //This is a new annotation
+      $annotate_id = -1;
       if ($user_id != "") {              //Save user
-        photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+        $new_id = photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+        $dest_type = "user";
       } elseif ($tag_data != "") {         //Save face
-         photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+         $new_id = photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+         $dest_type = "face";
       } elseif ($item_title != "") {   //Save note
-        photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+        $new_id = photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+        $dest_type = "note";
       } else {                            //Something's wrong
             json::reply(array("result" => "error", "message" => (string)$error_noselection));
         return;
@@ -132,12 +136,15 @@ class photoannotation_Controller extends Controller {
                             ->where("id", "=", $annotate_id)
                             ->find();
           if ($user_id != "") {              //Conversion user -> user
-            photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "user";
           } elseif ($tag_data != "") {         //Conversion user -> face
-            photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "face";
             $updateduser->delete();   //delete old user
           } elseif ($item_title != "") {   //Conversion user -> note
-            photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "note";
             $updateduser->delete();   //delete old user
           } else {                            //Somethings wrong
             json::reply(array("result" => "error", "message" => (string)$error_noselection));
@@ -149,12 +156,15 @@ class photoannotation_Controller extends Controller {
                             ->where("id", "=", $annotate_id)
                             ->find();
           if ($user_id != "") {              //Conversion face -> user
-            photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "user";
             $updatedface->delete();   //delete old face
           } elseif ($tag_data != "") {         //Conversion face -> face
-            photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+            $new_id = photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+            $dest_type = "face";
           } elseif ($item_title != "") {   //Conversion face -> note
-            photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "note";
             $updatedface->delete();   //delete old face
           } else {                            //Somethings wrong
             json::reply(array("result" => "error", "message" => (string)$error_noselection));
@@ -166,13 +176,16 @@ class photoannotation_Controller extends Controller {
                             ->where("id", "=", $annotate_id)
                             ->find();
           if ($user_id != "") {              //Conversion note -> user
-            photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "user";
             $updatednote->delete();   //delete old note
           } elseif ($tag_data != "") {         //Conversion note -> face
-            photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "face";
             $updatednote->delete();   //delete old note
           } elseif ($item_title != "") {   //Conversion note -> note
-            photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+            $new_id = photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+            $dest_type = "note";
           } else {                            //Somethings wrong
             json::reply(array("result" => "error", "message" => (string)$error_noselection));
             return;
@@ -184,8 +197,47 @@ class photoannotation_Controller extends Controller {
       }
     }
     //@todo: add needed data to the json reply
-    json::reply(array("result" => "success"));
-    return;
+    $int_text = "";
+    $editable = true;
+    switch ($dest_type) {
+      case "user":
+        $fullname = module::get_var("photoannotation", "fullname", false);
+        $int_text = $getuser->user->display_name() ." (". $getuser->user->name .")";
+        if ($fullname) {
+          $note_text = $getuser->user->display_name();
+        } else {
+          $note_text = $getuser->user->name;
+        }
+        $note_url = user_profile::url($getuser->user->id);
+        break;
+      case "face":
+        $note_text = $tag->name;
+        $note_url = $tag->url();
+        break;
+      case "note":
+        $note_text = $item_title;
+        $note_url = "";
+        $editable = false;
+    }
+    if ($annotate_id == -1) {
+      $annotation_id = "";
+    } else {
+      $annotation_id = "photoannotation-area-". $notetype ."-". $annotate_id;
+    }
+    $reply = array("result" => "success",
+                    "notetype" => (string)$dest_type,
+                    "description" => (string)$description,
+                    "height" => (integer)$_POST["height"],
+                    "internaltext" => (string)$int_text,
+                    "left" => (integer)$str_x1,
+                    "noteid" => (integer)$new_id,
+                    "text" => (string)$note_text,
+                    "top" => (integer)$str_y1,
+                    "url" => (string)$note_url,
+                    "width" => (integer)$_POST["width"],
+                    "editable" => (boolean)$editable,
+                    "annotationid" => (string)$annotation_id);
+    json::reply($reply);
   }
   
   public function delete($item_data) {
