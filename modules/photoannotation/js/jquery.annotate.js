@@ -83,6 +83,7 @@
         $(".g-resize").remove();
         $("#photoannotation-fullsize").append($('.g-fullsize-link:first'));
         $('.g-fullsize-link').append($('.g-fullsize-link:first').attr('title'));
+        $('.image-annotate-canvas').after($('#photoannotation-legend'));
         return this;
     };
 
@@ -149,7 +150,10 @@
             // Create/prepare the editable note elements
             var editable = new $.fn.annotateEdit(image, null, tags, labels, saveUrl, csrf, rtlsupport, users);
 
-            $.fn.annotateImage.createSaveButton(editable, image, null, rtlsupport, labels, saveUrl);
+            var okbut = new $.fn.annotateImage.createSaveButton(editable, image, null, rtlsupport, labels, saveUrl);
+            
+            editable.form.append(okbut);
+            
             $.fn.annotateImage.createCancelButton(editable, image, rtlsupport, labels);
         }
     };
@@ -159,7 +163,6 @@
         ///		Creates a Save button on the editable note.
         ///	</summary>
         var ok = $('<a class="image-annotate-edit-ok g-button ui-corner-all ui-icon-left ui-state-default ' + rtlsupport + '">' + labels[8] + '</a>');
-
         ok.click(function() {
           var form = $('#image-annotate-edit-form form');
           $.fn.annotateImage.appendPosition(form, editable);
@@ -213,6 +216,11 @@
                 });
               } else {
                 if (data.annotationid != "") {
+                  var legendid = "photoannotation-legend-" + data.oldtype;
+                  $("#" + legendid + "-" + data.oldid).remove();
+                  if ($("#" + legendid + " > span").size() == 0) {
+                    $("#" + legendid).hide();
+                  }
                   $("#" + data.annotationid).remove();
                   $("#" + data.annotationid + "-edit").remove();
                   $("#" + data.annotationid + "-delete").remove();
@@ -229,14 +237,18 @@
                 editable.top = data.top;
                 editable.url = data.url;
                 editable.width = data.width;
-                note = new $.fn.annotateView(image, editable, image.tags, image.labels, image.editable, image.csrf, image.deleteUrl, image.saveUrl, image.cssaclass, image.rtlsupport, image.users);
                 
-                //@todo: save new annotation / update existing annotation
-                //success
+                var anchor_open = "";
+                var anchor_close = "";
+                if (data.url != "") {
+                  anchor_open = '<a href="' + data.url + '">';
+                  anchor_close = '</a>';
+                }
+                legendid = "photoannotation-legend-" + data.notetype;
+                $("#" + legendid).show();
+                $("#" + legendid).append('<span id="' + legendid + '-' + data.noteid + '">' + anchor_open + data.text + anchor_close + '   </span>');
+                note = new $.fn.annotateView(image, editable, image.tags, image.labels, image.editable, image.csrf, image.deleteUrl, image.saveUrl, image.cssaclass, image.rtlsupport, image.users);
               }
-              //if (data.annotation_id != undefined) {
-              //  editable.note.id = data.annotation_id;
-              //}
             },
             dataType: "json"
           });
@@ -323,7 +335,7 @@
         } else {
           notetitle = this.note.text;
         }
-        var form = $('<div id="image-annotate-edit-form" class="ui-dialog-content ui-widget-content ' + rtlsupport + '"><form id="photoannotation-form" action="' + saveUrl + '" method="post"><input id="photoannotation-csrf" type="hidden" name="csrf" value="' + csrf + '" /><input id="photoannotation-noteid" type="hidden" name="noteid" value="' + this.note.noteid + '" /><input id="photoannotation-notetype" type="hidden" name="notetype" value="' + this.note.notetype + '" /><fieldset><legend>' + labels[12] + '</legend><label for="photoannotation-user-list">' + labels[10] + '</label><input id="photoannotation-user-list" class="textbox ui-corner-left ui-corner-right" type="text" name="userlist" style="width: 210px;" value="' + username + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-tag-text">' + labels[0] + '</label><input id="image-annotate-tag-text" class="textbox ui-corner-left ui-corner-right" type="text" name="tagsList" style="width: 210px;" value="' + selectedtag + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-text">' + labels[1] + '</label><input id="image-annotate-text" class="textbox ui-corner-left ui-corner-right" type="text" name="text" style="width: 210px;" value="' + notetitle + '" /></fieldset><fieldset><legend>' + labels[2] + '</legend><textarea id="image-annotate-desc" name="desc" rows="3" style="width: 210px;">' + this.note.description + '</textarea></fieldset</form></div>');
+        var form = $('<div id="image-annotate-edit-form" class="ui-dialog-content ui-widget-content ' + rtlsupport + '"><form id="photoannotation-form" action="' + saveUrl + '" method="post"><input id="photoannotation-csrf" type="hidden" name="csrf" value="' + csrf + '" /><input id="photoannotation-noteid" type="hidden" name="noteid" value="' + this.note.noteid + '" /><input id="photoannotation-notetype" type="hidden" name="notetype" value="' + this.note.notetype + '" /><fieldset><legend>' + labels[12] + '</legend><label for="photoannotation-user-list">' + labels[10] + '</label><input id="photoannotation-user-list" class="textbox ui-corner-left ui-corner-right" type="text" name="userlist" style="width: 210px;" value="' + username + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-tag-text">' + labels[0] + '</label><input id="image-annotate-tag-text" class="textbox ui-corner-left ui-corner-right" type="text" name="tagsList" style="width: 210px;" value="' + selectedtag + '" /><div style="text-align: center"><strong>' + labels[4] + '</strong></div><label for="image-annotate-text">' + labels[1] + '</label><input id="image-annotate-text" class="textbox ui-corner-left ui-corner-right" type="text" name="text" style="width: 210px;" value="' + notetitle + '" /></fieldset><fieldset><legend>' + labels[2] + '</legend><textarea id="image-annotate-desc" name="desc" rows="3" style="width: 210px;">' + this.note.description + '</textarea></fieldset></form></div>');
         this.form = form;
         $('body').append(this.form);
         $("#photoannotation-form").ready(function() {
@@ -348,30 +360,24 @@
           if ($("input#image-annotate-tag-text").val() != "") {
             $("input#image-annotate-text").html("");
             $("input#image-annotate-text").val("");
-            $("input#image-annotate-text").text("");
             $("input#photoannotation-user-list").html("");
             $("input#photoannotation-user-list").val("");
-            $("input#photoannotation-user-list").text("");
           }
         });
         $("input#image-annotate-text").keyup(function() {
           if ($("input#image-annotate-text").val() != "") {
             $("input#image-annotate-tag-text").html("");
             $("input#image-annotate-tag-text").val("");
-            $("input#image-annotate-tag-text").text("");
             $("input#photoannotation-user-list").html("");
             $("input#photoannotation-user-list").val("");
-            $("input#photoannotation-user-list").text("");
           }
         });
         $("input#photoannotation-user-list").keyup(function() {
           if ($("select#photoannotation-user-list").val() != "-1") {
             $("input#image-annotate-tag-text").html("");
             $("input#image-annotate-tag-text").val("");
-            $("input#image-annotate-tag-text").text("");
             $("input#image-annotate-text").html("");
             $("input#image-annotate-text").val("");
-            $("input#image-annotate-text").text("");
           }
         });
         this.form.css('left', this.area.offset().left + 'px');
@@ -475,10 +481,16 @@
                 },
                 success: function(data) {
                   if (data.result == "success") {
-                    $("#" + data.annotationid).remove();
-                    $("#" + data.annotationid + "-edit").remove();
-                    $("#" + data.annotationid + "-delete").remove();
-                    $("#" + data.annotationid + "-note").remove();
+                    var annotationid = "photoannotation-area-" + data.notetype + "-" + data.noteid;
+                    var legendid = "photoannotation-legend-" + data.notetype;
+                    $("#" + legendid + "-" + data.noteid).remove();
+                    if ($("#" + legendid + " > span").size() == 0) {
+                      $("#" + legendid).hide();
+                    }
+                    $("#" + annotationid).remove();
+                    $("#" + annotationid + "-edit").remove();
+                    $("#" + annotationid + "-delete").remove();
+                    $("#" + annotationid + "-note").remove();
                   }
                 },
                 dataType: "json"

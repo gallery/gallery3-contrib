@@ -196,7 +196,6 @@ class photoannotation_Controller extends Controller {
           return;
       }
     }
-    //@todo: add needed data to the json reply
     $int_text = "";
     $editable = true;
     switch ($dest_type) {
@@ -236,7 +235,9 @@ class photoannotation_Controller extends Controller {
                     "url" => (string)$note_url,
                     "width" => (integer)$_POST["width"],
                     "editable" => (boolean)$editable,
-                    "annotationid" => (string)$annotation_id);
+                    "annotationid" => (string)$annotation_id,
+                    "oldid" => (string)$annotate_id,
+                    "oldtype" => (string)$notetype);
     json::reply($reply);
   }
   
@@ -270,8 +271,7 @@ class photoannotation_Controller extends Controller {
         url::redirect($redir_uri);
         return;
     }
-    $annotation_id = "photoannotation-area-". $notetype ."-". $noteid;
-    json::reply(array("result" => "success", "annotationid" => (string)$annotation_id));
+    json::reply(array("result" => "success", "notetype" => (string)$notetype, "noteid" => (string)$noteid));
   }
   
   public function autocomplete() {
