@@ -58,11 +58,6 @@
         $jscode .= "\"url\": \"". user_profile::url($oneUser->user_id) ."\" },\n";
       }
     }
-    $display = "none";
-    if ($legend_users != "") {
-      $display = "block";
-    }
-    $legend_users = t("<span id=\"photoannotation-legend-user\" style=\"display: ". $display ."\">People on this photo: ") . $legend_users ."</span>";
     foreach ($existingFaces as $oneFace) {
       $oneTag = ORM::factory("tag", $oneFace->tag_id);
       if ($oneTag->loaded()) {
@@ -81,11 +76,6 @@
         $jscode .= "\"url\": \"". $oneTag->url() ."\" },\n";
       }
     }
-    $display = "none";
-    if ($legend_faces != "") {
-      $display = "block";
-    }
-    $legend_faces = t("<span id=\"photoannotation-legend-face\" style=\"display: ". $display ."\">Faces on this photo: ") . $legend_faces ."</span>";
     foreach ($existingNotes as $oneNote) {
       if ($shownotes) {
         $legend_notes .= "<span id=\"photoannotation-legend-note-". $oneNote->id . "\">". html::clean($oneNote->title) ."</span>   ";
@@ -103,12 +93,22 @@
     }
     $jscode = trim($jscode, ",\n");
     $jscode .= " ],";
-    $display = "none";
-    if ($legend_notes != "") {
-      $display = "block";
-    }
-    $legend_notes = t("<span id=\"photoannotation-legend-note\" style=\"display: ". $display ."\">Notes on this photo: ") . $legend_notes ."</span>";
   }
+  $display = "none";
+  if ($legend_users != "") {
+    $display = "block";
+  }
+  $legend_users = t("<span id=\"photoannotation-legend-user\" style=\"display: ". $display ."\">People on this photo: ") . $legend_users ."</span>";
+  $display = "none";
+  if ($legend_faces != "") {
+    $display = "block";
+  }
+  $legend_faces = t("<span id=\"photoannotation-legend-face\" style=\"display: ". $display ."\">Faces on this photo: ") . $legend_faces ."</span>";
+  $display = "none";
+  if ($legend_notes != "") {
+    $display = "block";
+  }
+  $legend_notes = t("<span id=\"photoannotation-legend-note\" style=\"display: ". $display ."\">Notes on this photo: ") . $legend_notes ."</span>";
   $legend_display = $legend_users . $legend_faces . $legend_notes;
   $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("Person:") ."','". t("No user selected") ."','". t("Select one of the following") ."','". t("An error ocurred while saving annotation") ."','". t("OK") ."','". t("An error ocurred while deleting annotation") ."','". t("View fullsize") ."' ],";
 ?>
