@@ -38,7 +38,7 @@ class photoannotation_theme_Core {
       } else {
         $border_thickness = "1px";
       }
-      if (!$noborder || !$noeditablehover || !$nohover) {
+      if (!$noborder || !$noclickablehover || !$nohover) {
         if (!$noborder) {
           $v .= ".image-annotate-area {\n
                 border: 1px solid ". $bordercolor .";\n

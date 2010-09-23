@@ -20,7 +20,7 @@
 class photoannotation_Controller extends Controller {
   public function showuser() {
     if (identity::active_user()->guest && !module::get_var("photoannotation", "allowguestsearch", false)) {
-      message::error(t("You have to log in to perform a user search."));
+      message::error(t("You have to log in to perform a people search."));
       url::redirect(url::site());
       return;
     }
@@ -83,18 +83,17 @@ class photoannotation_Controller extends Controller {
     $user_id = "";
     $user_id = $_POST["userlist"];
     $description = $_POST["desc"];
+    $error_noselection = t("Please select a person or tag or specify a title.");
     $redir_uri = url::abs_site("{$item->type}s/{$item->id}");
     //If this is a user then get the id
     if ($user_id != "") {
       $getuser = photoannotation::getuser($user_id);
       if (!$getuser->found) {
-        message::error(t("Could not find user %user.", array("user" => $user_id)));
-        url::redirect($redir_uri);
+        json::reply(array("result" => "error", "message" => (string)t("Could not find anyone with the name %user.", array("user" => $user_id))));
         return;
       }
       if ($getuser->isguest) {
-        message::error(t("You cannot create an annotation for the guest user."));
-        url::redirect($redir_uri);
+        json::reply(array("result" => "error", "message" => (string)t("You cannot create an annotation for the guest user.")));
         return;
       }
       $user_id = $getuser->user->id;
@@ -112,19 +111,22 @@ class photoannotation_Controller extends Controller {
       $tag->save();
       $tag_data = $tag->id;
     } else {
-      $tag_data = -1;
+      $tag_data = "";
     }
     //Save annotation
     if ($annotate_id == "new") {   //This is a new annotation
-      if ($user_id > -1) {              //Save user
-        photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
-      } elseif ($tag_data > -1) {         //Conversion user -> face
-        photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
-      } elseif ($item_title != "") {   //Conversion user -> note
-        photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
-      } else {                            //Somethings wrong
-        message::error(t("Please select a User or Tag or specify a Title."));
-        url::redirect($redir_uri);
+      $annotate_id = -1;
+      if ($user_id != "") {              //Save user
+        $new_id = photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+        $dest_type = "user";
+      } elseif ($tag_data != "") {         //Save face
+         $new_id = photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+         $dest_type = "face";
+      } elseif ($item_title != "") {   //Save note
+        $new_id = photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+        $dest_type = "note";
+      } else {                            //Something's wrong
+            json::reply(array("result" => "error", "message" => (string)$error_noselection));
         return;
       }
     } else {    //This is an update to an existing annotation
@@ -133,17 +135,19 @@ class photoannotation_Controller extends Controller {
           $updateduser = ORM::factory("items_user")    //load the existing user
                             ->where("id", "=", $annotate_id)
                             ->find();
-          if ($user_id > -1) {              //Conversion user -> user
-            photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
-          } elseif ($tag_data > -1) {         //Conversion user -> face
-            photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+          if ($user_id != "") {              //Conversion user -> user
+            $new_id = photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "user";
+          } elseif ($tag_data != "") {         //Conversion user -> face
+            $new_id = photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "face";
             $updateduser->delete();   //delete old user
           } elseif ($item_title != "") {   //Conversion user -> note
-            photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "note";
             $updateduser->delete();   //delete old user
           } else {                            //Somethings wrong
-            message::error(t("Please select a User or Tag or specify a Title."));
-            url::redirect($redir_uri);
+            json::reply(array("result" => "error", "message" => (string)$error_noselection));
             return;
           }
           break;
@@ -151,17 +155,19 @@ class photoannotation_Controller extends Controller {
           $updatedface = ORM::factory("items_face")    //load the existing user
                             ->where("id", "=", $annotate_id)
                             ->find();
-          if ($user_id > -1) {              //Conversion face -> user
-            photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+          if ($user_id != "") {              //Conversion face -> user
+            $new_id = photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "user";
             $updatedface->delete();   //delete old face
-          } elseif ($tag_data > -1) {         //Conversion face -> face
-            photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+          } elseif ($tag_data != "") {         //Conversion face -> face
+            $new_id = photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+            $dest_type = "face";
           } elseif ($item_title != "") {   //Conversion face -> note
-            photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $new_id = photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "note";
             $updatedface->delete();   //delete old face
           } else {                            //Somethings wrong
-            message::error(t("Please select a User or Tag or specify a Title."));
-            url::redirect($redir_uri);
+            json::reply(array("result" => "error", "message" => (string)$error_noselection));
             return;
           }
           break;
@@ -169,29 +175,70 @@ class photoannotation_Controller extends Controller {
           $updatednote = ORM::factory("items_note")    //load the existing user
                             ->where("id", "=", $annotate_id)
                             ->find();
-          if ($user_id > -1) {              //Conversion note -> user
-            photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+          if ($user_id != "") {              //Conversion note -> user
+            $new_id = photoannotation::saveuser($user_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "user";
             $updatednote->delete();   //delete old note
-          } elseif ($tag_data > -1) {         //Conversion note -> face
-            photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+          } elseif ($tag_data != "") {         //Conversion note -> face
+            $new_id = photoannotation::saveface($tag_data, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description);
+            $dest_type = "face";
             $updatednote->delete();   //delete old note
           } elseif ($item_title != "") {   //Conversion note -> note
-            photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+            $new_id = photoannotation::savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id);
+            $dest_type = "note";
           } else {                            //Somethings wrong
-            message::error(t("Please select a User or Tag or specify a Title."));
-            url::redirect($redir_uri);
+            json::reply(array("result" => "error", "message" => (string)$error_noselection));
             return;
           }
           break;
         default:
-          message::error(t("Please select a User or Tag or specify a Title."));
-          url::redirect($redir_uri);
+          json::reply(array("result" => "error", "message" => (string)$error_noselection));
           return;
       }
     }
-    message::success(t("Annotation saved."));
-    url::redirect($redir_uri);
-    return;
+    $int_text = "";
+    $editable = true;
+    switch ($dest_type) {
+      case "user":
+        $fullname = module::get_var("photoannotation", "fullname", false);
+        $int_text = $getuser->user->display_name() ." (". $getuser->user->name .")";
+        if ($fullname) {
+          $note_text = $getuser->user->display_name();
+        } else {
+          $note_text = $getuser->user->name;
+        }
+        $note_url = user_profile::url($getuser->user->id);
+        break;
+      case "face":
+        $note_text = $tag->name;
+        $note_url = $tag->url();
+        break;
+      case "note":
+        $note_text = $item_title;
+        $note_url = "";
+        $editable = false;
+    }
+    if ($annotate_id == -1) {
+      $annotation_id = "";
+    } else {
+      $annotation_id = "photoannotation-area-". $notetype ."-". $annotate_id;
+    }
+    $reply = array("result" => "success",
+                    "notetype" => (string)$dest_type,
+                    "description" => (string)$description,
+                    "height" => (integer)$_POST["height"],
+                    "internaltext" => (string)$int_text,
+                    "left" => (integer)$str_x1,
+                    "noteid" => (integer)$new_id,
+                    "text" => (string)$note_text,
+                    "top" => (integer)$str_y1,
+                    "url" => (string)$note_url,
+                    "width" => (integer)$_POST["width"],
+                    "editable" => (boolean)$editable,
+                    "annotationid" => (string)$annotation_id,
+                    "oldid" => (string)$annotate_id,
+                    "oldtype" => (string)$notetype);
+    json::reply($reply);
   }
   
   public function delete($item_data) {
@@ -224,25 +271,27 @@ class photoannotation_Controller extends Controller {
         url::redirect($redir_uri);
         return;
     }
-    message::success(t("Annotation deleted."));
-    url::redirect($redir_uri);
+    json::reply(array("result" => "success", "notetype" => (string)$notetype, "noteid" => (string)$noteid));
   }
   
   public function autocomplete() {
-    $users = array();
-    $user_parts = explode(",", Input::instance()->get("q"));
-    $limit = Input::instance()->get("limit");
-    $user_part = ltrim(end($user_parts));
-    $user_list = ORM::factory("user")
-      ->where("name", "LIKE", "{$user_part}%")
-      ->order_by("name", "ASC")
-      ->limit($limit)
-      ->find_all();
-    foreach ($user_list as $user) {
-      if ($user->name != "guest") {
-        $users[] = $user->display_name() ." (". $user->name .")";
+    if (!identity::active_user()->guest || module::get_var("photoannotation", "allowguestsearch", false)) {
+      $users = array();
+      $user_parts = explode(",", Input::instance()->get("q"));
+      $limit = Input::instance()->get("limit");
+      $user_part = ltrim(end($user_parts));
+      $user_list = ORM::factory("user")
+        ->where("name", "LIKE", "{$user_part}%")
+        ->or_where("full_name", "LIKE", "{$user_part}%")
+        ->order_by("full_name", "ASC")
+        ->limit($limit)
+        ->find_all();
+      foreach ($user_list as $user) {
+        if ($user->name != "guest") {
+          $users[] = $user->display_name() ." (". $user->name .")";
+        }
       }
+      print implode("\n", $users);
     }
-    print implode("\n", $users);
   }
 }

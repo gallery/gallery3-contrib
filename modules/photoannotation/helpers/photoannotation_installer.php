@@ -66,7 +66,7 @@ class photoannotation_installer {
                DEFAULT CHARSET=utf8;");
 
     // Set the module's version number.
-    module::set_version("photoannotation", 3);
+    module::set_version("photoannotation", 4);
   }
 
   static function upgrade($version) {

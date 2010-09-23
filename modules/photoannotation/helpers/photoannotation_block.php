@@ -29,7 +29,7 @@ class photoannotation_block_Core {
       case "photoannotation":
         $block = new Block();
         $block->css_id = "g-photoannotation";
-        $block->title = t("Users");
+        $block->title = t("People");
         $block->content = new View("photoannotation_block.html");
         $block->content->cloud = photoannotation::cloud(30);
         $block->content->form = photoannotation::get_user_search_form("g-user-cloud-form");
