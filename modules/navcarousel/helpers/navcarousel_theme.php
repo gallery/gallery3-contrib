@@ -21,9 +21,9 @@ class navcarousel_theme_Core {
   static function head($theme) {
    if ($theme->page_type == "item") {
       if (locales::is_rtl()) {
-        $rtl_support = "horizontalDirection: 'rtl',\n";
+        $rtl_support = "rtl: true,\n";
       } else {
-        $rtl_support = "";
+        $rtl_support = "rtl: false,\n";
       }
       $carouselwidth = module::get_var("navcarousel", "carouselwidth", "600");
       if ($carouselwidth == 0) {
@@ -89,6 +89,7 @@ class navcarousel_theme_Core {
                   jQuery(document).ready(function() {\n
                     jQuery('#navcarousel').jcarousel({\n
                         ". $ajaxhandler ."
+                        itemFallbackDimension: ". ($thumbsize + 25) .",\n
                         start: ". $itemoffset .",\n
                         size: ". $childcount .",\n
                         visible: ". $showelements .",\n

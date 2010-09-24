@@ -223,7 +223,10 @@ class photoannotation_event_Core {
     $item_users = ORM::factory("items_user")->where("item_id", "=", $comment->item_id)->find_all();
     if (count($item_users) > 0) {
       foreach ($item_users as $item_user) {
-        photoannotation::send_notifications($item_user->user_id, $comment->item_id, "newcomment");
+        //Don't send if the commenter is the user to be notified
+        if ($comment->author_id != $item_user->user_id && module::is_active("notification")) {
+          photoannotation::send_notifications($item_user->user_id, $comment->item_id, "newcomment");
+        }
       }
     }
   }
@@ -233,7 +236,10 @@ class photoannotation_event_Core {
     $item_users = ORM::factory("items_user")->where("item_id", "=", $comment->item_id)->find_all();
     if (count($item_users) > 0) {
       foreach ($item_users as $item_user) {
-        photoannotation::send_notifications($item_user->user_id, $comment->item_id, "updatedcomment");
+        //Don't send if the commenter is the user to be notified
+        if ($comment->author_id != $item_user->user_id && module::is_active("notification")) {
+          photoannotation::send_notifications($item_user->user_id, $comment->item_id, "updatedcomment");
+        }
       }
     }
   }

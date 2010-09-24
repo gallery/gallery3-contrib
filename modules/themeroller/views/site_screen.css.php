@@ -10,16 +10,16 @@
  *  3)  Page layout containers
  *  4)  Content blocks in specific layout containers
  *  5)  Navigation and menus
- *  6)  jQuery and jQuery UI
- *  7)  Forms
- *  8)  States and interactions
+ *  6)  Positioning and order
+ *  7)  Navigation and menus
+ *  8)  jQuery and jQuery UI
  *  9)  Organize module style
  * 10)  Tag module styles
  * 11)  Right-to-left language styles
  */
 
 /** *******************************************************************
- * 1) Font sizes, base HTML elements
+ *  1) Font sizes, base HTML elements
  **********************************************************************/
 html {
   color: #<?= $fcDefault ?>;
@@ -28,7 +28,7 @@ html {
 body, html {
   background-color: #<?= $bgColorDefault ?>;
   font-family: <?= urldecode($ffDefault) ?>;
-  font-size: 13px/1.231;   /*  gallery_line_height */
+//  font-size: 13px/1.231;   /*  gallery_line_height */
 }
 
 p {
@@ -124,6 +124,172 @@ a:hover,
   padding-left: 32px;
 }
 
+/* Forms ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+form {
+  margin: 0;
+}
+
+fieldset {
+  border: 1px solid #<?= $borderColorContent ?>;
+  padding: 0 1em .8em 1em;
+}
+
+#g-banner fieldset,
+#g-sidebar fieldset {
+  border: none;
+  padding: 0;
+}
+
+legend {
+  font-weight: bold;
+  color: #<?= $fcDefault ?>;
+}
+
+#g-banner legend,
+#g-sidebar legend,
+input[type="hidden"] {
+  display: none;
+}
+
+input.textbox,
+input[type="text"],
+input[type="password"],
+textarea {
+  background-color: #<?= $bgColorDefault ?>;
+  border: 1px solid #<?= $borderColorActive ?>;
+  border-top-color: #<?= $borderColorContent ?>;
+  border-left-color: #<?= $borderColorContent ?>;
+  clear: both;
+  color: #<?= $fcContent ?>;
+  width: 50%;
+}
+
+textarea {
+  height: 12em;
+  width: 97%;
+}
+
+input:focus,
+input.textbox:focus,
+input[type=text]:focus,
+textarea:focus,
+option:focus {
+  background-color: #<?= $bgColorActive ?>;
+  color: #<?= $fcContent ?>;
+}
+
+
+input.checkbox,
+input[type=checkbox],
+input.radio,
+input[type=radio] {
+  float: left;
+  margin-right: .4em;
+}
+
+/* Form layout ~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+form li {
+  margin: 0;
+  padding: 0 0 .2em 0;
+}
+
+form ul {
+  margin-top: 0;
+}
+
+form ul ul {
+  clear: both;
+}
+
+form ul ul li {
+  float: left;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  clear: both;
+  padding: .2em;
+}
+
+input[type="submit"],
+input[type="reset"] {
+  display: inline;
+  clear: none;
+  float: left;
+}
+
+/* Forms in dialogs and panels ~~~~~~~~~ */
+
+#g-dialog ul li {
+  padding-bottom: .8em;
+}
+
+#g-dialog fieldset,
+#g-panel fieldset {
+  border: none;
+  padding: 0;
+}
+
+#g-panel legend {
+  display: none;
+}
+
+label,
+input[readonly] {
+  background-color: #<?= $bgColorContent ?>;
+  color: #<?= $fcDefault ?>;
+}
+
+#g-dialog input.textbox,
+#g-dialog input[type=text],
+#g-dialog input[type=password],
+#g-dialog textarea {
+  width: 97%;
+}
+
+/* Short forms ~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-short-form legend,
+.g-short-form label {
+  display: none;
+}
+
+.g-short-form fieldset {
+  border: none;
+  padding: 0;
+}
+
+.g-short-form li {
+  float: left;
+  margin: 0 !important;
+  padding: .4em 0;
+}
+
+.g-short-form .textbox,
+.g-short-form input[type=text] {
+  background-color: <?= $bgColorDefault ?>
+  color: #<?= $fcContent ?>;
+}
+
+.g-short-form .textbox.g-error {
+  border: 1px solid #<?= $borderColorError ?>;
+  color: #<?= $fcError ?>;
+}
+
+
+.g-short-form .g-cancel {
+  display: block;
+  margin: .3em .8em;
+}
+
+#g-sidebar .g-short-form li {
+  padding-left: 0;
+  padding-right: 0;
+}
+
 /* Tables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 table {
@@ -150,16 +316,21 @@ td {
   vertical-align: top;
 }
 
-.g-even {
-  background-color: #<?= $bgColorContent ?>;
+/* Text ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+.g-text-small {
+  font-size: .8em;
 }
 
-.g-odd {
-  background-color: #<?= $bgColorDefault ?>;
+.g-text-big {
+  font-size: 1.2em;
+}
+
+.g-text-right {
+  text-align: right;
 }
 
 /** *******************************************************************
- * 2) Reusable content blocks
+ *  2) Reusable content blocks
  *********************************************************************/
 
 .g-block h2 {
@@ -171,9 +342,35 @@ td {
   margin-top: 1em;
 }
 
-/*** ******************************************************************
- * 3) Page layout containers
+/** *******************************************************************
+ *  3) Page layout containers
  *********************************************************************/
+
+
+/* Dimension and scale ~~~~~~~~~~~~~~~~~~~ */
+.g-one-quarter {
+  width: 25%;
+}
+
+.g-one-third {
+  width: 33%;
+}
+
+.g-one-half {
+  width: 50%;
+}
+
+.g-two-thirds {
+  width: 66%;
+}
+
+.g-three-quarters {
+  width: 75%;
+}
+
+.g-whole {
+  width: 100%;
+}
 
 /* View container ~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -281,7 +478,7 @@ td {
 }
 
 /** *******************************************************************
- * 4) Content blocks in specific layout containers
+ *  4) Content blocks in specific layout containers
  *********************************************************************/
 
 /* Header  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -456,7 +653,145 @@ td {
 }
 
 /** *******************************************************************
- * 5) Navigation and menus
+ *  5) States and interactions
+ **********************************************************************/
+
+.g-active,
+.g-enabled,
+.g-available,
+.g-selected,
+.g-highlight {
+  font-weight: bold;
+}
+
+.g-inactive,
+.g-disabled,
+.g-unavailable,
+.g-uneditable,
+.g-locked,
+.g-deselected,
+.g-understate {
+  color: #<?= $borderColorContent ?>;
+  font-weight: normal;
+}
+
+.g-editable:hover {
+  background-color: #<?= $bgColorActive ?>;
+  color: #<?= $iconColorActive ?>
+}
+
+form li.g-error,
+form li.g-info,
+form li.g-success,
+form li.g-warning {
+  background-image: none;
+}
+
+form.g-error input[type="text"],
+li.g-error input[type="text"],
+form.g-error input[type="password"],
+li.g-error input[type="password"],
+form.g-error input[type="checkbox"],
+li.g-error input[type="checkbox"],
+form.g-error input[type="radio"],
+li.g-error input[type="radio"],
+form.g-error textarea,
+li.g-error textarea,
+form.g-error select,
+li.g-error select {
+  border: 2px solid #<?= $fcError ?>;
+}
+
+.g-error,
+tr.g-error td.g-error,
+#g-add-photos-status .g-error {
+  background: #<?= $borderColorError ?> url('../images/ico-error.png') no-repeat .4em 50%;
+  color: #<?= $fcError ?>;
+}
+
+.g-info {
+  background: #<?= $bgColorContent ?> url('../images/ico-info.png') no-repeat .4em 50%;
+}
+
+.g-success,
+#g-add-photos-status .g-success {
+  background: #<?= $bgColorContent ?> url('../images/ico-success.png') no-repeat .4em 50%;
+}
+
+tr.g-success {
+  background-image: none;
+}
+
+tr.g-success td.g-success {
+  background-image: url('../images/ico-success.png');
+}
+
+.g-warning,
+tr.g-warning td.g-warning {
+  background: #<?= $bgColorWarning ?> url('../images/ico-warning.png') no-repeat .4em 50%;
+  color: #<?= $fcWarning ?>;
+}
+
+form .g-error {
+  background-color: #<?= $bgColorError ?>;
+}
+
+.g-default {
+  background-color: #<?= $bgColorDefault ?>;
+  font-weight: bold;
+}
+
+.g-draggable:hover {
+  border: 1px dashed #<?= $bgColorHighlight ?>;
+}
+
+.ui-sortable .g-target,
+.ui-state-highlight {
+  background-color: #<?= $bgColorHighlight ?>;
+  border: 2px dotted #<?= $borderColorHighlight ?>;
+}
+
+/* Ajax loading indicator ~~~~~~~~~~~~~~~~ */
+
+.g-loading-large,
+.g-dialog-loading-large {
+  background: #<?= $bgColorContent ?> url('../images/loading-large.gif') no-repeat center center !important;
+}
+
+.g-loading-small {
+  background: #<?= $bgColorContent ?> url('../images/loading-small.gif') no-repeat center center !important;
+}
+
+/** *******************************************************************
+ *  6) Positioning and order
+ **********************************************************************/
+
+.g-left {
+  clear: none;
+  float: left;
+}
+
+.g-right {
+  clear: none;
+  float: right;
+}
+
+.g-first {
+}
+
+.g-last {
+}
+
+.g-even {
+  background-color: #<?= $bgColorContent ?>;
+}
+
+.g-odd {
+  background-color: #<?= $bgColorDefault ?>;
+}
+
+/** *******************************************************************
+ *  7) Navigation and menus
  *********************************************************************/
 
 /* Login menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -554,27 +889,34 @@ td {
 }
 
 /** *******************************************************************
- * 6) jQuery and jQuery UI
+ *  8) jQuery and jQuery UI
  *********************************************************************/
 
-/* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
+/* Generic block container ~~~~~~~~~~~~~~~ */
 
-.ui-widget-overlay {
-  background: #<?= $bgColorOverlay ?>;
-  opacity: .7;
+.g-block {
+  clear: both;
+  margin-bottom: 2.5em;
 }
 
-/* Rotate icon, ThemeRoller only provides one of these */
-
-.ui-icon-rotate-ccw {
-  background-position: -192px -64px;
-}
-
-.ui-icon-rotate-cw {
-  background-position: -208px -64px;
+.g-block-content {
 }
 
 /* Superfish menu overrides ~~~~~~~~~~~~~~ */
+.sf-menu ul {
+        width: 12em;
+}
+
+ul.sf-menu li li:hover ul,
+ul.sf-menu li li.sfHover ul {
+        left:   12em;
+}
+
+ul.sf-menu li li li:hover ul,
+ul.sf-menu li li li.sfHover ul {
+        left: 12em;
+}
+
 .sf-menu a {
   border-left:1px solid #<?= $borderColorContent ?>;
 }
@@ -612,172 +954,192 @@ a > .sf-sub-indicator {
   background-position: -32px -16px !important;
 }
 
+/* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
+
+.ui-widget-overlay {
+  background: #<?= $bgColorOverlay ?>;
+  opacity: .7;
+}
+
+/* Buttons ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-button {
+  display: inline-block;
+  margin: 0 4px 0 0;
+  padding: .2em .4em;
+}
+
+.g-button,
+.g-button:hover,
+.g-button:active {
+  cursor: pointer !important;
+  outline: 0;
+  text-decoration: none;
+  -moz-outline-style: none;
+}
+
+button {
+  padding: 2px 4px 2px 4px;
+}
+
+/* jQuery UI ThemeRoller buttons ~~~~~~~~~ */
+
+.g-buttonset {
+  padding-left: 1px;
+}
+
+.g-buttonset li {
+  float: left;
+}
+
+.g-buttonset .g-button {
+  margin: 0;
+}
+
+.ui-icon-left .ui-icon {
+  float: left;
+  margin-right: .2em;
+}
+
+.ui-icon-right .ui-icon {
+  float: right;
+  margin-left: .2em;
+}
+
+/* Rotate icon, ThemeRoller only provides one of these */
+
+.ui-icon-rotate-ccw {
+  background-position: -192px -64px;
+}
+
+.ui-icon-rotate-cw {
+  background-position: -208px -64px;
+}
+
+.g-progress-bar {
+  height: 1em;
+  width: 100%;
+  margin-top: .5em;
+  display: inline-block;
+}
+
+/* Status and validation messages ~~~~ */
+
+.g-message-block {
+  background-position: .4em .3em;
+  border: 1px solid #ccc;
+  padding: 0;
+}
+
+#g-action-status {
+  margin-bottom: 1em;
+}
+
+#g-action-status li,
+p#g-action-status,
+div#g-action-status {
+  padding: .3em .3em .3em 30px;
+}
+
+#g-site-status li {
+  border-bottom: 1px solid #ccc;
+  padding: .3em .3em .3em 30px;
+}
+
+.g-module-status {
+  clear: both;
+  margin-bottom: 1em;
+}
+
+.g-message {
+  background-position: 0 50%;
+}
+
+/* Breadcrumbs ~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-breadcrumbs {
+  clear: both;
+  padding: 0 20px;
+}
+
+.g-breadcrumbs li {
+  background: transparent url('../images/ico-separator.png') no-repeat scroll left center;
+  float: left;
+  padding: 1em 8px 1em 18px;
+}
+
+.g-breadcrumbs .g-first {
+  background: none;
+  padding-left: 0;
+}
+
+.g-breadcrumbs li a,
+.g-breadcrumbs li span {
+  display: block;
+}
+
+#g-dialog ul.g-breadcrumbs {
+  margin-left: 0;
+  padding-left: 0;
+}
+
+/* Pagination ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.g-paginator {
+  padding: .2em 0;
+  width: 100%;
+}
+
+.g-paginator li {
+  float: left;
+  width: 30%;
+}
+
+.g-paginator .g-info {
+  background: none;
+  padding: .2em 0;
+  text-align: center;
+  width: 40%;
+}
+
+/* Dialogs and panels ~~~~~~~~~~~~~~~~~~ */
+
+#g-dialog {
+  text-align: left;
+}
+
+#g-dialog legend {
+  display: none;
+}
+
+#g-dialog .g-cancel {
+  margin: .4em 1em;
+}
+
+#g-panel {
+  display: none;
+  padding: 1em;
+}
+
+/* Inline layout  ~~~~~~~~~~ */
+
+.g-inline li {
+  float: left;
+  margin-left: 1.8em;
+  padding-left: 0 !important;
+}
+
+.g-inline li.g-first {
+  margin-left: 0;
+}
+
+/* Autocomplete  ~~~~~~~~~~ */
+.ac_loading {
+  background: #<?= $bgColorContent ?> url('../images/loading-small.gif') right center no-repeat !important;
+}
+
 /** *******************************************************************
- * 7) Forms
- *********************************************************************/
-fieldset {
-  border: 1px solid #<?= $borderColorContent ?>;
-}
-
-legend {
-  font-weight: bold;
-  color: #<?= $fcDefault ?>;
-}
-
-input.textbox,
-input[type="text"],
-input[type="password"],
-textarea {
-  background-color: #<?= $bgColorDefault ?>;
-  border: 1px solid #<?= $borderColorActive ?>;
-  border-top-color: #<?= $borderColorContent ?>;
-  border-left-color: #<?= $borderColorContent ?>;
-  color: #<?= $fcContent ?>;
-}
-
-input:focus,
-input.textbox:focus,
-input[type=text]:focus,
-textarea:focus,
-option:focus {
-  background-color: #<?= $bgColorActive ?>;
-  color: #<?= $fcContent ?>;
-}
-
-/* Forms in dialogs and panels ~~~~~~~~~ */
-
-label,
-input[readonly] {
-  background-color: #<?= $bgColorContent ?>;
-  color: #<?= $fcDefault ?>;
-}
-
-/* Short forms ~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.g-short-form .textbox,
-.g-short-form input[type=text] {
-  background-color: <?= $bgColorDefault ?>
-  color: #<?= $fcContent ?>;
-}
-
-.g-short-form .textbox.g-error {
-  border: 1px solid #<?= $borderColorError ?>;
-  color: #<?= $fcError ?>;
-}
-
-/** *******************************************************************
- * 8) States and interactions
- *********************************************************************/
-
-.g-active,
-.g-enabled,
-.g-available,
-.g-selected,
-.g-highlight {
-  font-weight: bold;
-}
-
-.g-inactive,
-.g-disabled,
-.g-unavailable,
-.g-uneditable,
-.g-locked,
-.g-deselected,
-.g-understate {
-  color: #<?= $borderColorContent ?>;
-  font-weight: normal;
-}
-
-.g-editable:hover {
-  background-color: #<?= $bgColorActive ?>;
-  color: #<?= $iconColorActive ?>
-}
-
-form li.g-error,
-form li.g-info,
-form li.g-success,
-form li.g-warning {
-  background-image: none;
-}
-
-
-form.g-error input[type="text"],
-li.g-error input[type="text"],
-form.g-error input[type="password"],
-li.g-error input[type="password"],
-form.g-error input[type="checkbox"],
-li.g-error input[type="checkbox"],
-form.g-error input[type="radio"],
-li.g-error input[type="radio"],
-form.g-error textarea,
-li.g-error textarea,
-form.g-error select,
-li.g-error select {
-  border: 2px solid #<?= $fcError ?>;
-}
-
-.g-error,
-tr.g-error td.g-error,
-#g-add-photos-status .g-error {
-  background: #<?= $borderColorError ?> url('../images/ico-error.png') no-repeat .4em 50%;
-  color: #<?= $fcError ?>;
-}
-
-.g-info {
-  background: #<?= $bgColorContent ?> url('../images/ico-info.png') no-repeat .4em 50%;
-}
-
-.g-success,
-#g-add-photos-status .g-success {
-  background: #<?= $bgColorContent ?> url('../images/ico-success.png') no-repeat .4em 50%;
-}
-
-tr.g-success {
-  background-image: none;
-}
-
-tr.g-success td.g-success {
-  background-image: url('../images/ico-success.png');
-}
-
-.g-warning,
-tr.g-warning td.g-warning {
-  background: #<?= $bgColorWarning ?> url('../images/ico-warning.png') no-repeat .4em 50%;
-  color: #<?= $fcWarning ?>;
-}
-
-form .g-error {
-  background-color: #<?= $bgColorError ?>;
-}
-
-.g-default {
-  background-color: #<?= $bgColorDefault ?>;
-  font-weight: bold;
-}
-
-.g-draggable:hover {
-  border: 1px dashed #<?= $bgColorHighlight ?>;
-}
-
-.ui-sortable .g-target,
-.ui-state-highlight {
-  background-color: #<?= $bgColorHighlight ?>;
-  border: 2px dotted #<?= $borderColorHighlight ?>;
-}
-
-/* Ajax loading indicator ~~~~~~~~~~~~~~~~ */
-
-.g-loading-large,
-.g-dialog-loading-large {
-  background: #<?= $bgColorContent ?> url('../images/loading-large.gif') no-repeat center center !important;
-}
-
-.g-loading-small {
-  background: #<?= $bgColorContent ?> url('../images/loading-small.gif') no-repeat center center !important;
-}
-
-/** *******************************************************************
- * 9) Organize module style
+ *  9) Organize module style
  *********************************************************************/
 #g-organize {
   background-color: #<?= $bgColorContent ?>;
@@ -860,6 +1222,291 @@ form .g-error {
  * 11) Right to left language styles
  *********************************************************************/
 
+.rtl {
+  direction: rtl;
+}
+
+.rtl #g-header,
+.rtl #g-content,
+.rtl #g-sidebar,
+.rtl #g-footer,
+.rtl caption,
+.rtl th,
+.rtl #g-dialog,
+.rtl .g-context-menu li a,
+.rtl .g-message-box li,
+.rtl #g-site-status li {
+  text-align: right;
+}
+
+.rtl .g-text-right {
+  text-align: left;
+}
+
+.rtl .g-error,
+.rtl .g-info,
+.rtl .g-success,
+.rtl .g-warning,
+.rtl #g-add-photos-status .g-success,
+.rtl #g-add-photos-status .g-error {
+  background-position: center right;
+  padding-right: 30px !important;
+}
+
+.rtl form li.g-error,
+.rtl form li.g-info,
+.rtl form li.g-success,
+.rtl form li.g-warning {
+  padding-right: 0 !important;
+}
+
+.rtl .g-left,
+.rtl .g-inline li,
+.rtl #g-content #g-album-grid .g-item,
+.rtl .sf-menu li,
+.rtl .g-breadcrumbs li,
+.rtl .g-paginator li,
+.rtl .g-buttonset li,
+.rtl .ui-icon-left .ui-icon,
+.rtl .g-short-form li,
+.rtl form ul ul li,
+.rtl input[type="submit"],
+.rtl input[type="reset"],
+.rtl input.checkbox,
+.rtl input[type=checkbox],
+.rtl input.radio,
+.rtl input[type=radio] {
+  float: right;
+}
+
+.rtl .g-right,
+.rtl .ui-icon-right .ui-icon {
+  float: left;
+}
+
+.rtl .g-inline li {
+  margin-right: 1em;
+}
+
+.rtl .g-inline li.g-first {
+  margin-right: 0;
+}
+
+.rtl .g-breadcrumbs li {
+  background: transparent url('../images/ico-separator-rtl.png') no-repeat scroll right center;
+  padding: 1em 18px 1em 8px;
+}
+
+.rtl .g-breadcrumbs .g-first {
+  background: none;
+  padding-right: 0;
+}
+
+.rtl input.checkbox {
+  margin-left: .4em;
+}
+
+.rtl #g-add-comment {
+  right: inherit;
+  left: 0;
+}
+
+.rtl .ui-icon-left .ui-icon {
+  margin-left: .2em;
+}
+
+.rtl .ui-icon-right .ui-icon {
+  margin-right: .2em;
+}
+
+/* RTL Corner radius ~~~~~~~~~~~~~~~~~~~~~~ */
+.rtl .g-buttonset .ui-corner-tl {
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-border-radius-topright: 5px !important;
+  -webkit-border-top-right-radius: 5px !important;
+  border-top-right-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-tr {
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
+  border-top-right-radius: 0;
+  -moz-border-radius-topleft: 5px !important;
+  -webkit-border-top-left-radius: 5px !important;
+  border-top-left-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-bl {
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-border-radius-bottomright: 5px !important;
+  -webkit-border-bottom-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-br {
+  -moz-border-radius-bottomright: 0;
+  -webkit-border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0;
+  -moz-border-radius-bottomleft: 5px !important;
+  -webkit-border-bottom-left-radius: 5px !important;
+  border-bottom-left-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-right,
+.rtl .ui-progressbar .ui-corner-right {
+  -moz-border-radius-topright: 0;
+  -webkit-border-top-right-radius: 0;
+  border-top-right-radius: 0;
+  -moz-border-radius-topleft: 5px !important;
+  -webkit-border-top-left-radius: 5px !important;
+  border-top-left-radius: 5px !important;
+  -moz-border-radius-bottomright: 0;
+  -webkit-border-bottom-right-radius: 0;
+  border-bottom-right-radius: 0;
+  -moz-border-radius-bottomleft: 5px !important;
+  -webkit-border-bottom-left-radius: 5px !important;
+  border-bottom-left-radius: 5px !important;
+}
+
+.rtl .g-buttonset .ui-corner-left,
+.rtl .ui-progressbar .ui-corner-left {
+  -moz-border-radius-topleft: 0;
+  -webkit-border-top-left-radius: 0;
+  border-top-left-radius: 0;
+  -moz-border-radius-topright: 5px !important;
+  -webkit-border-top-right-radius: 5px !important;
+  border-top-right-radius: 5px !important;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-bottom-left-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-border-radius-bottomright: 5px !important;
+  -webkit-border-bottom-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+}
+
+/* RTL Superfish ~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.rtl .sf-menu a {
+  border-left: none;
+  border-right:1px solid #<?= $borderColorHighlight ?>;
+}
+
+.rtl .sf-menu a.sf-with-ul {
+  padding-left: 2.25em;
+  padding-right: 1em;
+}
+
+.rtl .sf-sub-indicator {
+  left: .75em !important;
+  right: auto;
+  background: url("themeroller/images/ui-icons_<?= $iconColorHighlight ?>_256x240.png")  no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */
+}
+
+.rtl a > .sf-sub-indicator {  /* give all except IE6 the correct values */
+  top: .8em;
+  background-position: -10px -100px; /* use translucent arrow for modern browsers*/
+}
+/* apply hovers to modern browsers */
+.rtl a:focus > .sf-sub-indicator,
+.rtl a:hover > .sf-sub-indicator,
+.rtl a:active > .sf-sub-indicator,
+.rtl li:hover > a > .sf-sub-indicator,
+.rtl li.sfHover > a > .sf-sub-indicator {
+  background-position: 0 -100px; /* arrow hovers for modern browsers*/
+}
+
+/* point right for anchors in subs */
+.rtl .sf-menu ul .sf-sub-indicator { background-position:  0 0; }
+.rtl .sf-menu ul a > .sf-sub-indicator { background-position:  -10px 0; }
+/* apply hovers to modern browsers */
+.rtl .sf-menu ul a:focus > .sf-sub-indicator,
+.rtl .sf-menu ul a:hover > .sf-sub-indicator,
+.rtl .sf-menu ul a:active > .sf-sub-indicator,
+.rtl .sf-menu ul li:hover > a > .sf-sub-indicator,
+.rtl .sf-menu ul li.sfHover > a > .sf-sub-indicator {
+  background-position: 0 0; /* arrow hovers for modern browsers*/
+}
+
+.rtl .sf-menu li:hover ul,
+.rtl .sf-menu li.sfHover ul {
+  right: 0;
+  left: auto;
+}
+
+.rtl ul.sf-menu li li:hover ul,
+.rtl ul.sf-menu li li.sfHover ul {
+  right: 12em; /* match ul width */
+  left: auto;
+}
+.rtl ul.sf-menu li li li:hover ul,
+.rtl ul.sf-menu li li li.sfHover ul {
+  right: 12em; /* match ul width */
+  left: auto;
+}
+
+/*** shadows for all but IE6 ***/
+.rtl .sf-shadow ul {
+  background:   url('../../../lib/superfish/images/shadow.png') no-repeat bottom left;
+  padding: 0 0 9px 8px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  -moz-border-radius-topright: 0;
+  -moz-border-radius-bottomleft: 0;
+  -webkit-border-top-right-radius: 0;
+  -webkit-border-bottom-left-radius: 0;
+  -moz-border-radius-topleft: 17px;
+  -moz-border-radius-bottomright: 17px;
+  -webkit-border-top-left-radius: 17px;
+  -webkit-border-bottom-right-radius: 17px;
+  border-top-left-radius: 17px;
+  border-bottom-right-radius: 17px;
+}
+
+/* RTL ThemeRoller ~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.rtl .ui-dialog .ui-dialog-titlebar {
+  padding: 0.5em 1em 0.3em 0.3em;
+}
+
+.rtl .ui-dialog .ui-dialog-title {
+  float: right;
+}
+
+.rtl .ui-dialog .ui-dialog-titlebar-close {
+  left: 0.3em;
+  right: auto;
+}
+
+/* RTL paginator ~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.rtl .g-paginator .g-info {
+  width: 35%;
+}
+
+.rtl .g-paginator .g-text-right {
+  margin-left: 0;
+}
+
+.rtl .g-paginator .ui-icon-seek-end {
+  background-position: -80px -160px;
+}
+
+.rtl .g-paginator .ui-icon-seek-next {
+  background-position: -48px -160px;
+}
+
+.rtl .g-paginator .ui-icon-seek-prev {
+  background-position: -32px -160px;
+}
+
+.rtl .g-paginator .ui-icon-seek-first {
+  background-position: -64px -160px;
+}
+
 .rtl #g-header #g-login-menu,
 .rtl #g-header #g-quick-search-form {
   clear: left;
@@ -889,108 +1536,4 @@ form .g-error {
 .rtl #g-footer #g-credits li {
   padding-left: 1.2em !important;
   padding-right: 0;
-}
-
-.rtl .g-breadcrumbs li {
-  background: transparent url('../images/ico-separator-rtl.png') no-repeat scroll right center;
-}
-
-.rtl .g-breadcrumbs .g-first {
-  background: none;
-}
-
-/* RTL Corner radius ~~~~~~~~~~~~~~~~~~~~~~ */
-.rtl .g-buttonset .ui-corner-tl {
-        -moz-border-radius-topleft: 0;
-        -webkit-border-top-left-radius: 0;
-        border-top-left-radius: 0;
-        -moz-border-radius-topright: 5px !important;
-        -webkit-border-top-right-radius: 5px !important;
-        border-top-right-radius: 5px !important;
-}
-
-.rtl .g-buttonset .ui-corner-tr {
-        -moz-border-radius-topright: 0;
-        -webkit-border-top-right-radius: 0;
-        border-top-right-radius: 0;
-        -moz-border-radius-topleft: 5px !important;
-        -webkit-border-top-left-radius: 5px !important;
-        border-top-left-radius: 5px !important;
-}
-
-.rtl .g-buttonset .ui-corner-bl {
-        -moz-border-radius-bottomleft: 0;
-        -webkit-border-bottom-left-radius: 0;
-        border-bottom-left-radius: 0;
-        -moz-border-radius-bottomright: 5px !important;
-        -webkit-border-bottom-right-radius: 5px !important;
-        border-bottom-right-radius: 5px !important;
-}
-
-.rtl .g-buttonset .ui-corner-br {
-        -moz-border-radius-bottomright: 0;
-        -webkit-border-bottom-right-radius: 0;
-        border-bottom-right-radius: 0;
-        -moz-border-radius-bottomleft: 5px !important;
-        -webkit-border-bottom-left-radius: 5px !important;
-        border-bottom-left-radius: 5px !important;
-}
-
-.rtl .g-buttonset .ui-corner-right,
-.rtl .ui-progressbar .ui-corner-right {
-        -moz-border-radius-topright: 0;
-        -webkit-border-top-right-radius: 0;
-        border-top-right-radius: 0;
-        -moz-border-radius-topleft: 5px !important;
-        -webkit-border-top-left-radius: 5px !important;
-        border-top-left-radius: 5px !important;
-        -moz-border-radius-bottomright: 0;
-        -webkit-border-bottom-right-radius: 0;
-        border-bottom-right-radius: 0;
-        -moz-border-radius-bottomleft: 5px !important;
-        -webkit-border-bottom-left-radius: 5px !important;
-        border-bottom-left-radius: 5px !important;
-}
-
-.rtl .g-buttonset .ui-corner-left,
-.rtl .ui-progressbar .ui-corner-left {
-        -moz-border-radius-topleft: 0;
-        -webkit-border-top-left-radius: 0;
-        border-top-left-radius: 0;
-        -moz-border-radius-topright: 5px !important;
-        -webkit-border-top-right-radius: 5px !important;
-        border-top-right-radius: 5px !important;
-        -moz-border-radius-bottomleft: 0;
-        -webkit-border-bottom-left-radius: 0;
-        border-bottom-left-radius: 0;
-        -moz-border-radius-bottomright: 5px !important;
-        -webkit-border-bottom-right-radius: 5px !important;
-        border-bottom-right-radius: 5px !important;
-}
-
-/* RTL Superfish ~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.rtl .sf-menu a {
-  border-right:1px solid #<?= $borderColorHighlight ?>;
-}
-
-.rtl .sf-sub-indicator {
-  background: url("themeroller/images/ui-icons_2e83ff_256x240.png") no-repeat -96px -16px; /* 8-bit indexed alpha png. IE6 gets solid image only */
-}
-
-/*** shadows for all but IE6 ***/
-.rtl .sf-shadow ul {
-  background: url('../images/superfish-shadow.png') no-repeat bottom left;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 0;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomleft: 0;
-  -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  -moz-border-radius-topleft: 17px;
-  -moz-border-radius-bottomright: 17px;
-  -webkit-border-top-left-radius: 17px;
-  -webkit-border-bottom-right-radius: 17px;
-  border-top-left-radius: 17px;
-  border-bottom-right-radius: 17px;
 }

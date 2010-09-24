@@ -117,6 +117,7 @@ class themeroller {
     $parameters["views"] = $is_admin ? glob(MODPATH . "themeroller/data/admin_views/*.html.php") :
       glob(MODPATH . "themeroller/data/views/*.html.php");
     $parameters["css_files"] = $css_files;
+    $parameters["gifs"] = glob(MODPATH . "themeroller/data/images/*.gif");
     $parameters["images"] =
       glob("$css_path/development-bundle/themes/$original_name/images/ui-bg*.png");
     $thumb_dir = $is_admin ? "admin_thumbnail" : "site_thumbnail";
