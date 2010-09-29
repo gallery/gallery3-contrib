@@ -69,7 +69,6 @@
   color: #f30;
   text-decoration: underline;
 }
-
 .image-annotate-canvas {
     background-position: left top;
     background-repeat: no-repeat;
@@ -96,7 +95,7 @@
     color: #FFFFFF;
     display: none;
     font-family: Verdana, Sans-Serif;
-    font-size: 1.4em;
+    font-size: 0.9em;
     max-width: 200px;
     padding: 3px 7px;
     position: absolute;

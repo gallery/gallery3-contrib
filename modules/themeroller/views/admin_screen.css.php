@@ -960,7 +960,7 @@ div#g-action-status {
 }
 
 .g-breadcrumbs li {
-  background: transparent url('images/ico-separator.gif') no-repeat scroll left center;
+  background: transparent url('../images/ico-separator.png') no-repeat scroll left center;
   float: left;
   padding: 1em 8px 1em 18px;
 }
@@ -1202,7 +1202,7 @@ a > .sf-sub-indicator {
 }
 
 .rtl .g-breadcrumbs li {
-  background: transparent url('images/ico-separator-rtl.gif') no-repeat scroll right center;
+  background: transparent url('../images/ico-separator-rtl.png') no-repeat scroll right center;
   padding: 1em 18px 1em 8px;
 }
 
