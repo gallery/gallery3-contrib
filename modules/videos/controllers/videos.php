@@ -256,6 +256,10 @@ class Videos_Controller extends Admin_Controller {
               $items_video->save();
               if (file_exists($entry->file . ".flv")) {
                 copy($entry->file . ".flv", $movie->resize_path() . ".flv");
+                list ($vid_width, $vid_height, $mime_type) = movie::get_file_metadata($entry->file . ".flv");
+                $movie->height = $vid_height;
+                $movie->width = $vid_width;
+                $movie->save();
               }
             } else {
               // This should never happen, because we don't add stuff to the list that we can't
