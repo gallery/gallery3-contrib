@@ -854,6 +854,7 @@ form .g-error {
 .g-block {
   clear: both;
   margin-bottom: 2.5em;
+  overflow: hidden;
 }
 
 .g-block-content {
