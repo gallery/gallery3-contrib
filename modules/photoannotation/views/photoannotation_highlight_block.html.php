@@ -22,6 +22,7 @@
   $jscode = "";
   $legend_faces = "";
   $legend_notes = "";
+  $legend_users = "";
   if (module::get_var("gallery", "active_site_theme") == "greydragon") {
     $css_item_id = "#g-photo-id-". $item->id;
     $css_a_class = ".g-sb-preview";
@@ -42,7 +43,7 @@
           $user_text = $oneTag->name;
         }
         if ($showusers) {
-          $legend_users .= "<span id=\"photoannotation-legend-user-". $oneUser->id . "\"><a href=\"". user_profile::url($oneUser->user_id) ."\">". html::clean($user_text) ."</a></span>, ";
+          $legend_users .= "<span id=\"photoannotation-legend-user-". $oneUser->id . "\"><a href=\"". user_profile::url($oneUser->user_id) ."\">". html::clean($user_text) ."</a></span>   ";
         }
         $jscode .= "{ \"top\": ". $oneUser->y1 .",\n";
         $jscode .= "\"left\": ". $oneUser->x1 .",\n";
@@ -57,15 +58,16 @@
         $jscode .= "\"url\": \"". user_profile::url($oneUser->user_id) ."\" },\n";
       }
     }
+    $display = "none";
     if ($legend_users != "") {
-      $legend_users = trim($legend_users, ", ");
-      $legend_users = t("Users on this photo: ") . $legend_users;
+      $display = "block";
     }
+    $legend_users = t("<span id=\"photoannotation-legend-user\" style=\"display: ". $display ."\">People on this photo: ") . $legend_users ."</span>";
     foreach ($existingFaces as $oneFace) {
       $oneTag = ORM::factory("tag", $oneFace->tag_id);
       if ($oneTag->loaded()) {
         if ($showfaces) {
-          $legend_faces .= "<span id=\"photoannotation-legend-face-". $oneFace->id . "\"><a href=\"". $oneTag->url() ."\">". html::clean($oneTag->name) ."</a></span>, ";
+          $legend_faces .= "<span id=\"photoannotation-legend-face-". $oneFace->id . "\"><a href=\"". $oneTag->url() ."\">". html::clean($oneTag->name) ."</a></span>   ";
         }
         $jscode .= "{ \"top\": ". $oneFace->y1 .",\n";
         $jscode .= "\"left\": ". $oneFace->x1 .",\n";
@@ -79,13 +81,14 @@
         $jscode .= "\"url\": \"". $oneTag->url() ."\" },\n";
       }
     }
+    $display = "none";
     if ($legend_faces != "") {
-      $legend_faces = trim($legend_faces, ", ");
-      $legend_faces = t("Faces on this photo: ") . $legend_faces;
+      $display = "block";
     }
+    $legend_faces = t("<span id=\"photoannotation-legend-face\" style=\"display: ". $display ."\">Faces on this photo: ") . $legend_faces ."</span>";
     foreach ($existingNotes as $oneNote) {
       if ($shownotes) {
-        $legend_notes .= "<span id=\"photoannotation-legend-note-". $oneNote->id . "\">". html::clean($oneNote->title) ."</span>, ";
+        $legend_notes .= "<span id=\"photoannotation-legend-note-". $oneNote->id . "\">". html::clean($oneNote->title) ."</span>   ";
       }
       $jscode .= "{ \"top\": ". $oneNote->y1 .",\n";
       $jscode .= "\"left\": ". $oneNote->x1 .",\n";
@@ -100,17 +103,14 @@
     }
     $jscode = trim($jscode, ",\n");
     $jscode .= " ],";
+    $display = "none";
     if ($legend_notes != "") {
-      $legend_notes = trim($legend_notes, ", ");
-      $legend_notes = t("Notes on this photo: ") . $legend_notes;
+      $display = "block";
     }
+    $legend_notes = t("<span id=\"photoannotation-legend-note\" style=\"display: ". $display ."\">Notes on this photo: ") . $legend_notes ."</span>";
   }
-  $legend_display = "";
-  if ($legend_users != "" || $legend_faces != "" || $legend_notes != "") {
-    $legend_display = $legend_users . "<br />" . $legend_faces . "<br />" . $legend_notes;
-    $legend_display = str_replace("<br /><br />", "<br />", $legend_display);
-  }
-  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("User:") ."','". t("No user selected") ."','". t("Select one of the following") ."' ],";
+  $legend_display = $legend_users . $legend_faces . $legend_notes;
+  $labels_arraystring = "labels: [ '". t("Tag:") ."','". t("Note Title:") ."','". t("Description (optional)") ."','". t("Are you sure you want to delete this annotation?") ."','". t("or") ."','". t("Yes") ."','". t("No") ."','". t("Confirm deletion") ."','". t("Save") ."','". t("Cancel") ."','". t("Person:") ."','". t("No user selected") ."','". t("Select one of the following") ."','". t("An error ocurred while saving annotation") ."','". t("OK") ."','". t("An error ocurred while deleting annotation") ."','". t("View fullsize") ."' ],";
 ?>
 <script type="text/javascript">
       $(document).ready(function() {
@@ -133,6 +133,4 @@
 				});
 			});
 		</script>
-    <? if ($legend_display != ""): ?>
-    <?= "<div style=\"text-align: center\">". $legend_display ."</div>" ?>
-    <? endif ?>
+    <?= "<div id=\"photoannotation-legend\" class=\"g-breadcrumbs\" style=\"text-align: center\">". $legend_display ."</div>" ?>

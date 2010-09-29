@@ -16,7 +16,7 @@
   <?= $search_form ?>
   <? if (count($users)): ?>
   <div class="g-message photoannotation-user-search">
-    <?= t("%count users found for <b>%term</b>", array("count" => $count, "term" => $q)) ?>
+    <?= t("%count people found for <b>%term</b>", array("count" => $count, "term" => $q)) ?>
   </div>
   <? foreach ($users as $user): ?>
   <? $profile_link = "<a href=\"". user_profile::url($user->id) ."\">" ?>

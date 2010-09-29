@@ -10,8 +10,9 @@
  *  3)  Page layout containers
  *  4)  Content blocks in specific layout containers
  *  5)  Navigation and menus
- *  6)  jQuery and jQuery UI
- *  8)  States and interactions
+ *  6)  Positioning and order
+ *  7)  Navigation and menus
+ *  8)  jQuery and jQuery UI
  *  9)  Organize module style
  * 10)  Tag module styles
  * 11)  Right-to-left language styles
@@ -903,17 +904,17 @@ form .g-error {
 
 /* Superfish menu overrides ~~~~~~~~~~~~~~ */
 .sf-menu ul {
-	width: 12em;
+        width: 12em;
 }
 
 ul.sf-menu li li:hover ul,
 ul.sf-menu li li.sfHover ul {
-	left:	12em;
+        left:   12em;
 }
 
 ul.sf-menu li li li:hover ul,
 ul.sf-menu li li li.sfHover ul {
-	left: 12em;
+        left: 12em;
 }
 
 .sf-menu a {
@@ -1062,7 +1063,7 @@ div#g-action-status {
 }
 
 .g-breadcrumbs li {
-  background: transparent url('images/ico-separator.gif') no-repeat scroll left center;
+  background: transparent url('../images/ico-separator.png') no-repeat scroll left center;
   float: left;
   padding: 1em 8px 1em 18px;
 }
@@ -1130,6 +1131,11 @@ div#g-action-status {
 
 .g-inline li.g-first {
   margin-left: 0;
+}
+
+/* Autocomplete  ~~~~~~~~~~ */
+.ac_loading {
+  background: #<?= $bgColorContent ?> url('../images/loading-small.gif') right center no-repeat !important;
 }
 
 /** *******************************************************************
@@ -1287,7 +1293,7 @@ div#g-action-status {
 }
 
 .rtl .g-breadcrumbs li {
-  background: transparent url('images/ico-separator-rtl.gif') no-repeat scroll right center;
+  background: transparent url('../images/ico-separator-rtl.png') no-repeat scroll right center;
   padding: 1em 18px 1em 8px;
 }
 
@@ -1444,7 +1450,7 @@ div#g-action-status {
 
 /*** shadows for all but IE6 ***/
 .rtl .sf-shadow ul {
-  background:	url('superfish/images/shadow.png') no-repeat bottom left;
+  background:   url('../../../lib/superfish/images/shadow.png') no-repeat bottom left;
   padding: 0 0 9px 8px;
   border-top-right-radius: 0;
   border-bottom-left-radius: 0;

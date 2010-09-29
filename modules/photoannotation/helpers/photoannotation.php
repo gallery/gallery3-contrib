@@ -32,7 +32,7 @@ class photoannotation_Core {
         "SELECT SQL_CALC_FOUND_ROWS {users}.*, " .
         "  MATCH({users}.`name`) AGAINST ('$q' IN BOOLEAN MODE) AS `score` " .
         "FROM {users} " .
-        "WHERE MATCH({users}.`name`) AGAINST ('$q' IN BOOLEAN MODE) " .
+        "WHERE MATCH({users}.`name`, {users}.`full_name`) AGAINST ('$q' IN BOOLEAN MODE) " .
         "ORDER BY `score` DESC " .
         "LIMIT $page_size OFFSET $offset";
       $data = $db->query($query);
@@ -42,10 +42,10 @@ class photoannotation_Core {
   }
 
   static function get_user_search_form($form_id) {
-    $form = new Forge("photoannotation/showuser/{$item->id}", "", "post", array("id" => $form_id, "class" => "g-short-form"));
-    $label = t("Type user name");
+    $form = new Forge("photoannotation/showuser", "", "post", array("id" => $form_id, "class" => "g-short-form"));
+    $label = t("Search for a person");
 
-    $group = $form->group("showuser")->label("Search for a user");
+    $group = $form->group("showuser")->label("Search for a person");
     $group->input("name")->label($label)->id("name");
     $group->submit("")->value(t("Search"));
     return $form;
@@ -99,6 +99,7 @@ class photoannotation_Core {
     $item_user->y2 = $str_y2;
     $item_user->description = $description;
     $item_user->save();
+    return $item_user->id;
   }
   
   public static function saveface($tag_id, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id = "") {
@@ -117,6 +118,7 @@ class photoannotation_Core {
     $item_face->y2 = $str_y2;
     $item_face->description = $description;
     $item_face->save();
+    return $item_face->id;
   }
 
   public static function savenote($item_title, $item_id, $str_x1, $str_y1, $str_x2, $str_y2, $description, $annotate_id = "") {
@@ -135,6 +137,7 @@ class photoannotation_Core {
     $item_note->title = $item_title;
     $item_note->description = $description;
     $item_note->save();
+    return $item_note->id;
   }
 
   public static function send_notifications($recipient_id, $item_id, $mailtype) {
@@ -230,17 +233,6 @@ class photoannotation_Core {
     }
     return $notification_settings;
   }
-
-  public static function get_user_cloud() {
-    $users = ORM::factory("user")->order_by("name", "ASC")->find_all();
-    foreach ($users as $user) {
-      $items_users_count = ORM::factory("items_user")->where("user_id", "=", $user->id)->count_all();
-      if ($items_users_count > 0) {
-        $user_array[] = $user->display_name();
-      }
-    }
-    return $user_array;
-  }
   
   static function cloud($count) {
     $users = ORM::factory("user")->order_by("name", "ASC")->find_all();
@@ -262,12 +254,13 @@ class photoannotation_Core {
           $user_array[$user->name]->url = user_profile::url($user->id);
         }
       }
-      $cloud->users = array_slice($user_array, 0, $count);
-      $cloud->max_count = $maxcount;
-      if (!$cloud->max_count) {
-        return;
+      if (isset($user_array)) {
+        $cloud->users = array_slice($user_array, 0, $count);
+        $cloud->max_count = $maxcount;
+        return $cloud;
+      } else {
+        return "";
       }
-      return $cloud;
     }
   }
 

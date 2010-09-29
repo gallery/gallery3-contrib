@@ -43,7 +43,7 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       //Load the target user
       $targetuser = ORM::factory("user", $form->targetuser->value);
       if (!$targetuser->loaded()) {
-        message::error(t("The specified user could not be found"));
+        message::error(t("The specified person could not be found"));
         url::redirect("admin/photoannotation/converter");
       }
       //Load all existing tag annotations
@@ -280,12 +280,12 @@ class Admin_Photoannotation_Controller extends Admin_Controller {
       ->checked(module::get_var("photoannotation", "shownotes", false));	
     $group->checkbox("fullname")->label(t("Show full name of a user instead of the username on annotations (username will be dispayed for users without a full name)."))
       ->checked(module::get_var("photoannotation", "fullname", false));	
-    $group = $form->group("notifications")->label(t("Notification and user cloud settings"));
+    $group = $form->group("notifications")->label(t("Notification and people cloud settings"));
     $group->checkbox("nonotifications")->label(t("Disable user notifications."))
       ->checked(module::get_var("photoannotation", "nonotifications", false));	
     $group->checkbox("notificationoptout")->label(t("Notify users by default (only applies to new users and user who have not saved their profile after installing this module)."))
       ->checked(module::get_var("photoannotation", "notificationoptout", false));	
-    $group->checkbox("allowguestsearch")->label(t("Show user cloud and allow user search for guests."))
+    $group->checkbox("allowguestsearch")->label(t("Show people cloud and allow people search for guests."))
       ->checked(module::get_var("photoannotation", "allowguestsearch", false));	
     $group = $form->group("newtagmail")->label(t("Customize the mail sent to users when a user annotation is created"));
     $group->input("newtagsubject")->label(t("Subject"))
