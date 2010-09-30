@@ -19,12 +19,12 @@
  */
 class autorotate_installer {
   static function install() {
-    module::set_version("autorotate", 1);
+    module::set_version("autorotate", 2);
   }
 
   static function upgrade($version) {
     if ($version == 1) {
-      module::set_version("autorotate", $version = 1);
+      module::set_version("autorotate", $version = 2);
     }
   }
 

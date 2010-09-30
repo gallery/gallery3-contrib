@@ -51,6 +51,7 @@ class themeroller_task_Core {
                    + count($parameters["masks"])     // number of images to generate
                    + count($parameters["icons"])     // number of icon images to generate
                    + count($parameters["css_files"]) // number of css files
+                   + count($parameters["gifs"])      // number of static files
                    + count($parameters["images"]));  // number of image files to copy
 
         $task->status = t("Starting up");
@@ -101,6 +102,23 @@ class themeroller_task_Core {
 
         if (empty($parameters["views"])){
           $task->status = t("Themeroller images copied");
+          $task->set("mode", "copy_gif_images");
+        }
+        break;
+      case "copy_gif_images":
+        $task->status = t("Copying gif images");
+        while (!empty($parameters["gifs"]) && microtime(true) - $start < 1.5) {
+          $gif = array_shift($parameters["gifs"]);
+          $target = "{$theme_path}images/" . basename($gif);
+          if (!file_exists($target)) {
+            copy($gif, $target);
+            $task->log(t("Copied gif image: %path", array("path" => basename($gif))));
+          }
+          $completed++;
+        }
+
+        if (empty($parameters["gifs"])){
+          $task->status = t("Gif images copied");
           $task->set("mode", "copy_css");
         }
         break;
