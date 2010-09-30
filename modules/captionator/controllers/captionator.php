@@ -48,6 +48,6 @@ class Captionator_Controller extends Controller {
       }
       message::success(t("Captions saved"));
     }
-    url::redirect($album->parent()->abs_url());
+    url::redirect($album->abs_url());
   }
 }
