@@ -4,7 +4,7 @@
     <?= access::csrf_form_field() ?>
     <fieldset>
       <legend>
-        <?= t("Add captions for photos in <b>%album_name</b>", array("album_name" => $album->name)) ?>
+        <?= t("Add captions for photos in <b>%album_title</b>", array("album_title" => $album->title)) ?>
       </legend>
 
       <? foreach ($album->viewable()->children() as $child): ?>
