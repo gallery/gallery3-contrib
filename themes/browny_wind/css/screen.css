@@ -1417,11 +1417,6 @@ div#g-action-status {
   background-color: #fcf9ce !important;
 }
 
-#g-user-profile th,
-#g-user-profile td {
-  border: 1px dotted #ccc !important;
-}
-
 /* /modules/gallery/css/l10n_client.css ~~ */
 
 #l10n-client .labels {
@@ -1445,9 +1440,52 @@ div#g-action-status {
 
 /* User Profile ~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-.g-avatar g-left {
-	width: 80px !important;
-	height: 80px !important;
+#g-user-profile h1 {
+  color: #5A3007;
+  margin: 1.25em 0em 2em 4.4em;
+}
+
+#g-user-profile .g-avatar {
+  float: left;
+  position: absolute;
+  left: 0em;
+  top: 1.3em;
+}
+
+img.g-avatar.g-left {
+  width: 90px !important;
+  height: 90px !important;
+}
+
+#g-user-profile .g-block h2 {
+  background-color: #F5EFE6;
+  margin-bottom: .5em;
+}
+
+#g-user-profile .g-block-content h2 {
+  background-color: transparent;
+  margin-bottom: inherit;
+}
+
+#g-comment-detail .g-author img {
+  padding: .4em;
+  vertical-align: middle;
+}
+
+#g-comment-detail ul li {
+  border: .1em dotted #E8DCC8;
+  padding: .8em .5em;
+  margin-bottom: .5em;
+}
+
+.rtl #g-user-profile .g-avatar {
+  float: right;
+  right: 0em;
+  left: auto;
+}
+
+.rtl #g-user-profile h1 {
+  margin: 1.25em 4.4em 2em 0em;
 }
 
 /* Organize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
