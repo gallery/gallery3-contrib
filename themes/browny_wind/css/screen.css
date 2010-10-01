@@ -1450,6 +1450,8 @@ div#g-action-status {
   position: absolute;
   left: 0em;
   top: 1.3em;
+  width: 90px !important;
+  height: 90px !important;
 }
 
 #g-user-profile .g-block h2 {
@@ -1462,15 +1464,15 @@ div#g-action-status {
   margin-bottom: inherit;
 }
 
-#g-comment-detail .g-author img {
+#g-user-profile #g-comment-detail .g-author img {
   padding: .4em;
   vertical-align: middle;
 }
 
-#g-comment-detail ul li {
-  border: .1em dotted #C9B38D;
+#g-user-profile #g-comment-detail ul li {
+  border: .1em dotted #D4BE9B;
   padding: .8em .5em;
-  margin-bottom: .55em;
+  margin-bottom: .5em;
 }
 
 .rtl #g-user-profile .g-avatar {
@@ -1482,6 +1484,7 @@ div#g-action-status {
 .rtl #g-user-profile h1 {
   margin: 1.25em 4.4em 2em 0em;
 }
+
 
 /* Organize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
