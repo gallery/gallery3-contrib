@@ -1452,11 +1452,6 @@ div#g-action-status {
   top: 1.3em;
 }
 
-img.g-avatar.g-left {
-  width: 90px !important;
-  height: 90px !important;
-}
-
 #g-user-profile .g-block h2 {
   background-color: #F5EFE6;
   margin-bottom: .5em;
