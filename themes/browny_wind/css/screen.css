@@ -1473,9 +1473,9 @@ img.g-avatar.g-left {
 }
 
 #g-comment-detail ul li {
-  border: .1em dotted #E8DCC8;
+  border: .1em dotted #C9B38D;
   padding: .8em .5em;
-  margin-bottom: .5em;
+  margin-bottom: .55em;
 }
 
 .rtl #g-user-profile .g-avatar {
