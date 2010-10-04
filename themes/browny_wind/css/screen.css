@@ -1549,6 +1549,19 @@ div#g-action-status {
   margin: 1.25em 4.4em 2em 0em;
 }
 
+/* Comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#g-content #g-comments .g-avatar {
+  float: left;
+  margin-right: .4em;
+  margin-left: 0;
+}
+
+.rtl #g-content #g-comments .g-avatar {
+  float: right;
+  margin-left: .4em;
+  margin-right: 0;
+}
 
 /* Organize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
