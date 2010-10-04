@@ -1497,6 +1497,10 @@ div#g-action-status {
   margin-bottom: inherit;
 }
 
+#g-user-profile #g-comment-detail .g-author {
+  font-family: Cursive, Serif;
+}
+
 #g-user-profile #g-comment-detail .g-author a {
   float: left;
   position: relative;
