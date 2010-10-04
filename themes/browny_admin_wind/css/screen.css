@@ -67,6 +67,13 @@ h3 {
   font-size: 1.2em;
 }
 
+select,
+input,
+button,
+textarea {
+  font: 99% 'Century gothic', Verdana, Arial, Helvetica, Clean, sans-serif;
+}
+
 #l10n-client h2 {
   text-shadow: none;
 }
@@ -1087,6 +1094,14 @@ ul.sf-menu li li li.sfHover ul {
 
 .ui-dialog-content {
   text-shadow: 0px 1px 1px #fff;
+}
+
+.ui-widget {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 /** *******************************************************************
