@@ -88,6 +88,13 @@ h3 {
   font-size: .7em;
 }
 
+select,
+input,
+button,
+textarea {
+  font: 99% 'Century gothic', Verdana, Arial, Helvetica, Clean, sans-serif;
+}
+
 #l10n-client h2 {
   text-shadow: none;
 }
@@ -914,6 +921,14 @@ ul.sf-menu li li li.sfHover ul {
 }
 
 /* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
+
+.ui-widget {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
 
 .ui-widget-overlay {
   background: #000;
