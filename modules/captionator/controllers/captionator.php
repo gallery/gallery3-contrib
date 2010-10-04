@@ -21,7 +21,11 @@ class Captionator_Controller extends Controller {
   function dialog($album_id) {
     $album = ORM::factory("item", $album_id);
     access::required("view", $album);
-    access::required("edit", $album);
+
+    if (!access::can("edit", $album)) {
+      // The user can't edit; perhaps they just logged out?
+      url::redirect($album->abs_url());
+    }
 
     $v = new Theme_View("page.html", "collection", "captionator");
     $v->content = new View("captionator_dialog.html");
@@ -48,6 +52,6 @@ class Captionator_Controller extends Controller {
       }
       message::success(t("Captions saved"));
     }
-    url::redirect($album->parent()->abs_url());
+    url::redirect($album->abs_url());
   }
 }
