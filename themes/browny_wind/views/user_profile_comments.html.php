@@ -4,12 +4,12 @@
   <? foreach ($comments as $comment): ?>
   <li id="g-comment-<?= $comment->id ?>">
     <p class="g-author">
-      <?= $comment->item()->thumb_img(array(), 65) ?>
-      <?= t("on %date for %title ",
+      <a href="<?= $comment->item()->url() ?>">
+        <?= $comment->item()->thumb_img(array(), 70) ?>
+      </a>
+      <?= t("<i><strong>on</strong> %date <strong>for</strong> %title</i> ",
             array("date" => gallery::date_time($comment->created),
                   "title" => $comment->item()->title)); ?>
-      <a href="<?= $comment->item()->url() ?>">
-      </a>
     </p>
     <hr />
     <div>
