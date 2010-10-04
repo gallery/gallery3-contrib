@@ -80,7 +80,7 @@
           <?= $header_text ?>
           <? else: ?>
           <a id="g-logo" class="g-left" href="<?= item::root()->url() ?>" title="<?= t("go back to the Gallery home")->for_html_attr() ?>">
-            <img alt="<?= t("Gallery logo: Your photos on your web site")->for_html_attr() ?>" src="<?= url::file("themes/browny_wind/images/logo.png") ?>" />
+            <img alt="<?= t("Gallery logo: Your photos on your web site")->for_html_attr() ?>" src="<?= $theme->url("images/logo.png") ?>" />
           </a>
           <? endif ?>
           <?= $theme->user_menu() ?>
