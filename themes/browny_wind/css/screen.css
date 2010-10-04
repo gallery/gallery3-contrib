@@ -1509,6 +1509,11 @@ div#g-action-status {
   margin-right: .6em;
 }
 
+#g-user-profile #g-comment-detail div {
+  margin-left: 5em;
+  line-height: 150%;
+}
+
 #g-user-profile #g-comment-detail ul li {
   border: .1em dotted #D4BE9B;
   padding: .8em .5em;
@@ -1533,6 +1538,11 @@ div#g-action-status {
   left: auto;
   margin-left: .6em;
   margin-right: 0em;
+}
+
+.rtl #g-user-profile #g-comment-detail div {
+  margin-right: 5em;
+  margin-left: 0em;
 }
 
 .rtl #g-user-profile h1 {
