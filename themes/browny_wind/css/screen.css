@@ -1099,7 +1099,7 @@ div#g-action-status {
 }
 
 /** *******************************************************************
- * 8) Right to left language styles
+ * 10) Right to left language styles
  *********************************************************************/
 .rtl {
   direction: rtl;
@@ -1419,7 +1419,7 @@ div#g-action-status {
 }
 
 /** *******************************************************************
- * 9) More Browny (Extra overrides for better Browny look)
+ * 11) More Browny (Extra overrides for better Browny look)
  *********************************************************************/
 /* ~browny~ */
 
