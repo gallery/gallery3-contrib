@@ -31,6 +31,7 @@ body, html {
 
 p {
   margin-bottom: 1em;
+  text-shadow: 0px 1px 1px #F7F5F0;
 }
 
 em {
@@ -39,6 +40,7 @@ em {
 
 h1, h2, h3, h4, h5, strong, th {
   font-weight: bold;
+  text-shadow: 1px 1px 0px #fff;
 }
 
 h1 {
@@ -63,6 +65,10 @@ h2 {
 
 h3 {
   font-size: 1.2em;
+}
+
+#l10n-client h2 {
+  text-shadow: none;
 }
 
 /* Links ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -334,6 +340,7 @@ th {
 
 .g-block-content {
   margin-top: 1em;
+  text-shadow: 0px 1px 0px #fff;
 }
 
 #g-content .g-block {
@@ -848,6 +855,7 @@ form .g-error {
   display: inline-block;
   margin: 0 4px 0 0;
   padding: .2em .4em;
+  text-shadow: 0px 1px 1px #fff;
 }
 
 .g-button,
@@ -1048,6 +1056,7 @@ ul.sf-menu li li li.sfHover ul {
 /* ~browny~ */
 .sf-menu li {
 	background: #d3b07e url('../images/ui-bg_highlight-soft_45_d3b07e_1x100.png') 50% 50% repeat-x;
+    text-shadow: 0px 1px 1px #fff;
 }
 
 /* ~browny~ */
@@ -1074,6 +1083,10 @@ ul.sf-menu li li li.sfHover ul {
 #g-admin-dashboard .ui-dialog-titlebar,
 #g-admin-dashboard-sidebar .ui-dialog-titlebar {
   padding: .2em .4em;
+}
+
+.ui-dialog-content {
+  text-shadow: 0px 1px 1px #fff;
 }
 
 /** *******************************************************************
