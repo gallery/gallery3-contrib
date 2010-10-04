@@ -1485,6 +1485,11 @@ div#g-action-status {
   margin: 1.25em 4.4em 2em 0em;
 }
 
+/* Comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#g-content #g-comments .g-author {
+  padding-bottom: .8em;
+}
 
 /* Organize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
