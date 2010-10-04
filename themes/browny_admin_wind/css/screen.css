@@ -401,6 +401,10 @@ th {
   background-image: none;
 }
 
+#g-maintenance-mode ul.g-message-block {
+  margin-top: .5em;
+}
+
 .g-success td {
   background-color: transparent;
   background-image: none;
