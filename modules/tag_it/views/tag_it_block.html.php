@@ -21,7 +21,7 @@
 </script>
 <div class="g-tag-it-block">
   <a href="<?= $item->url() ?>">
-   <?= $item->thumb_img(array("class" => "g-thumbnail")) ?>
+   <?= $item->thumb_img(array("class" => "g-thumbnail"), 180) ?>
   </a>
   <p id="g-tag-it-tags-container"></p>
   <?= $form ?>

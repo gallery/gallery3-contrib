@@ -150,15 +150,17 @@ class photoannotation_event_Core {
     $view = new Theme_View("dynamic.html", "collection", "userprofiles");
     //load thumbs
     $item_users = ORM::factory("items_user")->where("user_id", "=", $data->user->id)->find_all();
-    $children_count = count($item_users);
     foreach ($item_users as $item_user) {
       $item_thumb = ORM::factory("item")
           ->viewable()
           ->where("type", "!=", "album")
           ->where("id", "=", $item_user->item_id)
           ->find();
-      $item_thumbs[] = $item_thumb;
+      if ($item_thumb->loaded()) {
+        $item_thumbs[] = $item_thumb;
+      }
     }
+    $children_count = count($item_thumbs);
     $page_size = module::get_var("gallery", "page_size", 9);
     $page = (int) Input::instance()->get("page", "1");
     $offset = ($page-1) * $page_size;
