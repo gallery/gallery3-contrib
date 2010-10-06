@@ -119,7 +119,7 @@ Thanks");
    basket::setOrderCompleteEmailSubject(
 "Photography Order %order_number");
 
-   module::set_version("basket", 4);
+   module::set_version("basket", 5);
 
   }
 
