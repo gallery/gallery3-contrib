@@ -26,11 +26,12 @@
 /* ~browny~ */
 body, html {
   background-color: #5a3007;
-  font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 p {
   margin-bottom: 1em;
+  text-shadow: 0px 1px 1px #F7F5F0;
 }
 
 em {
@@ -39,6 +40,7 @@ em {
 
 h1, h2, h3, h4, h5, strong, th {
   font-weight: bold;
+  text-shadow: 1px 1px 0px #fff;
 }
 
 h1 {
@@ -63,6 +65,17 @@ h2 {
 
 h3 {
   font-size: 1.2em;
+}
+
+select,
+input,
+button,
+textarea {
+  font: 99% 'Century gothic', Verdana, Arial, Helvetica, Clean, sans-serif;
+}
+
+#l10n-client h2 {
+  text-shadow: none;
 }
 
 /* Links ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -334,6 +347,7 @@ th {
 
 .g-block-content {
   margin-top: 1em;
+  text-shadow: 0px 1px 0px #fff;
 }
 
 #g-content .g-block {
@@ -385,6 +399,10 @@ th {
 .g-info td {
   background-color: transparent;
   background-image: none;
+}
+
+#g-maintenance-mode ul.g-message-block {
+  margin-top: .5em;
 }
 
 .g-success td {
@@ -848,6 +866,7 @@ form .g-error {
   display: inline-block;
   margin: 0 4px 0 0;
   padding: .2em .4em;
+  text-shadow: 0px 1px 1px #fff;
 }
 
 .g-button,
@@ -1048,6 +1067,7 @@ ul.sf-menu li li li.sfHover ul {
 /* ~browny~ */
 .sf-menu li {
 	background: #d3b07e url('../images/ui-bg_highlight-soft_45_d3b07e_1x100.png') 50% 50% repeat-x;
+    text-shadow: 0px 1px 1px #fff;
 }
 
 /* ~browny~ */
@@ -1074,6 +1094,18 @@ ul.sf-menu li li li.sfHover ul {
 #g-admin-dashboard .ui-dialog-titlebar,
 #g-admin-dashboard-sidebar .ui-dialog-titlebar {
   padding: .2em .4em;
+}
+
+.ui-dialog-content {
+  text-shadow: 0px 1px 1px #fff;
+}
+
+.ui-widget {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 /** *******************************************************************

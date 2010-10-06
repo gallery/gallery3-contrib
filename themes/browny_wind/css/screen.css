@@ -24,11 +24,12 @@
 /* ~browny~ */
 body, html {
   background-color: #5a3007;
-  font-family: 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 p {
   margin-bottom: 1em;
+  text-shadow: 0px 1px 1px #F7F5F0;
 }
 
 em {
@@ -37,6 +38,7 @@ em {
 
 h1, h2, h3, h4, h5, strong, th {
   font-weight: bold;
+  text-shadow: 1px 1px 0px #fff;
 }
 
 h1 {
@@ -76,10 +78,25 @@ h3 {
   font-size: .8em;
 }
 
+#g-footer h3 {
+  text-shadow: 1px 1px 1px #F7F5F0;
+}
+
 #g-album-grid .g-item,
 #g-item #g-photo,
 #g-item #g-movie {
   font-size: .7em;
+}
+
+select,
+input,
+button,
+textarea {
+  font: 99% 'Century gothic', Verdana, Arial, Helvetica, Clean, sans-serif;
+}
+
+#l10n-client h2 {
+  text-shadow: none;
 }
 
 /* Links ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -884,6 +901,7 @@ ul.sf-menu li li li.sfHover ul {
 /* ~browny~ */
 .sf-menu li {
 	background: #d3b07e url('../images/ui-bg_highlight-soft_45_d3b07e_1x100.png') 50% 50% repeat-x;
+    text-shadow: 0px 1px 1px #fff;
 }
 
 /* ~browny~ */
@@ -904,9 +922,21 @@ ul.sf-menu li li li.sfHover ul {
 
 /* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
 
+.ui-widget {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 .ui-widget-overlay {
   background: #000;
   opacity: .7;
+}
+
+.ui-dialog-content {
+  text-shadow: 0px 1px 1px #fff;
 }
 
 /* Buttons ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -915,6 +945,7 @@ ul.sf-menu li li li.sfHover ul {
   display: inline-block;
   margin: 0 4px 0 0;
   padding: .2em .4em;
+  text-shadow: 0px 1px 1px #fff;
 }
 
 .g-button,
@@ -1083,7 +1114,7 @@ div#g-action-status {
 }
 
 /** *******************************************************************
- * 8) Right to left language styles
+ * 10) Right to left language styles
  *********************************************************************/
 .rtl {
   direction: rtl;
@@ -1403,7 +1434,7 @@ div#g-action-status {
 }
 
 /** *******************************************************************
- * 9) More Browny (Extra overrides for better Browny look)
+ * 11) More Browny (Extra overrides for better Browny look)
  *********************************************************************/
 /* ~browny~ */
 
@@ -1452,11 +1483,13 @@ div#g-action-status {
   top: 1.3em;
   width: 90px !important;
   height: 90px !important;
+  margin: 0em 0em 0em .6em;
 }
 
 #g-user-profile .g-block h2 {
   background-color: #F5EFE6;
   margin-bottom: .5em;
+  padding-left: .8em;
 }
 
 #g-user-profile .g-block-content h2 {
@@ -1464,9 +1497,21 @@ div#g-action-status {
   margin-bottom: inherit;
 }
 
-#g-user-profile #g-comment-detail .g-author img {
-  padding: .4em;
-  vertical-align: middle;
+#g-user-profile #g-comment-detail .g-author {
+  font-family: Cursive, Serif;
+}
+
+#g-user-profile #g-comment-detail .g-author a {
+  float: left;
+  position: relative;
+  top: -0.3em;
+  left: 0em;
+  margin-right: .6em;
+}
+
+#g-user-profile #g-comment-detail div {
+  margin-left: 5em;
+  line-height: 150%;
 }
 
 #g-user-profile #g-comment-detail ul li {
@@ -1475,16 +1520,48 @@ div#g-action-status {
   margin-bottom: .5em;
 }
 
+.rtl #g-user-profile .g-block h2 {
+  padding-right: .8em;
+  padding-left: auto;
+}
+
 .rtl #g-user-profile .g-avatar {
   float: right;
   right: 0em;
   left: auto;
+  margin: 0em .6em 0em 0em;
+}
+
+.rtl #g-user-profile #g-comment-detail .g-author a {
+  float: right;
+  right: 0em;
+  left: auto;
+  margin-left: .6em;
+  margin-right: 0em;
+}
+
+.rtl #g-user-profile #g-comment-detail div {
+  margin-right: 5em;
+  margin-left: 0em;
 }
 
 .rtl #g-user-profile h1 {
   margin: 1.25em 4.4em 2em 0em;
 }
 
+/* Comments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#g-content #g-comments .g-avatar {
+  float: left;
+  margin-right: .4em;
+  margin-left: 0;
+}
+
+.rtl #g-content #g-comments .g-avatar {
+  float: right;
+  margin-left: .4em;
+  margin-right: 0;
+}
 
 /* Organize ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
