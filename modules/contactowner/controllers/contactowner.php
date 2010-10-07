@@ -18,6 +18,55 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ContactOwner_Controller extends Controller {
+  static function get_email_form($user_id) {
+    // Determine name of the person the message is going to.
+    $str_to_name = "";
+    if ($user_id == -1) {
+      $str_to_name = module::get_var("contactowner", "contact_owner_name");
+    } else {
+      // Locate the record for the user specified by $user_id,
+      //   use this to determine the user's name.
+      $userDetails = ORM::factory("user")
+        ->where("id", "=", $user_id)
+        ->find_all();
+      $str_to_name = $userDetails[0]->name;
+    }
+
+    // Make a new form with a couple of text boxes.
+    $form = new Forge("contactowner/sendemail/{$user_id}", "", "post",
+                      array("id" => "g-contact-owner-send-form"));
+    $sendmail_fields = $form->group("contactOwner");
+    $sendmail_fields->input("email_to")
+                    ->label(t("To:"))->value($str_to_name)
+                    ->id("g-contactowner-to-name");
+    $sendmail_fields->input("email_from")
+                    ->label(t("From:"))->value(identity::active_user()->email)
+                    ->id("g-contactowner-from-email")
+                    ->rules('required|valid_email')
+                    ->error_messages("required", t("You must enter a valid email address"))
+                    ->error_messages("valid_email", t("You must enter a valid email address"))
+                    ->error_messages("invalid", t("You must enter a valid email address"));
+    $sendmail_fields->input("email_subject")
+                    ->label(t("Subject:"))->value("")
+                    ->id("g-contactowner-subject")
+                    ->rules('required')
+                    ->error_messages("required", t("You must enter a subject"));
+    $sendmail_fields->textarea("email_body")
+                    ->label(t("Message:"))
+                    ->value("")
+                    ->id("g-contactowner-email-body")
+                    ->rules('required')
+                    ->error_messages("required", t("You must enter a message"));
+
+    // Add a captcha, if there's an active captcha module.
+    module::event("captcha_protect_form", $form);
+
+    // Add a save button to the form.
+    $sendmail_fields->submit("SendMessage")->value(t("Send"));
+
+    return $form;
+  }
+
   public function emailowner() {
     // Display a form that a vistor can use to contact the site owner.
 
@@ -26,24 +75,10 @@ class ContactOwner_Controller extends Controller {
       throw new Kohana_404_Exception();
     }
 
-    // Make a new form with a couple of text boxes.
-    $form = new Forge("contactowner/sendemail", "", "post",
-                      array("id" => "g-contact-owner-send-form"));
-    $sendmail_fields = $form->group("contactOwner");
-    $sendmail_fields->input("email_to")->label(t("To:"))->value(module::get_var("contactowner", "contact_owner_name"));
-    $sendmail_fields->input("email_from")->label(t("From:"))->value(identity::active_user()->email);
-
-    $sendmail_fields->input("email_subject")->label(t("Subject:"))->value("");
-    $sendmail_fields->textarea("email_body")->label(t("Message:"))->value("");
-    $sendmail_fields->hidden("email_to_id")->value("-1");
-
-    // Add a save button to the form.
-    $sendmail_fields->submit("SendMessage")->value(t("Send"));
-
     // Set up and display the actual page.
     $template = new Theme_View("page.html", "other", "Contact");
     $template->content = new View("contactowner_emailform.html");
-    $template->content->sendmail_form = $form;
+    $template->content->sendmail_form = $this->get_email_form("-1");
     print $template;
   }
 
@@ -55,49 +90,29 @@ class ContactOwner_Controller extends Controller {
       throw new Kohana_404_Exception();
     }
 
-    // Locate the record for the user specified by $user_id,
-    //   use this to determine the user's name.
-    $userDetails = ORM::factory("user")
-      ->where("id", "=", $user_id)
-      ->find_all();
-
-    // Make a new form with a couple of text boxes.
-    $form = new Forge("contactowner/sendemail", "", "post",
-                      array("id" => "g-contact-owner-send-form"));
-    $sendmail_fields = $form->group("contactOwner");
-    $sendmail_fields->input("email_to")->label(t("To:"))->value($userDetails[0]->name);
-    $sendmail_fields->input("email_from")->label(t("From:"))->value(identity::active_user()->email);
-    $sendmail_fields->input("email_subject")->label(t("Subject:"))->value("");
-    $sendmail_fields->textarea("email_body")->label(t("Message:"))->value("");
-    $sendmail_fields->hidden("email_to_id")->value($user_id);
-
-    // Add a save button to the form.
-    $sendmail_fields->submit("SendMessage")->value(t("Send"));
-
     // Set up and display the actual page.
     $template = new Theme_View("page.html", "other", "Contact");
     $template->content = new View("contactowner_emailform.html");
-    $template->content->sendmail_form = $form;
+    $template->content->sendmail_form = $this->get_email_form($user_id);
     print $template;
   }
 
-  public function sendemail() {
-    // Process the data from the form into an email,
-    //   then send the email.
+  public function sendemail($user_id) {
+    // Validate the form, then send the actual email.
 
-    // Make sure the form was submitted.
-    if ($_POST) {
-      // Set up some rules to validate the form against.
-      $post = new Validation($_POST);
-      $post->add_rules('email_from', 'required', 'valid::email');
-      $post->add_rules('email_subject', 'required');
-      $post->add_rules('email_body', 'required');
-  
-      // If the form was filled out properly then...
-      if ($post->validate()) {
+    // If this page is disabled, show a 404 error.
+    if (($user_id == "-1") && (module::get_var("contactowner", "contact_owner_link") != true)) {
+      throw new Kohana_404_Exception();
+    } elseif (($user_id >= 0) && (module::get_var("contactowner", "contact_user_link") != true)) {
+      throw new Kohana_404_Exception();
+    }
+
+    // Make sure the form submission was valid.
+    $form = $this->get_email_form($user_id);
+    $valid = $form->validate();
+    if ($valid) {
         // Copy the data from the email form into a couple of variables.
         $str_emailsubject = Input::instance()->post("email_subject");
-        $str_emailtoid = Input::instance()->post("email_to_id");
         $str_emailfrom = Input::instance()->post("email_from");
         $str_emailbody = Input::instance()->post("email_body");
 
@@ -111,14 +126,14 @@ class ContactOwner_Controller extends Controller {
 
         // Figure out where the email is going to.
         $str_emailto = "";
-        if ($str_emailtoid == -1) {
+        if ($user_id == -1) {
           // If the email id is "-1" send the message to a pre-determined
           //   owner email address.
           $str_emailto = module::get_var("contactowner", "contact_owner_email");
         } else {
           // or else grab the email from the user table.
         $userDetails = ORM::factory("user")
-          ->where("id", "=", $str_emailtoid)
+          ->where("id", "=", $user_id)
           ->find_all();
           $str_emailto = $userDetails[0]->email;
         }
@@ -137,18 +152,13 @@ class ContactOwner_Controller extends Controller {
         $template->content = new View("contactowner_emailform.html");
         $template->content->sendmail_form = t("Your Message Has Been Sent.");
         print $template;
-	  } else {
-        // Display a message telling the visitor that their email has been not been sent,
-        //   along with the reason(s) why.
-        $template = new Theme_View("page.html", "other", "Contact");
-        $template->content = new View("contactowner_emailform.html");
-        $template->content->sendmail_form = t("Your Message Has Not Been Sent.");
-        $template->content->sendmail_form = $template->content->sendmail_form . "<br/><br/>" . t("Reason(s):") . "<br/>";
-        foreach($post->errors('form_error_messages') as $error) {
-          $template->content->sendmail_form = $template->content->sendmail_form .  " - " . t($error) . "<br/>";
-        }
+
+    } else {
+      // Set up and display the actual page.
+      $template = new Theme_View("page.html", "other", "Contact");
+      $template->content = new View("contactowner_emailform.html");
+      $template->content->sendmail_form = $form;
         print $template;
-      }
     }
   }
 }
