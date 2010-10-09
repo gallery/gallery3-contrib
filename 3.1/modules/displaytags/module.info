@@ -1,0 +1,3 @@
+name = "DisplayTags"
+description = "Display all tags for the current photo/album."
+version = 1
