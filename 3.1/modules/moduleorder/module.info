@@ -1,0 +1,3 @@
+name = "Module Order"
+description = "Allows you to change the order in which modules are executed"
+version = 1
