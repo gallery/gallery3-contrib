@@ -1,0 +1,3 @@
+name = "Keep Original"
+description = "Make a copy of the original photo before rotating it."
+version = 1

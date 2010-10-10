@@ -1,0 +1,3 @@
+name = "Favourites"
+description = "Allows users and guests to create favourite lists and then e-mail them to people."
+version = 1

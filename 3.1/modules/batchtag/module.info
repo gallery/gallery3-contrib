@@ -1,0 +1,3 @@
+name = "BatchTag"
+description = "Automatically apply a tag to the entire contents of an album."
+version = 1
