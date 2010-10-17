@@ -68,7 +68,7 @@ class basket_installer
                  PRIMARY KEY (`id`))
                  ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
-  $db->query("CREATE TABLE IF NOT EXISTS `ipn_messages` (
+  $db->query("CREATE TABLE IF NOT EXISTS {ipn_messages} (
     `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     `date`  int(11) NOT NULL,
     `key` varchar(20) NOT NULL,
@@ -220,5 +220,6 @@ Thanks");
     $db->query("DROP TABLE IF EXISTS {item_products}");
     $db->query("DROP TABLE IF EXISTS {postage_bands}");
     $db->query("DROP TABLE IF EXISTS {orders}");
+    $db->query("DROP TABLE IF EXISTS {ipn_messages}");
   }
 }
