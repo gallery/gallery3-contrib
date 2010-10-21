@@ -1,0 +1,3 @@
+name = "NoBots"
+description = "Block web crawlers from indexing your Gallery."
+version = 1
