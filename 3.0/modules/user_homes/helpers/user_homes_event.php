@@ -100,9 +100,10 @@ class user_homes_event_Core {
    */
   static function user_edit_form_admin_completed($user, $form) {
     $home = ORM::factory("user_home")->where("id", "=", $user->id)->find();
-    $home->id = $user->id;
-    $home->home = $form->edit_user->user_home->value;
-    $home->save();
+    if ($home->loaded()) {
+      $home->home = $form->edit_user->user_home->value;
+      $home->save();
+    }
   }
 
 
@@ -257,7 +258,7 @@ class user_homes_event_Core {
       // create a user based on username
       $user = identity::create_user($username, $username, $password, $username."@unknown.com");
 
-      identity::add_user_to_group($user,$group->id);
+      identity::add_user_to_group($user,$group);
 
       // create user home
       $home = ORM::factory("user_home")->where("id", "=", $user->id)->find();
