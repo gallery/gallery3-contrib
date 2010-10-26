@@ -197,7 +197,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     if ($devDebug == true){
 			if ($file == null) {
         try {
-          $file = fopen ("http://github.com/brentil/gallery3-contrib/raw/master/modules/".$module_name."/module.info", "r");
+          $file = fopen ("http://github.com/brentil/gallery3-contrib/raw/master/3.1/modules/".$module_name."/module.info", "r");
           if ($file != null) {
             $server = '(brentil)';
           }
@@ -224,7 +224,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     //Check the Gallery3 Community Contributions GitHub
 		if ($file == null) {
 			try {
-				$file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/modules/".$module_name."/module.info", "r");
+				$file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/3.1/modules/".$module_name."/module.info", "r");
 				if ($file != null) {
           $server = '(G3CC)';
         }
