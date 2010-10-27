@@ -26,6 +26,11 @@ class downloadalbum_Controller extends Controller {
     $album = $this->init($id);
     $files = $this->getFilesList($album);
 
+    // ZIP name
+    $zipname = (empty($album->name))
+      ? $zipname = 'Gallery.zip' // @todo $zipname = purified_version_of($album->title)
+      : $album->name.'.zip';
+
     // Calculate ZIP size (look behind for details)
     $zipsize = 22;
     foreach($files as $f) {
@@ -34,7 +39,7 @@ class downloadalbum_Controller extends Controller {
 
     // Send headers
     $this->prepareOutput();
-    $this->sendHeaders($album->name.'.zip', $zipsize);
+    $this->sendHeaders($zipname, $zipsize);
 
     // Generate and send ZIP file
     // http://www.pkware.com/documents/casestudies/APPNOTE.TXT (v6.3.2)
