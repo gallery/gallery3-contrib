@@ -22,14 +22,34 @@ class downloadalbum_Controller extends Controller {
   /**
    * Generate a ZIP on-the-fly.
    */
-  public function zip($id) {
-    $album = $this->init($id);
-    $files = $this->getFilesList($album);
+  public function zip($container_type, $id) {
+    switch($container_type) {
+      case "album":
+        $container = ORM::factory("item", $id);
+        if (!$container->is_album()) {
+          throw new Kohana_Exception('container is not an album: '.$container->relative_path());
+        }
 
-    // ZIP name
-    $zipname = (empty($album->name))
-      ? $zipname = 'Gallery.zip' // @todo $zipname = purified_version_of($album->title)
-      : $album->name.'.zip';
+        $zipname = (empty($container->name))
+            ? 'Gallery.zip' // @todo purified_version_of($container->title).'.zip'
+            : $container->name.'.zip';
+        break;
+
+     case "tag":
+        // @todo: if the module is not installed, it crash
+        $container = ORM::factory("tag", $id);
+        if (is_null($container->name)) {
+          throw new Kohana_Exception('container is not a tag: '.$id);
+        }
+
+        $zipname = $container->name.'.zip';
+        break;
+
+     default:
+       throw new Kohana_Exception('unhandled container type: '.$container_type);
+   }
+
+   $files = $this->getFilesList($container);
 
     // Calculate ZIP size (look behind for details)
     $zipsize = 22;
@@ -134,52 +154,56 @@ class downloadalbum_Controller extends Controller {
 
 
   /**
-   * Init
-   */
-  private function init($id) {
-    $item = ORM::factory("item", $id);
-
-    // Only send an album
-    if (!$item->is_album()) {
-      throw new Kohana_Exception('item is not an album: '.$item->relative_path());
-    }
-
-    // Must have view_full to download the originals files
-    access::required("view_full", $item);
-
-    return $item;
-  }
-
-  /**
    * Return the files that must be included in the archive.
    */
-  private function getFilesList($album) {
+  private function getFilesList($container) {
     $files = array();
 
-    // Go to the parent of album so the ZIP will not contains all the
-    // server hierarchy
-    if (!chdir($album->file_path().'/../')) {
-      throw new Kohana_Exception('unable to chdir('.$item->file_path().'/../)');
-    }
-    $cwd = getcwd();
+    if( $container instanceof Item_Model && $container->is_album() ) {
+      $container_realpath = realpath($container->file_path().'/../');
 
-    $items = $album->viewable()
-        ->descendants(null, null, array(array("type", "<>", "album")));
-    foreach($items as $i) {
-      if (!access::can('view_full', $i)) {
-        continue;
+      $items = $container->viewable()
+          ->descendants(null, null, array(array("type", "<>", "album")));
+      foreach($items as $i) {
+        if (!access::can('view_full', $i)) {
+          continue;
+        }
+
+        $i_realpath = realpath($i->file_path());
+        if (!is_readable($i_realpath)) {
+          continue;
+        }
+
+        $i_relative_path = str_replace($container_realpath.'/', '', $i_realpath);
+        $files[$i_relative_path] = $i_realpath;
       }
 
-      $relative_path = str_replace($cwd.'/', '', realpath($i->file_path()));
-      if (!is_readable($relative_path)) {
-        continue;
-      }
+    } else if( $container instanceof Tag_Model ) {
+      $items = $container->items();
+      foreach($items as $i) {
+        if (!access::can('view_full', $i)) {
+          continue;
+        }
 
-      $files[$relative_path] = $relative_path;
+        if( $i->is_album() ) {
+          foreach($this->getFilesList($i) as $f_name => $f_path) {
+            $files[$container->name.'/'.$f_name] = $f_path;
+          }
+
+        } else {
+          $i_realpath = realpath($i->file_path());
+          if (!is_readable($i_realpath)) {
+            continue;
+          }
+
+          $i_relative_path = $container->name.'/'.$i->name;
+          $files[$i_relative_path] = $i_realpath;
+        }
+      }
     }
 
     if (count($files) === 0) {
-      throw new Kohana_Exception('no zippable files in ['.$album->relative_path().']');
+      throw new Kohana_Exception('no zippable files in ['.$container->name.']');
     }
 
     return $files;

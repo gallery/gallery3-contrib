@@ -19,8 +19,6 @@
  */
 class downloadalbum_theme {
   static function head($theme) {
-    if ($theme->item && access::can("view_full", $theme->item)) {
-      $theme->css("downloadalbum_menu.css");
-    }
+    $theme->css("downloadalbum_menu.css");
   }
 }
