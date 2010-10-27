@@ -141,9 +141,7 @@ class downloadalbum_Controller extends Controller {
 
     // Only send an album
     if (!$item->is_album()) {
-      // @todo: throw an exception?
-      Kohana::log('error', 'item is not an album: '.$item->relative_path());
-      exit;
+      throw new Kohana_Exception('item is not an album: '.$item->relative_path());
     }
 
     // Must have view_full to download the originals files
@@ -161,9 +159,7 @@ class downloadalbum_Controller extends Controller {
     // Go to the parent of album so the ZIP will not contains all the
     // server hierarchy
     if (!chdir($album->file_path().'/../')) {
-      // @todo: throw an exception?
-      Kohana::log('error', 'unable to chdir('.$item->file_path().'/../)');
-      exit;
+      throw new Kohana_Exception('unable to chdir('.$item->file_path().'/../)');
     }
     $cwd = getcwd();
 
@@ -183,9 +179,7 @@ class downloadalbum_Controller extends Controller {
     }
 
     if (count($files) === 0) {
-      // @todo: throw an exception?
-      Kohana::log('error', 'no zippable files in ['.$album->relative_path().']');
-      exit;
+      throw new Kohana_Exception('no zippable files in ['.$album->relative_path().']');
     }
 
     return $files;
