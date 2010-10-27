@@ -33,8 +33,8 @@ class downloadalbum_Controller extends Controller {
 
     // Calculate ZIP size (look behind for details)
     $zipsize = 22;
-    foreach($files as $f) {
-      $zipsize += 76 + 2*strlen($f) + filesize($f);
+    foreach($files as $f_name => $f_path) {
+      $zipsize += 76 + 2*strlen($f_name) + filesize($f_path);
     }
 
     // Send headers
@@ -46,11 +46,11 @@ class downloadalbum_Controller extends Controller {
     $lfh_offset = 0;
     $cds = '';
     $cds_offset = 0;
-    foreach($files as $f) {
-      $f_namelen = strlen($f);
-      $f_size = filesize($f);
-      $f_mtime = $this->unix2dostime(filemtime($f));
-      $f_crc32 = $this->fixBug45028(hexdec(hash_file('crc32b', $f, false)));
+    foreach($files as $f_name => $f_path) {
+      $f_namelen = strlen($f_name);
+      $f_size = filesize($f_path);
+      $f_mtime = $this->unix2dostime(filemtime($f_path));
+      $f_crc32 = $this->fixBug45028(hexdec(hash_file('crc32b', $f_path, false)));
 
       // Local file header
       echo pack('VvvvVVVVvva' . $f_namelen,
@@ -65,12 +65,12 @@ class downloadalbum_Controller extends Controller {
           $f_namelen,         // file name length (2 bytes)
           0,                  // extra field length (2 bytes)
 
-          $f                  // file name (variable size)
+          $f_name             // file name (variable size)
                               // extra field (variable size) => n/a
       );
 
       // File data
-      readfile($f);
+      readfile($f_path);
 
       // Data descriptor (n/a)
 
@@ -93,7 +93,7 @@ class downloadalbum_Controller extends Controller {
           0x81b40000,         // external file attributes (4 bytes) => chmod 664
           $lfh_offset,        // relative offset of local header (4 bytes)
 
-          $f                  // file name (variable size)
+          $f_name             // file name (variable size)
                               // extra field (variable size) => n/a
                               // file comment (variable size) => n/a
       );
@@ -175,7 +175,7 @@ class downloadalbum_Controller extends Controller {
         continue;
       }
 
-      $files[] = $relative_path;
+      $files[$relative_path] = $relative_path;
     }
 
     if (count($files) === 0) {
