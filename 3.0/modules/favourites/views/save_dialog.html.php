@@ -8,4 +8,4 @@ if (favourites_configuration::isEmailAdmin()){
 else{
   ?>An e-mail will be sent to you with a link to this list.<?
 }
-?><div id="basketForm"><?= $form ?></div></div>
+?><div id="favourites-save-form"><?= $form ?></div></div>
