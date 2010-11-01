@@ -36,8 +36,8 @@ class item extends item_Core {
     }
 
     // set access::DENY if necessary.
+    $view_restrictions = array();
     if ($deny_access == true) {
-      $view_restrictions = array();
       if (!identity::active_user()->admin) {
         foreach (identity::group_ids_for_active_user() as $id) {
           $view_restrictions[] = array("items.view_$id", "=", access::DENY);
