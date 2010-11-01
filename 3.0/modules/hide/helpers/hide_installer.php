@@ -17,8 +17,22 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class downloadalbum_theme {
-  static function head($theme) {
-    $theme->css("downloadalbum_menu.css");
+
+class hide_installer {
+
+  static function install() {
+    $db = Database::instance();
+    $db->query("CREATE TABLE IF NOT EXISTS {hidden_items} (
+                 `item_id` int(9) NOT NULL,
+               PRIMARY KEY (`item_id`))
+               DEFAULT CHARSET=utf8;");
+
+    module::set_var("hide", "access_permissions", hide::NONE);
+    module::set_version("hide", 1);
+  }
+
+  static function uninstall() {
+    $db = Database::instance();
+    $db->query("DROP TABLE IF EXISTS {hidden_items};");
   }
 }
