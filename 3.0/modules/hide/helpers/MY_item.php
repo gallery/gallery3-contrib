@@ -17,8 +17,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class downloadalbum_theme {
-  static function head($theme) {
-    $theme->css("downloadalbum_menu.css");
+
+class item extends item_Core {
+
+  static function viewable($model) {
+    $model = parent::viewable($model);
+
+    if (!hide::can_view_hidden_items($model)) {
+      // only fetches items that are not hidden
+      $model->join("hidden_items", "items.id", "hidden_items.item_id", "LEFT OUTER")
+            ->and_where("hidden_items.item_id", "IS", NULL);
+    }
+
+    return $model;
   }
 }
