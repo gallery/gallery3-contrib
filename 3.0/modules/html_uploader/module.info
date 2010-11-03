@@ -1,0 +1,3 @@
+name = "HTML Uploader"
+description = "Simple HTML uploader that replaces the Flash based uploader"
+version = 1

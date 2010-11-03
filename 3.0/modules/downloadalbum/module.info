@@ -1,0 +1,3 @@
+name = "DownloadAlbum"
+description = "Displays a link to download a ZIP archive of the current album."
+version = 2
