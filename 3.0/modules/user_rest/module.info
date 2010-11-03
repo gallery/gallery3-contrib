@@ -1,3 +1,0 @@
-name = "REST User Resource"
-description = "Provides access to user names via the RESTful API"
-version = 1.1

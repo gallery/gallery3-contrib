@@ -1,3 +1,0 @@
-name = "PAM"
-description = "Pluggable authentication module allows users to login by using external authentication methods."
-version = 1
