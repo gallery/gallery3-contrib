@@ -1,0 +1,3 @@
+name = "EmbedLinks"
+description = "Display BBCode and HTML code to embed links to albums/images into other web pages."
+version = 1

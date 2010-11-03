@@ -1,0 +1,3 @@
+name = "export_facebook"
+description = "Export Photos from Gallery 3 to Facebook."
+version = 1

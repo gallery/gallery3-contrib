@@ -1,0 +1,3 @@
+name = "jhead Autorotation"
+description = "Invoke jhead to rotate images according to Exif orientation tag."
+version = 1

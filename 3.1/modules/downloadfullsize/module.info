@@ -1,0 +1,3 @@
+name = "DownloadFullsize"
+description = "Displays a link to download the fullsize version of the current photo."
+version = 1
