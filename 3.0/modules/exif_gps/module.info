@@ -1,0 +1,3 @@
+name = "Exif GPS Data"
+description = "Extract Exif GPS data from photos."
+version = 2
