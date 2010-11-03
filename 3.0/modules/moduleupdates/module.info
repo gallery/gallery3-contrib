@@ -1,3 +1,0 @@
-name = "Module Updates"
-description = "Compares your installed module version against the ones stored in the GitHub."
-version = 3

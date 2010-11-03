@@ -1,3 +1,0 @@
-name = "NoFFMPEG"
-description = "Allow video uploads on systems without FFMPEG."
-version = 1

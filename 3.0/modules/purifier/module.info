@@ -1,3 +1,0 @@
-name = "HTML Purifier"
-description = "Enable XSS protection using HTMLPurifier"
-version = 1
