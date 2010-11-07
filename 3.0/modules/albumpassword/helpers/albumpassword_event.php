@@ -101,4 +101,13 @@ class albumpassword_event_Core {
       db::build()->delete("items_albumpassword")->where("album_id", "=", $item->id)->execute();
     }
   }
+
+  static function admin_menu($menu, $theme) {
+    // Add a link to the Album Password admin page to the Content menu.
+    $menu->get("settings_menu")
+      ->append(Menu::factory("link")
+               ->id("albumpassword")
+               ->label(t("Album Password Settings"))
+               ->url(url::site("admin/albumpassword")));
+  }
 }
