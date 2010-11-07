@@ -28,9 +28,19 @@ class albumpassword_installer {
                PRIMARY KEY (`id`))
                DEFAULT CHARSET=utf8;");
 
-
+    // Set the default value for this module's behavior.
+    module::set_var("albumpassword", "hideonly", true);
+	
     // Set the module's version number.
-    module::set_version("albumpassword", 1);
+    module::set_version("albumpassword", 2);
+  }
+
+  static function upgrade($version) {
+    // Set the default value for this module's behavior.
+    module::set_var("albumpassword", "hideonly", true);
+	
+    // Set the module's version number.
+    module::set_version("albumpassword", 2);
   }
 
   static function uninstall() {
