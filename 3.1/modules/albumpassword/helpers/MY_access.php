@@ -31,7 +31,7 @@ class access extends access_Core {
     // Begin rWatcher modifications.
     //   This section adds an additional condition onto the view permission that throws a 404
     //   error if the album has a password assigned.
-    } elseif ($perm_name == "view") {
+    } elseif (($perm_name == "view") && (module::get_var("albumpassword", "hideonly") == false)) {
       $album_item = "";
       do {
         if ($album_item == "") {
@@ -43,7 +43,7 @@ class access extends access_Core {
         } else {
           $album_item = $album_item->parent();
         }		
-	  
+
         $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $album_item->id)->find();
         if ($existing_password->loaded()) {
           if ((cookie::get("g3_albumpassword") != $existing_password->password) &&
