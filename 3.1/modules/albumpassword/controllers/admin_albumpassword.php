@@ -39,9 +39,9 @@ class Admin_Albumpassword_Controller extends Admin_Controller {
 
     // Should protected items be hidden, or completely in-accessable?
     $albumpassword_group = $form->group("album_password_group");
-	$albumpassword_group->checkbox("hideonly")
-	                    ->label("Only hide protected albums?")
-						->checked(module::get_var("albumpassword", "hideonly"));
+    $albumpassword_group->checkbox("hideonly")
+                        ->label("Only hide protected albums?")
+                        ->checked(module::get_var("albumpassword", "hideonly"));
 
     // Add a save button to the form.
     $albumpassword_group->submit("save_settings")->value(t("Save"));
@@ -56,12 +56,12 @@ class Admin_Albumpassword_Controller extends Admin_Controller {
     // Prevent Cross Site Request Forgery
     access::verify_csrf();
 
-	// Retrieve submitted form data.
-	if (Input::instance()->post("hideonly") == false) {
+    // Retrieve submitted form data.
+    if (Input::instance()->post("hideonly") == false) {
       module::set_var("albumpassword", "hideonly", false);
-	} else {
+    } else {
       module::set_var("albumpassword", "hideonly", true);
-	}
+    }
       // Display a success message and redirect back to the TagsMap admin page.
       message::success(t("Your settings have been saved."));
       url::redirect("admin/albumpassword");

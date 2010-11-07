@@ -28,6 +28,7 @@ class access extends access_Core {
       } else {
         self::forbidden();
       }
+
     // Begin rWatcher modifications.
     //   This section adds an additional condition onto the view permission that throws a 404
     //   error if the album has a password assigned.
