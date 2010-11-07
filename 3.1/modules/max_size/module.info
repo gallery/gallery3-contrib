@@ -1,0 +1,3 @@
+name = "Max Size"
+description = "Automatically scale down the original image if it's too large."
+version = 1
