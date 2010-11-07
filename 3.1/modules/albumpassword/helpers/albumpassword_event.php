@@ -80,7 +80,7 @@ class albumpassword_event_Core {
                ->label(t("Remove password"))
                ->css_id("g-album-password-remove")
                ->url(url::site("albumpassword/remove/" . $item->id)));
-        } else {
+        } elseif ($item->id != 1) {
           $menu->get("options_menu")
                ->append(Menu::factory("dialog")
                ->id("albumpassword_assign")
