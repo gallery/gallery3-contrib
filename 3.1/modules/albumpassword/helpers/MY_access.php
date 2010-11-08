@@ -30,9 +30,9 @@ class access extends access_Core {
       }
 
     // Begin rWatcher modifications.
-    //   This section adds an additional condition onto the view permission that throws a 404
-    //   error if the album has a password assigned.
-    } elseif (($perm_name == "view") && (module::get_var("albumpassword", "hideonly") == false)) {
+    //   Throw a 404 error when a user attempts to access a protected item,
+	//   unless the password has been provided, or the user is the item's owner.
+    } elseif (module::get_var("albumpassword", "hideonly") == false) {
       $album_item = "";
       do {
         if ($album_item == "") {
