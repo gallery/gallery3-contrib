@@ -2,7 +2,7 @@
 
 
 <div id="g-admin-moduleupdates" class="g-block">
-  <h1> <?= t("Module Updates v1.0") ?> </h1>
+  <h1> <?= t("Module Updates v3.0") ?> </h1>
   <?= t("Compares your installed module version against the ones provided by <a href=\"http://www.gallerymodules.com\" target=\"_blank\">GalleryModules.com</a>.") ?>
   
   <div class="g-block-content">
