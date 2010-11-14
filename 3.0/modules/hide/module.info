@@ -1,0 +1,3 @@
+name = "Hide"
+description = "Allows admins to hide some items from everyone but a given group."
+version = 1
