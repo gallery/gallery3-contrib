@@ -50,7 +50,7 @@
     <? /* These are page specific, but if we put them before $theme->head() they get combined */ ?>
     <? if ($theme->page_subtype == "photo"): ?>
     <?= $theme->script("_DISABLED_jquery.scrollTo.js") ?>
-    <?= $theme->script("_DISABLED_gallery.show_full_size.js") ?>
+    <?= $theme->script("gallery.show_full_size.js") ?>
     <? elseif ($theme->page_subtype == "movie"): ?>
     <?= $theme->script("flowplayer.js") ?>
     <? endif ?>
