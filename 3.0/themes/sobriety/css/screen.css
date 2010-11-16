@@ -591,7 +591,8 @@ span.ui-icon-key { background-position: -112px -128px; }
 }
 
 #g-item .g-block {
-  display: none;
+  display: block;
+  margin: auto;
 }
 
 #g-item .g-block#g-metadata {
@@ -619,9 +620,6 @@ span.ui-icon-key { background-position: -112px -128px; }
   padding: 0;
 }
 
-#g-item .g-block#g-comments {
-  display: block;
-}
 
 
 
