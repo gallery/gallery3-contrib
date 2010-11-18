@@ -503,15 +503,17 @@ span.ui-icon-key { background-position: -112px -128px; }
   background: #b7b7a7;
 }
 
-#g-item #g-movie {
-  display: block;
-}
-
 #g-item #g-photo a {
   border: none;
 }
 
-#g-item #g-photo img {
+#g-item #g-movie,
+#g-item #g-movie a {
+  display: block;
+}
+
+#g-item #g-photo img,
+#g-item #g-movie object {
   border: 10px solid #fff;
   -webkit-box-shadow: 3px 3px 0px #b7b7a7;
   -moz-box-shadow: 3px 3px 0px #b7b7a7;
