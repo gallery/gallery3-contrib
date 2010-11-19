@@ -21,7 +21,7 @@ class moduleupdates_event_Core {
 
 	static function admin_menu($menu, $theme) {
   
-		$menu->get("module_menu")
+		$menu->get("settings_menu")
 			->append(Menu::factory("link")
 			->id("moduleupdates_menu")
 			->label(t("Module Updates"))
