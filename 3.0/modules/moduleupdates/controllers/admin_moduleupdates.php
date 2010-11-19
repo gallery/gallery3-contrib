@@ -128,7 +128,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
         }
         
         $module_info->name = "<a href=\"http://codex.gallery2.org/Gallery3:Modules:".$this_module_name."\" target=\"_new\">".$module_info->name."</a>";
-				$module_info->dlink = "http://www.gallerymodules.com/download/gm/".$this_module_name;
+				$module_info->dlink = "http://www.gallerymodules.com/update/".$this_module_name;
         
         //populate the list fo modules and their data
         $cache->$this_module_name = array ("name" => $module_info->name, "dlink" => $module_info->dlink,
