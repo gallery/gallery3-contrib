@@ -1,0 +1,3 @@
+name = "Transcode"
+description = "Transcode videos automatically to given format(s) after upload"
+version = 10
