@@ -45,10 +45,10 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
 		$view->content = new View("admin_moduleupdates.html");
 
 		$devDebug = false;
-    $refreshCache = false;
+		$refreshCache = false;
     
 		$cache = unserialize(Cache::instance()->get("moduleupdates_cache"));
-    $cache_updates = unserialize(Cache::instance()->get("moduleupdates_cache_updates"));
+		$cache_updates = unserialize(Cache::instance()->get("moduleupdates_cache_updates"));
     
     //---------------------------------------------------------------------------------------------
     //echo 'Message 01: ' .$cache_updates . '<br>';
@@ -167,6 +167,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     $view->content->csrf = access::csrf_token();
     $view->content->Google = $Google;
     $view->content->GitHub = $GitHub;
+    $view->content->Gallery_Version = gallery::VERSION;
 		
         
 		print $view;
@@ -197,7 +198,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     if ($devDebug == true){
 			if ($file == null) {
         try {
-          $file = fopen ("http://github.com/brentil/gallery3-contrib/raw/master/3.0/modules/".$module_name."/module.info", "r");
+          $file = fopen ("http://github.com/brentil/gallery3-contrib/raw/master/". gallery::VERSION ."/modules/".$module_name."/module.info", "r");
           if ($file != null) {
             $server = '(brentil)';
           }
@@ -213,7 +214,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
       try {
         $file = fopen ("http://github.com/gallery/gallery3/raw/master/modules/".$module_name."/module.info", "r");
         if ($file != null) {
-          $server = '(G3)';
+          $server = '(G)';
         }
       }
       catch (Exception $e) {
@@ -224,9 +225,9 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     //Check the Gallery3 Community Contributions GitHub
 		if ($file == null) {
 			try {
-				$file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/3.0/modules/".$module_name."/module.info", "r");
+				$file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/". gallery::VERSION ."/modules/".$module_name."/module.info", "r");
 				if ($file != null) {
-          $server = '(G3CC)';
+          $server = '(GCC)';
         }
 			}
 			catch (Exception $e) {
