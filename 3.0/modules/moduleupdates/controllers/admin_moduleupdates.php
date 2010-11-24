@@ -167,7 +167,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     $view->content->csrf = access::csrf_token();
     $view->content->Google = $Google;
     $view->content->GitHub = $GitHub;
-    $view->content->Gallery_Version = gallery::VERSION;
+    $view->content->Gallery_Version = substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," "));
 		
         
 		print $view;
@@ -198,7 +198,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     if ($devDebug == true){
 			if ($file == null) {
         try {
-          $file = fopen ("http://github.com/brentil/gallery3-contrib/raw/master/". gallery::VERSION ."/modules/".$module_name."/module.info", "r");
+          $file = fopen ("http://github.com/brentil/gallery3-contrib/raw/master/". substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")) ."/modules/".$module_name."/module.info", "r");
           if ($file != null) {
             $server = '(brentil)';
           }
@@ -225,7 +225,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     //Check the Gallery3 Community Contributions GitHub
 		if ($file == null) {
 			try {
-				$file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/". gallery::VERSION ."/modules/".$module_name."/module.info", "r");
+				$file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/". substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")) ."/modules/".$module_name."/module.info", "r");
 				if ($file != null) {
           $server = '(GCC)';
         }
