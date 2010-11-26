@@ -84,7 +84,7 @@ class albumpassword_Controller extends Controller {
 
     // Display a success message and close the dialog.
     message::success(t("Password saved."));
-    json::reply(array("result" => "success"));
+    print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
   }
 
   public function logout() {
@@ -112,10 +112,10 @@ class albumpassword_Controller extends Controller {
       // If not, close the dialog and display a rejected message.
       cookie::set("g3_albumpassword", $album_password);
       message::success(t("Password Accepted."));
-      json::reply(array("result" => "success"));
+      print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
     } else {
       message::error(t("Password Rejected."));
-      json::reply(array("result" => "success"));
+      print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
     }
   }
 
@@ -129,7 +129,7 @@ class albumpassword_Controller extends Controller {
     $assignpassword_group->input("assignpassword_password")
                          ->id('assignpassword_password')
                          ->label(t("Password:"));
-    $form->submit("save_password")->value(t("Save"));
+    $assignpassword_group->submit("save_password")->value(t("Save"));
 
     // Return the newly generated form.
     return $form;
@@ -139,12 +139,14 @@ class albumpassword_Controller extends Controller {
     // Generate a form for allowing visitors to enter in their passwords.
     $form = new Forge("albumpassword/checkpassword", "", "post",
                       array("id" => "g-login-password-form"));
+
     $assignpassword_group = $form->group("Enter Password")
                                  ->label(t("Enter Password:"));
-    $assignpassword_group->input("albumpassword_password")
+    $assignpassword_group->password("albumpassword_password")
                          ->id('albumpassword_password')
                          ->label(t("Password:"));
-    $form->submit("login_password")->value(t("Login"));
+
+    $assignpassword_group->submit("")->value(t("Login"));
 
     // Return the newly generated form.
     return $form;
