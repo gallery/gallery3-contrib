@@ -23,13 +23,12 @@
         <? endif ?>
       <? endif ?>
     </title>
-    <link rel="shortcut icon" href="<?= url::file("lib/images/favicon.ico") ?>" type="image/x-icon" />
+    <link rel="shortcut icon" href="<?= url::file(module::get_var("gallery", "favicon_url")) ?>" type="image/x-icon" />
     <?= $theme->css("_DISABLED_yui/reset-fonts-grids.css") ?>
     <?= $theme->css("_DISABLED_superfish/css/superfish.css") ?>
     <?= $theme->css("_DISABLED_themeroller/ui.base.css") ?>
-    <?= $theme->css("_DISABLED_gallery.common.css") ?>
     <?= $theme->css("screen.css") ?>
-    <!--[if lt IE 8]>
+    <!--[if lte IE 8]>
     <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
           media="screen,print,projection" />
     <![endif]-->
@@ -51,7 +50,7 @@
     <? /* These are page specific, but if we put them before $theme->head() they get combined */ ?>
     <? if ($theme->page_subtype == "photo"): ?>
     <?= $theme->script("_DISABLED_jquery.scrollTo.js") ?>
-    <?= $theme->script("_DISABLED_gallery.show_full_size.js") ?>
+    <?= $theme->script("gallery.show_full_size.js") ?>
     <? elseif ($theme->page_subtype == "movie"): ?>
     <?= $theme->script("flowplayer.js") ?>
     <? endif ?>
@@ -90,17 +89,22 @@
           <? $i = 0 ?>
           <? foreach ($parents as $parent): ?>
           <li<? if ($i == 0) print " class=\"g-first\"" ?>>
-            <!-- Adding ?show=<id> causes Gallery3 to display the page
-                 containing that photo.  For now, we just do it for
-                 the immediate parent so that when you go back up a
-                 level you're on the right page. -->
-            <a href="<?= $parent->url($parent == $theme->item()->parent() ?
-                     "show={$theme->item()->id}" : null) ?>"><?= text::limit_chars(html::purify($parent->title), 15) ?></a>
+            <? // Adding ?show=<id> causes Gallery3 to display the page
+               // containing that photo.  For now, we just do it for
+               // the immediate parent so that when you go back up a
+               // level you're on the right page. ?>
+            <a href="<?= $parent->url($parent->id == $theme->item()->parent_id ?
+                     "show={$theme->item()->id}" : null) ?>">
+              <? // limit the title length to something reasonable (defaults to 15) ?>
+              <?= html::purify(text::limit_chars($parent->title,
+                    module::get_var("gallery", "visible_title_length"))) ?>
+            </a>
           </li>
           <? $i++ ?>
           <? endforeach ?>
           <li class="g-active<? if ($i == 0) print " g-first" ?>">
-            <?= text::limit_chars(html::purify($theme->item()->title), 15) ?>
+            <?= html::purify(text::limit_chars($theme->item()->title,
+                  module::get_var("gallery", "visible_title_length"))) ?>
           </li>
         </ul>
         <? endif ?>

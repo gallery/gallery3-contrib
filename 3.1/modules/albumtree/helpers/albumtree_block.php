@@ -1,4 +1,5 @@
-<?php defined("SYSPATH") or die("No direct script access.");/**
+<?php defined("SYSPATH") or die("No direct script access.");
+/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2010 Bharat Mediratta
  *
@@ -16,15 +17,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
+class albumtree_block_Core {
+  static function get_site_list() {
+    return array("albumtree" => t("Album tree"));
+  }
 
-class moduleupdates_event_Core {
-
-	static function admin_menu($menu, $theme) {
-  
-		$menu->get("settings_menu")
-			->append(Menu::factory("link")
-			->id("moduleupdates_menu")
-			->label(t("Module Updates"))
-			->url(url::site("admin/moduleupdates")));
-	}
+  static function get($block_id) {
+    $block = new Block();
+    switch ($block_id) {
+    case "albumtree":
+      $block->css_id = "g-albumtree";
+      $block->title = t("Album Tree");
+      $block->content = new View("albumtree_block.html");
+      $block->content->root = item::root();
+      break;
+    }
+    return $block;
+  }
 }
