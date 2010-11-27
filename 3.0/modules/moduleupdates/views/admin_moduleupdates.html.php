@@ -2,7 +2,7 @@
 
 
 <div id="g-admin-moduleupdates" class="g-block">
-  <h1> <?= t("Module Updates v2.0") ?> </h1>
+  <h1> <?= t("Module Updates v4.0") ?> </h1>
   <?= t("Compares your installed module version against the ones stored in the GitHub.") ?>
   
   <div class="g-block-content">
@@ -25,7 +25,7 @@
   
     <br>
     <ul id="g-action-status" class="g-message-block">
-      <li class="g-warning"><?= t("Versions are compared from the official Gallery3 (G3) and official Gallery3 Community Contributions (G3CC).  Versions downloaded from the forums will not be shown.") ?></li>
+      <li class="g-warning"><?= t("Versions are compared from the official Gallery " . $Gallery_Version .  " (G) and official Gallery " . $Gallery_Version .  " Community Contributions (GCC).  Versions downloaded from the forums will not be shown.") ?></li>
     </ul>
 
     <table>
