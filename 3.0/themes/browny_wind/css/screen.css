@@ -27,6 +27,18 @@ body, html {
   font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
+.ui-widget {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#g-user-profile #g-comment-detail .g-author {
+  font-family: Cursive, Serif;
+}
+
 p {
   margin-bottom: 1em;
   text-shadow: 0px 1px 1px #F7F5F0;
@@ -742,13 +754,16 @@ form .g-error {
 .g-last {
 }
 
+/* ~browny~ */
 .g-even {
-  background-color: #fff;
+  background-color: #BAAD8B;
+  text-align: right;
 }
 
 /* ~browny~ */
 .g-odd {
   background-color: #EDE4D5;
+  text-align: left;
 }
 
 /** *******************************************************************
@@ -921,14 +936,6 @@ ul.sf-menu li li li.sfHover ul {
 }
 
 /* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~~~~ */
-
-.ui-widget {
-  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-
-.ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
-  font-family: 'Century gothic', Verdana, 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
 
 .ui-widget-overlay {
   background: #000;
@@ -1433,6 +1440,16 @@ div#g-action-status {
   padding-right: 0;
 }
 
+/* ~browny~ */
+.rtl .g-even {
+  text-align: left;
+}
+
+/* ~browny~ */
+.rtl .g-odd {
+  text-align: right;
+}
+
 /** *******************************************************************
  * 11) More Browny (Extra overrides for better Browny look)
  *********************************************************************/
@@ -1495,10 +1512,6 @@ div#g-action-status {
 #g-user-profile .g-block-content h2 {
   background-color: transparent;
   margin-bottom: inherit;
-}
-
-#g-user-profile #g-comment-detail .g-author {
-  font-family: Cursive, Serif;
 }
 
 #g-user-profile #g-comment-detail .g-author a {
@@ -1582,12 +1595,6 @@ div#g-action-status {
 #g-exif-data {
 	font-size: .85em !important;
 }
-.g-odd {
-	background: #BAAD8B !important;
-}
-.g-even {
-	background: #EDE4D5 !important;
-}
 
 /* 3rd Party Modules ~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -1619,4 +1626,11 @@ table.calendar td:hover {
 /* DownloadAlbum */
 #g-view-menu #g-download-album-link {
   background-image: url('../images/ico-view-downloadalbum.png');
+}
+
+/* comment_block */
+.g-odd .g-thumbnail,
+.g-even .g-thumbnail {
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
