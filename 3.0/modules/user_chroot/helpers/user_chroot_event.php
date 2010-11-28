@@ -21,92 +21,94 @@
 class user_chroot_event_Core {
 
   /**
-   * Called just before a user is deleted. This will remove the user from
-   * the user_chroot directory.
+   * Called just before a user deletion.
    */
-  static function user_before_delete($user) {
-    ORM::factory("user_chroot")->delete($user->id);
+  public static function user_before_delete($user) {
+    ORM::factory('user_chroot', $user->id)->delete();
   }
 
   /**
-   * Called when admin is adding a user
+   * Called just before an item deletion.
+   */
+  public static function item_before_delete($item) {
+    if( $item->is_album() ) {
+      ORM::factory('user_chroot')->where('album_id', '=', $item->id)->delete();
+    }
+  }
+
+  /**
+   * Called when building the 'Add user' form for an admin.
    */
   static function user_add_form_admin($user, $form) {
-    $form->add_user->dropdown("user_chroot")
+    $form->add_user->dropdown('user_chroot')
       ->label(t("Root Album"))
-      ->options(self::createGalleryArray())
-      ->selected(0);
+      ->options(self::albumsTreeArray())
+      ->selected(1);
   }
 
   /**
-   * Called after a user has been added
+   * Called just after a user has been added by an admin.
    */
-  static function user_add_form_admin_completed($user, $form) {
-    $user_chroot = ORM::factory("user_chroot")->where("id", "=", $user->id)->find();
-    $user_chroot->id = $user->id;
-    $user_chroot->album_id = $form->add_user->user_chroot->value;
-    $user_chroot->save();
-  }
-
-  /**
-   * Called when admin is editing a user
-   */
-  static function user_edit_form_admin($user, $form) {
-    $user_chroot = ORM::factory("user_chroot")->where("id", "=", $user->id)->find();
-    if ($user_chroot->loaded()) {
-      $selected = $user_chroot->album_id;
-    } else {
-      $selected = 0;
+  public static function user_add_form_admin_completed($user, $form) {
+    if( $form->add_user->user_chroot->value > 1 ) {
+      $user_chroot = ORM::factory('user_chroot');
+      $user_chroot->id = $user->id;
+      $user_chroot->album_id = $form->add_user->user_chroot->value;
+      $user_chroot->save();
     }
-    $form->edit_user->dropdown("user_chroot")
+  }
+
+  /**
+   * Called when building the 'Edit user' form for an admin.
+   */
+  public static function user_edit_form_admin($user, $form) {
+    $user_chroot = ORM::factory('user_chroot', $user->id);
+
+    $selected = ( $user_chroot->loaded() )
+      ? $user_chroot->album_id
+      : 1;
+
+    $form->edit_user->dropdown('user_chroot')
       ->label(t("Root Album"))
-      ->options(self::createGalleryArray())
+      ->options(self::albumsTreeArray())
       ->selected($selected);
   }
 
   /**
-   * Called after a user had been edited by the admin
+   * Called just after a user has been edited by an admin.
    */
-  static function user_edit_form_admin_completed($user, $form) {
-    $user_chroot = ORM::factory("user_chroot")->where("id", "=", $user->id)->find();
-    if ($user_chroot->loaded()) {
-      $user_chroot->album_id = $form->edit_user->user_chroot->value;
+  public static function user_edit_form_admin_completed($user, $form) {
+    if( $form->edit_user->user_chroot->value <= 1 ) {
+      ORM::factory('user_chroot')->delete($user->id);
+
     } else {
-      $user_chroot->id = $user->id;
+      $user_chroot = ORM::factory('user_chroot', $user->id);
+
+      if( !$user_chroot->loaded() ) {
+        $user_chroot = ORM::factory('user_chroot');
+        $user_chroot->id = $user->id;
+      }
+
       $user_chroot->album_id = $form->edit_user->user_chroot->value;
+      $user_chroot->save();
     }
-    $user_chroot->save();
-  }
-
-
-  /**
-   * Creates an array of galleries
-   */
-  static function createGalleryArray() {
-    $array[0] = "none";
-    $root = ORM::factory("item", 1);
-    self::tree($root, "", $array);
-    return $array;
   }
 
   /**
-   * recursive function to build array for drop down list
+   * Generate an array representing the hierarchy of albums.
    */
-  static function tree($parent, $dashes, &$array) {
-    if ($parent->id == "1") {
-      $array[$parent->id] = ORM::factory("item", 1)->title;
-    } else {
-      $array[$parent->id] = "$dashes $parent->name";
-    }
-
-    $albums = ORM::factory("item")
-      ->where("parent_id", "=", $parent->id)
-      ->where("type", "=", "album")
-      ->order_by("title", "ASC")
+  private static function albumsTreeArray($level_marker = '    ') {
+    $tree = array();
+    $albums = ORM::factory('item')
+      ->where('type', '=', 'album')
+      ->order_by('left_ptr', 'ASC')
       ->find_all();
-    foreach ($albums as $album) {
-      self::tree($album, "-$dashes", $array);
+
+    foreach($albums as $album) {
+      $tree[$album->id] = html::clean(
+        str_repeat($level_marker, $album->level - 1).' '.$album->title );
     }
-    return;
+
+    return $tree;
   }
 }

@@ -19,22 +19,25 @@
  */
 
 class user_chroot_installer {
-  static function install() {
+  /**
+   * Create the table user_chroot when installing the module.
+   */
+  public static function install() {
     $db = Database::instance();
-    $db->query("CREATE TABLE IF NOT EXISTS {user_chroots} (
+    $db->query('CREATE TABLE IF NOT EXISTS {user_chroots} (
                   `id` int(9) NOT NULL,
                   `album_id` int(9) default NULL,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY(`id`))
-                  DEFAULT CHARSET=utf8;");
-    module::set_version("user_chroot", 1);
+                  DEFAULT CHARSET=utf8;');
+    module::set_version('user_chroot', 1);
   }
 
   /**
-   * Drops the table of user chroot when the module is uninstalled.
+   * Drops the table user_chroot when uninstalling the module.
    */
-  static function uninstall() {
+  public static function uninstall() {
     $db = Database::instance();
-    $db->query("DROP TABLE IF EXISTS {user_chroots};");
+    $db->query('DROP TABLE IF EXISTS {user_chroots};');
   }
 }
