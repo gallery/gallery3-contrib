@@ -24,11 +24,17 @@ class item extends item_Core {
 
     if( user_chroot::album() ) {
       $model->and_open()
-            ->and_where("items.left_ptr", ">=", user_chroot::album()->left_ptr)
-            ->and_where("items.right_ptr", "<=", user_chroot::album()->right_ptr)
+            ->and_where('items.left_ptr', '>=', user_chroot::album()->left_ptr)
+            ->and_where('items.right_ptr', '<=', user_chroot::album()->right_ptr)
             ->close();
     }
 
     return $model;
+  }
+
+  static function root() {
+    return ( user_chroot::album() )
+      ? user_chroot::album()
+      : parent::root();
   }
 }
