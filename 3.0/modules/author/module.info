@@ -1,3 +1,3 @@
 name = "Author"
 description = "Allows for the display and modification of the Author/Photographer/Byline data in photos."
-version = 1
+version = 2
