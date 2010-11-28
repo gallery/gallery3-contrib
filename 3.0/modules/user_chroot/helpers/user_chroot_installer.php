@@ -19,6 +19,9 @@
  */
 
 class user_chroot_installer {
+  /**
+   * Create the table user_chroot when installing the module.
+   */
   static function install() {
     $db = Database::instance();
     $db->query("CREATE TABLE IF NOT EXISTS {user_chroots} (
@@ -31,7 +34,7 @@ class user_chroot_installer {
   }
 
   /**
-   * Drops the table of user chroot when the module is uninstalled.
+   * Drops the table user_chroot when uninstalling the module.
    */
   static function uninstall() {
     $db = Database::instance();
