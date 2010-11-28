@@ -21,22 +21,27 @@
 class access extends access_Core {
 
   /**
-   * Does the active user have this permission on this item?
-   *
-   * @param  string     $perm_name
-   * @param  Item_Model $item
-   * @return boolean
+   * If the user is chrooted, deny access outside of the chroot.
+   */
+  static function user_can($user, $perm_name, $item) {
+    if( $user->id == identity::active_user()->id && user_chroot::album() ) {
+      if( $item->left_ptr < user_chroot::album()->left_ptr || user_chroot::album()->right_ptr < $item->right_ptr ) {
+        return false;
+      }
+    }
+
+    return parent::user_can($user, $perm_name, $item);
+  }
+
+  /**
+   * Copied from modules/gallery/helpers/access.php because of the usage of self::
    */
   static function can($perm_name, $item) {
     return self::user_can(identity::active_user(), $perm_name, $item);
   }
 
   /**
-   * If the active user does not have this permission, failed with an access::forbidden().
-   *
-   * @param  string     $perm_name
-   * @param  Item_Model $item
-   * @return boolean
+   * Copied from modules/gallery/helpers/access.php because of the usage of self::
    */
   static function required($perm_name, $item) {
     if (!self::can($perm_name, $item)) {
@@ -47,15 +52,5 @@ class access extends access_Core {
         self::forbidden();
       }
     }
-  }
-
-  static function user_can($user, $perm_name, $item) {
-    if( $user->id == identity::active_user()->id && user_chroot::album() ) {
-      if( $item->left_ptr < user_chroot::album()->left_ptr || user_chroot::album()->right_ptr < $item->right_ptr ) {
-        return false;
-      }
-    }
-
-    return parent::user_can($user, $perm_name, $item);
   }
 }
