@@ -33,8 +33,25 @@ class author_Core {
     	$user_name = $owner->full_name;
     	
 		$exiv = module::get_var('author', 'exiv_path');
+		$version = module::get_var('author', 'exiv_version');
+		
+		/*
+			Debian stable ships with exiv2 0.16 at the time of writing. You get 
+			roughly the same output out of the utility as with 0.20, but you have
+			to invoke it several times.
+			
+			The real threshhold for this might be somewhere between 0.16 and 0.20, 
+			but the 0.16 way of doing things is forward compatible. 
+		*/
 		$exivData = array();
-		exec("$exiv -p a " . escapeshellarg($item->file_path()), $exivData);
+		if ($version < 0.20) {
+			exec("$exiv -p x " . escapeshellarg($item->file_path()), $exivData);
+			exec("$exiv -p i " . escapeshellarg($item->file_path()), $exivData);
+			exec("$exiv -p t " . escapeshellarg($item->file_path()), $exivData);
+		} else {
+			exec("$exiv -p a " . escapeshellarg($item->file_path()), $exivData);
+		}
+		
 		$has = array();
 		$mod = array();
 		foreach ($exivData as $line)
@@ -55,19 +72,25 @@ class author_Core {
 		}
 		
 		if (!array_key_exists('Exif.Image.Artist', $has)) { $mod['Exif.Image.Artist'] = $byline; }
-		if (!array_key_exists('Xmp.dc.creator', $has)) { $mod['Xmp.dc.creator'] = $byline; }
 		if (!array_key_exists('Iptc.Application2.Byline', $has)) { $mod['Iptc.Application2.Byline'] = $byline; }
-		
-		# Apply our own image terms URL.
-		$terms = module::get_var("author", "usage_terms")
-		if ($terms != '') {
-			$mod['Xmp.xmpRights.UsageTerms'] = 'http://wiki.sverok.se/wiki/Bildbank-Bilder';
-		}
-		
-		# ..and credit.
-		$credit = module::get_var("author", "credit")
+
+		/* Apply the credit block */
+		$credit = module::get_var("author", "credit");
 		if ($credit != '') {
 			$mod['Iptc.Application2.Credit'] = $credit;
+		}
+
+		/*
+			Older versions doesn't support XMP writing.
+		*/
+		if ($version >= 0.20) {
+			if (!array_key_exists('Xmp.dc.creator', $has)) { $mod['Xmp.dc.creator'] = $byline; }
+			
+			/* Apply our own image terms URL */
+			$terms = module::get_var("author", "usage_terms");
+			if ($terms != '') {
+				$mod['Xmp.xmpRights.UsageTerms'] = 'http://wiki.sverok.se/wiki/Bildbank-Bilder';
+			}			
 		}
 		
 		$line = $exiv . ' ';
