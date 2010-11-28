@@ -21,18 +21,21 @@
 class user_chroot_Core {
   private static $_album = null;
 
+  /**
+   * Return the root album of the current user, or false if the user is not
+   * chrooted.
+   */
   public static function album() {
     if( is_null(self::$_album) ) {
       self::$_album = false;
 
-      $user = identity::active_user();
+      $item = ORM::factory('item')
+        ->join('user_chroots', 'items.id', 'user_chroots.album_id')
+        ->where('user_chroots.id', '=', identity::active_user()->id)
+        ->find();
 
-      $user_chroot = ORM::factory("user_chroot", $user->id);
-      if( $user_chroot->loaded() && $user_chroot->album_id != 0 ) {
-        $item = ORM::factory("item", $user_chroot->album_id);
-        if( $item->loaded() ) {
-          self::$_album = $item;
-        }
+      if( $item->loaded() ) {
+        self::$_album = $item;
       }
     }
 
