@@ -22,7 +22,7 @@ class user_chroot_installer {
   /**
    * Create the table user_chroot when installing the module.
    */
-  static function install() {
+  public static function install() {
     $db = Database::instance();
     $db->query("CREATE TABLE IF NOT EXISTS {user_chroots} (
                   `id` int(9) NOT NULL,
@@ -36,7 +36,7 @@ class user_chroot_installer {
   /**
    * Drops the table user_chroot when uninstalling the module.
    */
-  static function uninstall() {
+  public static function uninstall() {
     $db = Database::instance();
     $db->query("DROP TABLE IF EXISTS {user_chroots};");
   }
