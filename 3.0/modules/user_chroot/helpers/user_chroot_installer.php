@@ -24,13 +24,13 @@ class user_chroot_installer {
    */
   public static function install() {
     $db = Database::instance();
-    $db->query("CREATE TABLE IF NOT EXISTS {user_chroots} (
+    $db->query('CREATE TABLE IF NOT EXISTS {user_chroots} (
                   `id` int(9) NOT NULL,
                   `album_id` int(9) default NULL,
                   PRIMARY KEY (`id`),
                   UNIQUE KEY(`id`))
-                  DEFAULT CHARSET=utf8;");
-    module::set_version("user_chroot", 1);
+                  DEFAULT CHARSET=utf8;');
+    module::set_version('user_chroot', 1);
   }
 
   /**
@@ -38,6 +38,6 @@ class user_chroot_installer {
    */
   public static function uninstall() {
     $db = Database::instance();
-    $db->query("DROP TABLE IF EXISTS {user_chroots};");
+    $db->query('DROP TABLE IF EXISTS {user_chroots};');
   }
 }
