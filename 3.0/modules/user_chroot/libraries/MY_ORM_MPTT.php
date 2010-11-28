@@ -19,8 +19,10 @@
  */
 
 class ORM_MPTT extends ORM_MPTT_Core {
+  /**
+   * Copied from modules/gallery/libraries/ORM_MPTT.php, not sure of the reason...
+   */
   private $model_name = null;
-
   function __construct($id=null) {
     parent::__construct($id);
     $this->model_name = inflector::singular($this->table_name);
@@ -31,13 +33,13 @@ class ORM_MPTT extends ORM_MPTT_Core {
    *
    * @return ORM
    */
-  /*function parent() {
+  function parent() {
     if( user_chroot::album() && user_chroot::album()->id == $this->id ) {
       return null;
     } else {
       return parent::parent();
     }
-  }*/
+  }
 
   /**
    * Return all the parents of this node, in order from root to this node's immediate parent.
@@ -46,14 +48,14 @@ class ORM_MPTT extends ORM_MPTT_Core {
    */
   function parents() {
     $select = $this
-      ->where("left_ptr", "<=", $this->left_ptr)
-      ->where("right_ptr", ">=", $this->right_ptr)
-      ->where("id", "<>", $this->id)
-      ->order_by("left_ptr", "ASC");
+      ->where('left_ptr', '<=', $this->left_ptr)
+      ->where('right_ptr', '>=', $this->right_ptr)
+      ->where('id', '<>', $this->id)
+      ->order_by('left_ptr', 'ASC');
 
     if( user_chroot::album() ) {
-      $select->where("left_ptr", ">=", user_chroot::album()->left_ptr);
-      $select->where("right_ptr", "<=", user_chroot::album()->right_ptr);
+      $select->where('left_ptr', '>=', user_chroot::album()->left_ptr);
+      $select->where('right_ptr', '<=', user_chroot::album()->right_ptr);
     }
 
     return $select->find_all();
