@@ -80,7 +80,7 @@ class albumpassword_event_Core {
                ->label(t("Remove password"))
                ->css_id("g-album-password-remove")
                ->url(url::site("albumpassword/remove/" . $item->id)));
-        } else {
+        } elseif ($item->id != 1) {
           $menu->get("options_menu")
                ->append(Menu::factory("dialog")
                ->id("albumpassword_assign")
@@ -100,5 +100,14 @@ class albumpassword_event_Core {
     if (count($existingPasswords) > 0) {
       db::build()->delete("items_albumpassword")->where("album_id", "=", $item->id)->execute();
     }
+  }
+
+  static function admin_menu($menu, $theme) {
+    // Add a link to the Album Password admin page to the Content menu.
+    $menu->get("settings_menu")
+      ->append(Menu::factory("link")
+               ->id("albumpassword")
+               ->label(t("Album Password Settings"))
+               ->url(url::site("admin/albumpassword")));
   }
 }

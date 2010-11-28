@@ -1,28 +1,20 @@
-/* Grid ****************************** */
-#g-selected-language-flag, #g-language-flag, #g-default-language-flag {
-position: relative;
-float: left;
-margin: 2px 2px 2px 2px;
-width: 50px;
-height: 50px;
-display: table-cell;
-vertical-align: middle;
-/*	border:1px solid #fff; */
+/* Flag container divs */
+#g-selected-language-flag,
+#g-language-flag,
+#g-default-language-flag {
+  display: inline;
+  margin: 2px;
 }
 
-/* Resize ****************************** */
-
-#g-language-flag img, #g-default-language-flag img {
-width: 40px;
-display: block;
-margin-left: auto;
-margin-right: auto;
+/* Flags with standard size */
+#g-language-flag img,
+#g-default-language-flag img {
+  width: 40px;
+  margin: 5px;
 }
 
+/* Flag grows when selected */
 #g-selected-language-flag img {
-width: 48px;
-display: block;
-margin-left: auto;
-margin-right: auto;
+  width: 48px;
+  margin: 1px;
 }
-
