@@ -5,7 +5,7 @@
     module::event("site_menu", $menu, $this->theme, "");
 
 ?>
-<? if( isset($menu->elements['add_menu']->elements) || isset($menu->elements['options_menu']->elements) ): ?>
+<? if( !empty($menu->elements['add_menu']->elements) || !empty($menu->elements['options_menu']->elements) ): ?>
   <div id="g-metadata" class="g-block">
     <h2><?= t("Actions") ?></h2>
     <div class="g-block-content">
