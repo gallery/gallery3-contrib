@@ -18,25 +18,40 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-// /!\ Hack: There is no good way to extend gallery url
+/*
+ * /!\ Hack
+ * Module 'gallery' already provides a class 'url' which extends url_Core. This
+ * hack renames class 'url', so user_chroot can have its own (which extends the
+ * original)
+ */
 $gallery_url = file_get_contents(MODPATH . 'gallery/helpers/MY_url.php');
-$gallery_url = preg_replace('#^<\?php #', '', $gallery_url);
-$gallery_url = preg_replace('#class url extends url_Core#', 'class url_G3 extends url_Core', $gallery_url);
+$gallery_url = str_replace('<?php ', '', $gallery_url);
+$gallery_url = str_replace('class url extends url_Core', 'class url_G3 extends url_Core', $gallery_url);
 eval($gallery_url);
 
 class url extends url_G3 {
+  /**
+   * Add the chroot path at the begining of the requested URI
+   */
   static function parse_url() {
     if( user_chroot::album() ) {
-      if( Router::$current_uri == '' ) {
-        Router::$controller = false;
-      }
+      if( Router::$controller == 'albums' && Router::$current_uri == '' ) {
+        // Root album requested
+        Router::$controller = null;
+        Router::$current_uri = trim(user_chroot::album()->relative_url().'/'.Router::$current_uri, '/');
 
-      Router::$current_uri = trim(user_chroot::album()->relative_url().'/'.Router::$current_uri, '/');
+      } else if( is_null(Router::$controller) && Router::$current_uri != '' ) {
+        // Non-root album requested
+        Router::$current_uri = trim(user_chroot::album()->relative_url().'/'.Router::$current_uri, '/');
+      }
     }
 
     return parent::parse_url();
   }
 
+  /**
+   * Remove the chroot part of the URI.
+   */
   static function site($uri = '', $protocol = FALSE) {
     if( user_chroot::album() ) {
       $uri = preg_replace('#^'.user_chroot::album()->relative_url().'#', '', $uri);
