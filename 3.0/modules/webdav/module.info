@@ -1,0 +1,3 @@
+name = "WebDAV"
+description = "WebDAV interface to Gallery3"
+version = 1
