@@ -53,7 +53,7 @@ class aws_s3_Core {
                     "&Signature=" . urlencode(self::getHash("GET\n\n\n" . (time() + module::get_var("aws_s3", "sig_exp")) . "\n/" . $host . "/" . $resource));
             
             self::get_s3();
-            S3::getAuthenticatedURL("danneh-org", $resource, module::get_var("aws_s3", "sig_exp"));
+            S3::getAuthenticatedURL(module::get_var("aws_s3", "bucket_name"), $resource, module::get_var("aws_s3", "sig_exp"));
         }
         else
             $url .= "?m=" . ($updated ? $updated : time());
