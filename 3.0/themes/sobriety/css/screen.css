@@ -801,6 +801,18 @@ div#g-action-status {
   height: 8em;
 }
 
+#g-dialog input[type=submit].submit {
+  float: right;
+}
+
+#g-dialog a.g-cancel {
+  float: right;
+  -moz-appearance: button;
+  -webkit-appearance: push-button;
+  /*clear: left;*/
+}
+
+
 #g-add-photos-canvas-sd {
   height: 33px;
   /*margin-right: 63px;*/
