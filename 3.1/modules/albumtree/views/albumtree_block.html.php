@@ -10,7 +10,7 @@
 
 <? // Then take all of that album's children and put them next on the stack. ?>
 <? $tmp = array(); ?>
-<? foreach ($album->children(null, null, array(array("type", "=", "album"))) as $child): ?>
+<? foreach ($album->viewable()->children(null, null, array(array("type", "=", "album"))) as $child): ?>
 <?   $tmp[] = array($level + 1, $child) ?>
 <? endforeach ?>
 
