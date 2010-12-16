@@ -1,14 +1,14 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 
 class unrest_rest_Core {
-	private function resolveLimitOption($string)
+	private static function resolveLimitOption($string)
 	{
 		$items = split(',', $string);
 		if (count($items) == 1) { return $string; }
 		return $items;
 	}
 	
-	private function getFreetextLimiters($request, $limit = array())
+	private static function getFreetextLimiters($request, $limit = array())
 	{
 		$likeMapping = array(
 			'name' => 'name', 
@@ -22,7 +22,7 @@ class unrest_rest_Core {
 		return $limit;
 	}
 	
-	private function getBasicLimiters($request, $limit = array())
+	private static function getBasicLimiters($request, $limit = array())
 	{
 		$directMapping = array(
 			'type' => 'type', 
@@ -37,7 +37,7 @@ class unrest_rest_Core {
 		return $limit;
 	}
 	
-	private function albumsICanAccess()
+	private static function albumsICanAccess()
 	{
 		$db = db::build();
       	$gids = identity::group_ids_for_active_user();
@@ -136,7 +136,7 @@ class unrest_rest_Core {
 		}
 	}
 	
-	static function addChildren($request, $db, $filler, $permitted, $display, &$return)
+	static function addChildren($request, $db, $filler, $permitted, $display, &$return, $rest_base)
 	{
 		$children = $db->select('parent_id', 'id')->from('items')->where('parent_id', 'IN', $filler['children_of']);
 		if (isset($request->params->childtypes)) 
@@ -165,7 +165,7 @@ class unrest_rest_Core {
 				else {
 					$members = array();
 					foreach ($childBlock[ $data['entity']['id'] ] as $child) {
-						$members[] = unrest_rest::makeRestURL('item', $child);
+						$members[] = unrest_rest::makeRestURL('item', $child, $rest_base);
 					}
 					$data['members'] = $members;
 				}
@@ -177,13 +177,13 @@ class unrest_rest_Core {
 		}	
 	}
 	
-	private function makeRestURL($resource, $identifier)
+	private static function makeRestURL($resource, $identifier, $base)
 	{
-		return url::abs_site("rest") . '/' . $resource . '/' . $identifier;
+		return $base . '/' . $resource . '/' . $identifier;
 	}
 	
-	public function size_url($size, $relative_path_cache, $type) {
-		$base = url::abs_file('var/' . $size . '/' ) . $relative_path_cache;
+	public static function size_url($size, $relative_path_cache, $type, $file_base) {
+		$base = $file_base . 'var/' . $size . '/' . $relative_path_cache;
 		if ($type == 'photo') {
 			return $base;
 		} else if ($type == 'album') {
@@ -193,16 +193,17 @@ class unrest_rest_Core {
 			return preg_replace("/...$/", "jpg", $base);
 		}
 	}
-
-		
+	
+	
 	static function get($request) {
 		$db = db::build();
 		
+		$start = microtime(true);
+		$rest_base = url::abs_site("rest");
+		$file_base = url::abs_file(''); #'var/' . $size . '/'
 		/* Build basic limiters */
 		$limit = unrest_rest::getBasicLimiters($request);
 		$limit = unrest_rest::getFreetextLimiters($request,$limit);
-		
-		error_log(print_r($limit,1));
 		
 		/* Build numeric limiters */
 		/* ...at some point. */
@@ -257,21 +258,21 @@ class unrest_rest_Core {
 					'thumb_width' => $item->resize_width
 				);
 				
-				$ui['thumb_url_public'] = unrest_rest::size_url('thumbs', $item->relative_path_cache, $item->type);
+				$ui['thumb_url_public'] = unrest_rest::size_url('thumbs', $item->relative_path_cache, $item->type, $file_base);
 				$public = $item->view_1?true:false;
 				$fullPublic = $item->view_full_1?true:false;
 				
 				if ($item->type != 'album')
 				{
-					$ui['file_url'] = unrest_rest::makeRestURL('data', $item->id . '?size=full');
-					$ui['thumb_url'] = unrest_rest::makeRestURL('data', $item->id . '?size=thumb');
-					$ui['resize_url'] = unrest_rest::makeRestURL('data', $item->id . '?size=resize');
+					$ui['file_url'] = unrest_rest::makeRestURL('data', $item->id . '?size=full', $rest_base);
+					$ui['thumb_url'] = unrest_rest::makeRestURL('data', $item->id . '?size=thumb', $rest_base);
+					$ui['resize_url'] = unrest_rest::makeRestURL('data', $item->id . '?size=resize', $rest_base);
 					
 					if ($public) {
-						$ui['resize_url_public'] = unrest_rest::size_url('resizes', $item->relative_path_cache, $item->type);
+						$ui['resize_url_public'] = unrest_rest::size_url('resizes', $item->relative_path_cache, $item->type, $file_base);
 						
 						if ($fullPublic) {
-							$ui['file_url_public'] = unrest_rest::size_url('albums', $item->relative_path_cache, $item->type);
+							$ui['file_url_public'] = unrest_rest::size_url('albums', $item->relative_path_cache, $item->type, $file_base);
 						}
 					}
 				}
@@ -284,7 +285,7 @@ class unrest_rest_Core {
 			}
 			
 			$return[] = array(
-				'url' => unrest_rest::makeRestURL('item', $item->id ),
+				'url' => unrest_rest::makeRestURL('item', $item->id, $rest_base ),
 				'entity' => $data
 			);
 		}
@@ -293,8 +294,11 @@ class unrest_rest_Core {
 		/* Do we need to fetch children? */
 		if (array_key_exists('children_of', $filler))
 		{
-			unrest_rest::addChildren($request, $db, $filler, $permitted, $display, &$return);
+			unrest_rest::addChildren($request, $db, $filler, $permitted, $display, &$return, $rest_base);
 		}
+		
+		$end = microtime(true);
+		error_log("Inner " . ($end - $start) . " seconds taken");
 		
 		return $return;
 	}
