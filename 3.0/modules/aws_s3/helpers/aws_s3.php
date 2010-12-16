@@ -38,12 +38,12 @@ class aws_s3_Core {
             pack('H*', sha1((str_pad(module::get_var("aws_s3", "secret_key"), 64, chr(0x00)) ^
             (str_repeat(chr(0x36), 64))) . $string)))));
     }
-    
+
     static function generate_url($resource, $authenticated = false, $updated = null) {
         $find = array("{guid}", "{bucket}", "{resource}");
         $replace = array(module::get_var("aws_s3", "g3id"), module::get_var("aws_s3", "bucket_name"), $resource);
         $url = str_replace($find, $replace, module::get_var("aws_s3", "url_str"));
-        
+
         if ($authenticated) {
             preg_match("%https?://([a-zA-Z0-9\.-]*)/(.*)$%", $url, $matches);
             $host = module::get_var("aws_s3" , "bucket_name");
@@ -51,7 +51,7 @@ class aws_s3_Core {
             $url .= "?AWSAccessKeyId=" . module::get_var("aws_s3", "access_key") .
                     "&Expires=" . (time() + module::get_var("aws_s3", "sig_exp")) .
                     "&Signature=" . urlencode(self::getHash("GET\n\n\n" . (time() + module::get_var("aws_s3", "sig_exp")) . "\n/" . $host . "/" . $resource));
-            
+
             self::get_s3();
             S3::getAuthenticatedURL(module::get_var("aws_s3", "bucket_name"), $resource, module::get_var("aws_s3", "sig_exp"));
         }
