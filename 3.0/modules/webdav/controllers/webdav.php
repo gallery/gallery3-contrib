@@ -17,10 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-require_once(MODPATH . "webdav/libraries/Sabre/autoload.php");
+require_once(MODPATH . "webdav/vendor/Sabre/autoload.php");
 
 class WebDAV_Controller extends Controller {
-  public function index() {
+  public function gallery() {
     $root = new Gallery3_Album("");
     $tree = new Gallery3_DAV_Tree($root);
 
@@ -30,7 +30,7 @@ class WebDAV_Controller extends Controller {
     $filter = new Sabre_DAV_TemporaryFileFilterPlugin(TMPPATH . "sabredav");
 
     $server = new Sabre_DAV_Server($tree);
-    $server->setBaseUri(url::site("/"));
+    $server->setBaseUri(url::site("webdav/gallery"));
     // $server->addPlugin($lock);
     $server->addPlugin($filter);
 
@@ -122,15 +122,15 @@ class Gallery3_DAV_Tree extends Sabre_DAV_Tree {
     $target_item = $this->cache->to_album($target);
 
     try {
-      access::required("view", $sourceItem);
-      access::required("edit", $sourceItem);
-      access::required("view", $targetItem);
-      access::required("edit", $targetItem);
+      access::required("view", $source_item);
+      access::required("edit", $source_item);
+      access::required("view", $target_item);
+      access::required("edit", $target_item);
     } catch (Kohana_404_Exception $e) {
       throw new Sabre_DAV_Exception_Forbidden("Access denied");
     }
 
-    $source_item->parent_id = $targetItem->id;
+    $source_item->parent_id = $target_item->id;
     $source_item->save();
     return true;
   }
