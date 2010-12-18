@@ -17,22 +17,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class albumtree_block_Core {
-  static function get_site_list() {
-    return array("albumtree" => t("Album tree"));
+class albumtree_installer {
+  static function install() {
+    module::set_var("albumtree", "style", "select");
+    module::set_version("albumtree", 2);
   }
 
-  static function get($block_id) {
-    $block = new Block();
-    switch ($block_id) {
-    case "albumtree":
-      $style = module::get_var("albumtree", "style", "select");
-      $block->css_id = "g-albumtree";
-      $block->title = t("Album Tree");
-      $block->content = new View("albumtree_block_{$style}.html");
-      $block->content->root = item::root();
-      break;
+  static function upgrade($version) {
+    $db = Database::instance();
+    if ($version == 1) {
+      module::set_var("albumtree", "style", "select");
+      module::set_version("albumtree", $version = 2);
     }
-    return $block;
   }
 }
