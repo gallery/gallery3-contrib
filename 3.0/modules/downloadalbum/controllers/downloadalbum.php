@@ -174,7 +174,8 @@ class downloadalbum_Controller extends Controller {
           continue;
         }
 
-        $i_relative_path = str_replace($container_realpath.'/', '', $i_realpath);
+        $i_relative_path = str_replace($container_realpath.DIRECTORY_SEPARATOR, '', $i_realpath);
+        $i_relative_path = str_replace(DIRECTORY_SEPARATOR, '/', $i_relative_path);
         $files[$i_relative_path] = $i_realpath;
       }
 
