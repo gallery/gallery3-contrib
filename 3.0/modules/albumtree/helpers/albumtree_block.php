@@ -26,9 +26,10 @@ class albumtree_block_Core {
     $block = new Block();
     switch ($block_id) {
     case "albumtree":
+      $style = module::get_var("albumtree", "style", "select");
       $block->css_id = "g-albumtree";
       $block->title = t("Album Tree");
-      $block->content = new View("albumtree_block.html");
+      $block->content = new View("albumtree_block_{$style}.html");
       $block->content->root = item::root();
       break;
     }
