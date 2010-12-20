@@ -1,0 +1,84 @@
+#g-content #g-comments {
+  display: block;
+  margin-top: 2em;
+  position: relative;
+}
+
+#g-content #g-comments h2 {
+  margin: 0;
+}
+
+#g-content #g-comments #g-add-comment {
+  position: absolute;
+  right: 0;
+  top: 2px;
+}
+
+#g-content #g-comments ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#g-content #g-comments #g-comment-detail > ul li {
+  padding: 1em 0;
+  border-bottom: 1px dotted #aaab9b;
+}
+
+#g-content #g-comments ul li .g-author {
+  margin: 0 0 0.5em;
+  font-style: italic;
+  font-width: normal;
+  /*font-size: 85%;*/
+}
+
+#g-content #g-comments ul li .g-author a:first-child {
+  border: none;
+}
+
+#g-content #g-comments ul li .g-author a img.g-avatar {
+  width: 13px;
+  height: 13px;
+  margin-right: 5px;
+}
+
+#g-content #g-comments ul li div {
+  margin-left: 23px;
+}
+
+#g-content #g-comments #g-comment-detail #g-comment-form fieldset {
+  border: 0;
+  margin: 1em 0 0 0;
+  padding: 0;
+}
+
+#g-content #g-comments #g-comment-detail #g-comment-form fieldset legend {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+#g-content #g-comments #g-comment-detail #g-comment-form fieldset ul li {
+  clear: both;
+  padding-top: 0.5em;
+}
+
+#g-content #g-comments #g-comment-detail #g-comment-form fieldset ul li label {
+  float: left;
+  width: 30%;
+  padding-top: 5px;
+}
+
+#g-content #g-comments #g-comment-detail #g-comment-form fieldset ul li input[type="text"] {
+  float: left;
+  width: 40%;
+}
+
+#g-content #g-comments #g-comment-detail #g-comment-form fieldset ul li input[type="submit"] {
+  float: right;
+}
+
+#g-content #g-comments #g-comment-detail #g-comment-form fieldset ul li textarea {
+  float: left;
+  width: 69%;
+  height: 10em;
+}
