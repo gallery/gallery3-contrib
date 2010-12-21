@@ -1,0 +1,4 @@
+*.pyc
+test.py
+MANIFEST
+dist
