@@ -1,3 +1,0 @@
-[submodule "3.0/client/Python/pylibgal3"]
-	path = 3.0/client/Python/pylibgal3
-	url = git://github.com/crustymonkey/pylibgal3.git
