@@ -28,15 +28,13 @@ class bitly_event_Core {
 
   static function site_menu($menu, $theme) {
     $item = $theme->item();
-    if ($item && $item->type == "photo") {
-      $menu->get("options_menu")
-        ->append(Menu::factory("link")
-                    ->id("bitly")
-                    ->label(t("Shorten Link with bit.ly"))
-                    ->url(url::site("bitly/shorten_link/$item->id?csrf=$theme->csrf"))
-                    ->css_id("g-bitly-link")
-                    ->css_class("g-print-bitly-link ui-icon-print"));
-    }
+    $menu->get("options_menu")
+      ->append(Menu::factory("link")
+                  ->id("bitly")
+                  ->label(t("Shorten Link with bit.ly"))
+                  ->url(url::site("bitly/shorten/$item->id?csrf=$theme->csrf"))
+                  ->css_id("g-bitly-link")
+                  ->css_class("g-bitly-shorten ui-icon-link"));
   }
 
   static function context_menu($menu, $theme, $item) {
@@ -44,7 +42,7 @@ class bitly_event_Core {
       ->append(Menu::factory("link")
                ->id("bitly")
                ->label(t("Shorten Link with bit.ly"))
-               ->url(url::site("bitly/shorten_link/$item->id?csrf=$theme->csrf"))
-               ->css_class("g-bitly-link ui-icon-link"));
+               ->url(url::site("bitly/shorten/$item->id?csrf=$theme->csrf"))
+               ->css_class("g-bitly-shorten ui-icon-link"));
   }
 }
