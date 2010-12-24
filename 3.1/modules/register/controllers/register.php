@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class register_Controller extends Controller {
+  const ALLOW_PRIVATE_GALLERY = true;
+
   public function index() {
     print $this->_get_form();
   }
