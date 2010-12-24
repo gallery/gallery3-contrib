@@ -21,11 +21,11 @@ class bitly_installer {
 
   static function install() {
     Database::instance()
-      ->query("CREATE TABLE {bitly_urls} (
+      ->query("CREATE TABLE {bitly_links} (
                 `id` int(9) NOT NULL AUTO_INCREMENT,
                 `item_id` int(9) NOT NULL,
                 `hash` char(6) NOT NULL,
-                `user_id` int(9) NOT NULL,
+                `owner_id` int(9) NOT NULL,
                PRIMARY KEY (`id`))
                DEFAULT CHARSET=utf8;");
     module::set_version("bitly", 1);
