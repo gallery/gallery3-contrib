@@ -81,9 +81,14 @@ class Admin_Bitly_Controller extends Admin_Controller {
     $view->content->domain = $form->configure_bitly->domain->value;
     $view->content->valid_config = $valid_config;
     $view->content->form = $form;
+
     if ($valid_config) {
-      // @todo Store/get G3's root bit.ly url, only shorten if it hasn't been stored.
-      $view->content->g3_url = bitly::shorten_url(bitly::build_link());
+      $link = ORM::factory("bitly_link")->where("item_id", "=", 1)->find();
+      if ($link->loaded()) {
+        $view->content->g3_url = "http://" . module::get_var("bitly", "domain") . "/$link->hash";
+      } else {
+        $view->content->g3_url = bitly::shorten_url(1);
+      }
     }
     print $view;
   }

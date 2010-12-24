@@ -165,19 +165,17 @@ class bitly_Core {
     return $response;
   }
 
-  static function build_link($path='/') {
-    $protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"], 0, 5)) == 'https' ? 'https' : 'http';
-    return url::site($path, $protocol);
-  }
-
   /**
    * Shorten a Gallery URL
-   * @param  string $long_url
+   * @param  int    $item_id
    * @param  string $format
-   * @return string
+   * @return mixed  string|false
    */
-  static function shorten_url($long_url, $format='json') {
+  static function shorten_url($item_id, $format='json') {
+    $item = ORM::factory("item", $item_id);
     $short_url = '';
+    $long_url = url::abs_site($item->relative_url_cache);
+
     $parameters = array(
       "login" => module::get_var("bitly", "login"),
       'apiKey' => module::get_var("bitly", "api_key"),
@@ -185,73 +183,31 @@ class bitly_Core {
       'domain' => module::get_var("bitly", "domain"),
       'format' => $format,
       );
+    
     $request = self::_build_http_request('shorten', $parameters);    
     $response = self::_http_post($request, self::$api_host);
-    $json_decoded = json_decode($response->body[0]);
-    if ('OK' == $json_decoded->status_txt) {
-      // Save the original item id, the hash, and possibly the global hash, to the database
-      $short_url = $json_decoded->data->url;
-      $hash = $json_decoded->data->hash;
-      $global_hash = $json_decoded->data->global_hash;
-      $new_hash = $json_decoded->data->new_hash;
-      message::success("The $long_url has been shortened to $short_url");
+    $json_response = json_decode($response->body[0]);
+
+    if ('OK' == $json_response->status_txt) {
+      $short_url = $json_response->data->url;
+      // Save the link hash to the database
+      $link = ORM::factory("bitly_link");
+      $link->item_id = $item_id;
+      $link->hash = $json_response->data->hash;
+      //$link->global_hash = $json_response->data->global_hash;
+      //$new_hash = $json_response->data->new_hash;
+      $link->owner_id = $item->owner_id;
+      $link->save();
+
+      message::success("$long_url has been shortened to $short_url");
+      
+      return $json_response->data->url;
+      
     } else {
-      message::error("Unable to shorten the url");
+      message::error("Unable to shorten $long_url");
       // @todo log the error
+      return false;
     }
-    return $short_url;
   }
 
-  /**
-   *  returns expanded url
-   * {
-        "status_code": 200,
-        "data": {
-          "expand": [
-            {
-              "short_url": "http://tcrn.ch/a4MSUH",
-              "global_hash": "bWw49z",
-              "long_url": "http://www.techcrunch.com/2010/01/29/windows-mobile-foursquare/",
-              "user_hash": "a4MSUH"
-            },
-            {
-              "short_url": "http://bit.ly/1YKMfY",
-              "global_hash": "1YKMfY",
-              "long_url": "http://betaworks.com/",
-              "user_hash": "1YKMfY"
-            },
-            {
-              "long_url": "http://www.scotster.com/qf/?1152",
-              "global_hash": "lLWr",
-              "hash": "j3",
-              "user_hash": "j3"
-            },
-            {
-              "hash": "a35.",
-              "error": "NOT_FOUND"
-            }
-          ]
-        },
-        "status_txt": "OK"
-      }
-   */
-  /**
-   *
-   * @param <type> $short_url
-   * @param <type> $hash
-   * @param <type> $format
-   * @return <type> 
-   */
-  static function expand_url($short_url, $hash=null, $format='json') {
-    $parameters = array(
-      "login" => module::get_var("bitly", "login"),
-      'apiKey' => module::get_var("bitly", "api_key"),
-      'shortUrl' => $short_url,
-      'hash' => $hash,
-      );
-    $request = self::_build_http_request('expand', $parameters);
-    $response = self::_http_post($http_request, self::$api_host);
-    return $response;
-  }
-  
 }
