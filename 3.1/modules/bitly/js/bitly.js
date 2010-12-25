@@ -1,8 +1,6 @@
 $(document).ready(function() {
-  $(".g-bitly-link").click(function(e) {
+  $(".g-bitly-shorten").click(function(e) {
     e.preventDefault();
-    return;
+    return window.location = ($(this).attr("href"));
   });
 });
-
-
