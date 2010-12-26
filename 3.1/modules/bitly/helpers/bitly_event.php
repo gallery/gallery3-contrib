@@ -31,7 +31,7 @@ class bitly_event_Core {
     $menu->get("options_menu")
       ->append(Menu::factory("link")
                   ->id("bitly")
-                  ->label(t("Shorten Link with bit.ly"))
+                  ->label(t("Shorten link with bit.ly"))
                   ->url(url::site("bitly/shorten/$item->id?csrf=$theme->csrf"))
                   ->css_id("g-bitly-link")
                   ->css_class("g-bitly-shorten ui-icon-link"));
@@ -41,7 +41,7 @@ class bitly_event_Core {
     $menu->get("options_menu")
       ->append(Menu::factory("link")
                ->id("bitly")
-               ->label(t("Shorten Link with bit.ly"))
+               ->label(t("Shorten link with bit.ly"))
                ->url(url::site("bitly/shorten/$item->id?csrf=$theme->csrf"))
                ->css_class("g-bitly-shorten ui-icon-link"));
   }
