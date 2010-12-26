@@ -194,9 +194,7 @@ class bitly_Core {
       $link = ORM::factory("bitly_link");
       $link->item_id = $item_id;
       $link->hash = $json_response->data->hash;
-      //$link->global_hash = $json_response->data->global_hash;
-      //$new_hash = $json_response->data->new_hash;
-      $link->owner_id = $item->owner_id;
+      $link->global_hash = $json_response->data->global_hash;
       $link->save();
 
       message::success("$long_url has been shortened to $short_url");
