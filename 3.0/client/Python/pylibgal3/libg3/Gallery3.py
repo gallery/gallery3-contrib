@@ -95,11 +95,20 @@ class Gallery3(object):
         returns(list[BaseRemote])   : Returns a list of the corresponding 
                                       remote objects
         """
-        data = {
-            'urls': json.dumps(urls) ,
-        }
-        resp = self.getRespFromUri('index.php/rest/items' , data)
-        return getItemsFromResp(resp , self , parent)
+        numUrls = len(urls)
+        start = 0
+        increment = 25
+        ret = []
+        while start < numUrls:
+            data = {
+                'urls': json.dumps(urls[start:start+increment]) ,
+                'num': str(increment) ,
+                'start': str(start) ,
+            }
+            resp = self.getRespFromUri('index.php/rest/items' , data)
+            ret.extend(getItemsFromResp(resp , self , parent))
+            start += increment
+        return ret
         
     def getRespFromUrl(self , url):
         """
@@ -120,6 +129,7 @@ class Gallery3(object):
         uri(str) : The uri string defining the resource on the defined host
         """
         url = self._buildUrl(uri , kwargs)
+        print url
         return self.getRespFromUrl(url)
 
     def addAlbum(self , parent , albumName , title , description=''):
