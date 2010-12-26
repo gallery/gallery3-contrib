@@ -25,7 +25,7 @@ class bitly_installer {
                 `id` int(9) NOT NULL AUTO_INCREMENT,
                 `item_id` int(9) NOT NULL,
                 `hash` char(6) NOT NULL,
-                `owner_id` int(9) NOT NULL,
+                `global_hash` char(6) NOT NULL,
                PRIMARY KEY (`id`))
                DEFAULT CHARSET=utf8;");
     module::set_version("bitly", 1);
