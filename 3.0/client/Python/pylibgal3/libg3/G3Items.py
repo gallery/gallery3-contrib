@@ -36,6 +36,13 @@ class BaseRemote(object):
         self.fh = None
         self._postInit()
 
+    def __str__(self):
+        try:
+            return self.title
+        except:
+            pass
+        return self.name
+
     def __getattr__(self , name):
         """
         A bit of magic to make the retrieval of member objects lazy
@@ -365,6 +372,32 @@ class RemoteImage(BaseRemote , Image):
             self.fh.close()
         except:
             pass
+
+    def getResizeHandle(self):
+        """
+        Returns a file-like object (specifically a urllib2.addinfourl) handle 
+        to the "resize" version of the image
+        
+        returns(urllib2.addinfourl) : A file-like object handle for retrieving
+                                      the resized image
+        """
+        if hasattr(self , 'resize_url'):
+            resp = self._gal.getRespFromUrl(self.resize_url)
+            return resp
+        return None
+
+    def getThumbHandle(self):
+        """
+        Returns a file-like object (specifically a urllib2.addinfourl) handle 
+        to the "thumbnail" version of the image
+        
+        returns(urllib2.addinfourl) : A file-like object handle for retrieving
+                                      the thumbnail image
+        """
+        if hasattr(self , 'thumb_url'):
+            resp = self._gal.getRespFromUrl(self.thumb_url)
+            return resp
+        return None
 
 class LocalMovie(LocalImage):
     def __init__(self , path , replaceSpaces=True):
