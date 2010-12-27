@@ -145,7 +145,6 @@ class bitly_Core {
    */
   private static function _http_post($http_request) {
     $response = '';
-    //Kohana_Log::add("debug", "Send request\n" . print_r($http_request, 1));
     if (false !== ($fs = @fsockopen(self::$api_host, 80, $errno, $errstr, 5))) {
       fwrite($fs, $http_request);
       while ( !feof($fs) ) {
