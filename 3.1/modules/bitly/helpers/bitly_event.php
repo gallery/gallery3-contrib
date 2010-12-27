@@ -27,22 +27,25 @@ class bitly_event_Core {
   }
 
   static function site_menu($menu, $theme) {
-    $item = $theme->item();
-    $menu->get("options_menu")
-      ->append(Menu::factory("link")
-                  ->id("bitly")
-                  ->label(t("Shorten link with bit.ly"))
-                  ->url(url::site("bitly/shorten/$item->id?csrf=$theme->csrf"))
-                  ->css_id("g-bitly-link")
-                  ->css_class("g-bitly-shorten ui-icon-link"));
+      if ($theme->item->owner->id == identity::active_user()->id) {
+        $menu->get("options_menu")
+          ->append(Menu::factory("link")
+                    ->id("bitly")
+                    ->label(t("Shorten link with bit.ly"))
+                    ->url(url::site("bitly/shorten/{$theme->item->id}?csrf=$theme->csrf"))
+                    ->css_id("g-bitly-link")
+                    ->css_class("g-bitly-shorten ui-icon-link"));
+      }
   }
 
   static function context_menu($menu, $theme, $item) {
-    $menu->get("options_menu")
-      ->append(Menu::factory("link")
-               ->id("bitly")
-               ->label(t("Shorten link with bit.ly"))
-               ->url(url::site("bitly/shorten/$item->id?csrf=$theme->csrf"))
-               ->css_class("g-bitly-shorten ui-icon-link"));
+    if ($theme->item->owner->id == identity::active_user()->id) {
+      $menu->get("options_menu")
+        ->append(Menu::factory("link")
+                 ->id("bitly")
+                 ->label(t("Shorten link with bit.ly"))
+                 ->url(url::site("bitly/shorten/$item->id?csrf=$theme->csrf"))
+                 ->css_class("g-bitly-shorten ui-icon-link"));
+    }
   }
 }
