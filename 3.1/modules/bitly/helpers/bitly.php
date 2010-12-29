@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class bitly_Core {
+  
   public static $test_mode = TEST_MODE;
 
   public static $api_host = "api.bit.ly";
@@ -204,6 +205,17 @@ class bitly_Core {
       message::error("Unable to shorten $long_url");
       // @todo log the error
       return false;
+    }
+  }
+
+  /**
+   * Build a bit.ly link for a specified hash
+   * @param  string $hash
+   * @return string
+   */
+  static function bitly_link($hash) {
+    if (!empty($hash)) {
+      return "http://" . module::get_var("bitly", "domain") . "/$hash";
     }
   }
 
