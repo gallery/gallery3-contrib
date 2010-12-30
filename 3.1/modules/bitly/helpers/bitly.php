@@ -213,7 +213,7 @@ class bitly_Core {
    * @param  string $hash
    * @return string
    */
-  static function bitly_link($hash) {
+  static function url($hash) {
     if (!empty($hash)) {
       return "http://" . module::get_var("bitly", "domain") . "/$hash";
     }

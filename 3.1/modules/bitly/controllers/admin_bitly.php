@@ -84,7 +84,7 @@ class Admin_Bitly_Controller extends Admin_Controller {
     $link = ORM::factory("bitly_link")->where("item_id", "=", 1)->find();
 
     if ($link->loaded()) {
-      $view->content->g3_url = bitly::bitly_link($link->hash);
+      $view->content->g3_url = bitly::url($link->hash);
     } else if ($valid_config && !empty($login) && !empty($api_key) && !empty($domain)) {
       $view->content->g3_url = bitly::shorten_url(1);
     }
