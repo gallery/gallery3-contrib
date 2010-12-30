@@ -25,7 +25,7 @@ class bitly_event_Core {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
         ->id("bitly_menu")
-        ->label(t("Bit.ly"))
+        ->label(t("bit.ly"))
         ->url(url::site("admin/bitly")));
   }
 
