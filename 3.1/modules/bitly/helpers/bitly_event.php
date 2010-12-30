@@ -18,32 +18,37 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class bitly_event_Core {
+
+  public static $shorten_link_text = "Shorten link with bit.ly";
+
   static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
         ->id("bitly_menu")
-        ->label(t("Bit.ly"))
+        ->label(t("bit.ly"))
         ->url(url::site("admin/bitly")));
   }
 
   static function site_menu($menu, $theme) {
-      if ($theme->item->owner->id == identity::active_user()->id) {
-        $menu->get("options_menu")
-          ->append(Menu::factory("link")
-                    ->id("bitly")
-                    ->label(t("Shorten link with bit.ly"))
-                    ->url(url::site("bitly/shorten/{$theme->item->id}?csrf=$theme->csrf"))
-                    ->css_id("g-bitly-link")
-                    ->css_class("g-bitly-shorten ui-icon-link"));
-      }
-  }
-
-  static function context_menu($menu, $theme, $item) {
-    if ($theme->item->owner->id == identity::active_user()->id) {
+    $link = ORM::factory("bitly_link")->where("item_id", "=", $theme->item->id)->find();
+    if (!$link->loaded() && $theme->item->owner->id == identity::active_user()->id) {
       $menu->get("options_menu")
         ->append(Menu::factory("link")
                  ->id("bitly")
-                 ->label(t("Shorten link with bit.ly"))
+                 ->label(t(self::$shorten_link_text))
+                 ->url(url::site("bitly/shorten/{$theme->item->id}?csrf=$theme->csrf"))
+                 ->css_id("g-bitly-shorten")
+                 ->css_class("g-bitly-shorten ui-icon-link"));
+    }
+  }
+
+  static function context_menu($menu, $theme, $item) {
+    $link = ORM::factory("bitly_link")->where("item_id", "=", $item->id)->find();
+    if (!$link->loaded() && $theme->item->owner->id == identity::active_user()->id) {
+      $menu->get("options_menu")
+        ->append(Menu::factory("link")
+                 ->id("bitly")
+                 ->label(t(self::$shorten_link_text))
                  ->url(url::site("bitly/shorten/$item->id?csrf=$theme->csrf"))
                  ->css_class("g-bitly-shorten ui-icon-link"));
     }
