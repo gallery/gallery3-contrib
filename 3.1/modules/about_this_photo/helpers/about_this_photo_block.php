@@ -27,6 +27,10 @@ class about_this_photo_block_Core {
     $block = new Block();
     switch ($block_id) {
     case "simple":
+    $item = $theme->item;
+	if ((!$item) or (!$item->is_photo())) {
+          return ""; 
+	}
       $block->css_id = "g-about-this-photo";
       $block->title = t("About this photo");
       $block->content = new View("about_this_photo.html");
@@ -37,9 +41,23 @@ class about_this_photo_block_Core {
         if ($exif->loaded()) {
           $exif = unserialize($exif->data);
           $timestamp = strtotime($exif["DateTime"]);
-          $block->content->date = gallery::date($timestamp);
+          //$block->content->date = gallery::date($timestamp);
+		  $block->content->date = date('D j M Y', $timestamp);
           $block->content->time = gallery::time($timestamp);
         }
+      }
+
+	    $block->content->vcount = $theme->item()->view_count; 
+ 
+      // IPTC - copied more or less from iptc.php
+      if (module::is_active("iptc")) {
+	    $record = ORM::factory("iptc_record")->where("item_id", "=", $theme->item()->id)->find();
+   	    if ($record->loaded()) {
+          $record = unserialize($record->data);
+          $block->content->source = $record["Source"];
+          $block->content->caption = $record["Caption"];
+		  
+  	    }
       }
 
       if (module::is_active("tag")) {
@@ -50,3 +68,4 @@ class about_this_photo_block_Core {
     return $block;
   }
 }
+
