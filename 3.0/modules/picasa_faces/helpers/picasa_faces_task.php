@@ -85,6 +85,11 @@ class picasa_faces_task_Core {
             foreach ($faces as $faceId => $faceCoords) {
               $faceMapping = ORM::factory("picasa_face")->where("face_id", "=", $faceId)->find();
 
+              // This is a special id Picasa uses for ignored faces, skip it
+              if ($faceId == "ffffffffffffffff") {
+                continue;
+              }
+
               // If we don't already have a mapping for this face, create one
               if (!$faceMapping->loaded()) {
                 $newTagId = self::getFaceMapping($faceId, $contacts);
@@ -242,7 +247,7 @@ class picasa_faces_task_Core {
     foreach ($ini_lines as $ini_line) {
       // Trim off any whitespace at the ends
       $ini_line = trim($ini_line);
-      
+
       if ($ini_line[0] == '[') {
         // If this line starts with [ it's a filename, strip off the brackets
         $curFilename = substr($ini_line, 1, -1);
@@ -250,9 +255,9 @@ class picasa_faces_task_Core {
       else {
         // If this isn't a filename, it must be data for a file, get the key/value pair
         $photoData = explode("=", $ini_line);
-          
+
         if ($photoData[0] == "faces") {
-          // If it's face data, break it up by face 
+          // If it's face data, break it up by face
           $faces = explode(";", $photoData[1]);
 
           $photoFaces = array();
@@ -279,7 +284,7 @@ class picasa_faces_task_Core {
 
             $photoFaces[$person] = $facePos;
           }
-          
+
           $photosWithFaces[$curFilename] = $photoFaces;
         }
       }
