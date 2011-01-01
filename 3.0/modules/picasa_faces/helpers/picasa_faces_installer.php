@@ -23,7 +23,7 @@ class picasa_faces_installer {
     $db = Database::instance();
 
     $db->query(
-      "CREATE TABLE IF NOT EXISTS `picasa_faces` (
+      "CREATE TABLE IF NOT EXISTS {picasa_faces} (
          `id` int(9) NOT NULL auto_increment,
          `face_id` varchar(16) NOT NULL,
          `tag_id` int(9) NOT NULL,
