@@ -24,10 +24,6 @@ class custom_albums_installer {
       "gallery", "thumb", "custom_albums::resize",
       array("width" => 0, "height" => 0, "master" => Image::AUTO),
       200);
-    graphics::add_rule(
-      "gallery", "resize", "custom_albums::resize",
-      array("width" => 0, "height" => 0, "master" => Image::AUTO),
-      200);
 
     // Create a table to store custom album info in.
     $db = Database::instance();
