@@ -37,21 +37,25 @@ class custom_albums_graphics_Core {
 
     $albumCustom = ORM::factory("custom_album")->where("album_id", "=", $options["parent_id"])->find();
 
-/*
-    $dims = getimagesize($input_file);
-    if (max($dims[0], $dims[1]) < min($options["width"], $options["height"])) {
-      // Image would get upscaled; do nothing
-      copy($input_file, $output_file);
-    } else {
-      $image = Image::factory($input_file)
-        ->resize($options["width"], $options["height"], $options["master"])
-        ->quality(module::get_var("gallery", "image_quality"));
-      if (graphics::can("sharpen")) {
-        $image->sharpen(module::get_var("gallery", "image_sharpen"));
+    // If this album has custom data, build the thumbnail at the specified size
+    if ($albumCustom->loaded()) {
+      $thumb_size = $albumCustom->thumb_size;
+      
+      $dims = getimagesize($input_file);
+      if (max($dims[0], $dims[1]) < $thumb_size) {
+        // Image would get upscaled; do nothing
+        copy($input_file, $output_file);
+      } else {
+        $image = Image::factory($input_file)
+          ->resize($thumb_size, $thumb_size, $options["master"])
+          ->quality(module::get_var("gallery", "image_quality"));
+        if (graphics::can("sharpen")) {
+          $image->sharpen(module::get_var("gallery", "image_sharpen"));
+        }
+        $image->save($output_file);
       }
-      $image->save($output_file);
     }
-*/
+
     module::event("graphics_resize_completed", $input_file, $output_file, $options);
   }
 }
