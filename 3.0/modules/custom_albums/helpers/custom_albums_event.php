@@ -18,18 +18,18 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class custom_albums_event_Core {
-    static function item_edit_form($item, $form) {
-      if ($item->is_album()) {
-        $albumCustom = ORM::factory("custom_album")->where("album_id", "=", $item->id)->find();
+  static function item_edit_form($item, $form) {
+    if ($item->is_album()) {
+      $albumCustom = ORM::factory("custom_album")->where("album_id", "=", $item->id)->find();
 
-        $thumbdata = $form->edit_item->group("custom_album")->label("Custom Album");
+      $thumbdata = $form->edit_item->group("custom_album")->label("Custom Album");
 
-        if ($albumCustom->loaded()) {
-          $thumbdata->input("thumbsize")->label(t("Thumbnail size (in pixels)"))->value($albumCustom->thumb_size);
-        } else {
-          $thumbdata->input("thumbsize")->label(t("Thumbnail size (in pixels)"));
-        }
+      if ($albumCustom->loaded()) {
+        $thumbdata->input("thumbsize")->label(t("Thumbnail size (in pixels)"))->value($albumCustom->thumb_size);
+      } else {
+        $thumbdata->input("thumbsize")->label(t("Thumbnail size (in pixels)"));
       }
+    }
   }
 
   static function item_edit_form_completed($item, $form) {
@@ -60,5 +60,10 @@ class custom_albums_event_Core {
           ->execute();
       }
     }
+  }
+
+  static function theme_edit_form_completed($form) {
+    // Update our resize rules, in case the thumbnail or resize size has changed
+    custom_albums_installer::update_rules();
   }
 }

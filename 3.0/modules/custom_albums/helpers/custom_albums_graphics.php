@@ -18,44 +18,19 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class custom_albums_graphics_Core {
-  /**
-   * Resize an image.  Valid options are width, height and master.  Master is one of the Image
-   * master dimension constants.
-   *
-   * @param string     $input_file
-   * @param string     $output_file
-   * @param array      $options
-   */
-  static function resize($input_file, $output_file, $options) {
-    graphics::init_toolkit();
-
-    module::event("graphics_resize", $input_file, $output_file, $options);
-
-    if (@filesize($input_file) == 0) {
-      throw new Exception("@todo EMPTY_INPUT_FILE");
-    }
-
+  static function build_thumb($input_file, $output_file, $options) {
     $albumCustom = ORM::factory("custom_album")->where("album_id", "=", $options["parent_id"])->find();
 
     // If this album has custom data, build the thumbnail at the specified size
     if ($albumCustom->loaded()) {
-      $thumb_size = $albumCustom->thumb_size;
-      
-      $dims = getimagesize($input_file);
-      if (max($dims[0], $dims[1]) < $thumb_size) {
-        // Image would get upscaled; do nothing
-        copy($input_file, $output_file);
-      } else {
-        $image = Image::factory($input_file)
-          ->resize($thumb_size, $thumb_size, $options["master"])
-          ->quality(module::get_var("gallery", "image_quality"));
-        if (graphics::can("sharpen")) {
-          $image->sharpen(module::get_var("gallery", "image_sharpen"));
-        }
-        $image->save($output_file);
-      }
+      $options["width"] = $albumCustom->thumb_size;
+      $options["height"] = $albumCustom->thumb_size;
     }
 
-    module::event("graphics_resize_completed", $input_file, $output_file, $options);
+    gallery_graphics::resize($input_file, $output_file, $options);
+  }
+  
+  static function build_resize($input_file, $output_file, $options) {
+    gallery_graphics::resize($input_file, $output_file, $options);
   }
 }
