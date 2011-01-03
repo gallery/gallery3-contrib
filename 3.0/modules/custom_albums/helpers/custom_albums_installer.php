@@ -19,12 +19,6 @@
  */
 class custom_albums_installer {
   static function install() {
-    // Add rules for generating our thumbnails and resizes
-    graphics::add_rule(
-      "gallery", "thumb", "custom_albums::resize",
-      array("width" => 0, "height" => 0, "master" => Image::AUTO),
-      200);
-
     // Create a table to store custom album info in.
     $db = Database::instance();
      
@@ -38,6 +32,8 @@ class custom_albums_installer {
        ) DEFAULT CHARSET=utf8;"
      );
 
+    custom_albums_installer::update_rules();
+
     module::set_version("custom_albums", 1);
   }
 
@@ -46,5 +42,39 @@ class custom_albums_installer {
     $db = Database::instance();
     $db->query("DROP TABLE IF EXISTS {custom_albums};");
     module::delete("custom_albums");
+  }
+  
+  static function update_rules() {
+    // Make sure our thumb size matches the gallery one
+    $thumb_size = module::get_var("gallery", "thumb_size");
+    if ($thumb_size != module::get_var("custom_albums", "thumb_size")) {
+      // Remove and readd our rule with the latest thumb size
+      graphics::remove_rule("custom_albums", "thumb", "custom_albums_graphics::build_thumb");
+      graphics::add_rule(
+        "custom_albums", "thumb", "custom_albums_graphics::build_thumb",
+        array("width" => $thumb_size, "height" => $thumb_size, "master" => Image::AUTO),
+        101);
+
+      // Deactivate the gallery thumbnail generation, we'll handle it now
+      graphics::deactivate_rules("gallery");
+      
+      module::set_var("custom_albums", "thumb_size", $thumb_size);
+    }
+
+    // Make sure our resize size matches the gallery one
+    $resize_size = module::get_var("gallery", "resize_size");
+    if ($resize_size != module::get_var("custom_albums", "resize_size")) {
+      // Remove and readd our rule with the latest resize size
+      graphics::remove_rule("custom_albums", "resize", "custom_albums_graphics::build_resize");
+      graphics::add_rule(
+        "custom_albums", "resize", "custom_albums_graphics::build_resize",
+        array("width" => $resize_size, "height" => $resize_size, "master" => Image::AUTO),
+        101);
+
+      // Deactivate the gallery resize, we'll handle it now
+      graphics::deactivate_rules("gallery");
+      
+      module::set_var("custom_albums", "resize_size", $resize_size);
+    }
   }
 }
