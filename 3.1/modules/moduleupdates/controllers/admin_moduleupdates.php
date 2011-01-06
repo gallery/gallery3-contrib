@@ -123,23 +123,26 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
         
         if (is_numeric($core_version)) {
           if($core_version > $module_info->version) {
-            //https://github.com/gallery/gallery3/tree/master/modules/recaptcha
-            //"http://github.com/gallery/gallery3/tree/master/modules/".$this_module_name
             $core_dlink = "http://github.com/gallery/gallery3/tree/master/modules/".$this_module_name;
           }
         }
         
         if (is_numeric($contrib_version)) {
           if($contrib_version > $module_info->version) {
-            //https://github.com/gallery/gallery3-contrib/tree/master/3.0/modules/moduleupdates
-            //"http://github.com/gallery/gallery3-contrib/tree/master/". substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")) ."/modules/".$this_module_name
-            $contrib_dlink = "http://github.com/gallery/gallery3-contrib/tree/master/". substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")) ."/modules/".$this_module_name;
+            $contrib_dlink = "http://github.com/gallery/gallery3-contrib/tree/master/". 
+            substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")) ."/modules/".$this_module_name;
           }
         }
         
         if (is_numeric($gh_version)) {
           if($gh_version > $module_info->version) {
-            $gh_dlink = "http://www.gallerymodules.com/update/".$this_module_name;
+            $this_gm_repo = str_replace(".","",substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")));
+            if($this_gm_repo == "30"){
+              $gh_dlink = "http://www.gallerymodules.com/update/".$this_module_name;
+            } else {
+              $gh_dlink = "http://www.gallerymodules.com/update".this_gm_repo."/".$this_module_name;
+            }
+            
           }
         }
         
@@ -248,7 +251,8 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           //Check the Gallery3 Community Contributions GitHub
           if ($file == null) {
             try {
-              $file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/". substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")) ."/modules/".$module_name."/module.info", "r");
+              $file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/". 
+              substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," "))."/modules/".$module_name."/module.info", "r");
               if ($file != null) {
                 $server = '(GCC)';
               }
@@ -274,7 +278,12 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           //Check GalleryModules.com
           if ($file == null) {
             try {
-              $file = fopen ("http://www.gallerymodules.com/m/".$module_name, "r");
+              $this_gm_repo = str_replace(".","",substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")));
+              if($this_gm_repo == "30"){
+                $file = fopen ("http://www.gallerymodules.com/m/".$module_name, "r");
+              } else {
+                $file = fopen ("http://www.gallerymodules.com/".this_gm_repo."m/".$module_name, "r");
+              }
               if ($file != null) {
                 $server = '(GH)';
               }
