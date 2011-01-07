@@ -52,7 +52,7 @@ class bitly_event_Core {
     }
   }
 
-  static function info_block_metadata($block, $item) {
+  static function info_block_get_metadata($block, $item) {
     $link = ORM::factory("bitly_link")->where("item_id", "=", $item->id)->find();
     if ($link->loaded()) {
       $info = $block->content->metadata;
