@@ -16,14 +16,14 @@
     <td><?= $vcount ?></td>
 </tr>
 <tr>
-    <td><strong class="caption"><?= t("Image ID:&nbsp;") ?></strong></td>
-    <td><?= $source ?></td>
+    <td><strong class="caption"><?= t("Name:&nbsp;") ?></strong></td>
+    <td><?= $name ?></td>
 </tr>
 </table>
-  <span >
+  <div style="margin-top: 10px; margin-bottom: 10px;">
     <strong class="caption"><?= t("Caption:&nbsp;") ?></strong>
     <?= $caption ?>
-  </span ><br>
+  </div >
   <span >
     <strong class=="caption"><?= t("Tags: &nbsp;&nbsp;") ?></strong>
     <? foreach ($tags as $tag): ?>
