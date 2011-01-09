@@ -54,7 +54,7 @@ class about_this_photo_block_Core {
 	    $record = ORM::factory("iptc_record")->where("item_id", "=", $theme->item()->id)->find();
    	    if ($record->loaded()) {
           $record = unserialize($record->data);
-          $block->content->source = $record["Source"];
+          $block->content->name = $record["ObjectName"];
           $block->content->caption = $record["Caption"];
 		  
   	    }
