@@ -34,30 +34,48 @@ class custom_albums_event_Core {
 
   static function item_edit_form_completed($item, $form) {
     if ($item->is_album()) {
-      $thumbChanged = false;
+      $thumbDirty = false;
+
+      $albumCustom = ORM::factory("custom_album")->where("album_id", "=", $item->id)->find();
 
       if ($form->edit_item->custom_album->thumbsize->value == "") {
-        db::build()
-          ->delete("custom_album")
-          ->where("album_id", "=", $item->id)
-          ->execute();
+        // The thumbnail size is empty.  If there was something saved for this album before, delete
+        // it and mark the thumbnails as dirty.
+        if ($albumCustom->loaded()) {
+          db::build()
+            ->delete("custom_album")
+            ->where("album_id", "=", $item->id)
+            ->execute();
+            
+            $thumbDirty = true;
+        }
       } else {
-        $albumCustom = ORM::factory("custom_album")->where("album_id", "=", $item->id)->find();
+        // If we've never set a custom thumbnail size for this album, do it now
         if (!$albumCustom->loaded()) {
           $albumCustom->album_id = $item->id;
-        }
-        $albumCustom->thumb_size = $form->edit_item->custom_album->thumbsize->value;
-        $albumCustom->save();
+          $albumCustom->thumb_size = $form->edit_item->custom_album->thumbsize->value;
+          $albumCustom->save();
 
-        $thumbChanged = true;
+          $thumbDirty = true;
+        } else if ($albumCustom->thumb_size != $form->edit_item->custom_album->thumbsize->value) {
+          $albumCustom->thumb_size = $form->edit_item->custom_album->thumbsize->value;
+          $albumCustom->save();
+
+          $thumbDirty = true;
+        }
       }
 
-      if ($thumbChanged) {
+      if ($thumbDirty) {
         db::build()
           ->update("items")
           ->set("thumb_dirty", 1)
           ->where("parent_id", "=", $item->id)
           ->execute();
+          
+        site_status::warning(
+          t('One or more of your photos are out of date. Fix this now on <a href="%url">the maintenance page</a>.',
+          		array("url" => url::site("admin/maintenance/"))),
+        			"graphics_dirty");	
       }
     }
   }
