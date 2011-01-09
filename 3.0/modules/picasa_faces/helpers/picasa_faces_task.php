@@ -63,6 +63,7 @@ class picasa_faces_task_Core {
     foreach (ORM::factory("item")
              ->where("id", ">", $last_id)
              ->where("type", "=", "album")
+             ->order_by("id")
              ->find_all(100) as $albumItem) {
       $picasaFile = $albumItem->file_path()."/.picasa.ini";
       if (file_exists($picasaFile)) {
@@ -107,8 +108,7 @@ class picasa_faces_task_Core {
                                     ->where("tag_id", "=", $faceMapping->tag_id)
                                     ->where("item_id", "=", $photoItem->id)
                                     ->count_all();
-              }
-              else {
+              } else {
                 $numTagsOnPhoto = ORM::factory("items_user")
                                     ->where("user_id", "=", $faceMapping->user_id)
                                     ->where("item_id", "=", $photoItem->id)
@@ -120,8 +120,7 @@ class picasa_faces_task_Core {
               if ($numTagsOnPhoto == 0) {
                   self::addNewFace($faceMapping, $faceCoords, $photoItem);
                   $new_faces++;
-              }
-              else {
+              } else {
                   $old_faces++;
               }
             }
@@ -146,8 +145,7 @@ class picasa_faces_task_Core {
       $task->done = true;
       $task->state = "success";
       $task->percent_complete = 100;
-    }
-    else {
+    } else {
       $task->percent_complete = round(100 * $completed / $total);
     }
 
@@ -221,8 +219,7 @@ class picasa_faces_task_Core {
       $newFace->y2 = $bottom;
       $newFace->description = "";
       $newFace->save();
-    }
-    else {
+    } else {
       // Add the face
       $newFace = ORM::factory("items_user");
       $newFace->user_id = $faceMapping->user_id;
@@ -251,8 +248,7 @@ class picasa_faces_task_Core {
       if ($ini_line[0] == '[') {
         // If this line starts with [ it's a filename, strip off the brackets
         $curFilename = substr($ini_line, 1, -1);
-      }
-      else {
+      } else {
         // If this isn't a filename, it must be data for a file, get the key/value pair
         $photoData = explode("=", $ini_line);
 
