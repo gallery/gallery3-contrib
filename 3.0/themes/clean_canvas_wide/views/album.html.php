@@ -24,14 +24,15 @@
     <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
     <h2><span class="<?= $item_class ?>"></span>
       <a href="<?= $child->url() ?>">
-              <? // limit the title length to something reasonable (defaults to 15) ?>
-              <?= html::purify(text::limit_chars($child->title,
-                    module::get_var("gallery", "visible_title_length"))) ?>
+        <? if ($item_class == "g-album"): ?>
+          <? // limit the title length to something reasonable (defaults to 15) ?>
+          <?= html::purify(text::limit_chars($child->title,
+                module::get_var("gallery", "visible_title_length"))) ?>
+        <? else: ?>
+          <?= $child->description ?>
+        <? endif; ?>
       </a>
     </h2>
-    <ul class="g-metadata">
-      <?= $theme->thumb_info($child) ?>
-    </ul>
   </li>
   <? endforeach ?>
 <? else: ?>
