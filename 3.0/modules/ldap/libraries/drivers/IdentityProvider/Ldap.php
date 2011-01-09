@@ -232,7 +232,10 @@ class Ldap_User implements User_Definition {
   }
 
   public function display_name() {
-    return $this->ldap_entry["displayname"][0];
+    if (!empty($this->ldap_entry["displayname"][0])) {
+      return $this->ldap_entry["displayname"][0];
+    }
+    return $this->ldap_entry["cn"][0];
   }
 
   public function __get($key) {
