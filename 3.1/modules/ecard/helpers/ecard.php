@@ -50,10 +50,11 @@ class ecard_Core {
       ->error_messages("required", t("You must enter a valid email address"))
       ->error_messages("invalid", t("You must enter a valid email address"));
     $group->textarea("text")
-      ->label(t("Message"))
+      ->label(t("Message (255 chars max)"))
       ->id("g-text")
-      ->rules("required")
-      ->error_messages("required", t("You must enter a message"));
+      ->rules("required|length[0,255]")
+      ->error_messages("required", t("You must enter a message"))
+  	  ->error_messages("length", t("Your message is too long, please shorten."));
 	$group->checkbox("send_to_self")
       ->label(t("Send yourself a copy"))
 	  ->value(true)
