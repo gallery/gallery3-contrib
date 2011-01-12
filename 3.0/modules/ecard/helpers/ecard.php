@@ -54,6 +54,10 @@ class ecard_Core {
       ->id("g-text")
       ->rules("required")
       ->error_messages("required", t("You must enter a message"));
+	$group->checkbox("send_to_self")
+      ->label(t("Send yourself a copy"))
+	  ->value(true)
+	  ->checked(false);	  
     $group->hidden("item_id")->value($item->id);
     module::event("ecard_send_form", $form);
     module::event("captcha_protect_form", $form);
