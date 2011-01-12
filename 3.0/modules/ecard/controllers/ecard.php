@@ -46,6 +46,9 @@ class Ecard_Controller extends Controller {
 	  $to_name = $form->send_ecard->to_name->value;
 	  $from_name = $form->send_ecard->from_name->value;
 	  $bcc = module::get_var("ecard", "bcc");
+	  if($form->send_ecard->send_to_self->checked == true) {
+		$cc = $form->send_ecard->inputs["from_email"]->value;
+	  }	  
 	  $v->message = t(module::get_var("ecard", "message"), array("toname" => $to_name, "fromname" => $from_name));
 	  $v->custom_message = $form->send_ecard->text->value;
 	  $v->image = $item->name;
@@ -57,7 +60,7 @@ class Ecard_Controller extends Controller {
 	  $mime->setHTMLBody($v->render());
 	  $mime->addHTMLImage($item->resize_path(),$item->mime_type,$item->name);
 	  $body = $mime->get(array('html_charset'  => 'UTF-8', 'text_charset'  => 'UTF-8','text_encoding' => '8bit','head_charset'  => 'UTF-8'));
-	  self::_notify($headers['to'], $headers['from'], $headers['subject'], $item, $body, $mime->headers(), $bcc);
+	  self::_notify($headers['to'], $headers['from'], $headers['subject'], $item, $body, $mime->headers(), $bcc, $cc);
 	  message::success("eCard successfully sent");
 	  json::reply(array("result" => "success"));
     } else {
@@ -75,7 +78,7 @@ class Ecard_Controller extends Controller {
     }
     print ecard::prefill_send_form(ecard::get_send_form($item));
   }  
-  private static function _notify($to, $from, $subject, $item, $text, $headers, $bcc) {
+  private static function _notify($to, $from, $subject, $item, $text, $headers, $bcc, $cc) {
       $sendmail = Sendmail::factory();
 	  $sendmail
         ->to($to)
@@ -84,6 +87,9 @@ class Ecard_Controller extends Controller {
 	  if(isset($bcc)) {
 	    $sendmail->header("bcc",$bcc);
 	  }
+	  if(isset($cc)) {
+		$sendmail->header("cc",$cc);
+	  }	  
 	  foreach($headers as $key => $value) {
 		$sendmail->header($key,$value);
 	  }
