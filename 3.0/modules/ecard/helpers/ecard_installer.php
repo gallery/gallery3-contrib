@@ -18,13 +18,32 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ecard_installer {
+  private static function getversion() { 
+	return 9; 
+  }
+  
+  private static function setversion() { 
+	module::set_version("ecard", self::getversion()); 
+  }
+  
   static function install() {
     module::set_var("ecard", "subject", "You have been sent an eCard");
     module::set_var("ecard", "message",
-                    "Hello %toname, \r\n%fromname has sent you an eCard. " .
+                    "Hello, \r\n%fromname has sent you an eCard. " .
                     "Click the image to be taken to the gallery.");
     module::set_var("ecard", "bcc", "");
     module::set_var("ecard", "access_permissions", "everybody");
-    module::set_version("ecard", 7);
+	module::set_var("ecard","max_length",255);
+    self::setversion();
+  }
+  
+  static function upgrade($version) {
+	if($version <= 8) {
+		module::set_var("ecard", "message",
+						"Hello, \r\n%fromname has sent you an eCard. " .
+						"Click the image to be taken to the gallery.");	  
+		module::set_var("ecard","max_length",255);
+	} 
+	self::setversion();
   }
 }

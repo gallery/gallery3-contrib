@@ -24,8 +24,8 @@
  * Note: by design, this class does not do any permission checking.
  */
 class ecard_Core {
-  static function get_send_form($item) {
-    $form = new Forge("ecard/send/{$item->id}", "", "post", array("id" => "g-ecard-form"));
+  static function get_send_form($item_id) {
+    $form = new Forge("ecard/send/{$item_id}", "", "post", array("id" => "g-ecard-form"));
     $group = $form->group("send_ecard")->label(t("Send eCard"));
     $group->input("from_name")
       ->label(t("Your name"))
@@ -38,28 +38,22 @@ class ecard_Core {
       ->rules("required|valid_email")
       ->error_messages("required", t("You must enter a valid email address"))
       ->error_messages("invalid", t("You must enter a valid email address"));
-    $group->input("to_name")
-      ->label(t("Recipient's Name"))
-      ->id("g-recipient")
-      ->rules("required")
-      ->error_messages("required", t("You must enter a recipient's name"));
     $group->input("to_email")
-      ->label(t("Recipient's e-mail"))
+      ->label(t("Recipient's e-mail. Separate multiple recipients with a comma."))
       ->id("g-recip-email")
-      ->rules("required|valid_email")
-      ->error_messages("required", t("You must enter a valid email address"))
-      ->error_messages("invalid", t("You must enter a valid email address"));
+      ->rules("required")
+      ->error_messages("required", t("You must enter a valid email address"));
     $group->textarea("text")
-      ->label(t("Message (255 chars max)"))
+      ->label(t("Message (".module::get_var("ecard","max_length")." chars max)"))
       ->id("g-text")
-      ->rules("required|length[0,255]")
-      ->error_messages("required", t("You must enter a message"))
-	  ->error_messages("length", t("Your message is too long, please shorten."));	  
+	  ->maxlength(module::get_var("ecard","max_length"))
+      ->rules("required")
+      ->error_messages("required", t("You must enter a message"));
 	$group->checkbox("send_to_self")
       ->label(t("Send yourself a copy"))
 	  ->value(true)
 	  ->checked(false);	  
-    $group->hidden("item_id")->value($item->id);
+    $group->hidden("item_id")->value($item_id);
     module::event("ecard_send_form", $form);
     module::event("captcha_protect_form", $form);
     $group->submit("")->value(t("Send"))->class("ui-state-default ui-corner-all");
