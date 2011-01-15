@@ -19,7 +19,7 @@
  */
 class tag_cloud_theme_Core {
   static function head($theme) {
-    $theme->script("swfobject.js");
-    $theme->script("tag_cloud.js");
+    return $theme->script("swfobject.js")
+      . $theme->script("tag_cloud.js");
   }
 }

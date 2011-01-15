@@ -19,6 +19,6 @@
  */
 class bitly_theme_Core {
   static function head($theme) {
-    $theme->script("bitly.js");
+    return $theme->script("bitly.js");
   }
 }

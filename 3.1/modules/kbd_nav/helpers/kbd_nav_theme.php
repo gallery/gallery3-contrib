@@ -3,6 +3,6 @@
 class Kbd_Nav_theme_Core {
 
   static function head($theme) {
-    $theme->script("kbd_nav.js");
+    return $theme->script("kbd_nav.js");
   }
 }

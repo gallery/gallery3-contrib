@@ -19,9 +19,8 @@
  */
 class sharephoto_theme_Core {
   static function head($theme) {
-    $theme->css("sharephoto.css");
-    $theme->script("sharephoto.js");
-    return "";
+    return $theme->css("sharephoto.css")
+      . $theme->script("sharephoto.js");
   }
 
 

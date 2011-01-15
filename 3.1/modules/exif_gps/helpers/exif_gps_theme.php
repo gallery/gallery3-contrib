@@ -19,6 +19,6 @@
  */
 class exif_gps_theme_Core {
   static function head($theme) {
-    $theme->css("exif_gps_menu.css");
+    return $theme->css("exif_gps_menu.css");
   }
 }
