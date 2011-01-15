@@ -20,7 +20,7 @@
 class downloadfullsize_theme {
   static function head($theme) {
     if ($theme->item && access::can("view_full", $theme->item)) {
-      $theme->css("downloadfullsize_menu.css");
+      return $theme->css("downloadfullsize_menu.css");
     }
   }
 }

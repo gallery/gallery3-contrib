@@ -20,6 +20,6 @@
 class tagsmap_theme_Core {
 		
   static function head($theme) {
-    $theme->css("tagsmap_menu.css");
+    return $theme->css("tagsmap_menu.css");
   }
 }

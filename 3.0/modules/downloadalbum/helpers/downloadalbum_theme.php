@@ -19,6 +19,6 @@
  */
 class downloadalbum_theme {
   static function head($theme) {
-    $theme->css("downloadalbum_menu.css");
+    return $theme->css("downloadalbum_menu.css");
   }
 }

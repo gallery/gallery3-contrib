@@ -25,7 +25,7 @@ class editcreation_theme_Core {
     }
     $item = $theme->item();
     if ( $item && access::can("edit", $item) ) {
-      $theme->css("editcreation.css");
+      return $theme->css("editcreation.css");
     }
   }
 }

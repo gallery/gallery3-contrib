@@ -19,6 +19,6 @@
  */
 class language_flags_theme_Core {
   static function head($theme) {
-    $theme->css("language_flags_sidebar.css");
+    return $theme->css("language_flags_sidebar.css");
   }
 }

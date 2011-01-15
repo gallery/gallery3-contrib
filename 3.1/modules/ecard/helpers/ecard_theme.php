@@ -19,6 +19,6 @@
  */
 class ecard_theme_Core {
   static function head($theme) {
-    $theme->css("ecard.css");
+    return $theme->css("ecard.css");
   }
 }
