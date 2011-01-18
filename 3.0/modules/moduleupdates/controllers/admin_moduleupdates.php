@@ -42,6 +42,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
 		$view = new Admin_View("admin.html");
 		$view->page_title = t("Gallery 3 :: Manage Module Updates");
 		$view->content = new View("admin_moduleupdates.html");
+		$view->content->mu_version = module::get_version("moduleupdates");
 
 		$refreshCache = false;
     
