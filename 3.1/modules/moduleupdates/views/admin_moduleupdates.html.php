@@ -2,7 +2,7 @@
 
 
 <div id="g-admin-moduleupdates" class="g-block">
-  <h1> <?= t("Module Updates v5.0") ?> </h1>
+  <h1> <?= t("Module Updates v".$mu_version.".0") ?> </h1>
   <?= t("Compares your installed module version against the ones stored in the GitHub and GalleryModules.") ?>
   
   <div class="g-block-content">
