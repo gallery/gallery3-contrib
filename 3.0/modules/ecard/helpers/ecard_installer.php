@@ -19,7 +19,7 @@
  */
 class ecard_installer {
   private static function getversion() { 
-	return 9; 
+	return 10; 
   }
   
   private static function setversion() { 
