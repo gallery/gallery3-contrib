@@ -51,4 +51,17 @@ class bitly_event_Core {
                  ->css_class("g-bitly-shorten ui-icon-link"));
     }
   }
+
+  static function info_block_get_metadata($block, $item) {
+    $link = ORM::factory("bitly_link")->where("item_id", "=", $item->id)->find();
+    if ($link->loaded()) {
+      $info = $block->content->metadata;
+      $info["bitly_url"] = array(
+         "label" => t("bit.ly url:"),
+         "value" => bitly::url($link->hash)
+      );
+      $block->content->metadata = $info;
+    }
+  }
+
 }
