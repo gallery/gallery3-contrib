@@ -53,6 +53,10 @@ class ecard_Core {
       ->label(t("Send yourself a copy"))
 	  ->value(true)
 	  ->checked(false);	  
+	$group->checkbox("send_thumbnail")
+      ->label(t("Send thumbnail image, instead of resized image."))
+	  ->value(true)
+	  ->checked(false);	  
     $group->hidden("item_id")->value($item_id);
     module::event("ecard_send_form", $form);
     module::event("captcha_protect_form", $form);
