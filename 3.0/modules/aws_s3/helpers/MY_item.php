@@ -26,7 +26,7 @@ class item extends item_Core {
 
         $parent = $item->parent();
         if ($parent->id > 1) {
-            aws_s3::upload_album_cover($parent);
+            aws_s3::upload_item($parent);
         }
     }
 
@@ -34,7 +34,7 @@ class item extends item_Core {
         parent::remove_album_cover($album);
 
         if ($album->id > 1) {
-            aws_s3::remove_album_cover($album);
+            aws_s3::remove_item($album);
         }
     }
 
