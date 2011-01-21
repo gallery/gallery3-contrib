@@ -19,7 +19,7 @@
  */
 class ecard_installer {
   private static function getversion() { 
-	return 10; 
+	return 11; 
   }
   
   private static function setversion() { 
@@ -27,6 +27,7 @@ class ecard_installer {
   }
   
   static function install() {
+	module::set_var("ecard","send_plain",false); 
     module::set_var("ecard", "subject", "You have been sent an eCard");
     module::set_var("ecard", "message",
                     "Hello, \r\n%fromname has sent you an eCard. " .
@@ -38,7 +39,8 @@ class ecard_installer {
   }
   
   static function upgrade($version) {
-	if($version <= 8) {
+	if($version <= 10) {
+		module::set_var("ecard","send_plain",false);
 		module::set_var("ecard", "message",
 						"Hello, \r\n%fromname has sent you an eCard. " .
 						"Click the image to be taken to the gallery.");	  

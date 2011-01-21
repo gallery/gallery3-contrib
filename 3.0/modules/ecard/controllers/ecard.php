@@ -58,14 +58,28 @@ class Ecard_Controller extends Controller {
 		  require_once(MODPATH. "ecard/lib/mime.php");
 		  $mime = new Mail_mime("\n");
 		  $mime->setHTMLBody($v->render());
-		  if($form->send_ecard->send_thumbnail->checked == true) {
-			$mime->addHTMLImage($item->thumb_path(),$item->mime_type,$item->name);
-		  } else {
-			$mime->addHTMLImage($item->resize_path(),$item->mime_type,$item->name);
+		  if($form->send_ecard->send_fresh->checked == true) {
+			  $tmpfile = tempnam(TMPPATH, "clean");
+			  if($form->send_ecard->send_thumbnail->checked == true) {
+				$options = array("width" => module::get_var("gallery", "thumb_size"), "height" => module::get_var("gallery", "thumb_size"), "master" => Image::AUTO);
+				gallery_graphics::resize($item->file_path(), $tmpfile, $options);
+				$mime->addHTMLImage($tmpfile,$item->mime_type,$item->name);
+			  } else {
+				$options = array("width" => module::get_var("gallery", "resize_size"), "height" => module::get_var("gallery", "resize_size"), "master" => Image::AUTO);
+				gallery_graphics::resize($item->file_path(), $tmpfile, $options);
+				$mime->addHTMLImage($tmpfile,$item->mime_type,$item->name);
+			  }
+		  } else {				
+			  if($form->send_ecard->send_thumbnail->checked == true) {
+				$mime->addHTMLImage($item->thumb_path(),$item->mime_type,$item->name);
+			  } else {
+				$mime->addHTMLImage($item->resize_path(),$item->mime_type,$item->name);
+			  }
 		  }
 		  $body = $mime->get(array('html_charset'  => 'UTF-8', 'text_charset'  => 'UTF-8','text_encoding' => '8bit','head_charset'  => 'UTF-8'));
 		  self::_notify($headers['to'], $headers['from'], $headers['subject'], $item, $body, $mime->headers(), $bcc, $cc);
 		}
+	  unlink($tmpfile);
 	  message::success("eCard successfully sent");
 	  json::reply(array("result" => "success"));
 	} else {

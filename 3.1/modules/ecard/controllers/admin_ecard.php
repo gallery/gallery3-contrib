@@ -30,7 +30,8 @@ class Admin_ecard_Controller extends Admin_Controller {
     access::verify_csrf();
     $form = $this->_get_admin_form();
     if ($form->validate()) {
-      module::set_var("ecard", "sender", $form->ecard->sender->value);
+	  module::set_var("ecard","send_plain",$form->ecard->send_plain->value);
+	  module::set_var("ecard", "sender", $form->ecard->sender->value);
 	  module::set_var("ecard", "bcc", $form->ecard->bcc->value);
       module::set_var("ecard", "subject", $form->ecard->subject->value);
       module::set_var("ecard", "message", $form->ecard->message->value);
@@ -60,7 +61,13 @@ class Admin_ecard_Controller extends Admin_Controller {
 	$ecard_settings->input("max_length")
 	  ->label(t("Maximum message length"))
 	  ->value(module::get_var("ecard","max_length"));
-    $ecard_settings->dropdown("access_permissions")
+	if(module::is_active("watermark")) {
+		$ecard_settings->checkbox("send_plain")
+		  ->label(t("Allow users to send non-watermarked versions"))
+		  ->value(true)
+		  ->checked(module::get_var("ecard","send_plain"));
+	}
+	$ecard_settings->dropdown("access_permissions")
       ->label(t("Who can send eCards?"))
       ->options(array("everybody" => t("Everybody"),
                       "registered_users" => t("Only registered users")))
