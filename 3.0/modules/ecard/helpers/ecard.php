@@ -57,7 +57,13 @@ class ecard_Core {
       ->label(t("Send thumbnail image, instead of resized image."))
 	  ->value(true)
 	  ->checked(false);	  
-    $group->hidden("item_id")->value($item_id);
+	if(module::get_var("ecard","send_plain") == true && module::is_active("watermark")) {
+		$group->checkbox("send_fresh")
+		  ->label(t("Send non-watermarked image."))
+		  ->value(true)
+		  ->checked(false);		  
+	}
+	$group->hidden("item_id")->value($item_id);
     module::event("ecard_send_form", $form);
     module::event("captcha_protect_form", $form);
     $group->submit("")->value(t("Send"))->class("ui-state-default ui-corner-all");
