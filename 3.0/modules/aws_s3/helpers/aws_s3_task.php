@@ -29,7 +29,7 @@ class aws_s3_task_Core {
         $task->status = "Commencing upload";
         $task->percent_complete = 0;
         $task->save();
-        if (aws_s3::upload_item($item)) {
+        if (aws_s3::upload_item($item, aws_s3::get_upload_flags())) {
             $task->percent_complete = 100;
             $task->done = true;
             $task->state = "success";
@@ -102,7 +102,7 @@ class aws_s3_task_Core {
             case "upload": {
                 $items = ORM::factory("item")->find_all($task->get("batch"), $task->get("completed"));
                 foreach ($items as $item) {
-                    aws_s3::upload_item($item);
+                    aws_s3::upload_item($item, aws_s3::get_upload_flags());
                     $task->set("completed", $task->get("completed") + 1);
                 }
                 $task->percent_complete = (90 * ($task->get("completed") / $task->get("total_count"))) + 10;
@@ -167,7 +167,7 @@ class aws_s3_task_Core {
         foreach ($items as $item) {
             try {
                 if ($item->id > 1)
-                    aws_s3::upload_item($item);
+                    aws_s3::upload_item($item, aws_s3::get_upload_flags());
             }
             catch (Exception $err) {}
             $completed++;
