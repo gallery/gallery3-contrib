@@ -67,19 +67,12 @@ class aws_s3_Core {
 
     static function get_upload_flags() {
         $flags = 0;
-        if (module::get_var("aws_s3", "upload_thumbs") == 1) {
-            aws_s3::log("can upload thumbs");
+        if (module::get_var("aws_s3", "upload_thumbs") == 1)
             $flags += self::UPLOAD_THUMB;
-        }
-        if (module::get_var("aws_s3", "upload_resizes") == 1) {
-            aws_s3::log("can upload resizes");
+        if (module::get_var("aws_s3", "upload_resizes") == 1)
             $flags += self::UPLOAD_RESIZE;
-        }
-        if (module::get_var("aws_s3", "upload_fullsizes") == 1) {
-            aws_s3::log("can upload full sizes");
+        if (module::get_var("aws_s3", "upload_fullsizes") == 1)
             $flags += self::UPLOAD_FULLSIZE;
-        }
-        aws_s3::log("flags: " . $flags);
         return $flags;
     }
     
