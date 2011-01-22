@@ -39,13 +39,14 @@ class ecard_installer {
   }
   
   static function upgrade($version) {
-	if($version <= 10) {
-		module::set_var("ecard","send_plain",false);
+	if($version <= 8) {
 		module::set_var("ecard", "message",
 						"Hello, \r\n%fromname has sent you an eCard. " .
 						"Click the image to be taken to the gallery.");	  
 		module::set_var("ecard","max_length",255);
-	} 
+	} else if($version <=10) {
+		module::set_var("ecard","send_plain",false);
+	}
 	self::setversion();
   }
 }
