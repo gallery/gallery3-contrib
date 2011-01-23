@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,14 @@
  */
 class photoannotation_theme_Core {
   static function head($theme) {
-    $theme->css("photoannotation.css");
+    $v = $theme->css("photoannotation.css");
     if ($theme->page_subtype == "photo") {
-      $theme->script("jquery.annotate.min.js");
+      $v .= $theme->script("jquery.annotate.min.js");
       $noborder = module::get_var("photoannotation", "noborder", false);
       $noclickablehover = module::get_var("photoannotation", "noclickablehover", false);
       $nohover = module::get_var("photoannotation", "nohover", false);
       $bordercolor = "#". module::get_var("photoannotation", "bordercolor", "000000");
-      $v = "<style type=\"text/css\">\n";
+      $v .= "<style type=\"text/css\">\n";
       $v .= ".photoannotation-del-button {\n
               border:1px solid ". $bordercolor ." !important;\n
               }\n";
@@ -73,8 +73,8 @@ class photoannotation_theme_Core {
   
   static function admin_head($theme) {
     if (strpos($theme->content->kohana_filename, "admin_photoannotation.html.php")) {
-      $theme->css("colorpicker.css");
-      $theme->script("jquery.colorpicker.min.js");
+      return $theme->css("colorpicker.css")
+        . $theme->script("jquery.colorpicker.min.js");
     }
   }
 
