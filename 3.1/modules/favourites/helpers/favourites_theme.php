@@ -19,8 +19,8 @@
  */
 class favourites_theme_Core {
   static function head($theme) {
-    $theme->css("favourites.css");
-    $theme->script("favourites.js");
+    return $theme->css("favourites.css")
+      . $theme->script("favourites.js");
   }
 
   static function header_top($theme) {

@@ -1,3 +1,3 @@
 name = "Amazon S3"
 description = "Seamlessly transfer your Gallery data to Amazon S3 CDN for a lightning fast gallery"
-version = 1
+version = 2
