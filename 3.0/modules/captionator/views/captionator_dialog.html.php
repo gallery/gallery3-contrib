@@ -35,6 +35,14 @@
                 <input type="text" name="tags[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= $tags[$child->id] ?>"/>
               </li>
               <? endif ?>
+              <li>
+                <label for="filename[<?= $child->id ?>]"> <?= t("Filename") ?> </label>
+                <input type="text" name="filename[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= $child->name ?>"/>
+              </li>
+              <li>
+                <label for="internetaddress[<?= $child->id ?>]"> <?= t("Internet Address") ?> </label>
+                <input type="text" name="internetaddress[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= $child->slug ?>"/>
+              </li>
             </ul>
           </td>
         </tr>
