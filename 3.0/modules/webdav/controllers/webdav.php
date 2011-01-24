@@ -20,6 +20,7 @@
 require_once(MODPATH . "webdav/vendor/Sabre/autoload.php");
 
 class WebDAV_Controller extends Controller {
+  const ALLOW_PRIVATE_GALLERY = true;
   public function gallery() {
     $root = new Gallery3_DAV_Album("");
     $tree = new Gallery3_DAV_Tree($root);
