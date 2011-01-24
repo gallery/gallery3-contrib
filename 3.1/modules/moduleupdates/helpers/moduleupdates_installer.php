@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.");/**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ class moduleupdates_installer {
   
     $version = module::get_version("moduleupdates");
     if ($version < 1) {
-      module::set_version("moduleupdates", 5);
+      module::set_version("moduleupdates", 7);
       //Remove the ModuleUpdates cache entry 'JIC'
       Cache::instance()->delete("ModuleUpdates");
       //create the blank ModuleUpdates cache entry with an expiration of 0 days
@@ -34,7 +34,7 @@ class moduleupdates_installer {
   }
 
   static function upgrade($version) {
-    module::set_version("moduleupdates", 5);
+    module::set_version("moduleupdates", 7);
     //Remove the ModuleUpdates cache entry 'JIC'
     Cache::instance()->delete("ModuleUpdates");
     //Empty the ModuleUpdates cache entry so our new version starts from scratch
