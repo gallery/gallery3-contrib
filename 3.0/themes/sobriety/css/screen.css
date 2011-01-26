@@ -593,7 +593,8 @@ span.ui-icon-key { background-position: -112px -128px; }
 }
 
 #g-item .g-block {
-  display: none;
+  display: block;
+  margin: auto;
 }
 
 #g-item .g-block#g-metadata {
@@ -621,9 +622,6 @@ span.ui-icon-key { background-position: -112px -128px; }
   padding: 0;
 }
 
-#g-item .g-block#g-comments {
-  display: block;
-}
 
 
 
@@ -800,6 +798,18 @@ div#g-action-status {
 #g-dialog textarea {
   height: 8em;
 }
+
+#g-dialog input[type=submit].submit {
+  float: right;
+}
+
+#g-dialog a.g-cancel {
+  float: right;
+  -moz-appearance: button;
+  -webkit-appearance: push-button;
+  /*clear: left;*/
+}
+
 
 #g-add-photos-canvas-sd {
   height: 33px;

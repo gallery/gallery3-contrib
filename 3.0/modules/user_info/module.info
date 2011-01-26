@@ -1,0 +1,3 @@
+name = "User Info"
+description = "Logs Login, Logout, Failed Login, Re-Authenticate, and User Created Information"
+version = 2

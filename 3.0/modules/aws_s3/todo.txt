@@ -1,0 +1,10 @@
+Things to implement
+
+v3;
+
+1 - S3 as primary storage (remove from local storage when uploaded)
+
+v4;
+
+1 - Resolve issues with security/authentication (QSA) when using CloudFront CDN
+2 - Resolve problem using SSL for server -> S3 file transfers
