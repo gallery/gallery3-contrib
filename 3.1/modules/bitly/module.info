@@ -1,0 +1,3 @@
+name = "bit.ly"
+description = "Shorten and track Gallery URLs with bit.ly (http://bit.ly). You'll need a bit.ly API key."
+version = 1
