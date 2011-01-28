@@ -26,7 +26,7 @@ class rwinfo_theme_Core {
       $results .= "</li>";
     }
 
-    // rWatcher Edit:  Display Tags
+    // rWatcher Edit:  Display Tags on Thumbnails
     if (module::is_active("tag")) {
       $tags = ORM::factory("tag")
                   ->join("items_tags", "tags.id", "items_tags.tag_id")
