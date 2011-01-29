@@ -20,7 +20,7 @@
 class basket_theme_Core {
 
   static function head($theme) {
-    $theme->css("basket.css");
+    return $theme->css("basket.css");
   }
 
   static function header_top($theme) {
@@ -37,7 +37,7 @@ class basket_theme_Core {
 
   static function admin_head($theme) {
     if (strpos(Router::$current_uri, "admin/product_lines") !== false) {
-      $theme->script("gallery.panel.js");
+      return $theme->script("gallery.panel.js");
     }
   }
   static function photo_top($theme){
