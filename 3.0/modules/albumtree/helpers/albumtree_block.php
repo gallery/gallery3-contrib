@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,10 @@ class albumtree_block_Core {
     $block = new Block();
     switch ($block_id) {
     case "albumtree":
+      $style = module::get_var("albumtree", "style", "select");
       $block->css_id = "g-albumtree";
       $block->title = t("Album Tree");
-      $block->content = new View("albumtree_block.html");
+      $block->content = new View("albumtree_block_{$style}.html");
       $block->content->root = item::root();
       break;
     }

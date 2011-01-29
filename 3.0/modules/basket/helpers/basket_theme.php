@@ -20,7 +20,7 @@
 class basket_theme_Core {
 
   static function head($theme) {
-    $theme->css("basket.css");
+    return $theme->css("basket.css");
   }
 
   static function header_top($theme) {

@@ -1,5 +1,11 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <div id="g-captionator-dialog">
+  <script type="text/javascript">
+  $('form input[name^=tags]').ready(function() {
+      $('form input[name^=tags]').autocomplete(
+        '/tags/autocomplete', {max: 30, multiple: true, multipleSeparator: ',', cacheLength: 1});
+    });
+  </script>
   <form action="<?= url::site("captionator/save/{$album->id}") ?>" method="post" id="g-captionator-form">
     <?= access::csrf_form_field() ?>
     <fieldset>
@@ -22,6 +28,20 @@
               <li>
                 <label for="description[<?= $child->id ?>]"> <?= t("Description") ?> </label>
                 <textarea style="height: 5em" name="description[<?= $child->id ?>]"><?= $child->description ?></textarea>
+              </li>
+              <? if ($enable_tags): ?>
+              <li>
+                <label for="tags[<?= $child->id ?>]"> <?= t("Tags (comma separated)") ?> </label>
+                <input type="text" name="tags[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= $tags[$child->id] ?>"/>
+              </li>
+              <? endif ?>
+              <li>
+                <label for="filename[<?= $child->id ?>]"> <?= t("Filename") ?> </label>
+                <input type="text" name="filename[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= $child->name ?>"/>
+              </li>
+              <li>
+                <label for="internetaddress[<?= $child->id ?>]"> <?= t("Internet Address") ?> </label>
+                <input type="text" name="internetaddress[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= $child->slug ?>"/>
               </li>
             </ul>
           </td>

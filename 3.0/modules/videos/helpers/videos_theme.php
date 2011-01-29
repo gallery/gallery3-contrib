@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,10 @@
  */
 class videos_theme_Core {
   static function head($theme) {
+    $buf = "";
     if (identity::active_user()->admin) {
-      $theme->css("videos.css");
-      $theme->script("videos.js");
+      $buf .= $theme->css("videos.css");
+      $buf .= $theme->script("videos.js");
     }
 
     $item = $theme->item();
@@ -32,24 +33,24 @@ class videos_theme_Core {
       if ($items_video->loaded()) {
         $view = new View("videos_display_js.html");
         //$view->embed_code = addslashes($embedded_video->embed_code);
-        return $view;
+        return $buf . $view;
       }
     }
   }
 
   static function admin_head($theme) {
-    $head = array();
+    $buf = "";
     if (strpos(Router::$current_uri, "admin/videos") !== false) {
-      $theme->css("videos.css");
-      $theme->css("jquery.autocomplete.css");
+      $buf .= $theme->css("videos.css");
+      $buf .= $theme->css("jquery.autocomplete.css");
       $base = url::site("__ARGS__");
       $csrf = access::csrf_token();
-      $head[] = "<script type=\"text/javascript\"> var base_url = \"$base\"; var csrf = \"$csrf\";</script>";
+      $buf .= "<script type=\"text/javascript\"> var base_url = \"$base\"; var csrf = \"$csrf\";</script>";
 
-      $theme->script("jquery.autocomplete.js");
-      $theme->script("admin_videos.js");
+      $buf .= $theme->script("jquery.autocomplete.js");
+      $buf .= $theme->script("admin_videos.js");
     }
 
-    return implode("\n", $head);
+    return $buf;
   }  
 }

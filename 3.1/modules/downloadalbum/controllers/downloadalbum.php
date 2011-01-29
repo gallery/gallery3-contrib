@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,30 +22,55 @@ class downloadalbum_Controller extends Controller {
   /**
    * Generate a ZIP on-the-fly.
    */
-  public function zip($id) {
-    $album = $this->init($id);
-    $files = $this->getFilesList($album);
+  public function zip($container_type, $id) {
+    switch($container_type) {
+      case "album":
+        $container = ORM::factory("item", $id);
+        if (!$container->is_album()) {
+          throw new Kohana_Exception('container is not an album: '.$container->relative_path());
+        }
+
+        $zipname = (empty($container->name))
+            ? 'Gallery.zip' // @todo purified_version_of($container->title).'.zip'
+            : $container->name.'.zip';
+        break;
+
+     case "tag":
+        // @todo: if the module is not installed, it crash
+        $container = ORM::factory("tag", $id);
+        if (is_null($container->name)) {
+          throw new Kohana_Exception('container is not a tag: '.$id);
+        }
+
+        $zipname = $container->name.'.zip';
+        break;
+
+     default:
+       throw new Kohana_Exception('unhandled container type: '.$container_type);
+   }
+
+   $files = $this->getFilesList($container);
 
     // Calculate ZIP size (look behind for details)
     $zipsize = 22;
-    foreach($files as $f) {
-      $zipsize += 76 + 2*strlen($f) + filesize($f);
+    foreach($files as $f_name => $f_path) {
+      $zipsize += 76 + 2*strlen($f_name) + filesize($f_path);
     }
 
     // Send headers
     $this->prepareOutput();
-    $this->sendHeaders($album->name.'.zip', $zipsize);
+    $this->sendHeaders($zipname, $zipsize);
 
     // Generate and send ZIP file
     // http://www.pkware.com/documents/casestudies/APPNOTE.TXT (v6.3.2)
     $lfh_offset = 0;
     $cds = '';
     $cds_offset = 0;
-    foreach($files as $f) {
-      $f_namelen = strlen($f);
-      $f_size = filesize($f);
-      $f_mtime = $this->unix2dostime(filemtime($f));
-      $f_crc32 = $this->fixBug45028(hexdec(hash_file('crc32b', $f, false)));
+    foreach($files as $f_name => $f_path) {
+      $f_namelen = strlen($f_name);
+      $f_size = filesize($f_path);
+      $f_mtime = $this->unix2dostime(filemtime($f_path));
+      $f_crc32 = $this->fixBug45028(hexdec(hash_file('crc32b', $f_path, false)));
 
       // Local file header
       echo pack('VvvvVVVVvva' . $f_namelen,
@@ -60,12 +85,12 @@ class downloadalbum_Controller extends Controller {
           $f_namelen,         // file name length (2 bytes)
           0,                  // extra field length (2 bytes)
 
-          $f                  // file name (variable size)
+          $f_name             // file name (variable size)
                               // extra field (variable size) => n/a
       );
 
       // File data
-      readfile($f);
+      readfile($f_path);
 
       // Data descriptor (n/a)
 
@@ -88,7 +113,7 @@ class downloadalbum_Controller extends Controller {
           0x81b40000,         // external file attributes (4 bytes) => chmod 664
           $lfh_offset,        // relative offset of local header (4 bytes)
 
-          $f                  // file name (variable size)
+          $f_name             // file name (variable size)
                               // extra field (variable size) => n/a
                               // file comment (variable size) => n/a
       );
@@ -129,58 +154,57 @@ class downloadalbum_Controller extends Controller {
 
 
   /**
-   * Init
-   */
-  private function init($id) {
-    $item = ORM::factory("item", $id);
-
-    // Only send an album
-    if (!$item->is_album()) {
-      // @todo: throw an exception?
-      Kohana::log('error', 'item is not an album: '.$item->relative_path());
-      exit;
-    }
-
-    // Must have view_full to download the originals files
-    access::required("view_full", $item);
-
-    return $item;
-  }
-
-  /**
    * Return the files that must be included in the archive.
    */
-  private function getFilesList($album) {
+  private function getFilesList($container) {
     $files = array();
 
-    // Go to the parent of album so the ZIP will not contains all the
-    // server hierarchy
-    if (!chdir($album->file_path().'/../')) {
-      // @todo: throw an exception?
-      Kohana::log('error', 'unable to chdir('.$item->file_path().'/../)');
-      exit;
-    }
-    $cwd = getcwd();
+    if( $container instanceof Item_Model && $container->is_album() ) {
+      $container_realpath = realpath($container->file_path().'/../');
 
-    $items = $album->viewable()
-        ->descendants(null, null, array(array("type", "<>", "album")));
-    foreach($items as $i) {
-      if (!access::can('view_full', $i)) {
-        continue;
+      $items = $container->viewable()
+          ->descendants(null, null, array(array("type", "<>", "album")));
+      foreach($items as $i) {
+        if (!access::can('view_full', $i)) {
+          continue;
+        }
+
+        $i_realpath = realpath($i->file_path());
+        if (!is_readable($i_realpath)) {
+          continue;
+        }
+
+        $i_relative_path = str_replace($container_realpath.DIRECTORY_SEPARATOR, '', $i_realpath);
+        $i_relative_path = str_replace(DIRECTORY_SEPARATOR, '/', $i_relative_path);
+        $files[$i_relative_path] = $i_realpath;
       }
 
-      $relative_path = str_replace($cwd.'/', '', realpath($i->file_path()));
-      if (!is_readable($relative_path)) {
-        continue;
-      }
+    } else if( $container instanceof Tag_Model ) {
+      $items = $container->items();
+      foreach($items as $i) {
+        if (!access::can('view_full', $i)) {
+          continue;
+        }
 
-      $files[] = $relative_path;
+        if( $i->is_album() ) {
+          foreach($this->getFilesList($i) as $f_name => $f_path) {
+            $files[$container->name.'/'.$f_name] = $f_path;
+          }
+
+        } else {
+          $i_realpath = realpath($i->file_path());
+          if (!is_readable($i_realpath)) {
+            continue;
+          }
+
+          $i_relative_path = $container->name.'/'.$i->name;
+          $files[$i_relative_path] = $i_realpath;
+        }
+      }
     }
 
     if (count($files) === 0) {
-      // @todo: throw an exception?
-      Kohana::log('error', 'no zippable files in ['.$album->relative_path().']');
-      exit;
+      throw new Kohana_Exception('no zippable files in ['.$container->name.']');
     }
 
     return $files;
@@ -264,9 +288,13 @@ class downloadalbum_Controller extends Controller {
    * See http://bugs.php.net/bug.php?id=45028
    */
   private function fixBug45028($hash) {
-    return (version_compare(PHP_VERSION, '5.2.7', '<'))
-      ? (($hash & 0x000000ff) << 24) + (($hash & 0x0000ff00) << 8)
-          + (($hash & 0x00ff0000) >> 8) + (($hash & 0xff000000) >> 24)
-      : $hash;
+    $output = $hash;
+
+    if( version_compare(PHP_VERSION, '5.2.7', '<') ) {
+      $str = str_pad(dechex($hash), 8, '0', STR_PAD_LEFT);
+      $output = hexdec($str{6}.$str{7}.$str{4}.$str{5}.$str{2}.$str{3}.$str{0}.$str{1});
+    }
+
+    return $output;
   }
 }
