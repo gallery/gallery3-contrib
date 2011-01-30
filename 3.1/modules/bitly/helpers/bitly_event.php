@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,4 +51,17 @@ class bitly_event_Core {
                  ->css_class("g-bitly-shorten ui-icon-link"));
     }
   }
+
+  static function info_block_get_metadata($block, $item) {
+    $link = ORM::factory("bitly_link")->where("item_id", "=", $item->id)->find();
+    if ($link->loaded()) {
+      $info = $block->content->metadata;
+      $info["bitly_url"] = array(
+         "label" => t("bit.ly url:"),
+         "value" => bitly::url($link->hash)
+      );
+      $block->content->metadata = $info;
+    }
+  }
+
 }
