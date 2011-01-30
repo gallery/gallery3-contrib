@@ -1,11 +1,10 @@
-Drop Title and Description (they're displayed elsewhere in the default theme, no reason to show them twice on the same page)
+Turn Title and Description off by Default in the installer.(they're displayed elsewhere in the default theme, no reason to show them twice on the same page)
 Hide the info sidebar for the root album (without title and description there really isn't anything worth displaying here)
-Display date created for albums only (and continue to display the capture date for everything else)
-Display tags in the info sidebar (if the tags module is active).
 Display tags when mousing over the thumbnails (if tags module is active).
 Display "Movie Info" on movies instead of "Photo Info" like the Gallery Info module does.
-Use long month instead of short month on the album display.
-Change Date/Time format to "F j, Y h:i:s a" for photos.
-
 Changed block name on sidebar to rWInfo, to make it stick out more (helpers\rwinfo_block.php -> return array("metadata" => t("rWInfo"));
+Change label for "captured" to "Date", display "created" for albums, "captured" for everything else.
+Use gallery::date for formating the albums Date, and gallery::date_time for everything else. (I only want to see the Date an album was created, the time doesn't matter).
+Change all occurences of get_var("info" to get_var("rwinfo" to avoid conflicts with the original info module.
+
 
