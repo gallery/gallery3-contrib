@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  */
 class ecard_installer {
   private static function getversion() { 
-	return 9; 
+	return 11; 
   }
   
   private static function setversion() { 
@@ -27,6 +27,7 @@ class ecard_installer {
   }
   
   static function install() {
+	module::set_var("ecard","send_plain",false); 
     module::set_var("ecard", "subject", "You have been sent an eCard");
     module::set_var("ecard", "message",
                     "Hello, \r\n%fromname has sent you an eCard. " .
@@ -43,7 +44,9 @@ class ecard_installer {
 						"Hello, \r\n%fromname has sent you an eCard. " .
 						"Click the image to be taken to the gallery.");	  
 		module::set_var("ecard","max_length",255);
-	} 
+	} else if($version == 9 || $version == 10) {
+		module::set_var("ecard","send_plain",false);
+	}
 	self::setversion();
   }
 }

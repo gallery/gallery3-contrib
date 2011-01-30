@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,17 @@ class ecard_Core {
       ->label(t("Send yourself a copy"))
 	  ->value(true)
 	  ->checked(false);	  
-    $group->hidden("item_id")->value($item_id);
+	$group->checkbox("send_thumbnail")
+      ->label(t("Send thumbnail image, instead of resized image."))
+	  ->value(true)
+	  ->checked(false);	  
+	if(module::get_var("ecard","send_plain") == true && module::is_active("watermark")) {
+		$group->checkbox("send_fresh")
+		  ->label(t("Send non-watermarked image."))
+		  ->value(true)
+		  ->checked(false);		  
+	}
+	$group->hidden("item_id")->value($item_id);
     module::event("ecard_send_form", $form);
     module::event("captcha_protect_form", $form);
     $group->submit("")->value(t("Send"))->class("ui-state-default ui-corner-all");

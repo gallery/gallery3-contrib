@@ -1,6 +1,6 @@
 <?php defined("SYSPATH") or die("No direct script access.");/**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
 		$view = new Admin_View("admin.html");
 		$view->page_title = t("Gallery 3 :: Manage Module Updates");
 		$view->content = new View("admin_moduleupdates.html");
+		$view->content->mu_version = module::get_version("moduleupdates");
 
 		$refreshCache = false;
     

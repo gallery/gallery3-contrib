@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,8 @@ class Captionator_Controller extends Controller {
     if (Input::instance()->post("save")) {
       $titles = Input::instance()->post("title");
       $descriptions = Input::instance()->post("description");
+      $filenames = Input::instance()->post("filename");
+      $internetaddresses = Input::instance()->post("internetaddress");
       $tags = Input::instance()->post("tags");
       $enable_tags = module::is_active("tag");
       foreach (array_keys($titles) as $id) {
@@ -61,6 +63,8 @@ class Captionator_Controller extends Controller {
         if ($item->loaded() && access::can("edit", $item)) {
           $item->title = $titles[$id];
           $item->description = $descriptions[$id];
+          $item->name = $filenames[$id];
+          $item->slug = $internetaddresses[$id];
           $item->save();
           if ($enable_tags) {
             tag::clear_all($item);
