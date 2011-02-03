@@ -33,7 +33,7 @@ class access extends access_Core {
     //   Throw a 404 error when a user attempts to access a protected item,
     //   unless the password has been provided, or the user is the item's owner.
     } elseif (module::get_var("albumpassword", "hideonly") == false) {
-      $item_protected = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->id)->find_all();
+      $item_protected = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->id)->order_by("cache_id")->find_all();
       if (count($item_protected) > 0) {
         $existing_password = ORM::factory("items_albumpassword")->where("id", "=", $item_protected[0]->password_id)->find();
         if ($existing_password->loaded()) {

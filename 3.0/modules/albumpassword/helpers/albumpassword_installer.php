@@ -30,10 +30,10 @@ class albumpassword_installer {
 
     // Create a table to store a list of all protected items in.
     $db->query("CREATE TABLE IF NOT EXISTS {albumpassword_idcaches} (
-               `id` int(9) NOT NULL auto_increment,
+               `cache_id` int(9) NOT NULL auto_increment,
                `password_id` int(9) NOT NULL,
                `item_id` int(9) NOT NULL,
-               PRIMARY KEY (`id`))
+               PRIMARY KEY (`cache_id`))
                DEFAULT CHARSET=utf8;");
 
     // Set the default value for this module's behavior.
@@ -53,10 +53,10 @@ class albumpassword_installer {
     if ($version == 2) {
       // Create a table to store a list of all protected items in.
       $db->query("CREATE TABLE IF NOT EXISTS {albumpassword_idcaches} (
-                 `id` int(9) NOT NULL auto_increment,
+                 `cache_id` int(9) NOT NULL auto_increment,
                  `password_id` int(9) NOT NULL,
                  `item_id` int(9) NOT NULL,
-                 PRIMARY KEY (`id`))
+                 PRIMARY KEY (`cache_id`))
                  DEFAULT CHARSET=utf8;");
       module::set_version("albumpassword", $version = 3);
     }
