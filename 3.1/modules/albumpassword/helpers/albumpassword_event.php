@@ -86,7 +86,7 @@ class albumpassword_event_Core {
             ->where("albumpassword_idcaches.item_id", "IS NOT", NULL)->close()
             ->descendants();
 		
-          $existing_cacheditem = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->id)->find_all();
+          $existing_cacheditem = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->id)->order_by("cache_id")->find_all();
           if ((count($existing_cacheditem) == 0) && count($passworded_subitems) == 0) {
             $menu->get("options_menu")
                  ->append(Menu::factory("dialog")
@@ -116,7 +116,7 @@ class albumpassword_event_Core {
 
   static function item_created($item) {
     // Check for any already existing password on parent album(s), if found, generate cache data for the new item.
-    $existing_password = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->parent_id)->find_all();
+    $existing_password = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->parent_id)->order_by("cache_id")->find_all();
     if (count($existing_password) > 0) {
       $new_cachedid = ORM::factory("albumpassword_idcache");
       $new_cachedid->password_id = $existing_password[0]->password_id;
@@ -130,7 +130,7 @@ class albumpassword_event_Core {
     db::build()->delete("albumpassword_idcaches")->where("item_id", "=", $item->id)->execute();
 
     // Check for a password on the new parent, generate cache data if necessary.
-    $existing_password = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->parent_id)->find_all();
+    $existing_password = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->parent_id)->order_by("cache_id")->find_all();
     if (count($existing_password) > 0) {
       $new_cachedid = ORM::factory("albumpassword_idcache");
       $new_cachedid->password_id = $existing_password[0]->password_id;
