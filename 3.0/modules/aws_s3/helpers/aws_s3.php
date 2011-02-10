@@ -64,6 +64,17 @@ class aws_s3_Core {
         fwrite($fh, date("Y-m-d H:i:s") . ": " . $item .  "\n");
         fclose($fh);
     }
+
+    static function get_upload_flags() {
+        $flags = 0;
+        if (module::get_var("aws_s3", "upload_thumbs") == 1)
+            $flags += self::UPLOAD_THUMB;
+        if (module::get_var("aws_s3", "upload_resizes") == 1)
+            $flags += self::UPLOAD_RESIZE;
+        if (module::get_var("aws_s3", "upload_fullsizes") == 1)
+            $flags += self::UPLOAD_FULLSIZE;
+        return $flags;
+    }
     
     static function upload_item($item, $flags = 7) {
         self::get_s3();
@@ -75,7 +86,7 @@ class aws_s3_Core {
             $itype = "A";
         }
 
-        if ((!$item->s3_fullsize_uploaded || $flags & aws_s3::UPLOAD_FULLSIZE) && !$item->is_album()) {
+        if (!$item->s3_fullsize_uploaded && $flags & aws_s3::UPLOAD_FULLSIZE && !$item->is_album()) {
             aws_s3::log("[" . $itype . ":" . $item->id . "] Uploading fullsize object");
             $success_fs = S3::putObjectFile(VARPATH . "albums/" . $filename,
                                             module::get_var("aws_s3", "bucket_name"),
@@ -86,7 +97,7 @@ class aws_s3_Core {
         else
             $success_fs = true;
 
-        if ((!$item->s3_resize_uploaded || $flags & aws_s3::UPLOAD_RESIZE) && !$item->is_album()) {
+        if (!$item->s3_resize_uploaded && $flags & aws_s3::UPLOAD_RESIZE && !$item->is_album()) {
             aws_s3::log("[" . $itype . ":" . $item->id . "] Uploading resize object");
             $success_rs = S3::putObjectFile(VARPATH . "resizes/" . $filename,
                                             module::get_var("aws_s3", "bucket_name"),
@@ -97,7 +108,7 @@ class aws_s3_Core {
         else
             $success_rs = true;
 
-        if (!$item->s3_thumb_uploaded || $flags & aws_s3::UPLOAD_THUMB) {
+        if (!$item->s3_thumb_uploaded && $flags & aws_s3::UPLOAD_THUMB) {
             aws_s3::log("[" . $itype . ":" . $item->id . "] Uploading thumbnail object");
             $success_th = S3::putObjectFile(VARPATH . "thumbs/" . $filename,
                                             module::get_var("aws_s3", "bucket_name"),
