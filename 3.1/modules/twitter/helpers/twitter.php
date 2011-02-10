@@ -23,8 +23,6 @@ class twitter_Core {
 
   static $character_count = 140;
 
-  //public static $url = "http://twitter.com/home/?status=";
-
   /**
    *
    * @return Forge
