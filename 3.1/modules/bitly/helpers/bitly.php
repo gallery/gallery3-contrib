@@ -187,8 +187,9 @@ class bitly_Core {
     $request = self::_build_http_request('shorten', $parameters);    
     $response = self::_http_post($request, self::$api_host);
     $json_response = json_decode($response->body[0]);
+    $status_txt = $json_response->status_txt;
 
-    if ('OK' == $json_response->status_txt) {
+    if ('OK' == $status_txt) {
       $short_url = $json_response->data->url;
       // Save the link hash to the database
       $link = ORM::factory("bitly_link");
@@ -196,14 +197,11 @@ class bitly_Core {
       $link->hash = $json_response->data->hash;
       $link->global_hash = $json_response->data->global_hash;
       $link->save();
-
-      message::success("$long_url has been shortened to $short_url");
-      
       return $json_response->data->url;
       
     } else {
-      message::error("Unable to shorten $long_url");
-      // @todo log the error
+      $status_code = $json_response->status_code;
+      log::error("content", "Shortened URL", "Error: $status_code $status_txt <a href=\"{$long_url}\">item</a>");
       return false;
     }
   }
