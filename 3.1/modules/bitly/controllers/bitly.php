@@ -39,7 +39,6 @@ class bitly_Controller extends Controller {
     if ($short_url) {
       message::success("Item URL shortened to $short_url");
     } else {
-
       message::error("Unable to shorten " . url::abs_site($item->relative_url_cache));
     }
 
