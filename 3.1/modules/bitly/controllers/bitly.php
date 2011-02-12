@@ -33,8 +33,15 @@ class bitly_Controller extends Controller {
     access::required("view", $item);
     access::required("edit", $item);
 
-    // Get the item's URL and shorten it
+    // Shorten the item's URL
     $short_url = bitly::shorten_url($item_id);
+    
+    if ($short_url) {
+      message::success("Item URL shortened to $short_url");
+    } else {
+
+      message::error("Unable to shorten " . url::abs_site($item->relative_url_cache));
+    }
 
     // Redirect back to the item
     url::redirect(url::abs_site($item->relative_url_cache));
