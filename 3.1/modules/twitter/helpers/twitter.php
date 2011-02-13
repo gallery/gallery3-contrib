@@ -24,10 +24,9 @@ class twitter_Core {
   static $character_count = 140;
 
   /**
-   *
-   * @return Forge
+   * Get module configure form
+   * @return  Forge
    * @todo Set global Twitter account
-   * @todo Default tweet message
    */
   static function get_configure_form() {
     $form = new Forge("admin/twitter", "", "post", array("id" => "g-configure-twitter-form"));
@@ -42,9 +41,11 @@ class twitter_Core {
 
     $group_tweet = $form->group("twitter_message")->label(t("Default Tweet"));
     $group_tweet->input("default_tweet")
-          ->label("Default Tweet")
+          ->label(t("Default Tweet"))
           ->value(module::get_var("twitter", "default_tweet"));
-    // @todo Add reset default tweet button
+    $group_tweet->checkbox("reset_tweet")
+          ->label(t("Reset to default on save"))
+          ->value(1);
 
     if (module::is_active("bitly")) {
       $group_url = $form->group("urls")->label(t("Shorten URLs"));
@@ -52,14 +53,13 @@ class twitter_Core {
             ->label(t("Shorten URLs automatically with bit.ly"))
             ->checked(module::get_var("twitter", "shorten_urls"));
     }
-
     $form->submit("")->value(t("Save"));
     return $form;
   }
 
   /**
-   *
-   * @param <type> $item
+   * Get tweet form
+   * @param  object   $item
    * @return Forge 
    */
   static function get_tweet_form($item) {
@@ -69,21 +69,20 @@ class twitter_Core {
     $tweet = preg_replace("/%title/", $item->title, $tweet);
     $tweet = preg_replace("/%description/", $item->description, $tweet);
     // If bit.ly module's enabled, get the item's URL and shorten it
-    // @todo Refactor bit.ly module so that it doesn't output a status message when called by other modules
-    if (module::is_active("bitly") && module::get_var("twitter", "shorten_urls")) {
+    if (!empty($item->id) && module::is_active("bitly") && module::get_var("twitter", "shorten_urls")) {
       $url = bitly::shorten_url($item->id);
     } else {
       $url = url::abs_site($item->relative_url_cache);
     }
     $tweet = preg_replace("/%url/", $url, $tweet);
-    $form = new Forge("twitter/tweet", "", "post", array("id" => "g-twitter-form"));
+    
+    $form = new Forge("twitter/tweet/$item->id", "", "post", array("id" => "g-twitter-tweet-form"));
     $group = $form->group("twitter_message")->label(t("Compose Tweet"));
     $group->textarea("tweet")
           ->value($tweet)
           ->rules("required")
           ->error_messages("required", t("Your tweet cannot be empty!"))
           ->id("g-tweet");
-    $group->hidden("item_id")->value($item->id);
     $form->submit("")->value(t("Tweet"));
     return $form;
   }
@@ -105,16 +104,6 @@ class twitter_Core {
       site_status::clear("twitter_config");
       return true;
     }
-  }
-
-  /**
-   * Reset the standard Tweet to the module default
-   * @return string
-   */
-  static function reset_default_tweet() {
-    $default_tweet = t("Check out this %type, '%title': %description %url");
-    module::set_var("twitter", "default_tweet", $default_tweet);
-    return $default_tweet;
   }
 
 }

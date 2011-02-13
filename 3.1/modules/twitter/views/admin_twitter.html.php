@@ -16,8 +16,8 @@
     </ul>
     <p><?= t("Then enter the provided OAuth consumer key and secret here.") ?></p>
     <? else: ?>
-    <p><?= t("If necessary, update your Gallery's
-      <a href=\"%twitter_apps\" target=\"_blank\">Twitter application settings</a>.",
+    <p><?= t("Update your Gallery's
+      <a href=\"%twitter_apps\" target=\"_blank\">Twitter application settings</a>, if necessary.",
         array("twitter_apps" => "http://dev.twitter.com/apps")) ?></p>
     <? if (!module::is_active("bitly")): ?>
     <p><?= t("Install and activate the <a href=\"%bitly_module_url\">bit.ly module</a> to shorten
