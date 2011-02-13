@@ -29,22 +29,25 @@ class twitter_event_Core {
 
   static function site_menu($menu, $theme) {
     $item = $theme->item();
-    
-    $menu->get("options_menu")
-      ->append(Menu::factory("dialog")
-               ->id("twitter")
-               ->label(t("Share on Twitter"))
-               ->css_id("g-twitter-link")
-               ->url(url::site("twitter/dialog/{$item->id}")));
+    if (twitter::is_registered()) {
+      $menu->get("options_menu")
+        ->append(Menu::factory("dialog")
+                 ->id("twitter")
+                 ->label(t("Share on Twitter"))
+                 ->css_id("g-twitter-link")
+                 ->url(url::site("twitter/dialog/{$item->id}")));
+    }
   }
 
   static function context_menu($menu, $theme, $item) {
-    $menu->get("options_menu")
-      ->append(Menu::factory("dialog")
-               ->id("twitter")
-               ->label(t("Share on Twitter"))
-               ->css_class("ui-icon-link g-twitter-share")
-               ->url(url::site("twitter/dialog/{$item->id}")));
+    if (twitter::is_registered()) {
+      $menu->get("options_menu")
+        ->append(Menu::factory("dialog")
+                 ->id("twitter")
+                 ->label(t("Share on Twitter"))
+                 ->css_class("ui-icon-link g-twitter-share")
+                 ->url(url::site("twitter/dialog/{$item->id}")));
+    }
   }
 
 }
