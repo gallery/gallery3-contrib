@@ -25,7 +25,7 @@ class twitter_installer {
                 `id` int(9) NOT NULL AUTO_INCREMENT,
                 `item_id` int(9) NOT NULL,
                 `twitter_id` decimal(20,0) NULL,
-                `tweet` varchar(140) NOT NULL,
+                `tweet` varchar(255) NOT NULL,
                 `sent` int(9) NULL,
                 `created` int(9) NOT NULL,
                PRIMARY KEY (`id`))
