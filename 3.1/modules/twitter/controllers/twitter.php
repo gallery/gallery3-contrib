@@ -54,13 +54,11 @@ class Twitter_Controller extends Controller {
 
     // If HTTP response is 200 continue otherwise send to connect page to retry
     if (200 == $connection->http_code) {
-      // The user has been verified and the access tokens can be saved for future use
-      $this->save_user($access_token);
-      // Redirect to the tweet form
+      $this->_save_user($access_token);
       $item = ORM::factory("item", $item_id);
       url::redirect(url::abs_site($item_url));
     } else {
-      // @todo Log HTTP status for application log and/or error message
+      log::error("content", "Twitter", "Unable to retrieve user access token: " . $connection->http_code);
       $this->_clear_session();
       url::redirect(url::site("twitter/redirect"));
     }
@@ -101,7 +99,7 @@ class Twitter_Controller extends Controller {
   /**
    * Redirect user to Twitter authorization page.
    */
-  function redirect() {
+  public function redirect() {
     require_once(MODPATH . "twitter/lib/twitteroauth.php");
     
     $consumer_key = module::get_var("twitter", "consumer_key");
@@ -136,44 +134,10 @@ class Twitter_Controller extends Controller {
   }
 
   /**
-   * Save tweets sent and those not sent because of Twitter API issues
-   * @param integer  $item_id
-   * @param object   $tweet     The tweet sent, or the tweet that couldn't be sent
-   */
-  public function save_tweet($tweet) {
-    if (!empty($tweet->item_id) && !empty($tweet->tweet) && !empty($tweet->status)) {
-      $t = ORM::factory("twitter_tweet");
-      $t->created = time();
-      $t->item_id = $tweet->item_id;
-      $t->twitter_id = $tweet->twitter_id;
-      $t->tweet = $tweet->tweet;
-      $t->status = $tweet->status;
-      $t->user_id = identity::active_user()->id;
-      $t->save();
-    }
-  }
-
-  /**
-   * Save or update the current user's Twitter credentials.
-   * @param array     $access_token
-   * @todo Ensure only one record per twitter_screen_name
-   */
-  function save_user($access_token) {
-    $u = ORM::factory("twitter_user");
-    $u->oauth_token = $access_token["oauth_token"];
-    $u->oauth_token_secret = $access_token["oauth_token_secret"];
-    $u->twitter_user_id = $access_token["user_id"];
-    $u->screen_name = $access_token["screen_name"];
-    $u->user_id = identity::active_user()->id;
-    $u->save();
-
-    message::success(t("Twitter access tokens saved!"));
-  }
-
-  /**
    * Post a status update to Twitter
-   * @param string    $message
+   * @param int      $item_id
    * @todo Update previously failed tweet, if one exists
+   * @todo Display errors in Tweet dialog
    */
   public function tweet($item_id) {
     access::verify_csrf();
@@ -183,7 +147,7 @@ class Twitter_Controller extends Controller {
     
     if ($form->validate()) {
       $item_url = url::abs_site($item->relative_url_cache);
-      $u = $this->_get_twitter_user(identity::active_user()->id);
+      $user = $this->_get_twitter_user(identity::active_user()->id);
       $consumer_key = module::get_var("twitter", "consumer_key");
       $consumer_secret = module::get_var("twitter", "consumer_secret");
 
@@ -192,41 +156,30 @@ class Twitter_Controller extends Controller {
       $connection = new TwitterOAuth(
               $consumer_key,
               $consumer_secret,
-              $u->oauth_token,
-              $u->oauth_token_secret);
+              $user->oauth_token,
+              $user->oauth_token_secret);
       
       $message = $form->twitter_message->tweet->value;
       $response = $connection->post('statuses/update', array('status' => $message));
 
       if (200 == $connection->http_code) {
-        $status = 1;
         message::success(t("Tweet sent!"));
         json::reply(array("result" => "success", "location" => $item->url()));
       } else {
-        $status = 0;
-        log::error("content", "Twitter", "Unable to sent tweet, response code: " . $connection->http_code);
+        log::error("content", "Twitter", "Unable to send tweet: " . $connection->http_code);
         message::error(t("Unable to send Tweet. Your message has been saved. Please try again later."));
         json::reply(array("result" => "error", "html" => (string)$form));
       }
       $tweet->item_id = $item_id;
-      $tweet->twitter_id = $response->id;
+      (!empty($response->id)) ? $tweet->twitter_id = $response->id : $tweet->twitter_id = NULL;
       $tweet->tweet = $message;
-      $tweet->status = $status;
 
-      $this->save_tweet($tweet);
+      $this->_save_tweet($tweet);
       $this->_delete_failed($item_id);
       
     } else {
       json::reply(array("result" => "error", "html" => (string)$form));
     }
-  }
-
-  /**
-   *
-   * @param <type> $tweet 
-   */
-  function update_tweet($tweet) {
-
   }
 
   /**
@@ -240,8 +193,7 @@ class Twitter_Controller extends Controller {
 
   /**
    * Delete all failed tweets by the current user for an item
-   * @param integer   $item_id
-   * @todo Not implemented
+   * @param int       $item_id
    */
   private function _delete_failed($item_id) {
     if (is_numeric($item_id)) {
@@ -250,14 +202,14 @@ class Twitter_Controller extends Controller {
               ->delete("twitter_tweets")
               ->where("user_id", "=", $user_id)
               ->where("item_id", "=", $item_id)
-              ->where("status", "=", 0)
+              ->where("twitter_id", "=", "")
               ->execute();
     }
   }
 
   /**
    * Get Twitter credentials for the current user.
-   * @param int       $user_id
+   * @param  int      $user_id
    * @return mixed    object|false
    */
   private function _get_twitter_user($user_id) {
@@ -279,6 +231,47 @@ class Twitter_Controller extends Controller {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Save new tweets
+   * @param object   $tweet
+   */
+  private function _save_tweet($tweet) {
+    if (!empty($tweet->item_id) && !empty($tweet->tweet)) {
+      $t = ORM::factory("twitter_tweet");
+      $t->item_id = $tweet->item_id;
+      $t->twitter_id = $tweet->twitter_id;
+      $t->tweet = $tweet->tweet;
+      $t->sent = (!empty($tweet->twitter_id)) ? time() : NULL;
+      $t->user_id = identity::active_user()->id;
+      $t->save();
+    }
+  }
+
+  /**
+   * Save or update the current user's Twitter credentials.
+   * @param array     $access_token
+   * @todo Ensure only one record per twitter_screen_name
+   */
+  private function _save_user($access_token) {
+    $u = ORM::factory("twitter_user");
+    $u->oauth_token = $access_token["oauth_token"];
+    $u->oauth_token_secret = $access_token["oauth_token_secret"];
+    $u->twitter_user_id = $access_token["user_id"];
+    $u->screen_name = $access_token["screen_name"];
+    $u->user_id = identity::active_user()->id;
+    $u->save();
+
+    message::success(t("Twitter access tokens saved!"));
+  }
+
+  /**
+   * Update a previously failed tweet
+   * @param object    $tweet
+   */
+  private function _update_tweet($tweet) {
+
   }
 
 }
