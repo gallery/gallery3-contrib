@@ -60,11 +60,18 @@ class twitter_Core {
   /**
    * Get tweet form
    * @param  object   $item
-   * @return Forge 
+   * @return Forge
+   * @todo Load previously failed tweet for the current user for this item
    */
   static function get_tweet_form($item) {
     $long_url = url::abs_site($item->relative_url_cache);
-    $default_tweet = module::get_var("twitter", "default_tweet");
+    // Check for saved tweets for this user and item
+    $saved_tweet = self::get_failed($item->id);
+    if ($saved_tweet) {
+      $default_tweet = $saved_tweet;
+    } else {
+      $default_tweet = module::get_var("twitter", "default_tweet");
+    }
     $tweet = preg_replace("/%type/", $item->type, $default_tweet);
     $tweet = preg_replace("/%title/", $item->title, $tweet);
     $tweet = preg_replace("/%description/", $item->description, $tweet);
@@ -85,6 +92,26 @@ class twitter_Core {
           ->id("g-tweet");
     $form->submit("")->value(t("Tweet"));
     return $form;
+  }
+
+  /**
+   * Get the most recent failed tweet for an item
+   * @param  integer  $item_id
+   * @return mixed object|false
+   * @todo Not implemented
+   */
+  function get_failed($item_id) {
+    $user_id = identity::active_user()->id;
+    $t = ORM::factory("twitter_tweet")
+            ->where("item_id", "=", $item_id)
+            ->where("user_id", "=", $user_id)
+            ->where("status", "=", 0)
+            ->find();
+    if ($t->loaded()) {
+      return $t->tweet;
+    } else {
+      return false;
+    }
   }
 
   /**
