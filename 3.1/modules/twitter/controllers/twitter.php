@@ -180,6 +180,24 @@ class Twitter_Controller extends Controller {
   }
 
   /**
+   * Save tweets sent and those not sent because of Twitter API issues
+   * @param integer  $item_id
+   * @param string   $tweet  The tweet sent, or the tweet that couldn't be sent
+   * @param boolean  $status   1 for success and 0 for not sent
+   */
+  public function save($item_id, $tweet, $status) {
+    if (!empty($item_id) && !empty($tweet) && !empty($status)) {
+      $t = ORM::factory("twitter_tweet");
+      $t->created = time();
+      $t->item_id = $item_id;
+      $t->tweet = $tweet;
+      $t->status = $status;
+      $t->user_id = identity::active_user()->id;
+      $t->save();
+    }
+  }
+
+  /**
    * Post a status update to Twitter
    * @param string    $message
    */
@@ -190,10 +208,8 @@ class Twitter_Controller extends Controller {
     $form = twitter::get_tweet_form($item);
     
     if ($form->validate()) {
-      echo "Validated!";
-      $user_id = identity::active_user()->id;
       $item_url = url::abs_site($item->relative_url_cache);
-      $twitter_user = $this->_get_twitter_user($user_id);
+      $twitter_user = $this->_get_twitter_user(identity::active_user()->id);
       $consumer_key = module::get_var("twitter", "consumer_key");
       $consumer_secret = module::get_var("twitter", "consumer_secret");
 
@@ -213,11 +229,15 @@ class Twitter_Controller extends Controller {
         //url::redirect(url::abs_site($item->relative_url_cache));
         //json::reply(array("result" => "success"));
         json::reply(array("result" => "success", "location" => $item->url()));
+        $status = 1;
       } else {
-        message::error(t("Unable to send Tweet. Try again later."));
-        json::reply(array("result" => "error", "html" => (string)$form));
-        // @todo Save tweet with a status of not sent.
-      } 
+        message::error(t("Unable to send Tweet. Your message has been saved. Please try again later."));
+        json::reply(array("result" => "error", "location" => $item->url()));
+        $status = 0;
+        // @todo Log Twitter error response
+      }
+      $this->save($item_id, $message, $status);
+      
     } else {
       echo "validation failed";
       json::reply(array("result" => "error", "html" => (string)$form));
