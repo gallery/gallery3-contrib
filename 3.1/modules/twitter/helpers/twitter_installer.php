@@ -23,12 +23,11 @@ class twitter_installer {
     Database::instance()
       ->query("CREATE TABLE {twitter_tweets} (
                 `id` int(9) NOT NULL AUTO_INCREMENT,
-                `created` int(9) NOT NULL,
                 `item_id` int(9) NOT NULL,
-                `status` tinyint(1) NOT NULL,
                 `twitter_id` decimal(20,0) NULL,
                 `tweet` varchar(140) NOT NULL,
-                `user_id` int(9) NOT NULL,
+                `sent` int(9) NULL,
+                `created` int(9) NOT NULL,
                PRIMARY KEY (`id`))
                DEFAULT CHARSET=utf8;");
     Database::instance()
