@@ -26,7 +26,6 @@ class twitter_Core {
   /**
    * Get module configure form
    * @return  Forge
-   * @todo Set global Twitter account
    */
   static function get_configure_form() {
     $form = new Forge("admin/twitter", "", "post", array("id" => "g-configure-twitter-form"));
@@ -61,16 +60,17 @@ class twitter_Core {
    * Get tweet form
    * @param  object   $item
    * @return Forge
-   * @todo Load previously failed tweet for the current user for this item
    */
   static function get_tweet_form($item) {
     $long_url = url::abs_site($item->relative_url_cache);
     // Check for saved tweets for this user and item
-    $saved_tweet = self::get_failed($item->id);
-    if ($saved_tweet) {
-      $default_tweet = $saved_tweet;
+    $saved = self::get_failed($item->id);
+    if ($saved) {
+      $default_tweet = $saved->tweet;
+      $tweet_id = $saved->id;
     } else {
       $default_tweet = module::get_var("twitter", "default_tweet");
+      $tweet_id = 0;
     }
     $tweet = preg_replace("/%type/", $item->type, $default_tweet);
     $tweet = preg_replace("/%title/", $item->title, $tweet);
@@ -90,6 +90,7 @@ class twitter_Core {
           ->rules("required")
           ->error_messages("required", t("Your tweet cannot be empty!"))
           ->id("g-tweet");
+    $group->hidden("tweet_id")->value($tweet_id)->id("tweet_id");
     $form->submit("")->value(t("Tweet"));
     return $form;
   }
@@ -104,10 +105,10 @@ class twitter_Core {
     $t = ORM::factory("twitter_tweet")
             ->where("item_id", "=", $item_id)
             ->where("user_id", "=", $user_id)
-            ->where("twitter_id", "=", "")
+            ->where("twitter_id", "IS", NULL)
             ->find();
     if ($t->loaded()) {
-      return $t->tweet;
+      return $t;
     } else {
       return false;
     }

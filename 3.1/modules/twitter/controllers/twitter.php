@@ -136,8 +136,7 @@ class Twitter_Controller extends Controller {
   /**
    * Post a status update to Twitter
    * @param int      $item_id
-   * @todo Update previously failed tweet, if one exists
-   * @todo Display errors in Tweet dialog
+   * @todo Display Twitter API errors in Tweet dialog
    */
   public function tweet($item_id) {
     access::verify_csrf();
@@ -173,9 +172,8 @@ class Twitter_Controller extends Controller {
       $tweet->item_id = $item_id;
       (!empty($response->id)) ? $tweet->twitter_id = $response->id : $tweet->twitter_id = NULL;
       $tweet->tweet = $message;
-
+      $tweet->id = $form->twitter_message->tweet_id->value;
       $this->_save_tweet($tweet);
-      $this->_delete_failed($item_id);
       
     } else {
       json::reply(array("result" => "error", "html" => (string)$form));
@@ -189,22 +187,6 @@ class Twitter_Controller extends Controller {
     Session::instance()->delete("twitter_oauth_token");
     Session::instance()->delete("twitter_oauth_token_secret");
     Session::instance()->delete("twitter_access_token");
-  }
-
-  /**
-   * Delete all failed tweets by the current user for an item
-   * @param int       $item_id
-   */
-  private function _delete_failed($item_id) {
-    if (is_numeric($item_id)) {
-    $user_id = identity::active_user()->id;
-      $result = db::build()
-              ->delete("twitter_tweets")
-              ->where("user_id", "=", $user_id)
-              ->where("item_id", "=", $item_id)
-              ->where("twitter_id", "=", "")
-              ->execute();
-    }
   }
 
   /**
@@ -239,7 +221,11 @@ class Twitter_Controller extends Controller {
    */
   private function _save_tweet($tweet) {
     if (!empty($tweet->item_id) && !empty($tweet->tweet)) {
-      $t = ORM::factory("twitter_tweet");
+      if ($tweet->id > 0) {
+        $t = ORM::factory("twitter_tweet")->where("id", "=", $tweet->id)->find();
+      } else {
+        $t = ORM::factory("twitter_tweet");
+      }
       $t->item_id = $tweet->item_id;
       $t->twitter_id = $tweet->twitter_id;
       $t->tweet = $tweet->tweet;
@@ -264,14 +250,6 @@ class Twitter_Controller extends Controller {
     $u->save();
 
     message::success(t("Twitter access tokens saved!"));
-  }
-
-  /**
-   * Update a previously failed tweet
-   * @param object    $tweet
-   */
-  private function _update_tweet($tweet) {
-
   }
 
 }
