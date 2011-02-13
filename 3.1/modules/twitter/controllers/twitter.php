@@ -21,6 +21,52 @@
 class Twitter_Controller extends Controller {
 
   /**
+   * Verify credentials and redirect based on response from Twitter.
+   */
+  public function callback() {
+    require_once(MODPATH . "twitter/lib/twitteroauth.php");
+
+    $consumer_key = module::get_var("twitter", "consumer_key");
+    $consumer_secret = module::get_var("twitter", "consumer_secret");
+    $oauth_token = Session::instance()->get("twitter_oauth_token");
+    $oauth_token_secret = Session::instance()->get("twitter_oauth_token_secret");
+    $item_url = Session::instance()->get("twitter_item_redirect");
+
+    // If the oauth_token is old redirect to the connect page
+    if (isset($_REQUEST['oauth_token']) && $oauth_token !== $_REQUEST['oauth_token']) {
+      Session::instance()->set("twitter_oauth_status", "old_token");
+      $this->_clear_session();
+      url::redirect(url::site("twitter/redirect"));
+    }
+
+    // Create TwitteroAuth object with app key/secret and token key/secret from default phase
+    $connection = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
+
+    // Request access tokens from twitter
+    $access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
+
+    // Save the access tokens
+    Session::instance()->set("twitter_access_token", $access_token);
+
+    // Remove no longer needed request tokens
+    Session::instance()->delete("twitter_oauth_token");
+    Session::instance()->delete("twitter_oauth_token_secret");
+
+    // If HTTP response is 200 continue otherwise send to connect page to retry
+    if (200 == $connection->http_code) {
+      // The user has been verified and the access tokens can be saved for future use
+      $this->save_user($access_token);
+      // Redirect to the tweet form
+      $item = ORM::factory("item", $item_id);
+      url::redirect(url::abs_site($item_url));
+    } else {
+      // @todo Log HTTP status for application log and/or error message
+      $this->_clear_session();
+      url::redirect(url::site("twitter/redirect"));
+    }
+  }
+
+  /**
    * Display Twitter status dialog.
    * @param int       $item_id
    */
@@ -49,97 +95,7 @@ class Twitter_Controller extends Controller {
       $v->user_id = $user_id;
       $v->twitter_auth_url = url::site("twitter/redirect?item_url=$item_url");
     }
-    
     print $v;
-  }
-
-  /**
-   * Check if current user's Twitter credentials have been stored locally.
-   * @param  int      $user_id
-   * @return boolean
-   */
-  private function _is_token_set($user_id) {
-    $twitter_user = $this->_get_twitter_user($user_id);
-    if (!empty($twitter_user->oauth_token) && !empty($twitter_user->oauth_token_secret)) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Get Twitter credentials for the current user.
-   * @param int       $user_id
-   * @return mixed    object|false
-   */
-  private function _get_twitter_user($user_id) {
-    $twitter_user = ORM::factory("twitter_user")->where("user_id", "=", $user_id)->find();
-    if ($twitter_user->loaded()) {
-      return $twitter_user;
-    }
-    return false;
-  }
-
-  /**
-   * Verify credentials and redirect based on response from Twitter.
-   */
-  public function callback() {
-    require_once(MODPATH . "twitter/lib/twitteroauth.php");
-
-    $consumer_key = module::get_var("twitter", "consumer_key");
-    $consumer_secret = module::get_var("twitter", "consumer_secret");
-    $oauth_token = Session::instance()->get("twitter_oauth_token");
-    $oauth_token_secret = Session::instance()->get("twitter_oauth_token_secret");
-    $item_url = Session::instance()->get("twitter_item_redirect");
-
-    // If the oauth_token is old redirect to the connect page
-    if (isset($_REQUEST['oauth_token']) && $oauth_token !== $_REQUEST['oauth_token']) {
-      Session::instance()->set("twitter_oauth_status", "old_token");
-      $this->clear_twitter_session();
-      url::redirect(url::site("twitter/redirect"));
-    }
-
-    // Create TwitteroAuth object with app key/secret and token key/secret from default phase
-    $connection = new TwitterOAuth($consumer_key, $consumer_secret, $oauth_token, $oauth_token_secret);
-
-    // Request access tokens from twitter
-    $access_token = $connection->getAccessToken($_REQUEST['oauth_verifier']);
-
-    // Save the access tokens
-    Session::instance()->set("twitter_access_token", $access_token);
-
-    // Remove no longer needed request tokens
-    Session::instance()->delete("twitter_oauth_token");
-    Session::instance()->delete("twitter_oauth_token_secret");
-
-    // If HTTP response is 200 continue otherwise send to connect page to retry
-    if (200 == $connection->http_code) {
-      // The user has been verified and the access tokens can be saved for future use
-      $this->save_twitter_user($access_token);
-      // Redirect to the tweet form
-      $item = ORM::factory("item", $item_id);
-      url::redirect(url::abs_site($item_url));
-    } else {
-      // @todo Log HTTP status for application log and/or error message
-      $this->clear_twitter_session();
-      url::redirect(url::site("twitter/redirect"));
-    }
-  }
-
-  /**
-   * Save or update the current user's Twitter credentials.
-   * @param array     $access_token
-   * @todo Ensure only one record per twitter_screen_name
-   */
-  function save_twitter_user($access_token) {
-    $twitter_user = ORM::factory("twitter_user");
-    $twitter_user->oauth_token = $access_token["oauth_token"];
-    $twitter_user->oauth_token_secret = $access_token["oauth_token_secret"];
-    $twitter_user->twitter_user_id = $access_token["user_id"];
-    $twitter_user->screen_name = $access_token["screen_name"];
-    $twitter_user->user_id = identity::active_user()->id;
-    $twitter_user->save();
-
-    message::success(t("Twitter access tokens saved!"));
   }
 
   /**
@@ -182,24 +138,42 @@ class Twitter_Controller extends Controller {
   /**
    * Save tweets sent and those not sent because of Twitter API issues
    * @param integer  $item_id
-   * @param string   $tweet  The tweet sent, or the tweet that couldn't be sent
-   * @param boolean  $status   1 for success and 0 for not sent
+   * @param object   $tweet     The tweet sent, or the tweet that couldn't be sent
    */
-  public function save($item_id, $tweet, $status) {
-    if (!empty($item_id) && !empty($tweet) && !empty($status)) {
+  public function save_tweet($tweet) {
+    if (!empty($tweet->item_id) && !empty($tweet->tweet) && !empty($tweet->status)) {
       $t = ORM::factory("twitter_tweet");
       $t->created = time();
-      $t->item_id = $item_id;
-      $t->tweet = $tweet;
-      $t->status = $status;
+      $t->item_id = $tweet->item_id;
+      $t->twitter_id = $tweet->twitter_id;
+      $t->tweet = $tweet->tweet;
+      $t->status = $tweet->status;
       $t->user_id = identity::active_user()->id;
       $t->save();
     }
   }
 
   /**
+   * Save or update the current user's Twitter credentials.
+   * @param array     $access_token
+   * @todo Ensure only one record per twitter_screen_name
+   */
+  function save_user($access_token) {
+    $u = ORM::factory("twitter_user");
+    $u->oauth_token = $access_token["oauth_token"];
+    $u->oauth_token_secret = $access_token["oauth_token_secret"];
+    $u->twitter_user_id = $access_token["user_id"];
+    $u->screen_name = $access_token["screen_name"];
+    $u->user_id = identity::active_user()->id;
+    $u->save();
+
+    message::success(t("Twitter access tokens saved!"));
+  }
+
+  /**
    * Post a status update to Twitter
    * @param string    $message
+   * @todo Update previously failed tweet, if one exists
    */
   public function tweet($item_id) {
     access::verify_csrf();
@@ -209,7 +183,7 @@ class Twitter_Controller extends Controller {
     
     if ($form->validate()) {
       $item_url = url::abs_site($item->relative_url_cache);
-      $twitter_user = $this->_get_twitter_user(identity::active_user()->id);
+      $u = $this->_get_twitter_user(identity::active_user()->id);
       $consumer_key = module::get_var("twitter", "consumer_key");
       $consumer_secret = module::get_var("twitter", "consumer_secret");
 
@@ -218,38 +192,93 @@ class Twitter_Controller extends Controller {
       $connection = new TwitterOAuth(
               $consumer_key,
               $consumer_secret,
-              $twitter_user->oauth_token,
-              $twitter_user->oauth_token_secret);
+              $u->oauth_token,
+              $u->oauth_token_secret);
       
       $message = $form->twitter_message->tweet->value;
-      $connection->post('statuses/update', array('status' => $message));
+      $response = $connection->post('statuses/update', array('status' => $message));
 
       if (200 == $connection->http_code) {
-        message::success(t("Tweet sent!"));
-        //url::redirect(url::abs_site($item->relative_url_cache));
-        //json::reply(array("result" => "success"));
-        json::reply(array("result" => "success", "location" => $item->url()));
         $status = 1;
+        message::success(t("Tweet sent!"));
+        json::reply(array("result" => "success", "location" => $item->url()));
       } else {
-        message::error(t("Unable to send Tweet. Your message has been saved. Please try again later."));
-        json::reply(array("result" => "error", "location" => $item->url()));
         $status = 0;
-        // @todo Log Twitter error response
+        log::error("content", "Twitter", "Unable to sent tweet, response code: " . $connection->http_code);
+        message::error(t("Unable to send Tweet. Your message has been saved. Please try again later."));
+        json::reply(array("result" => "error", "html" => (string)$form));
       }
-      $this->save($item_id, $message, $status);
+      $tweet->item_id = $item_id;
+      $tweet->twitter_id = $response->id;
+      $tweet->tweet = $message;
+      $tweet->status = $status;
+
+      $this->save_tweet($tweet);
+      $this->_delete_failed($item_id);
       
     } else {
-      echo "validation failed";
       json::reply(array("result" => "error", "html" => (string)$form));
     }
   }
 
   /**
+   *
+   * @param <type> $tweet 
+   */
+  function update_tweet($tweet) {
+
+  }
+
+  /**
    * Clear Twitter module session variables
    */
-  function clear_twitter_session() {
+  private function _clear_session() {
     Session::instance()->delete("twitter_oauth_token");
     Session::instance()->delete("twitter_oauth_token_secret");
     Session::instance()->delete("twitter_access_token");
   }
+
+  /**
+   * Delete all failed tweets by the current user for an item
+   * @param integer   $item_id
+   * @todo Not implemented
+   */
+  private function _delete_failed($item_id) {
+    if (is_numeric($item_id)) {
+    $user_id = identity::active_user()->id;
+      $result = db::build()
+              ->delete("twitter_tweets")
+              ->where("user_id", "=", $user_id)
+              ->where("item_id", "=", $item_id)
+              ->where("status", "=", 0)
+              ->execute();
+    }
+  }
+
+  /**
+   * Get Twitter credentials for the current user.
+   * @param int       $user_id
+   * @return mixed    object|false
+   */
+  private function _get_twitter_user($user_id) {
+    $twitter_user = ORM::factory("twitter_user")->where("user_id", "=", $user_id)->find();
+    if ($twitter_user->loaded()) {
+      return $twitter_user;
+    }
+    return false;
+  }
+
+  /**
+   * Check if current user's Twitter credentials have been stored locally.
+   * @param  int      $user_id
+   * @return boolean
+   */
+  private function _is_token_set($user_id) {
+    $twitter_user = $this->_get_twitter_user($user_id);
+    if (!empty($twitter_user->oauth_token) && !empty($twitter_user->oauth_token_secret)) {
+      return true;
+    }
+    return false;
+  }
+
 }
