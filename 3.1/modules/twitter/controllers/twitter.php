@@ -183,45 +183,45 @@ class Twitter_Controller extends Controller {
    * Post a status update to Twitter
    * @param string    $message
    */
-  function tweet() {
+  public function tweet($item_id) {
     access::verify_csrf();
-    require_once(MODPATH . "twitter/lib/twitteroauth.php");
+    
+    $item = ORM::factory("item", $item_id);
+    $form = twitter::get_tweet_form($item);
+    
+    if ($form->validate()) {
+      echo "Validated!";
+      $user_id = identity::active_user()->id;
+      $item_url = url::abs_site($item->relative_url_cache);
+      $twitter_user = $this->_get_twitter_user($user_id);
+      $consumer_key = module::get_var("twitter", "consumer_key");
+      $consumer_secret = module::get_var("twitter", "consumer_secret");
 
-    $form = twitter::get_tweet_form();
+      require_once(MODPATH . "twitter/lib/twitteroauth.php");
+      
+      $connection = new TwitterOAuth(
+              $consumer_key,
+              $consumer_secret,
+              $twitter_user->oauth_token,
+              $twitter_user->oauth_token_secret);
+      
+      $message = $form->twitter_message->tweet->value;
+      $connection->post('statuses/update', array('status' => $message));
 
-    $user_id = identity::active_user()->id;
-    $item_url = url::abs_site($item->relative_url_cache);
-    $twitter_user = $this->_get_twitter_user($user_id);
-    $consumer_key = module::get_var("twitter", "consumer_key");
-    $consumer_secret = module::get_var("twitter", "consumer_secret");
-
-    $connection = new TwitterOAuth(
-            $consumer_key,
-            $consumer_secret,
-            $twitter_user["oauth_key"],
-            $twitter_user["oauth_user"]);
-
-    $connection->post('statuses/update', array('status' => $message));
-
-    if (200 == $connection->http_code) {
-      return true;
+      if (200 == $connection->http_code) {
+        message::success(t("Tweet sent!"));
+        //url::redirect(url::abs_site($item->relative_url_cache));
+        //json::reply(array("result" => "success"));
+        json::reply(array("result" => "success", "location" => $item->url()));
+      } else {
+        message::error(t("Unable to send Tweet. Try again later."));
+        json::reply(array("result" => "error", "html" => (string)$form));
+        // @todo Save tweet with a status of not sent.
+      } 
     } else {
-      // @todo Save tweet with a status of not sent.
-      return false;
+      echo "validation failed";
+      json::reply(array("result" => "error", "html" => (string)$form));
     }
-
-    if (request::method() == "post") {
-      if ($form->validate()) {
-        $message = $form->twitter_message->tweet->value;
-        if ($this->post($message, $item)) {
-          message::success(t("Tweet sent!"));
-        } else {
-          message::error(t("Unable to send Tweet. Try again later."));
-        }
-      }
-      url::redirect(url::abs_site($item->relative_url_cache));
-    }
-
   }
 
   /**
