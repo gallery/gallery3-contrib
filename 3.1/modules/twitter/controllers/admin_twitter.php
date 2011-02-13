@@ -19,9 +19,16 @@
  */
 class Admin_Twitter_Controller extends Admin_Controller {
 
+  public $default_tweet;
+
+  function  __construct() {
+    parent::__construct();
+    $this->default_tweet = t("Check out this %type, '%title': %description %url");
+  }
+
   /**
    * bit.ly module's settings
-   * @todo Create/get and display the shortened value for this Gallery's root album (home page)
+   * @todo Show default tweet value after resetting it!
    */
   public function index() {
     $form = twitter::get_configure_form();
@@ -30,7 +37,13 @@ class Admin_Twitter_Controller extends Admin_Controller {
       if ($form->validate()) {
         $consumer_key = $form->twitter_oauth->consumer_key->value;
         $consumer_secret = $form->twitter_oauth->consumer_secret->value;
-        $default_tweet = $form->twitter_message->default_tweet->value;
+        $reset_tweet = $form->twitter_message->reset_tweet->value;
+        if ($reset_tweet) {
+          $default_tweet = $this->default_tweet;
+          $form->twitter_message->default_tweet->value = $this->default_tweet;
+        } else {
+          $default_tweet = $form->twitter_message->default_tweet->value;
+        }
         $shorten_urls = $form->urls->shorten_urls->value;
         
         module::set_var("twitter", "consumer_key", $consumer_key);
