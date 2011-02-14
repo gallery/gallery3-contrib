@@ -136,7 +136,6 @@ class Twitter_Controller extends Controller {
   /**
    * Post a status update to Twitter
    * @param int      $item_id
-   * @todo Display Twitter API errors in Tweet dialog
    */
   public function tweet($item_id) {
     access::verify_csrf();
@@ -165,9 +164,10 @@ class Twitter_Controller extends Controller {
         message::success(t("Tweet sent!"));
         json::reply(array("result" => "success", "location" => $item->url()));
       } else {
-        log::error("content", "Twitter", "Unable to send tweet: " . $connection->http_code);
-        message::error(t("Unable to send Tweet. Your message has been saved. Please try again later."));
-        json::reply(array("result" => "error", "html" => (string)$form));
+        message::error(t("Unable to send, your Tweet has been saved. Please try again later."));
+        log::error("content", "Twitter", t("Unable to send tweet: %http_code",
+                array("http_code" => $connection->http_code)));
+        json::reply(array("result" => "success", "location" => $item->url()));
       }
       $tweet->item_id = $item_id;
       (!empty($response->id)) ? $tweet->twitter_id = $response->id : $tweet->twitter_id = NULL;
