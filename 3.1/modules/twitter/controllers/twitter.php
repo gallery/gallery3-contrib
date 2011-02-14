@@ -24,7 +24,7 @@ class Twitter_Controller extends Controller {
    * Verify credentials and redirect based on response from Twitter.
    */
   public function callback() {
-    require_once(MODPATH . "twitter/lib/twitteroauth.php");
+    require_once(MODPATH . "twitter/vendor/twitteroauth/twitteroauth.php");
 
     $consumer_key = module::get_var("twitter", "consumer_key");
     $consumer_secret = module::get_var("twitter", "consumer_secret");
@@ -100,8 +100,8 @@ class Twitter_Controller extends Controller {
    * Redirect user to Twitter authorization page.
    */
   public function redirect() {
-    require_once(MODPATH . "twitter/lib/twitteroauth.php");
-    
+    require_once(MODPATH . "twitter/vendor/twitteroauth/twitteroauth.php");
+
     $consumer_key = module::get_var("twitter", "consumer_key");
     $consumer_secret = module::get_var("twitter", "consumer_secret");
     $oauth_callback = url::abs_site("twitter/callback");
@@ -110,13 +110,13 @@ class Twitter_Controller extends Controller {
     if (!empty($_GET['item_url'])) {
       Session::instance()->set("twitter_item_redirect", $_GET['item_url']);
     }
-    
+
     // Build TwitterOAuth object with client credentials
     $connection = new TwitterOAuth($consumer_key, $consumer_secret);
 
     // Get temporary credentials.
     $request_token = $connection->getRequestToken($oauth_callback);
-    
+
     // Save temporary credentials to session.
     Session::instance()->set("twitter_oauth_token", $request_token['oauth_token']);
     Session::instance()->set("twitter_oauth_token_secret", $request_token['oauth_token_secret']);
@@ -140,24 +140,24 @@ class Twitter_Controller extends Controller {
    */
   public function tweet($item_id) {
     access::verify_csrf();
-    
+
     $item = ORM::factory("item", $item_id);
     $form = twitter::get_tweet_form($item);
-    
+
     if ($form->validate()) {
       $item_url = url::abs_site($item->relative_url_cache);
       $user = $this->_get_twitter_user(identity::active_user()->id);
       $consumer_key = module::get_var("twitter", "consumer_key");
       $consumer_secret = module::get_var("twitter", "consumer_secret");
 
-      require_once(MODPATH . "twitter/lib/twitteroauth.php");
-      
+      require_once(MODPATH . "twitter/vendor/twitteroauth/twitteroauth.php");
+
       $connection = new TwitterOAuth(
               $consumer_key,
               $consumer_secret,
               $user->oauth_token,
               $user->oauth_token_secret);
-      
+
       $message = $form->twitter_message->tweet->value;
       $response = $connection->post('statuses/update', array('status' => $message));
 
@@ -174,7 +174,7 @@ class Twitter_Controller extends Controller {
       $tweet->tweet = $message;
       $tweet->id = $form->twitter_message->tweet_id->value;
       $this->_save_tweet($tweet);
-      
+
     } else {
       json::reply(array("result" => "error", "html" => (string)$form));
     }
