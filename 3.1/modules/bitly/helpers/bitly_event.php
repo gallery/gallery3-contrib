@@ -36,7 +36,7 @@ class bitly_event_Core {
                  ->label(t("Shorten link with bit.ly"))
                  ->url(url::site("bitly/shorten/{$theme->item->id}?csrf={$theme->csrf}"))
                  ->css_id("g-bitly-shorten")
-                 ->css_class("g-bitly-shorten ui-icon-link"));
+                 ->css_class("g-bitly-shorten"));
     }
   }
 
