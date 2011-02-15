@@ -19,13 +19,6 @@
  */
 class Admin_Twitter_Controller extends Admin_Controller {
 
-  public $default_tweet;
-
-  function  __construct() {
-    parent::__construct();
-    $this->default_tweet = t("Check out this %type, '%title': %description %url");
-  }
-
   /**
    * bit.ly module's settings
    * @todo Show default tweet value after resetting it!
@@ -40,7 +33,7 @@ class Admin_Twitter_Controller extends Admin_Controller {
         $reset_tweet = $form->twitter_message->reset_tweet->value;
         if ($reset_tweet) {
           $default_tweet = $this->default_tweet;
-          $form->twitter_message->default_tweet->value = $this->default_tweet;
+          $form->twitter_message->default_tweet->value = twitter::reset_default_tweet();
         } else {
           $default_tweet = $form->twitter_message->default_tweet->value;
         }

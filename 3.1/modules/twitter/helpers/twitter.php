@@ -133,4 +133,8 @@ class twitter_Core {
     }
   }
 
+  static function reset_default_tweet() {
+    return t("Check out this %type, '%title': %description %url");
+  }
+
 }
