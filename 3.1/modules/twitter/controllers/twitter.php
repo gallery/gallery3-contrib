@@ -125,11 +125,11 @@ class Twitter_Controller extends Controller {
     if (200 == $connection->http_code) {
       // Build authorize URL and redirect user to Twitter
       $url = $connection->getAuthorizeURL($request_token["oauth_token"]);
-      url::redirect(url::site($url));
+      url::redirect($url);
     } else {
       // Show notification if something went wrong
       message::success(t("Could not connect to Twitter. Refresh the page or try again later."));
-      url::redirect(url::site($url));
+      url::redirect(urldecode($_GET['item_url']));
     }
   }
 
@@ -249,7 +249,7 @@ class Twitter_Controller extends Controller {
     $u->user_id = identity::active_user()->id;
     $u->save();
 
-    message::success(t("Twitter access tokens saved!"));
+    message::success(t("Success! You may now share Gallery items on Twitter."));
   }
 
 }
