@@ -19,13 +19,6 @@
  */
 class Admin_Twitter_Controller extends Admin_Controller {
 
-  public $default_tweet;
-
-  function  __construct() {
-    parent::__construct();
-    $this->default_tweet = t("Check out this %type, '%title': %description %url");
-  }
-
   /**
    * bit.ly module's settings
    * @todo Show default tweet value after resetting it!
@@ -39,8 +32,7 @@ class Admin_Twitter_Controller extends Admin_Controller {
         $consumer_secret = $form->twitter_oauth->consumer_secret->value;
         $reset_tweet = $form->twitter_message->reset_tweet->value;
         if ($reset_tweet) {
-          $default_tweet = $this->default_tweet;
-          $form->twitter_message->default_tweet->value = $this->default_tweet;
+          $default_tweet = twitter::reset_default_tweet();
         } else {
           $default_tweet = $form->twitter_message->default_tweet->value;
         }
@@ -50,7 +42,9 @@ class Admin_Twitter_Controller extends Admin_Controller {
         module::set_var("twitter", "consumer_secret", $consumer_secret);
         module::set_var("twitter", "default_tweet", $default_tweet);
         module::set_var("twitter", "shorten_urls", $shorten_urls);
+        
         message::success("Twitter settings saved");
+        url::redirect("admin/twitter");
       }
     }
     $is_registered = twitter::is_registered();
