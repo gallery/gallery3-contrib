@@ -9,7 +9,7 @@
   <? if (!$is_registered): ?>
   <p><?= t("The Twitter module is not configured yet.") ?></p>
   <? elseif (!$user_token_set): ?>
-  <p><?= t("You must authorize this Gallery to send Tweets to your account.") ?></p>
+  <p><?= t("You must authorize Gallery to send Tweets to your Twitter account.") ?></p>
   <p><a href="<?= $twitter_auth_url ?>"><img src="<?= url::file("modules/twitter/vendor/twitteroauth/images/lighter.png") ?>" alt="Sign in with Twitter"/></a></p>
   <? else: ?>
   <div class="g-block-content">
