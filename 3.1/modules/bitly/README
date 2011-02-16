@@ -1,0 +1,12 @@
+ABOUT:
+Shorten Gallery's album and item links using bit.ly's URL shortening service.
+
+INSTALLATION AND CONFIGURATION INSTRUCTIONS:
+http://codex.gallery2.org/Gallery3:Modules:bitly
+
+QUESTIONS, COMMENTS?
+http://2tbsp.com/content/bitly-module-gallery-3
+
+ROADMAP:
+- Provide multi-user support.
+- Display shortened link statistics (clicks, etc.)

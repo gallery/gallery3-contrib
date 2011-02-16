@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,9 +49,12 @@ class albumpassword_Controller extends Controller {
     access::required("view", $item);
     access::required("edit", $item);
 
-    // Check for and delete the password.
-    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $id)->find();
-    if ($existing_password->loaded()) {
+    // Check for and delete the password and any cached ids assigned to it.
+    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $id)->find_all();
+    if (count($existing_password) > 0) {
+      foreach ($existing_password as $one_password) {
+        db::build()->delete("albumpassword_idcaches")->where("password_id", "=", $one_password->id)->execute();
+      }
       db::build()->delete("items_albumpasswords")->where("album_id", "=", $id)->execute();
       message::success(t("Password Removed."));
     }
@@ -70,9 +73,12 @@ class albumpassword_Controller extends Controller {
     $album_id = Input::instance()->post("item_id");
     $album_password = Input::instance()->post("assignpassword_password");
 
-    // Check for, and remove, any existing passwords.
-    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $album_id)->find();
-    if ($existing_password->loaded()) {
+    // Check for, and remove, any existing passwords and cached ids.
+    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $album_id)->find_all();
+    if (count($existing_password) > 0) {
+      foreach ($existing_password as $one_password) {
+        db::build()->delete("albumpassword_idcaches")->where("password_id", "=", $one_password->id)->execute();
+      }
       db::build()->delete("items_albumpasswords")->where("album_id", "=", $album_id)->execute();
     }
 
@@ -82,9 +88,28 @@ class albumpassword_Controller extends Controller {
     $new_password->password = $album_password;
     $new_password->save();
 
+    // Add the album to the id cache.
+    $cached_album = ORM::factory("albumpassword_idcache");
+    $cached_album->password_id = $new_password->id;
+    $cached_album->item_id = $album_id;
+    $cached_album->save();
+
+    // Check for any sub-items within the album, add all of them to the id cache.
+    $items = ORM::factory("item", $album_id)
+      ->viewable()
+      ->descendants();
+    if (count($items) > 0) {
+      foreach ($items as $one_item) {
+        $cached_item = ORM::factory("albumpassword_idcache");
+        $cached_item->password_id = $new_password->id;
+        $cached_item->item_id = $one_item->id;
+        $cached_item->save();
+      }
+    }
+
     // Display a success message and close the dialog.
     message::success(t("Password saved."));
-    json::reply(array("result" => "success"));
+    print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
   }
 
   public function logout() {
@@ -112,10 +137,10 @@ class albumpassword_Controller extends Controller {
       // If not, close the dialog and display a rejected message.
       cookie::set("g3_albumpassword", $album_password);
       message::success(t("Password Accepted."));
-      json::reply(array("result" => "success"));
+      print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
     } else {
       message::error(t("Password Rejected."));
-      json::reply(array("result" => "success"));
+      print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
     }
   }
 
@@ -129,7 +154,7 @@ class albumpassword_Controller extends Controller {
     $assignpassword_group->input("assignpassword_password")
                          ->id('assignpassword_password')
                          ->label(t("Password:"));
-    $form->submit("save_password")->value(t("Save"));
+    $assignpassword_group->submit("save_password")->value(t("Save"));
 
     // Return the newly generated form.
     return $form;
@@ -139,12 +164,14 @@ class albumpassword_Controller extends Controller {
     // Generate a form for allowing visitors to enter in their passwords.
     $form = new Forge("albumpassword/checkpassword", "", "post",
                       array("id" => "g-login-password-form"));
+
     $assignpassword_group = $form->group("Enter Password")
                                  ->label(t("Enter Password:"));
-    $assignpassword_group->input("albumpassword_password")
+    $assignpassword_group->password("albumpassword_password")
                          ->id('albumpassword_password')
                          ->label(t("Password:"));
-    $form->submit("login_password")->value(t("Login"));
+
+    $assignpassword_group->submit("")->value(t("Login"));
 
     // Return the newly generated form.
     return $form;

@@ -1,0 +1,3 @@
+name = "About this Album"
+description = "Show some simple, specific and useful info about a given album"
+version = 1
