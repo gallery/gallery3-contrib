@@ -1,0 +1,3 @@
+name = "Chroot Users"
+description = "Restrict access to one album."
+version = 1

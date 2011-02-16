@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,8 @@ class downloadalbum_Controller extends Controller {
           continue;
         }
 
-        $i_relative_path = str_replace($container_realpath.'/', '', $i_realpath);
+        $i_relative_path = str_replace($container_realpath.DIRECTORY_SEPARATOR, '', $i_realpath);
+        $i_relative_path = str_replace(DIRECTORY_SEPARATOR, '/', $i_relative_path);
         $files[$i_relative_path] = $i_realpath;
       }
 
@@ -287,9 +288,13 @@ class downloadalbum_Controller extends Controller {
    * See http://bugs.php.net/bug.php?id=45028
    */
   private function fixBug45028($hash) {
-    return (version_compare(PHP_VERSION, '5.2.7', '<'))
-      ? (($hash & 0x000000ff) << 24) + (($hash & 0x0000ff00) << 8)
-          + (($hash & 0x00ff0000) >> 8) + (($hash & 0xff000000) >> 24)
-      : $hash;
+    $output = $hash;
+
+    if( version_compare(PHP_VERSION, '5.2.7', '<') ) {
+      $str = str_pad(dechex($hash), 8, '0', STR_PAD_LEFT);
+      $output = hexdec($str{6}.$str{7}.$str{4}.$str{5}.$str{2}.$str{3}.$str{0}.$str{1});
+    }
+
+    return $output;
   }
 }

@@ -1,0 +1,3 @@
+name = "Square Thumbnails"
+description = "Force all thumbnails to be square for a uniform appearance."
+version = 1
