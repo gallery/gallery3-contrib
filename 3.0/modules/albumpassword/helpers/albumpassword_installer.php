@@ -28,25 +28,45 @@ class albumpassword_installer {
                PRIMARY KEY (`id`))
                DEFAULT CHARSET=utf8;");
 
+    // Create a table to store a list of all protected items in.
+    $db->query("CREATE TABLE IF NOT EXISTS {albumpassword_idcaches} (
+               `cache_id` int(9) NOT NULL auto_increment,
+               `password_id` int(9) NOT NULL,
+               `item_id` int(9) NOT NULL,
+               PRIMARY KEY (`cache_id`))
+               DEFAULT CHARSET=utf8;");
+
     // Set the default value for this module's behavior.
     module::set_var("albumpassword", "hideonly", true);
 
     // Set the module's version number.
-    module::set_version("albumpassword", 2);
+    module::set_version("albumpassword", 3);
   }
 
   static function upgrade($version) {
-    // Set the default value for this module's behavior.
-    module::set_var("albumpassword", "hideonly", true);
-
-    // Set the module's version number.
-    module::set_version("albumpassword", 2);
+    $db = Database::instance();
+    if ($version == 1) {
+      // Set the default value for this module's behavior.
+      module::set_var("albumpassword", "hideonly", true);
+      module::set_version("albumpassword", $version = 2);
+    }
+    if ($version == 2) {
+      // Create a table to store a list of all protected items in.
+      $db->query("CREATE TABLE IF NOT EXISTS {albumpassword_idcaches} (
+                 `cache_id` int(9) NOT NULL auto_increment,
+                 `password_id` int(9) NOT NULL,
+                 `item_id` int(9) NOT NULL,
+                 PRIMARY KEY (`cache_id`))
+                 DEFAULT CHARSET=utf8;");
+      module::set_version("albumpassword", $version = 3);
+    }
   }
 
   static function uninstall() {
     // Delete the password table before uninstalling.
     $db = Database::instance();
-    $db->query("DROP TABLE IF EXISTS {items_albumpassword};");
+    $db->query("DROP TABLE IF EXISTS {items_albumpasswords};");
+    $db->query("DROP TABLE IF EXISTS {albumpassword_idcaches};");
     module::delete("albumpassword");
   }
 }

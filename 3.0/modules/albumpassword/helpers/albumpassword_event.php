@@ -81,27 +81,64 @@ class albumpassword_event_Core {
                ->css_id("g-album-password-remove")
                ->url(url::site("albumpassword/remove/" . $item->id)));
         } elseif ($item->id != 1) {
-          $menu->get("options_menu")
-               ->append(Menu::factory("dialog")
-               ->id("albumpassword_assign")
-               ->label(t("Assign password"))
-               ->css_id("g-album-password-assign")
-               ->url(url::site("albumpassword/assign/" . $item->id)));
+        $passworded_subitems = ORM::factory("item", $item->id)
+            ->and_open()->join("albumpassword_idcaches", "items.id", "albumpassword_idcaches.item_id", "LEFT OUTER")
+            ->where("albumpassword_idcaches.item_id", "IS NOT", NULL)->close()
+            ->descendants();
+		
+          $existing_cacheditem = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->id)->order_by("cache_id")->find_all();
+          if ((count($existing_cacheditem) == 0) && count($passworded_subitems) == 0) {
+            $menu->get("options_menu")
+                 ->append(Menu::factory("dialog")
+                 ->id("albumpassword_assign")
+                 ->label(t("Assign password"))
+                 ->css_id("g-album-password-assign")
+                 ->url(url::site("albumpassword/assign/" . $item->id)));
+          }
         }
       }
     }
   }
 
   static function item_deleted($item) {
-    // If an album is deleted, remove any associated passwords.
-    $existingPasswords = ORM::factory("items_albumpassword")
-                          ->where("album_id", "=", $item->id)
-                          ->find_all();
-    if (count($existingPasswords) > 0) {
-      db::build()->delete("items_albumpassword")->where("album_id", "=", $item->id)->execute();
+    // Check for and delete the password and any cached ids assigned to it.
+    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $item->id)->find_all();
+    if (count($existing_password) > 0) {
+      foreach ($existing_password as $one_password) {
+        db::build()->delete("albumpassword_idcaches")->where("password_id", "=", $one_password->id)->execute();
+      }
+      db::build()->delete("items_albumpasswords")->where("album_id", "=", $item->id)->execute();
+      message::success(t("Password Removed."));
+    } else {
+        db::build()->delete("albumpassword_idcaches")->where("item_id", "=", $item->id)->execute();
     }
   }
 
+  static function item_created($item) {
+    // Check for any already existing password on parent album(s), if found, generate cache data for the new item.
+    $existing_password = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->parent_id)->order_by("cache_id")->find_all();
+    if (count($existing_password) > 0) {
+      $new_cachedid = ORM::factory("albumpassword_idcache");
+      $new_cachedid->password_id = $existing_password[0]->password_id;
+      $new_cachedid->item_id = $item->id;
+      $new_cachedid->save();
+    }
+  }
+  
+  static function item_moved($item, $old_parent) {
+    // Delete any existing cache data.
+    db::build()->delete("albumpassword_idcaches")->where("item_id", "=", $item->id)->execute();
+
+    // Check for a password on the new parent, generate cache data if necessary.
+    $existing_password = ORM::factory("albumpassword_idcache")->where("item_id", "=", $item->parent_id)->order_by("cache_id")->find_all();
+    if (count($existing_password) > 0) {
+      $new_cachedid = ORM::factory("albumpassword_idcache");
+      $new_cachedid->password_id = $existing_password[0]->password_id;
+      $new_cachedid->item_id = $item->id;
+      $new_cachedid->save();
+    }
+  }
+  
   static function admin_menu($menu, $theme) {
     // Add a link to the Album Password admin page to the Content menu.
     $menu->get("settings_menu")
