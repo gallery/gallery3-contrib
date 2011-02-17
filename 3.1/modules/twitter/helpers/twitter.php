@@ -60,6 +60,7 @@ class twitter_Core {
    * Get tweet form
    * @param  object   $item
    * @return Forge
+   * @todo Truncate the $tweet at 140 - strlen($url)
    */
   static function get_tweet_form($item) {
     $long_url = url::abs_site($item->relative_url_cache);
@@ -81,7 +82,16 @@ class twitter_Core {
     } else {
       $url = url::abs_site($item->relative_url_cache);
     }
-    $tweet = preg_replace("/%url/", $url, $tweet);
+
+    // Truncate the default tweet if it's too long
+    $url_length = strlen($url) + 1;
+    $tweet_length = strlen($tweet);
+
+    if (($tweet_length + $url_length) > self::$character_count) {
+      $trim_pos = 0 - (($tweet_length + $url_length) - 140);
+      $tweet = substr($tweet, 0, $trim_pos);
+    }
+    $tweet = $tweet . ' ' . $url;
     
     $form = new Forge("twitter/tweet/$item->id", "", "post", array("id" => "g-twitter-tweet-form"));
     $group = $form->group("twitter_message")->label(t("Compose Tweet"));
@@ -134,7 +144,7 @@ class twitter_Core {
   }
 
   static function reset_default_tweet() {
-    return t("Check out this %type, '%title': %description %url");
+    return t("Check out this %type, '%title': %description");
   }
 
 }
