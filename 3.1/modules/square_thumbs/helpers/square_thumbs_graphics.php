@@ -25,7 +25,7 @@ class square_thumbs_graphics_Core {
    * @param string     $output_file
    * @param array      $options
    */
-  static function crop_to_square($input_file, $output_file, $options) {
+  static function crop_to_square($input_file, $output_file, $options, $item) {
     graphics::init_toolkit();
 
     if (@filesize($input_file) == 0) {

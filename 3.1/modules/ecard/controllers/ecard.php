@@ -62,11 +62,11 @@ class Ecard_Controller extends Controller {
 			  $tmpfile = tempnam(TMPPATH, "clean");
 			  if($form->send_ecard->send_thumbnail->checked == true) {
 				$options = array("width" => module::get_var("gallery", "thumb_size"), "height" => module::get_var("gallery", "thumb_size"), "master" => Image::AUTO);
-				gallery_graphics::resize($item->file_path(), $tmpfile, $options);
+				gallery_graphics::resize($item->file_path(), $tmpfile, $options, $item);
 				$mime->addHTMLImage($tmpfile,$item->mime_type,$item->name);
 			  } else {
 				$options = array("width" => module::get_var("gallery", "resize_size"), "height" => module::get_var("gallery", "resize_size"), "master" => Image::AUTO);
-				gallery_graphics::resize($item->file_path(), $tmpfile, $options);
+				gallery_graphics::resize($item->file_path(), $tmpfile, $options, $item);
 				$mime->addHTMLImage($tmpfile,$item->mime_type,$item->name);
 			  }
 		  } else {				
