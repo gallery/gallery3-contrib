@@ -4,23 +4,23 @@
  * @requires YUI reset, font, grids CSS
  *
  * Sheet organization:
- *  1)  Basic HTML elements
- *  2)  Reusable content blocks
- *  3)  Page layout containers
- *  4)  Content blocks in specific layout containers
- *  5)  States and interactions
- *  6)  Positioning and order
- *  7)  Navigation and menus
- *  8)  ThemeRoller
- *  9)  jQuery and jQuery UI
- * 10)  Right-to-left language styles
- * 11)  More Browny
+ *   1)  Basic HTML elements
+ *   2)  Reusable content blocks
+ *   3)  Page layout containers
+ *   4)  Content blocks in specific layout containers
+ *   5)  States and interactions
+ *   6)  Positioning and order
+ *   7)  Navigation and menus
+ *   8)  ThemeRoller
+ *   9)  jQuery and jQuery UI
+ *   10) Right-to-left language styles
+ *   11) More Browny
  *
  * @todo Review g-buttonset-vertical
  */
 
 /** *******************************************************************
- * 1) Basic HTML elements
+ *  1) Basic HTML elements
  **********************************************************************/
 
 /* ~browny~ */
@@ -284,22 +284,6 @@ fieldset {
   margin-bottom: 0;
 }
 
-fieldset {
-  margin-bottom: 1em;
-}
-
-#g-content form ul li {
-  padding: .4em 0;
-}
-
-#g-dialog form {
-  width: 270px;
-}
-
-#g-dialog fieldset {
-  margin-bottom: 0;
-}
-
 /* Tables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 table {
@@ -328,8 +312,21 @@ th {
   white-space: nowrap;
 }
 
+/* Text ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+.g-text-small {
+  font-size: .8em;
+}
+
+.g-text-big {
+  font-size: 1.2em;
+}
+
+.g-text-right {
+  text-align: right;
+}
+
 /** *******************************************************************
- * 2) Reusable content blocks
+ *  2) Reusable content blocks
  *********************************************************************/
 
 .g-block,
@@ -393,7 +390,8 @@ th {
 
 .g-unavailable {
   border-color: #999;
-  opacity: 0.4;
+  color: black;
+  opacity: .6;
 }
 
 .g-info td {
@@ -433,7 +431,7 @@ ul.enumeration li {
 }
 
 /*** ******************************************************************
- * 3) Page layout containers
+ *  3) Page layout containers
  *********************************************************************/
 /* Dimension and scale ~~~~~~~~~~~~~~~~~~~ */
 .g-one-quarter {
@@ -512,7 +510,7 @@ ul.enumeration li {
 }
 
 /** *******************************************************************
- * 4) Content blocks in specific layout containers
+ *  4) Content blocks in specific layout containers
  *********************************************************************/
 
 /* Header  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -633,7 +631,7 @@ ul.enumeration li {
   padding: .3em .8em;
 }
 
-/* In-line editing  ~~~~~~~~~~~~~~~~~~~~ */
+/* In-line editing  ~~~~~~~~~~~~~~~~~~~~~~ */
 #g-in-place-edit-message {
   background-color: #FFF;
 }
@@ -823,7 +821,7 @@ form .g-error {
 }
 
 /** *******************************************************************
- * 7) Navigation and menus
+ *  7) Navigation and menus
  *********************************************************************/
 
 /* Site Menu  ~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -840,7 +838,7 @@ form .g-error {
 }
 
 /** *******************************************************************
- * 8) ThemeRoller Theme
+ *  8) ThemeRoller Theme
  **********************************************************************/
 /* ~browny~ */
 
@@ -848,7 +846,7 @@ form .g-error {
 @import "themeroller/ui.tabs.css";
 
 /** *******************************************************************
- * 9) jQuery and jQuery UI
+ *  9) jQuery and jQuery UI
  *********************************************************************/
 /* Generic block container ~~~~~~~~~~~~~~~ */
 
@@ -929,10 +927,10 @@ button {
   background-position: .4em .3em;
   border: 1px solid #ccc;
   padding: 0;
+  margin-bottom: 1em;
 }
 
 #g-action-status {
-  margin-bottom: 1em;
 }
 
 #g-action-status li,
@@ -1033,7 +1031,7 @@ div#g-action-status {
   margin-left: 0;
 }
 
-/* Superfish menu overrides ~~~~~~~~~~~ */
+/* Superfish menu overrides ~~~~~~~~~~~~~~ */
 .sf-menu ul {
 	width: 12em;
 }
@@ -1081,6 +1079,11 @@ ul.sf-menu li li li.sfHover ul {
 
 /* jQuery UI Dialog ~~~~~~~~~~~~~~~~~~~ */
 
+.ui-widget-overlay {
+  background: #000;
+  opacity: .7;
+}
+
 #g-admin-dashboard .ui-state-highlight,
 #g-sidebar .ui-state-highlight {
   height: 2em;
@@ -1109,7 +1112,7 @@ ul.sf-menu li li li.sfHover ul {
 }
 
 /** *******************************************************************
- * 10) Right to left styles
+ *  10) Right to left styles
  *********************************************************************/
 
 .rtl {
@@ -1409,7 +1412,7 @@ ul.sf-menu li li li.sfHover ul {
 }
 
 /** *******************************************************************
- * 11) More Browny (Extra overrides for better Browny look)
+ *  11) More Browny (Extra overrides for better Browny look)
  *********************************************************************/
 
 /* /lib/gallery.common.css ~~~~~~~~~~~~ */
