@@ -4,21 +4,21 @@
  * @requires YUI reset, font, grids CSS
  *
  * Sheet organization:
- *  1)  Font sizes, base HTML elements
- *  2)  Reusable content blocks
- *  3)  Page layout containers
- *  4)  Content blocks in specific layout containers  
- *  5)  States and interactions
- *  6)  Positioning and order
- *  7)  Navigation and menus
- *  8)  ThemeRoller
- *  9)  jQuery and jQuery UI
- * 10)  Right-to-left language styles
- * 11)  More Browny
+ *   1)  Font sizes, base HTML elements
+ *   2)  Reusable content blocks
+ *   3)  Page layout containers
+ *   4)  Content blocks in specific layout containers
+ *   5)  States and interactions
+ *   6)  Positioning and order
+ *   7)  Navigation and menus
+ *   8)  ThemeRoller
+ *   9)  jQuery and jQuery UI
+ *   10) Right-to-left language styles
+ *   11) More Browny
  */
 
 /** *******************************************************************
- * 1) Font sizes, base HTML elements
+ *  1) Font sizes, base HTML elements
  **********************************************************************/
 
 /* ~browny~ */
@@ -348,7 +348,7 @@ td {
 }
 
 /** *******************************************************************
- * 2) Reusable content blocks
+ *  2) Reusable content blocks
  *********************************************************************/
 
 /* ~browny~ */
@@ -362,7 +362,7 @@ td {
 }
 
 /*** ******************************************************************
- * 3) Page layout containers
+ *  3) Page layout containers
  *********************************************************************/
 
 /* Dimension and scale ~~~~~~~~~~~~~~~~~~~ */
@@ -434,7 +434,7 @@ td {
 }
 
 /** *******************************************************************
- * 4) Content blocks in specific layout containers
+ *  4) Content blocks in specific layout containers
  *********************************************************************/
 
 /* Header  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -767,7 +767,7 @@ form .g-error {
 }
 
 /** *******************************************************************
- * 7) Navigation and menus
+ *  7) Navigation and menus
  *********************************************************************/
 
 /* Login menu ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -869,7 +869,7 @@ form .g-error {
 }
 
 /** *******************************************************************
- * 8) ThemeRoller Theme
+ *  8) ThemeRoller Theme
  **********************************************************************/
 /* ~browny~ */
 
@@ -878,7 +878,7 @@ form .g-error {
 @import "themeroller/ui.tabs.css";
 
 /** *******************************************************************
- * 9) jQuery and jQuery UI
+ *  9) jQuery and jQuery UI
  *********************************************************************/
 
 /* Generic block container ~~~~~~~~~~~~~~~ */
@@ -1120,9 +1120,15 @@ div#g-action-status {
   margin-left: 0;
 }
 
-/** *******************************************************************
- * 10) Right to left language styles
+/* Autocomplete  ~~~~~~~~~~ */
+.ac_loading {
+  background: white url('../images/loading-small.gif') right center no-repeat !important;
+}
+
+/*********************************************************************
+ *  10) Right to left language styles
  *********************************************************************/
+
 .rtl {
   direction: rtl;
 }
@@ -1451,7 +1457,7 @@ div#g-action-status {
 }
 
 /** *******************************************************************
- * 11) More Browny (Extra overrides for better Browny look)
+ *  11) More Browny (Extra overrides for better Browny look)
  *********************************************************************/
 /* ~browny~ */
 
