@@ -247,7 +247,7 @@ class Json_Album_Controller extends Controller {
     }
 
     if ($degrees) {
-      gallery_graphics::rotate($item->file_path(), $item->file_path(), array("degrees" => $degrees));
+      gallery_graphics::rotate($item->file_path(), $item->file_path(), array("degrees" => $degrees), $item);
 
       list($item->width, $item->height) = getimagesize($item->file_path());
       $item->resize_dirty= 1;

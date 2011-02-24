@@ -106,7 +106,7 @@ class Embedded_videos_Controller extends Controller {
           $file = fopen($temp_filename, "wb");
           fwrite($file, $content);
           fclose($file);
-          gallery_graphics::composite($temp_filename, $temp_filename, array("file" => "modules/embed_videos/images/embed_video_icon.png", "position" => "center", "transparency" => 95));
+          gallery_graphics::composite($temp_filename, $temp_filename, array("file" => "modules/embed_videos/images/embed_video_icon.png", "position" => "center", "transparency" => 95), $item);
           $item->set_data_file($temp_filename);
           $item->name = basename($itemname);
           $item->title = $title;
