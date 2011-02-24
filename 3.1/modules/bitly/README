@@ -1,0 +1,12 @@
+ABOUT:
+Shorten Gallery's album and item links using bit.ly's URL shortening service.
+
+INSTALLATION AND CONFIGURATION:
+http://codex.gallery2.org/Gallery3:Modules:bitly
+
+SUPPORT/BUG REPORTS:
+http://gallery.menalto.com/node/100816
+
+ROADMAP:
+* Provide multi-user support.
+* Display shortened link statistics (clicks, etc.)

@@ -29,10 +29,21 @@ class item extends item_Core {
     //   If not, hide whatever is restricted by an album password
     //   that the current user is not the owner of.
     if (!identity::active_user()->admin) {
-      $model->and_open()->join("items_albumpasswords", "items.id", "items_albumpasswords.album_id", "LEFT OUTER")
-            ->and_where("items_albumpasswords.album_id", "IS", NULL)
-            ->or_where("items_albumpasswords.password", "=", cookie::get("g3_albumpassword"))
-            ->or_where("items.owner_id", "=", identity::active_user()->id)->close();
+
+      // Display items that are not in idcaches.
+      $model->and_open()->join("albumpassword_idcaches", "items.id", "albumpassword_idcaches.item_id", "LEFT OUTER")
+            ->and_where("albumpassword_idcaches.item_id", "IS", NULL);
+
+      // ... Unless their password id corresponds with a valid password.
+      $existing_password = ORM::factory("items_albumpassword")->where("password", "=", cookie::get("g3_albumpassword"))->find_all();
+      if (count($existing_password) > 0) {
+        foreach ($existing_password as $one_password) {
+          $model->or_where("albumpassword_idcaches.password_id", "=", $one_password->id);
+        }
+      }
+
+      // Or the current user is the owner of the item.
+      $model->or_where("items.owner_id", "=", identity::active_user()->id)->close();
     }
 
     return $model;

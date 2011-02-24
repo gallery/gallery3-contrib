@@ -17,33 +17,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class bitly_Controller extends Controller {
-
-  /**
-   * Shorten a G3 item's link and display the result in a status message.
-   * @param int   $item_id
-   */
-  public function shorten($item_id) {
-    // Prevent Cross Site Request Forgery
-    access::verify_csrf();
-
-    $item = ORM::factory("item", $item_id);
-
-    // Ensure user has permission
-    access::required("view", $item);
-    access::required("edit", $item);
-
-    // Shorten the item's URL
-    $short_url = bitly::shorten_url($item_id);
-    
-    if ($short_url) {
-      message::success("Item URL shortened to $short_url");
-    } else {
-      message::error("Unable to shorten " . url::abs_site($item->relative_url_cache));
+class tagsinalbum_event_Core {
+  static function pre_deactivate($data) {
+    if ($data->module == "tag") {
+      $data->messages["warn"][] = t("The Tags In Album module requires the Tags module.");
     }
-
-    // Redirect back to the item
-    url::redirect(url::abs_site($item->relative_url_cache));
   }
 
+  static function module_change($changes) {
+    if (!module::is_active("tag") || in_array("tag", $changes->deactivate)) {
+      site_status::warning(
+        t("The Tags In Album module requires the Tags module.  <a href=\"%url\">Activate the Tags module now</a>",
+          array("url" => html::mark_clean(url::site("admin/modules")))),
+        "tagsinalbum_needs_tag");
+    } else {
+      site_status::clear("tagsinalbum_needs_tag");
+    }
+  }
 }
