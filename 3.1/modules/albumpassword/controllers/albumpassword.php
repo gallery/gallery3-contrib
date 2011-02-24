@@ -49,9 +49,12 @@ class albumpassword_Controller extends Controller {
     access::required("view", $item);
     access::required("edit", $item);
 
-    // Check for and delete the password.
-    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $id)->find();
-    if ($existing_password->loaded()) {
+    // Check for and delete the password and any cached ids assigned to it.
+    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $id)->find_all();
+    if (count($existing_password) > 0) {
+      foreach ($existing_password as $one_password) {
+        db::build()->delete("albumpassword_idcaches")->where("password_id", "=", $one_password->id)->execute();
+      }
       db::build()->delete("items_albumpasswords")->where("album_id", "=", $id)->execute();
       message::success(t("Password Removed."));
     }
@@ -70,9 +73,12 @@ class albumpassword_Controller extends Controller {
     $album_id = Input::instance()->post("item_id");
     $album_password = Input::instance()->post("assignpassword_password");
 
-    // Check for, and remove, any existing passwords.
-    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $album_id)->find();
-    if ($existing_password->loaded()) {
+    // Check for, and remove, any existing passwords and cached ids.
+    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $album_id)->find_all();
+    if (count($existing_password) > 0) {
+      foreach ($existing_password as $one_password) {
+        db::build()->delete("albumpassword_idcaches")->where("password_id", "=", $one_password->id)->execute();
+      }
       db::build()->delete("items_albumpasswords")->where("album_id", "=", $album_id)->execute();
     }
 
@@ -81,6 +87,25 @@ class albumpassword_Controller extends Controller {
     $new_password->album_id = $album_id;
     $new_password->password = $album_password;
     $new_password->save();
+
+    // Add the album to the id cache.
+    $cached_album = ORM::factory("albumpassword_idcache");
+    $cached_album->password_id = $new_password->id;
+    $cached_album->item_id = $album_id;
+    $cached_album->save();
+
+    // Check for any sub-items within the album, add all of them to the id cache.
+    $items = ORM::factory("item", $album_id)
+      ->viewable()
+      ->descendants();
+    if (count($items) > 0) {
+      foreach ($items as $one_item) {
+        $cached_item = ORM::factory("albumpassword_idcache");
+        $cached_item->password_id = $new_password->id;
+        $cached_item->item_id = $one_item->id;
+        $cached_item->save();
+      }
+    }
 
     // Display a success message and close the dialog.
     message::success(t("Password saved."));

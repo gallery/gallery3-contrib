@@ -50,16 +50,18 @@ class exif_gps_task_Core {
     $completed = $task->get("completed");
 
     // Generate an array of the next 100 photos to check.
-    $all_photos = ORM::factory("item")
-             ->where("id", ">", $last_id)
-             ->where("type", "=", "photo")
-             ->find_all(100);
+    //$all_photos = ORM::factory("item")
+    //         ->where("id", ">", $last_id)
+    //         ->where("type", "=", "photo")
+    //         ->order_by("id")
+    //         ->find_all(100);
 
     // Check each photo in the array to see if it already has exif gps data associated with it.
     //  If it doesn't, attempt to extract gps coordinates.
     foreach (ORM::factory("item")
              ->where("id", ">", $last_id)
              ->where("type", "=", "photo")
+             ->order_by("id")
              ->find_all(100) as $item) {
 
       $record = ORM::factory("exif_coordinate")->where("item_id", "=", $item->id)->find();
