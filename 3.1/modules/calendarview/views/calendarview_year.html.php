@@ -92,3 +92,4 @@
     $counter_months++;
   }
 ?>
+<?= $theme->dynamic_bottom() ?>
