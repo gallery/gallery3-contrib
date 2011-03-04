@@ -28,8 +28,8 @@ class twitter_event_Core {
   }
 
   static function site_menu($menu, $theme) {
-    if ((identity::active_user()->id > 1) && twitter::is_registered()) {
-      $item = $theme->item();
+    $item = $theme->item();
+    if ($item && twitter::is_registered() && (identity::active_user()->id > 1)) {
       $menu->get("options_menu")
         ->append(Menu::factory("dialog")
                  ->id("twitter")
