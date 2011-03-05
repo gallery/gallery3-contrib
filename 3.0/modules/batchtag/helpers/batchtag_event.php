@@ -18,6 +18,12 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class batchtag_event_Core {
+  static function pre_deactivate($data) {
+    if ($data->module == "tag") {
+      $data->messages["warn"][] = t("The BatchTag module requires the Tags module.");
+    }
+  }
+
   static function module_change($changes) {
     // See if the Tags module is installed,
     //   tell the user to install it if it isn't.

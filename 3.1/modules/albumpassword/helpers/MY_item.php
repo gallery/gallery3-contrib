@@ -34,11 +34,31 @@ class item extends item_Core {
       $model->and_open()->join("albumpassword_idcaches", "items.id", "albumpassword_idcaches.item_id", "LEFT OUTER")
             ->and_where("albumpassword_idcaches.item_id", "IS", NULL);
 
+      // If in hide only mode, check and see if the current item is protected.
+      //   If it is, log the user in with the password to view it.
+      if (module::get_var("albumpassword", "hideonly") == true) {
+        $existing_cacheditem = ORM::factory("albumpassword_idcache")->where("item_id", "=", $model->id)->order_by("cache_id")->find_all();
+        if (count($existing_cacheditem) > 0) {
+          $existing_cacheditem_password = ORM::factory("items_albumpassword")->where("id", "=",  $existing_cacheditem[0]->password_id)->find_all();
+          if (cookie::get("g3_albumpassword") != $existing_cacheditem_password[0]->password) {
+            cookie::set("g3_albumpassword", $existing_cacheditem_password[0]->password);
+            cookie::set("g3_albumpassword_id", $existing_cacheditem_password[0]->id);
+            $model->or_where("albumpassword_idcaches.password_id", "=", $existing_cacheditem_password[0]->id);
+          }
+        }
+      }
+
       // ... Unless their password id corresponds with a valid password.
       $existing_password = ORM::factory("items_albumpassword")->where("password", "=", cookie::get("g3_albumpassword"))->find_all();
       if (count($existing_password) > 0) {
         foreach ($existing_password as $one_password) {
-          $model->or_where("albumpassword_idcaches.password_id", "=", $one_password->id);
+          if (cookie::get("g3_albumpassword_id") != "") {
+            if (cookie::get("g3_albumpassword_id") == $one_password->id) {
+              $model->or_where("albumpassword_idcaches.password_id", "=", $one_password->id);
+            }
+          } else {
+            $model->or_where("albumpassword_idcaches.password_id", "=", $one_password->id);
+          }
         }
       }
 

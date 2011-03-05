@@ -20,6 +20,7 @@
 class calendarview_theme_Core {
 		
   static function head($theme) {
-    return $theme->css("calendarview_menu.css");
+    $theme->css("calendarview_menu.css");
+    return $theme->css("calendarview_calendar.css");
   }
 }
