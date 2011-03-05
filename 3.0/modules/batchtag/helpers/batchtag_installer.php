@@ -24,8 +24,15 @@ class batchtag_installer {
   }
 
   static function deactivate() {
-  // Clear the require tags message when metadescription is deactivated.
     site_status::clear("batchtag_needs_tag");
+  }
+
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("tag")) {
+      $messages["warn"][] = t("The BatchTag module requires the Tags module.");
+    }
+    return $messages;
   }
 
   static function uninstall() {

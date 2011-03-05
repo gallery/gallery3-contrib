@@ -48,9 +48,17 @@ class albumpassword_event_Core {
                       ->css_id("g-album-password-logout")
                       ->url(url::site("albumpassword/logout"))
                       ->label(t("Clear password")));
-      $existing_password = ORM::factory("items_albumpassword")
+      $existing_password = "";
+      if (cookie::get("g3_albumpassword_id") != "") {
+        $existing_password = ORM::factory("items_albumpassword")
+                      ->where("password", "=", cookie::get("g3_albumpassword"))
+                      ->where("id", "=", cookie::get("g3_albumpassword_id"))
+                      ->find_all();
+      } else {
+        $existing_password = ORM::factory("items_albumpassword")
                       ->where("password", "=", cookie::get("g3_albumpassword"))
                       ->find_all();
+      }
       if (count($existing_password) > 0) {
         $counter = 0;
         while ($counter < count($existing_password)) {
