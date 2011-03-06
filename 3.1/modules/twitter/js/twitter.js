@@ -1,23 +1,36 @@
+/**
+ * @todo Add shorten/expand urls toggle button
+ */
 (function($) {
    $.widget("ui.gallery_twitter", {
      
      _init: function() {
+       var self = this;
        this._set_count();
-       $(this.element).bind("keyup", this._set_count);
+       this.element.keyup(function(event) {
+         self._set_count(event.currentTarget);
+         return false;
+       });
      },
 
      _set_count: function() {
+       var self = this;
        var character_array = $("#g-tweet").val().split("");
        var count = character_array.length;
-       var remaining = 140 - count; //self.options.max_count - count;
+       var remaining = self.options.max_count - count;
        var count_container = $("#g-twitter-character-count");
        var color = "#000000";
-       var warn_color = "#7F0005"; //this.options.warn_color;
-       var error_color = "#FF0000"; //this.options.error_color;
        if (remaining < 10) {
-         color = error_color;
+         color = self.options.error_color;
        } else if (remaining < 20) {
-         color = warn_color;
+         color = self.options.warn_color;
+       }
+       if (remaining < 0) {
+          $("#g-dialog form :submit").addClass("ui-state-disabled")
+               .attr("disabled", "disabled");
+       } else {
+          $("#g-dialog form :submit").removeClass("ui-state-disabled")
+               .attr("disabled", null);
        }
        $(count_container).css("color", color);
        $(count_container).html(remaining);
