@@ -4,6 +4,6 @@
   </h2>
   <br />
   <div class="g-block">
-    <?= t("If this box is checked, protected albums will only be hidden.  Anyone with the URL to either the album or it's contents will be able to access it without a password.") ?><br /><br />
     <?= $albumpassword_form ?>
+    <?= t("If this box is checked, accessing a protected album/photo/video will automatically log the visitor in with that items password.") ?><br /><br />
   </div>

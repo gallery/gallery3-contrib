@@ -42,7 +42,7 @@ class autorotate {
 			}
 			if($degrees) {
 				$tmpfile = tempnam(TMPPATH, "rotate");
-				gallery_graphics::rotate($item->file_path(), $tmpfile, array("degrees" => $degrees));
+				gallery_graphics::rotate($item->file_path(), $tmpfile, array("degrees" => $degrees), $item);
 				// Update EXIF info
 				$data = new PelDataWindow(file_get_contents($tmpfile));
 				if (PelJpeg::isValid($data)) {
