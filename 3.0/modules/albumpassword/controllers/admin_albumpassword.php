@@ -40,7 +40,7 @@ class Admin_Albumpassword_Controller extends Admin_Controller {
     // Should protected items be hidden, or completely in-accessable?
     $albumpassword_group = $form->group("album_password_group");
     $albumpassword_group->checkbox("hideonly")
-                        ->label("Only hide protected albums?")
+                        ->label(t("Do not require passwords"))
                         ->checked(module::get_var("albumpassword", "hideonly"));
 
     // Add a save button to the form.

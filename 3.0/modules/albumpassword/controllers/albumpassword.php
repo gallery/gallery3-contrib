@@ -115,6 +115,7 @@ class albumpassword_Controller extends Controller {
   public function logout() {
     // Delete a stored password cookie.
     cookie::delete("g3_albumpassword");
+    cookie::delete("g3_albumpassword_id");
     url::redirect(url::abs_site("albums/1"));
   }
   
@@ -135,6 +136,7 @@ class albumpassword_Controller extends Controller {
     if (count($existing_password) > 0) {
       // If the password if valid, then store it, and display a success message.
       // If not, close the dialog and display a rejected message.
+      cookie::delete("g3_albumpassword_id");
       cookie::set("g3_albumpassword", $album_password);
       message::success(t("Password Accepted."));
       print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";

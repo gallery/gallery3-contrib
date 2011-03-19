@@ -28,7 +28,8 @@ class max_size_event_Core {
         $tmpfile = $tempnam . "." . pathinfo($item->data_file, PATHINFO_EXTENSION);
         gallery_graphics::resize(
           $item->data_file, $tmpfile,
-          array("width" => $max_size, "height" => $max_size, "master" => Image::AUTO));
+          array("width" => $max_size, "height" => $max_size, "master" => Image::AUTO),
+          $item);
         rename($tmpfile, $item->data_file);
         unlink($tempnam);
       }

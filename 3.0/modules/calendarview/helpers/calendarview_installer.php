@@ -26,6 +26,14 @@ class calendarview_installer {
     site_status::clear("calendarview_needs_exif");
   }
 
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("exif")) {
+      $messages["warn"][] = t("The CalendarView module requires the EXIF module.");
+    }
+    return $messages;
+  }
+
   static function uninstall() {
     module::delete("calendarview");
   }
