@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ContactOwner_Controller extends Controller {
-  static function get_email_form($user_id) {
+  static function get_email_form($user_id, $item_id) {
     // Determine name of the person the message is going to.
     $str_to_name = "";
     if ($user_id == -1) {
@@ -30,6 +30,13 @@ class ContactOwner_Controller extends Controller {
         ->where("id", "=", $user_id)
         ->find_all();
       $str_to_name = $userDetails[0]->name;
+    }
+
+    // If item_id is set, include a link to the item.
+    $email_body = "";
+    if ($item_id <> "") {
+      $item = ORM::factory("item", $item_id);
+      $email_body = "This message refers to <a href=\"" . url::abs_site("{$item->type}s/{$item->id}") . "\">this page</a>.";
     }
 
     // Make a new form with a couple of text boxes.
@@ -53,7 +60,7 @@ class ContactOwner_Controller extends Controller {
                     ->error_messages("required", t("You must enter a subject"));
     $sendmail_fields->textarea("email_body")
                     ->label(t("Message:"))
-                    ->value("")
+                    ->value($email_body)
                     ->id("g-contactowner-email-body")
                     ->rules('required')
                     ->error_messages("required", t("You must enter a message"));
@@ -67,7 +74,7 @@ class ContactOwner_Controller extends Controller {
     return $form;
   }
 
-  public function emailowner() {
+  public function emailowner($item_id) {
     // Display a form that a vistor can use to contact the site owner.
 
     // If this page is disabled, show a 404 error.
@@ -78,11 +85,11 @@ class ContactOwner_Controller extends Controller {
     // Set up and display the actual page.
     $template = new Theme_View("page.html", "other", "Contact");
     $template->content = new View("contactowner_emailform.html");
-    $template->content->sendmail_form = $this->get_email_form("-1");
+    $template->content->sendmail_form = $this->get_email_form("-1", $item_id);
     print $template;
   }
 
-  public function emailid($user_id) {
+  public function emailid($user_id, $item_id) {
     // Display a form that a vistor can use to contact a registered user.
 
     // If this page is disabled, show a 404 error.
@@ -93,7 +100,7 @@ class ContactOwner_Controller extends Controller {
     // Set up and display the actual page.
     $template = new Theme_View("page.html", "other", "Contact");
     $template->content = new View("contactowner_emailform.html");
-    $template->content->sendmail_form = $this->get_email_form($user_id);
+    $template->content->sendmail_form = $this->get_email_form($user_id, $item_id);
     print $template;
   }
 
