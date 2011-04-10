@@ -1,0 +1,3 @@
+name = "Tag Cloud Page"
+description = "Displays a tag cloud of all tags used in the Gallery on a seperate page."
+version = 1
