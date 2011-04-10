@@ -49,5 +49,37 @@ class twitter_event_Core {
                  ->url(url::site("twitter/dialog/{$item->id}")));
     }
   }
+  
+  /**
+   * Add Twitter account info to user profiles
+   * @param object $data 
+   */
+  static function show_user_profile($data) {
+    $twitter_account = ORM::factory("twitter_user")->where("user_id", "=", $data->user->id)->find();
+    if ($twitter_account->loaded()) {
+      $v = new View("user_profile_info.html");
+      $v->user_profile_data = array();              
+      $fields = array(
+          "screen_name" => t("Screen name")
+        );
+      foreach ($fields as $field => $label) {
+        if (!empty($twitter_account->$field)) {
+          $value = $twitter_account->$field;
+          if ($field == "screen_name") {
+            $value = html::mark_clean(html::anchor(twitter::$url . 
+              $twitter_account->screen_name, 
+              "@{$twitter_account->screen_name}"));
+          }
+          $v->user_profile_data[(string) $label] = $value;
+        }
+      }
+      if (identity::active_user()->id == $data->user->id) {
+        $button = html::mark_clean(html::anchor(url::site("twitter/reset/"
+                . $data->user->id), t("Switch to another Twitter screen name")));
+        $v->user_profile_data[""] = $button;
+      }
+      $data->content[] = (object) array("title" => t("Twitter account"), "view" => $v);
+    }
+  }
 
 }

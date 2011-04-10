@@ -134,6 +134,27 @@ class Twitter_Controller extends Controller {
   }
 
   /**
+   * Reset a user's Twitter OAuth access token
+   * @param int   $user_id 
+   */
+  public function reset($user_id) {
+    if (identity::active_user()->id == $user_id) {
+      $u = ORM::factory("twitter_user")->where("user_id", "=", $user_id)->find();
+      if ($u->loaded()) {
+        $u->oauth_token = "";
+        $u->oauth_token_secret = "";
+        $u->twitter_user_id = "";
+        $u->screen_name = "";
+        $u->save();
+        message::success(t("Your Twitter access token has been reset."));
+        Session::instance()->set("twitter_item_redirect", 
+                url::abs_site("user_profile/show/{$user_id}"));
+        url::redirect("twitter/redirect");
+      }
+    }
+  }
+  
+  /**
    * Post a status update to Twitter
    * @param int      $item_id
    */
@@ -238,17 +259,20 @@ class Twitter_Controller extends Controller {
   /**
    * Save or update the current user's Twitter credentials.
    * @param array     $access_token
-   * @todo Ensure only one record per twitter_screen_name
    */
   private function _save_user($access_token) {
-    $u = ORM::factory("twitter_user");
+    $u = ORM::factory("twitter_user")
+            ->where("user_id", "=", identity::active_user()->id)
+            ->find();
+    if (!$u->loaded()) {
+      $u = ORM::factory("twitter_user");
+    }
     $u->oauth_token = $access_token["oauth_token"];
     $u->oauth_token_secret = $access_token["oauth_token_secret"];
     $u->twitter_user_id = $access_token["user_id"];
     $u->screen_name = $access_token["screen_name"];
     $u->user_id = identity::active_user()->id;
     $u->save();
-
     message::success(t("Success! You may now share Gallery items on Twitter."));
   }
 
