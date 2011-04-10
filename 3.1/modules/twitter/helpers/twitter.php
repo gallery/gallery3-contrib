@@ -20,6 +20,8 @@
 class twitter_Core {
   
   static $test_mode = TEST_MODE;
+  
+  static $url = "http://twitter.com/";
 
   static $character_count = 140;
 
@@ -60,7 +62,6 @@ class twitter_Core {
    * Get tweet form
    * @param  object   $item
    * @return Forge
-   * @todo Truncate the $tweet at 140 - strlen($url)
    */
   static function get_tweet_form($item) {
     $long_url = url::abs_site($item->relative_url_cache);
@@ -77,7 +78,8 @@ class twitter_Core {
     $tweet = preg_replace("/%title/", $item->title, $tweet);
     $tweet = preg_replace("/%description/", $item->description, $tweet);
     // If bit.ly module's enabled, get the item's URL and shorten it
-    if (!empty($item->id) && module::is_active("bitly") && module::get_var("twitter", "shorten_urls")) {
+    if (!empty($item->id) && module::is_active("bitly") 
+            && module::get_var("twitter", "shorten_urls")) {
       $url = bitly::shorten_url($item->id);
     } else {
       $url = url::abs_site($item->relative_url_cache);
