@@ -540,11 +540,10 @@ span.ui-icon-key { background-position: -112px -128px; }
   display: block;
   position: absolute;
   right: 340px; /* 640/2 + 10 + 10 */
-  top: 230px;
+  top: 260px;
   width: 230px;
   height: 30px;
   padding-top: 10px;
-  margin-top: 30px;
   text-align: right;
   font-style: italic;
   background-image: url("../images/divider_l.png");
@@ -580,16 +579,16 @@ span.ui-icon-key { background-position: -112px -128px; }
   top: 260px; /* (230 + 30) */
   left: 50%;
   margin-left: 340px; /* (640/2 + 10 + 10) */
+  padding-top: 10px;
+  background-image: url("../images/divider_r.png");
+  background-position: left top;
+  background-repeat: no-repeat;
 }
 
 #g-item #g-info h1 {
   text-align: left;
   font-size: 1em;
   border: none;
-  padding-top: 10px;
-  background-image: url("../images/divider_r.png");
-  background-position: left top;
-  background-repeat: no-repeat;
 }
 
 #g-item .g-block {
@@ -597,7 +596,7 @@ span.ui-icon-key { background-position: -112px -128px; }
   margin: auto;
 }
 
-#g-item .g-block#g-metadata {
+#g-item .g-block#sobriety-actions-menu {
   text-align: right;
   display: block;
   width: 300px; /* 230px is not enought: french is verbose */
@@ -607,7 +606,7 @@ span.ui-icon-key { background-position: -112px -128px; }
   top: 300px; /* (230 + 30 + 10 + 30) */
 }
 
-#g-item .g-block#g-metadata h2 {
+#g-item .g-block#sobriety-actions-menu h2 {
   font-size: 1em;
   padding-top: 10px;
   text-align: right;
@@ -617,7 +616,7 @@ span.ui-icon-key { background-position: -112px -128px; }
   background-repeat: no-repeat;
 }
 
-#g-item .g-block#g-metadata ul {
+#g-item .g-block#sobriety-actions-menu ul {
   list-style: none;
   padding: 0;
 }
