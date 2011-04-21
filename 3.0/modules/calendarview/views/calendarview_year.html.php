@@ -38,7 +38,7 @@
   //  Check and see if any photos were taken in January, 
   //  If so, make the month title into a clickable link.
   print "<div id=\"g-calendar-grid\">";
-  if (date("n", $items_for_year[$counter]->captured) == 1) {
+  if ((count($items_for_year) > 0) && (date("n", $items_for_year[$counter]->captured) == 1)) {
     $month_url = url::site("calendarview/month/" . $calendar_year . "/" . $calendar_user . "/" . $counter_months . "/");
   } else {
     $month_url = "";
