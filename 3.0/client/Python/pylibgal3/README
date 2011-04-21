@@ -1,0 +1,21 @@
+=======
+Install
+=======
+
+To install this libary, just do the usual Python setup:
+
+# tar -xvzf libgal3-*.tar.gz
+# cd libgal3-*
+# python setup.py install
+
+That's it for install.  You should be able to import the libg3 library after
+that:
+
+(In your python script)
+import libg3
+
+=============
+Documentation
+=============
+
+See http://stuffivelearned.org/doku.php?id=programming:python:libgal3 for documentation info.

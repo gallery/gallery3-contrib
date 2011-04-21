@@ -1,0 +1,3 @@
+name = "Edit Captured Date"
+description = "Edit the capture date of an element manually or semiautomatically based on date of subitems."
+version = 2

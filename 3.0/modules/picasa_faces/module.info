@@ -1,0 +1,3 @@
+name = "Picasa Faces"
+description = "Import face data from Picasa so it can be used with the Photo Annotation module."
+version = 2
