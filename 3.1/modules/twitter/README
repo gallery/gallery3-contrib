@@ -1,0 +1,22 @@
+ABOUT:
+Share photos, movies, and albums on Twitter, directly from Gallery.
+
+INSTALLATION AND CONFIGURATION:
+http://codex.gallery2.org/Gallery3:Modules:twitter
+
+SUPPORT/BUG REPORTS:
+http://gallery.menalto.com/node/100791
+
+ROADMAP:
+* Display Twitter profile/follow links on Gallery user profile pages.
+* Provide "Share on Twitter" for anonymous users.
+* Display item (re)tweets.
+* Twitter identity provider (log into Gallery with Twitter)
+
+HISTORY:
+2011-03-15 - 1 beta2
+- Allow users to change from one Twitter account to another from their profile page.
+- Compose Tweet JavaScript widget fixes to read default options, accept custom widget options. 
+- Disable the "Tweet" button if the message is over 140 characters.
+- Truncate default tweet values longer than 140.
+2011-02-15 - 1 beta1 

@@ -1,0 +1,3 @@
+name = "ItemChecksum"
+description = "Display's a photo or video's MD5 and SHA-1 checksum."
+version = 1
