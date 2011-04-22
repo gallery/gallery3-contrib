@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,36 +17,60 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
+ 
+// rWatcher Edit:  This file was server_add_installer.
+//  All occurences of server_add have been replaced with videos.
+// The installer has been edited to create an additional table and module variable.
+// The upgrader has been edited to skip everything before version 4, to keep version numbers in sync with server_add.
+
 class videos_installer {
   static function install() {
     $db = Database::instance();
-    $db->query("CREATE TABLE {videos_files} (
+    $db->query("CREATE TABLE {videos_entries} (
                   `id` int(9) NOT NULL auto_increment,
-                  `file` varchar(255) NOT NULL,
+                  `checked` boolean default 0,
+                  `is_directory` boolean default 0,
                   `item_id` int(9),
                   `parent_id` int(9),
+                  `path` varchar(255) NOT NULL,
                   `task_id` int(9) NOT NULL,
                   PRIMARY KEY (`id`))
                 DEFAULT CHARSET=utf8;");
+
+    // rWatcher Edit:  My Table.
     $db->query("CREATE TABLE {items_videos} (
                         `id` int(9) NOT NULL auto_increment,
                         `item_id` int(9) NOT NULL,
                         PRIMARY KEY (`id`),
                         KEY (`item_id`, `id`))
                         DEFAULT CHARSET=utf8;");
+    // rWatcher Edit:  My Variable.
     module::set_var("videos", "allowed_extensions", serialize(array("avi", "mpg", "mpeg", "mov", "wmv", "asf", "mts")));
-    module::set_version("videos", 1);
+
+    module::set_version("videos", 4);
     videos::check_config();
+  }
+
+  static function upgrade($version) {
+    $db = Database::instance();
+
+    if ($version < 4) {
+      $db->query("DROP TABLE {videos_files}");
+      $db->query("CREATE TABLE {videos_entries} (
+                    `id` int(9) NOT NULL auto_increment,
+                    `checked` boolean default 0,
+                    `is_directory` boolean default 0,
+                    `item_id` int(9),
+                    `parent_id` int(9),
+                    `path` varchar(255) NOT NULL,
+                    `task_id` int(9) NOT NULL,
+                    PRIMARY KEY (`id`))
+                  DEFAULT CHARSET=utf8;");
+      module::set_version("videos", $version = 4);
+    }
   }
 
   static function deactivate() {
     site_status::clear("videos_configuration");
-  }
-
-  static function uninstall() {
-    $db = Database::instance();
-    $db->query("DROP TABLE IF EXISTS {videos_files};");
-    $db->query("DROP TABLE IF EXISTS {items_videos};");
-    module::delete("videos");
   }
 }
