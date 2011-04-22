@@ -1,4 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<? // rWatcher Edit:  This file used to be server_add_tree.html.php ?>
 <li class="ui-icon-left">
   <span class="ui-icon ui-icon-folder-open"></span>
   <span class="g-directory" ref="">
