@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2010 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
+
+// rWatcher EDIT:  This file used to be admin_server_add.php.
+//                 All occurences of server_add have been replaced with videos.
+
 class Admin_Videos_Controller extends Admin_Controller {
   public function index() {
     $view = new Admin_View("admin.html");
-    $view->page_title = t("Add videos from server");
+    $view->page_title = t("Add from server");
     $view->content = new View("admin_videos.html");
     $view->content->form = $this->_get_admin_form();
     $paths = unserialize(module::get_var("videos", "authorized_paths", "a:0:{}"));
