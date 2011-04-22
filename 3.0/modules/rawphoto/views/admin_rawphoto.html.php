@@ -20,7 +20,7 @@
     <? if ($toolkit_name == "none"): ?>
       <p class="g-module-status g-error g-block">
         <?= t('No suitable graphics toolkit was detected. ' .
-              'Please <a href="%activate_url">activate</a> either ImageMagick or GraphicsMagick.',
+              '<a href="%activate_url">Activate</a> either ImageMagick or GraphicsMagick.',
               array("activate_url" => url::site("admin/graphics"))) ?>
       </p>
     <? else: ?>

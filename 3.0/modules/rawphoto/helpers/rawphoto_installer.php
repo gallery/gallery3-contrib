@@ -26,11 +26,14 @@ class rawphoto_installer {
     foreach (array("thumb", "resize") as $target) {
       graphics::add_rule("rawphoto", $target, "rawphoto_graphics::convert", array(), 10);
     }
+    $toolkit_id = module::get_var("gallery", "graphics_toolkit");
+    rawphoto_graphics::report_ppm_support($toolkit_id);
   }
 
   static function deactivate() {
     foreach (array("thumb", "resize") as $target) {
       graphics::remove_rule("rawphoto", $target, "rawphoto_graphics::convert");
     }
+    site_status::clear("rawphoto_needs_ppm_support");
   }
 }

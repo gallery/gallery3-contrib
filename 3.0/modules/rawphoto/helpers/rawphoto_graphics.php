@@ -39,6 +39,23 @@ class rawphoto_graphics {
     return $dcraw;
   }
 
+  static function get_supported_toolkits() {
+    return array("imagemagick" => "ImageMagick",
+                 "graphicsmagick" => "GraphicsMagick");
+  }
+
+  static function report_ppm_support($toolkit_id) {
+    if (array_key_exists($toolkit_id, rawphoto_graphics::get_supported_toolkits())) {
+      site_status::clear("rawphoto_needs_ppm_support");
+    } else {
+      site_status::warning(
+        t('The Raw Photos module requires a supporting graphics toolkit. ' .
+          '<a href="%activate_url">Activate</a> either ImageMagick or GraphicsMagick.',
+          array("activate_url" => url::site("admin/graphics"))),
+        "rawphoto_needs_ppm_support");
+    }
+  }
+
   static function convert($input_file, $output_file) {
     $success = false;
     $dcraw = rawphoto_graphics::detect_dcraw();
@@ -52,7 +69,7 @@ class rawphoto_graphics {
       $cmd .= escapeshellarg($input_file);
 
       // Then use the graphics toolkit to convert the stream to a JPEG.
-      $cmd .= "| ";
+      $cmd .= " | ";
       $toolkit_id = module::get_var("gallery", "graphics_toolkit");
       $toolkit_path = module::get_var("gallery", "graphics_toolkit_path");
       $image_quality = module::get_var("gallery", "image_quality");
@@ -77,6 +94,7 @@ class rawphoto_graphics {
 
       if ($toolkit_compat) {
         exec($cmd, $output, $return_var);
+        // Failure is common, because dcraw will abort unless the original image is a raw photo.
         $success = ($return_var == 0);
       }
     }

@@ -31,4 +31,8 @@ class rawphoto_event_Core {
                "bay", "bmq", "cr2", "crw", "cs1", "dc2", "dcr", "dng", "fff", "k25", "kdc",
                "mos", "mrw", "nef", "orf", "pef", "raf", "raw", "rdc", "srf", "x3f");
   }
+
+  static function graphics_toolkit_change($toolkit_id) {
+    rawphoto_graphics::report_ppm_support($toolkit_id);
+  }
 }
