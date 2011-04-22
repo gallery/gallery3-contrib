@@ -12,6 +12,11 @@
       $display_tags[] = array(html::clean($tag->name), $tag->url());
       $last_tagid = $one_tag->id;
     }
+    if (module::get_var("tagsinalbum", "max_display_tags") > 0) {
+      if (count($display_tags) == module::get_var("tagsinalbum", "max_display_tags")) {
+        break;
+      }
+    }
   }
   
   // Sort the array.
