@@ -45,7 +45,7 @@ class rawphoto_graphics {
   }
 
   static function report_ppm_support($toolkit_id) {
-    if (array_key_exists($toolkit_id, rawphoto_graphics::get_supported_toolkits())) {
+    if (array_key_exists($toolkit_id, self::get_supported_toolkits())) {
       site_status::clear("rawphoto_needs_ppm_support");
     } else {
       site_status::warning(
@@ -58,7 +58,7 @@ class rawphoto_graphics {
 
   static function convert($input_file, $output_file) {
     $success = false;
-    $dcraw = rawphoto_graphics::detect_dcraw();
+    $dcraw = self::detect_dcraw();
     if ($dcraw->installed) {
       // Use dcraw to convert from a raw image to a standard pixmap.
       $cmd = escapeshellcmd($dcraw->path) . " -c -w -W -t 0 ";
