@@ -15,7 +15,7 @@
       <p><?= t("The dcraw tool was detected at <code>%path</code>.",
                array("path" => $dcraw->path)) ?></p>
     <? else: ?>
-      <p class="g-module-status g-error g-block"><?= html::chars($dcraw->error) ?></p>
+      <p class="g-module-status g-error g-block"><?= $dcraw->error ?></p>
     <? endif; ?>
     <? if ($toolkit_name == "none"): ?>
       <p class="g-module-status g-error g-block">
@@ -28,7 +28,7 @@
                array("toolkit_name" => $toolkit_name)) ?></p>
     <? endif; ?>
     <? if (!empty($errors["IccPath"])): ?>
-      <p class="g-module-status g-error g-block"><?= html::chars($errors["IccPath"]) ?></p>
+      <p class="g-module-status g-error g-block"><?= $errors["IccPath"] ?></p>
     <? endif; ?>
     <?= form::label("IccPath", t('Path to <a href="%icc_url">ICC profile</a>', array("icc_url" =>
           "http://www.permajet.com/30/Downloads/76/What_are_ICC_Profiles,_and_why_do_I_need_them.html"))) ?>
