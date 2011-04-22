@@ -1,0 +1,3 @@
+name = "Transliterate"
+description = "Transliterate UTF8 text to ASCII equivalents."
+version = 1
