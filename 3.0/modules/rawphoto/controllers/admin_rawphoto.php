@@ -29,6 +29,7 @@ class Admin_RawPhoto_Controller extends Admin_Controller {
     $toolkit_names = array("imagemagick" => "ImageMagick",
                            "graphicsmagick" => "GraphicsMagick");
     $toolkit_id = module::get_var("gallery", "graphics_toolkit");
+    $toolkit_names = rawphoto_graphics::get_supported_toolkits();
     $view->content->toolkit_name = array_key_exists($toolkit_id, $toolkit_names) ?
                                    $toolkit_names[$toolkit_id] : "none";
     $view->content->icc_path = isset($icc_path) ?
