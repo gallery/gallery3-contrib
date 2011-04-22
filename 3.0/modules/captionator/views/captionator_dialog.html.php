@@ -34,7 +34,7 @@
             <ul>
               <li>
                 <label for="title[<?= $child->id ?>]"> <?= t("Title") ?> </label>
-                <input type="text" name="title[<?= $child->id ?>]" value="<?= htmlspecialchars($child->title, ENT_QUOTES, Kohana::CHARSET) ?>"/>
+                <input type="text" name="title[<?= $child->id ?>]" value="<?= html::chars($child->title) ?>"/>
               </li>
               <li>
                 <label for="description[<?= $child->id ?>]"> <?= t("Description") ?> </label>
@@ -43,16 +43,16 @@
               <? if ($enable_tags): ?>
               <li>
                 <label for="tags[<?= $child->id ?>]"> <?= t("Tags (comma separated)") ?> </label>
-                <input type="text" name="tags[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= htmlspecialchars($tags[$child->id], ENT_QUOTES, Kohana::CHARSET) ?>"/>
+                <input type="text" name="tags[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= html::chars($tags[$child->id]) ?>"/>
               </li>
               <? endif ?>
               <li>
                 <label for="filename[<?= $child->id ?>]"> <?= t("Filename") ?> </label>
-                <input type="text" name="filename[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= htmlspecialchars($child->name, ENT_QUOTES, Kohana::CHARSET) ?>"/>
+                <input type="text" name="filename[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= html::chars($child->name) ?>"/>
               </li>
               <li>
                 <label for="internetaddress[<?= $child->id ?>]"> <?= t("Internet Address") ?> </label>
-                <input type="text" name="internetaddress[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= htmlspecialchars($child->slug, ENT_QUOTES, Kohana::CHARSET) ?>"/>
+                <input type="text" name="internetaddress[<?= $child->id ?>]" class="ac_input" autocomplete="off" value="<?= html::chars($child->slug) ?>"/>
               </li>
             </ul>
           </td>
