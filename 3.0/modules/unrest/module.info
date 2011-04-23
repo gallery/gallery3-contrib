@@ -1,3 +1,7 @@
 name = "Un-Rest API module"
 description = "Shorter invocations for the Rest API"
 version = 1
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:unrest"
+discuss_url = "http://gallery.menalto.com/forum_module_unrest"

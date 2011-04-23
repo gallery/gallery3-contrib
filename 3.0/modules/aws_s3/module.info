@@ -1,3 +1,7 @@
 name = "Amazon S3"
 description = "Seamlessly transfer your Gallery data to Amazon S3 CDN for a lightning fast gallery"
 version = 2
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:aws_s3"
+discuss_url = "http://gallery.menalto.com/forum_module_aws_s3"
