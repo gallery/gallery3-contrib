@@ -18,6 +18,19 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class rawphoto_event_Core {
+  static function item_created($item) {
+    if ($item->is_photo()) {
+      $input_file = $item->file_path();
+      $output_file = tempnam(TMPPATH, "rawphoto-") . ".jpg";
+      $success = rawphoto_graphics::convert($input_file, $output_file);
+      if ($success) {
+        $item->set_data_file($output_file);
+        $item->save();
+        unlink($output_file);
+      }
+    }
+  }
+
   static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")
          ->append(Menu::factory("link")

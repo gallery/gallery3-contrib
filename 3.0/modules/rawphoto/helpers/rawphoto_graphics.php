@@ -96,11 +96,11 @@ class rawphoto_graphics {
         exec($cmd, $output, $return_var);
         // Failure is common, because dcraw will abort unless the original image is a raw photo.
         $success = ($return_var == 0);
+        if (!$success) {
+          @unlink($output_file);
+        }
       }
     }
-    if (!$success) {
-      // Make sure the unmodified output file exists where it's expected to be.
-      copy($input_file, $output_file);
-    }
+    return $success;
   }
 }
