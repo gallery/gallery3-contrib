@@ -1,3 +1,7 @@
 name = "Twitter"
 description = "Share Gallery albums, photos, and movies on Twitter."
 version = 1
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:twitter"
+discuss_url = "http://gallery.menalto.com/forum_module_twitter"
