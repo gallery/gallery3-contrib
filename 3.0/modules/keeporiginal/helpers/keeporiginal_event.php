@@ -26,7 +26,7 @@ class keeporiginal_event_Core {
       // Figure out where the original copy should be stashed at.
       $temp_path = str_replace(VARPATH . "albums/", "", $input_file);
       $original_image = VARPATH . "original/" . $temp_path;
-      $individual_dirs = split("[/\]", "original/" . $temp_path);
+      $individual_dirs = preg_split("|[/\\\\]|", "original/" . $temp_path);
       // If any original file does not already exist, then create a folder structure
       //   similar to that found in VARPATH/albums/ and copy the photo over before
       //   rotating it.
