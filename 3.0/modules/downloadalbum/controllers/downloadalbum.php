@@ -35,7 +35,7 @@ class downloadalbum_Controller extends Controller {
             : $container->name.'.zip';
         break;
 
-     case "tag":
+      case "tag":
         // @todo: if the module is not installed, it crash
         $container = ORM::factory("tag", $id);
         if (is_null($container->name)) {
@@ -45,11 +45,11 @@ class downloadalbum_Controller extends Controller {
         $zipname = $container->name.'.zip';
         break;
 
-     default:
-       throw new Kohana_Exception('unhandled container type: '.$container_type);
-   }
+      default:
+        throw new Kohana_Exception('unhandled container type: '.$container_type);
+    }
 
-   $files = $this->getFilesList($container);
+    $files = $this->getFilesList($container);
 
     // Calculate ZIP size (look behind for details)
     $zipsize = 22;
