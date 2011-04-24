@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ class item extends item_Core {
 
         $parent = $item->parent();
         if ($parent->id > 1) {
-            aws_s3::upload_album_cover($parent);
+            aws_s3::upload_item($parent);
         }
     }
 
@@ -34,7 +34,7 @@ class item extends item_Core {
         parent::remove_album_cover($album);
 
         if ($album->id > 1) {
-            aws_s3::remove_album_cover($album);
+            aws_s3::remove_item($album);
         }
     }
 

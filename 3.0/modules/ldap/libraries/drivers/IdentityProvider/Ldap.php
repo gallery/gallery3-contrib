@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -232,7 +232,10 @@ class Ldap_User implements User_Definition {
   }
 
   public function display_name() {
-    return $this->ldap_entry["displayname"][0];
+    if (!empty($this->ldap_entry["displayname"][0])) {
+      return $this->ldap_entry["displayname"][0];
+    }
+    return $this->ldap_entry["cn"][0];
   }
 
   public function __get($key) {

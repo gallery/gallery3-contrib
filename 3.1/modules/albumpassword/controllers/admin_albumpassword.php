@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ class Admin_Albumpassword_Controller extends Admin_Controller {
     // Should protected items be hidden, or completely in-accessable?
     $albumpassword_group = $form->group("album_password_group");
     $albumpassword_group->checkbox("hideonly")
-                        ->label("Only hide protected albums?")
+                        ->label(t("Do not require passwords"))
                         ->checked(module::get_var("albumpassword", "hideonly"));
 
     // Add a save button to the form.

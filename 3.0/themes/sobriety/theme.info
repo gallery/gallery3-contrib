@@ -6,3 +6,7 @@ site = 1
 admin = 0
 ;wind commit = bda14f29eac2c7471d4e5e554493dd21728199e2
 ;wind date = Sat Mar 5 15:59:52 2011 -0800
+author_name = "Romain LE DISEZ"
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Themes:sobriety"
+discuss_url = "http://gallery.menalto.com/forum_theme_sobriety"

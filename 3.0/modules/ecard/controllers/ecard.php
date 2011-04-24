@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,29 +40,51 @@ class Ecard_Controller extends Controller {
     }
 	
 	if ($valid) {
-	  $v = new View("ecard_email.html");
-	  $v->item = $item;
-	  $v->subject = module::get_var("ecard", "subject");
-	  $to_name = $form->send_ecard->to_name->value;
-	  $from_name = $form->send_ecard->from_name->value;
-	  $bcc = module::get_var("ecard", "bcc");
-	  $v->message = t(module::get_var("ecard", "message"), array("toname" => $to_name, "fromname" => $from_name));
-	  $v->custom_message = $form->send_ecard->text->value;
-	  $v->image = $item->name;
-	  $to = $form->send_ecard->inputs["to_email"]->value;
-	  $from = $form->send_ecard->inputs["from_email"]->value;
-	  $headers = array("from" => $from_name."<".$from.">", "to" => $to, "subject" => module::get_var("ecard", "subject"));
-	  require_once(MODPATH. "ecard/lib/mime.php");
-	  $mime = new Mail_mime("\n");
-	  $mime->setHTMLBody($v->render());
-	  $mime->addHTMLImage($item->resize_path(),$item->mime_type,$item->name);
-	  $body = $mime->get(array('html_charset'  => 'UTF-8', 'text_charset'  => 'UTF-8','text_encoding' => '8bit','head_charset'  => 'UTF-8'));
-	  self::_notify($headers['to'], $headers['from'], $headers['subject'], $item, $body, $mime->headers(), $bcc);
+	  $to_array = explode(",",$form->send_ecard->inputs["to_email"]->value);
+	  foreach($to_array as $to) {
+		  $v = new View("ecard_email.html");
+		  $v->item = $item;
+		  $v->subject = module::get_var("ecard", "subject");
+		  $from_name = $form->send_ecard->from_name->value;
+		  $bcc = module::get_var("ecard", "bcc");
+		  if($form->send_ecard->send_to_self->checked == true) {
+			$cc = $form->send_ecard->inputs["from_email"]->value;
+		  }	  
+		  $v->message = t(module::get_var("ecard", "message"), array("fromname" => $from_name));
+		  $v->custom_message = $form->send_ecard->text->value;
+		  $v->image = $item->name;
+		  $from = $form->send_ecard->inputs["from_email"]->value;
+		  $headers = array("from" => $from_name."<".$from.">", "to" => $to, "subject" => module::get_var("ecard", "subject"));
+		  require_once(MODPATH. "ecard/lib/mime.php");
+		  $mime = new Mail_mime("\n");
+		  $mime->setHTMLBody($v->render());
+		  if($form->send_ecard->send_fresh->checked == true) {
+			  $tmpfile = tempnam(TMPPATH, "clean");
+			  if($form->send_ecard->send_thumbnail->checked == true) {
+				$options = array("width" => module::get_var("gallery", "thumb_size"), "height" => module::get_var("gallery", "thumb_size"), "master" => Image::AUTO);
+				gallery_graphics::resize($item->file_path(), $tmpfile, $options);
+				$mime->addHTMLImage($tmpfile,$item->mime_type,$item->name);
+			  } else {
+				$options = array("width" => module::get_var("gallery", "resize_size"), "height" => module::get_var("gallery", "resize_size"), "master" => Image::AUTO);
+				gallery_graphics::resize($item->file_path(), $tmpfile, $options);
+				$mime->addHTMLImage($tmpfile,$item->mime_type,$item->name);
+			  }
+		  } else {				
+			  if($form->send_ecard->send_thumbnail->checked == true) {
+				$mime->addHTMLImage($item->thumb_path(),$item->mime_type,$item->name);
+			  } else {
+				$mime->addHTMLImage($item->resize_path(),$item->mime_type,$item->name);
+			  }
+		  }
+		  $body = $mime->get(array('html_charset'  => 'UTF-8', 'text_charset'  => 'UTF-8','text_encoding' => '8bit','head_charset'  => 'UTF-8'));
+		  self::_notify($headers['to'], $headers['from'], $headers['subject'], $item, $body, $mime->headers(), $bcc, $cc);
+		}
+	  unlink($tmpfile);
 	  message::success("eCard successfully sent");
 	  json::reply(array("result" => "success"));
-    } else {
+	} else {
 	  json::reply(array("result" => "error", "html" => (string) $form));
-    }
+	}
   }
   /**
    * Present a form for sending a new ecard.
@@ -73,9 +95,11 @@ class Ecard_Controller extends Controller {
     if (!ecard::can_send_ecard()) {
       access::forbidden();
     }
-    print ecard::prefill_send_form(ecard::get_send_form($item));
+	$v_form = new View("ecard_form.html");
+	$v_form->item_id = $item_id;
+	print $v_form->render();
   }  
-  private static function _notify($to, $from, $subject, $item, $text, $headers, $bcc) {
+  private static function _notify($to, $from, $subject, $item, $text, $headers, $bcc, $cc) {
       $sendmail = Sendmail::factory();
 	  $sendmail
         ->to($to)
@@ -84,6 +108,9 @@ class Ecard_Controller extends Controller {
 	  if(isset($bcc)) {
 	    $sendmail->header("bcc",$bcc);
 	  }
+	  if(isset($cc)) {
+		$sendmail->header("cc",$cc);
+	  }	  
 	  foreach($headers as $key => $value) {
 		$sendmail->header($key,$value);
 	  }
