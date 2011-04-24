@@ -25,6 +25,7 @@ class Admin_RawPhoto_Controller extends Admin_Controller {
   private function _get_view($errors = array(), $icc_path = null) {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_rawphoto.html");
+    $view->content->is_keeporiginal_active = module::is_active("keeporiginal");
     $view->content->dcraw = rawphoto_graphics::detect_dcraw();
     $toolkit_names = array("imagemagick" => "ImageMagick",
                            "graphicsmagick" => "GraphicsMagick");

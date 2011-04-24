@@ -9,6 +9,13 @@
            array("raw_url" =>
                  "http://www.adamcoupe.com/whitepapers/photography_technique_benefits_of_shooting_in_raw.htm",
                  "dcraw_url" => "http://www.cybercom.net/~dcoffin/dcraw/")) ?></p>
+  <? if (!$is_keeporiginal_active): ?>
+      <p class="g-module-status g-warning g-block">
+        <?= t('The photos will not be preserved in their raw format unless you ' .
+              '<a href="%modules_url">activate the Keep Original module</a>.',
+              array("modules_url" => url::site("admin/modules"))) ?>
+      </p>
+  <? endif; ?>
   <fieldset>
     <legend><?= t("Paths") ?></legend>
     <? if ($dcraw->installed): ?>
