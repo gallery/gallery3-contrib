@@ -20,7 +20,10 @@
 class keeporiginal_event_Core {
   static function graphics_rotate($input_file, $output_file, $options) {
     // Make a copy of the original fullsized image before rotating it.
+    self::preserve($input_file);
+  }
 
+  static function preserve($input_file) {
     //   If $input_file is located in VARPATH/albums/ then assume its a fullsize photo.
     if (strncmp($input_file, VARPATH . "albums/", strlen(VARPATH . "albums/")) == 0) {
       // Figure out where the original copy should be stashed at.
@@ -71,6 +74,9 @@ class keeporiginal_event_Core {
     //  VARPATH/original/ as well.
 
     if ($old->is_photo() || $old->is_album()) {
+      if (isset($new->data_file)) {
+        self::preserve($old->file_path()); 
+      }
       if ($old->file_path() != $new->file_path()) {
         $old_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $old->file_path());
         $new_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $new->file_path());
