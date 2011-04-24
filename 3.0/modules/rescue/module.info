@@ -1,3 +1,7 @@
 name = "Rescue"
 description = "Fix problems in your Gallery 3 install"
 version = 1
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:rescue"
+discuss_url = "http://gallery.menalto.com/forum_module_rescue"
