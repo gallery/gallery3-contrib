@@ -112,6 +112,7 @@ class keeporiginal_event_Core {
           }
 
           // Move the file to its new location.
+          // TODO: If the files have different extensions, then the old extension should be preserved.
           @rename($old_original, $new_original);
         }
       }
