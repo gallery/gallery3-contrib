@@ -1,0 +1,24 @@
+2011-01-20: Version 2
+
+Added features
+--------------
+- upload select types of images only (thumbs/resizes/fullsizes)
+- schedule initial synchronisation during gallery shutdown to prevent browser hanging on large installations
+- schedule upload of new items after upload during gallery shutdown to prevent browser hanging on slower
+  uplink connections (dsl home servers, etc)
+
+Bug fixes
+---------
+- added verification routine to verify entered bucket name and access credentials to avoid false hope
+- added check in module's installed to prevent installation should curl not be installed, as the s3 library
+  depends on it
+- resolved some issues with cooliris slideshow player not working correctly, due to browsers blocking ajax calls
+  for images since it's cross-domain. the module will now allow the browser to pull the images from the local server
+  to prevent any xdr issues
+- fixed problems moving items around. the module now moves content around the s3 bucket to coincide with the local
+  filesystem and g3's perception of items and albums
+- resolved problems with odd characters in filenames. this actually wasn't to do with odd characters but to do with
+  the filename being escaped twice, causing file not found errors
+
+2010-11-26: Version 1
+- Initial release.

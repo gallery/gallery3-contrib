@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,14 +25,14 @@ class Admin_Bitly_Controller extends Admin_Controller {
    */
   public function index() {
     $form = bitly::get_configure_form();
-    $valid_config = true;
-
+    $login = module::get_var("bitly", "login");
+    $api_key = module::get_var("bitly", "api_key");
+    $domain = module::get_var("bitly", "domain");
+    $valid_config = false;
+    
     if (request::method() == "post") {
       access::verify_csrf();
       if ($form->validate()) {
-        $current_login = module::get_var("bitly", "login");
-        $current_key = module::get_var("bitly", "api_key");
-        $current_domain = module::get_var("bitly", "domain");
         $new_login = $form->configure_bitly->login->value;
         $new_key = $form->configure_bitly->api_key->value;
         $new_domain = $form->configure_bitly->domain->value;
@@ -44,24 +44,24 @@ class Admin_Bitly_Controller extends Admin_Controller {
         if (!bitly::check_config()) {
           url::redirect("admin/bitly");
         } else {
-          if ($current_login && !$new_login) {
+          if ($login && !$new_login) {
             message::success(t("Your bit.ly login has been cleared."));
-          } else if ($current_login && $new_login && $current_login != $new_login) {
+          } else if ($login && $new_login && $login != $new_login) {
             message::success(t("Your bit.ly login has been changed."));
-          } else if (!$current_login && $new_login) {
+          } else if (!$login && $new_login) {
             message::success(t("Your bit.ly login has been saved."));
           }
-          if ($current_key && !$new_key) {
+          if ($api_key && !$new_key) {
             message::success(t("Your bit.ly API key has been cleared."));
-          } else if ($current_key && $new_key && $current_key != $new_key) {
+          } else if ($api_key && $new_key && $api_key != $new_key) {
             message::success(t("Your bit.ly API key has been changed."));
-          } else if (!$current_key && $new_key) {
+          } else if (!$api_key && $new_key) {
             message::success(t("Your bit.ly API key has been saved."));
           }
-          if ($current_domain && $new_domain && $current_domain != $new_domain) {
+          if ($domain && $new_domain && $domain != $new_domain) {
             message::success(t("Your preferrend bit.ly domain has been changed."));
-          } else if (!$current_domain && $new_domain) {
-            message::success(t("Your preferred bit.ly domain has been set."));
+          } else if (!$domain && $new_domain) {
+            message::success(t("Your preferred bit.ly domain has been saved."));
           }
           log::success("bitly", t("bit.ly login changed to %new_login",
                                     array("new_login" => $new_login)));
@@ -79,17 +79,16 @@ class Admin_Bitly_Controller extends Admin_Controller {
     $view->content->login = $form->configure_bitly->login->value;
     $view->content->api_key = $form->configure_bitly->api_key->value;
     $view->content->domain = $form->configure_bitly->domain->value;
-    $view->content->valid_config = $valid_config;
     $view->content->form = $form;
 
-    if ($valid_config) {
-      $link = ORM::factory("bitly_link")->where("item_id", "=", 1)->find();
-      if ($link->loaded()) {
-        $view->content->g3_url = "http://" . module::get_var("bitly", "domain") . "/$link->hash";
-      } else {
-        $view->content->g3_url = bitly::shorten_url(1);
-      }
+    $link = ORM::factory("bitly_link")->where("item_id", "=", 1)->find();
+
+    if ($link->loaded()) {
+      $view->content->g3_url = bitly::url($link->hash);
+    } else if ($valid_config && !empty($login) && !empty($api_key) && !empty($domain)) {
+      $view->content->g3_url = bitly::shorten_url(1);
     }
+
     print $view;
   }
 

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ class autorotate {
 			}
 			if($degrees) {
 				$tmpfile = tempnam(TMPPATH, "rotate");
-				gallery_graphics::rotate($item->file_path(), $tmpfile, array("degrees" => $degrees));
+				gallery_graphics::rotate($item->file_path(), $tmpfile, array("degrees" => $degrees), $item);
 				// Update EXIF info
 				$data = new PelDataWindow(file_get_contents($tmpfile));
 				if (PelJpeg::isValid($data)) {

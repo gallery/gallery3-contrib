@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,12 @@ class Admin_ecard_Controller extends Admin_Controller {
     access::verify_csrf();
     $form = $this->_get_admin_form();
     if ($form->validate()) {
-      module::set_var("ecard", "sender", $form->ecard->sender->value);
+	  module::set_var("ecard","send_plain",$form->ecard->send_plain->value);
+	  module::set_var("ecard", "sender", $form->ecard->sender->value);
 	  module::set_var("ecard", "bcc", $form->ecard->bcc->value);
       module::set_var("ecard", "subject", $form->ecard->subject->value);
       module::set_var("ecard", "message", $form->ecard->message->value);
+	  module::set_var("ecard", "max_length", $form->ecard->max_length->value);
       module::set_var("ecard", "access_permissions", $form->ecard->access_permissions->value);
 	  module::set_var("ecard", "location", $form->ecard->location->value);
       message::success(t("eCard settings updated"));
@@ -54,9 +56,18 @@ class Admin_ecard_Controller extends Admin_Controller {
       ->value(module::get_var("ecard", "bcc", ""));
 	$ecard_settings->input("subject")->label(t("E-mail subject"))
       ->value(module::get_var("ecard", "subject"));
-    $ecard_settings->textarea("message")->label(t("E-mail message. Valid keywords are \"%toname\" (recipient's name) and \"%fromname\" (sender's name))"))
+    $ecard_settings->textarea("message")->label(t("E-mail message. Valid keywords are \"%fromname\" (sender's name))"))
       ->value(module::get_var("ecard", "message"));
-    $ecard_settings->dropdown("access_permissions")
+	$ecard_settings->input("max_length")
+	  ->label(t("Maximum message length"))
+	  ->value(module::get_var("ecard","max_length"));
+	if(module::is_active("watermark")) {
+		$ecard_settings->checkbox("send_plain")
+		  ->label(t("Allow users to send non-watermarked versions"))
+		  ->value(true)
+		  ->checked(module::get_var("ecard","send_plain"));
+	}
+	$ecard_settings->dropdown("access_permissions")
       ->label(t("Who can send eCards?"))
       ->options(array("everybody" => t("Everybody"),
                       "registered_users" => t("Only registered users")))

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ class EXIF_GPS_Controller extends Controller {
                ->order_by("exif_coordinates.latitude", "ASC")
                ->descendants();
       $curr_album = ORM::factory("item")->where("id", "=", $type_id)->find_all();
-      $map_title = $curr_album[0]->name;
+      $map_title = $curr_album[0]->title;
     } elseif ($map_type == "user") {
       // Generate an array of all items uploaded by the current user that 
       //   have exif gps coordinates and order by latitude (to group items 

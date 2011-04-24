@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ class CalendarView_Controller extends Controller {
 
     // Draw the page.
     $template = new Theme_View("calpage.html", "other", "CalendarView");
-    $template->css("calendarview_calendar.css");
     $template->set_global("calendar_user", $display_user);
     $template->page_title = t("Gallery :: Calendar");
     $template->content = new View("calendarview_year.html");
