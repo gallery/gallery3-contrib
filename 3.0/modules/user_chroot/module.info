@@ -1,3 +1,7 @@
 name = "Chroot Users"
 description = "Restrict access to one album."
 version = 1
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:user_chroot"
+discuss_url = "http://gallery.menalto.com/forum_module_user_chroot"
