@@ -165,7 +165,7 @@ class downloadalbum_Controller extends Controller {
       $items = $container->viewable()
           ->descendants(null, null, array(array("type", "<>", "album")));
       foreach($items as $i) {
-        if (!access::can('view_full', $i)) {
+        if (!access::can('downloadalbum', $i)) {
           continue;
         }
 

@@ -17,26 +17,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class downloadalbum_event_Core {
-  static function album_menu($menu, $theme) {
-    if( access::can("downloadalbum", $theme->item) ) {
-      $downloadLink = url::site("downloadalbum/zip/album/{$theme->item->id}");
-      $menu
-        ->append(Menu::factory("link")
-            ->id("downloadalbum")
-            ->label(t("Download Album"))
-            ->url($downloadLink)
-            ->css_id("g-download-album-link"));
-    }
+class downloadalbum_installer {
+  static function install() {
+    access::register_permission("downloadalbum", "Download album");
+    module::set_version("downloadalbum", 3);
   }
 
-  static function tag_menu($menu, $theme) {
-    $downloadLink = url::site("downloadalbum/zip/tag/{$theme->tag()->id}");
-    $menu
-      ->append(Menu::factory("link")
-          ->id("downloadalbum")
-          ->label(t("Download Album"))
-          ->url($downloadLink)
-          ->css_id("g-download-album-link"));
-  } 
+  static function upgrade($version) {
+  	if( $version == 2 ) {
+      access::register_permission("downloadalbum", "Download album");
+      module::set_version("downloadalbum", 3);
+  	}
+  }
+
+  static function uninstall() {
+    access::delete_permission("downloadalbum");
+    module::delete("downloadalbum");
+  }
 }
