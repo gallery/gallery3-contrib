@@ -80,7 +80,7 @@ class Admin_PHPMailer_Controller extends Admin_Controller {
     $phpmailerSMTP->input("phpmailer_smtp_login")
                    ->label(t("SMTP Login Name"))
                    ->value(module::get_var("phpmailer", "smtp_login"));
-    $phpmailerSMTP->input("phpmailer_smtp_password")
+    $phpmailerSMTP->password("phpmailer_smtp_password")
                    ->label(t("SMTP Password"))
                    ->value(module::get_var("phpmailer", "smtp_password"));
 
