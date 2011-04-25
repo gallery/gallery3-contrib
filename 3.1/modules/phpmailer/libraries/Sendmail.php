@@ -102,9 +102,13 @@ class Sendmail_Core {
 
     $mail->IsSMTP();
     $mail->Host = module::get_var("phpmailer", "smtp_server");
+    $mail->Port = module::get_var("phpmailer", "smtp_port");
 
     if (module::get_var("phpmailer", "smtp_login") != "") {
       $mail->SMTPAuth = true;
+      if (module::get_var("phpmailer", "use_ssl") == true) {
+        $mail->SMTPSecure = "ssl";
+      }
       $mail->Username = module::get_var("phpmailer", "smtp_login");
       $mail->Password = module::get_var("phpmailer", "smtp_password");
     } else {
@@ -115,7 +119,7 @@ class Sendmail_Core {
     $mail->FromName = module::get_var("phpmailer", "phpmailer_from_name");
     $mail->AddAddress($to); 
     $mail->IsHTML(true);
-	
+
     // demdel's fix for the ecard module.
     $boundaryLine = explode("\n", $message, -1);
     $newboundary = substr($boundaryLine[0],2);
