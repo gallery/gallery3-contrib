@@ -115,6 +115,17 @@ class Sendmail_Core {
     $mail->FromName = module::get_var("phpmailer", "phpmailer_from_name");
     $mail->AddAddress($to); 
     $mail->IsHTML(true);
+	
+    // demdel's fix for the ecard module.
+    $boundaryLine = explode("\n", $message, -1);
+    $newboundary = substr($boundaryLine[0],2);
+    if (preg_match("/--/", $boundaryLine[0])) {
+      if (preg_match("/--".$newboundary."--/", end($boundaryLine))) {
+        $mail->CharSet = "UTF-8";
+        $mail->ContentType = "multipart/related; boundary=\"".$newboundary."\"";
+      }
+    }
+
     $mail->Subject = $subject;
     $mail->Body = $message;
 
