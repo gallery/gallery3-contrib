@@ -206,8 +206,12 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     $startingmap_group->dropdown("google_default_type")
       ->label(t("Default Map Type"))
       ->options(
-        array("G_NORMAL_MAP", "G_SATELLITE_MAP", "G_HYBRID_MAP",
-              "G_PHYSICAL_MAP", "G_SATELLITE_3D_MAP"));
+        array("G_NORMAL_MAP" => "Normal", 
+              "G_SATELLITE_MAP" => "Satellite", 
+              "G_HYBRID_MAP" => "Hybrid",
+              "G_PHYSICAL_MAP" => "Physical", 
+              "G_SATELLITE_3D_MAP" => "Google Earth"))
+      ->selected(module::get_var("tagsmap", "googlemap_type"));
 
     // Add a save button to the form.
     $form->submit("SaveSettings")->value(t("Save"));
