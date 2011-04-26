@@ -46,7 +46,7 @@ class Admin_PHPMailer_Controller extends Admin_Controller {
     } else {
       $str_use_ssl = false;
     }
-	
+
     // Save Settings.
     module::set_var("phpmailer", "phpmailer_path", $str_phpmailer_path);
     module::set_var("phpmailer", "phpmailer_from_address", $str_phpmailer_from_addr);
@@ -57,7 +57,7 @@ class Admin_PHPMailer_Controller extends Admin_Controller {
     module::set_var("phpmailer", "smtp_password", $str_smtp_pass);
     module::set_var("phpmailer", "smtp_port", $str_smtp_port);
     message::success(t("Your Settings Have Been Saved."));
-    
+
     // Load Admin page.
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_phpmailer.html");
