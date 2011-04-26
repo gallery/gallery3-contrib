@@ -44,6 +44,17 @@ class rawphoto_graphics {
                  "graphicsmagick" => "GraphicsMagick");
   }
 
+  static function report_dcraw_support($dcraw) {
+    if ($dcraw->installed) {
+      site_status::clear("rawphoto_needs_dcraw");
+    } else {
+      site_status::warning(
+        t('The Raw Photos module requires the <a href="%dcraw_url">dcraw</a> tool to be installed.',
+          array("dcraw_url" => "http://www.cybercom.net/~dcoffin/dcraw/")),
+        "rawphoto_needs_dcraw");
+    }
+  }
+
   static function report_ppm_support($toolkit_id) {
     if (array_key_exists($toolkit_id, self::get_supported_toolkits())) {
       site_status::clear("rawphoto_needs_ppm_support");

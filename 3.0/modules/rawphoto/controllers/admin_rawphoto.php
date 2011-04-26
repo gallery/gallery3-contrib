@@ -23,10 +23,13 @@ class Admin_RawPhoto_Controller extends Admin_Controller {
   }
 
   private function _get_view($errors = array(), $icc_path = null) {
+    $dcraw = rawphoto_graphics::detect_dcraw();
+    rawphoto_graphics::report_dcraw_support($dcraw);
+
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_rawphoto.html");
     $view->content->is_keeporiginal_active = module::is_active("keeporiginal");
-    $view->content->dcraw = rawphoto_graphics::detect_dcraw();
+    $view->content->dcraw = $dcraw;
     $toolkit_names = array("imagemagick" => "ImageMagick",
                            "graphicsmagick" => "GraphicsMagick");
     $toolkit_id = module::get_var("gallery", "graphics_toolkit");
