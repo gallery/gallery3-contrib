@@ -71,7 +71,7 @@ class albumpassword_Controller extends Controller {
 
     // Convert submitted data to local variables.
     $album_id = Input::instance()->post("item_id");
-    $album_password = Input::instance()->post("assignpassword_password");
+    $album_password = strtolower(Input::instance()->post("assignpassword_password"));
 
     // Check for, and remove, any existing passwords and cached ids.
     $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $album_id)->find_all();
@@ -126,7 +126,7 @@ class albumpassword_Controller extends Controller {
     access::verify_csrf();
 
     // Convert submitted data to local variables.
-    $album_password = Input::instance()->post("albumpassword_password");
+    $album_password = strtolower(Input::instance()->post("albumpassword_password"));
 
     // See if the submitted password matches any in the database.
     $existing_password = ORM::factory("items_albumpassword")
