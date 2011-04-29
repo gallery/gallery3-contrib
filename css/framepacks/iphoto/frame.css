@@ -1,0 +1,32 @@
+/**
+ * Gallery 3 Grey Dragon Theme
+ * Copyright (C) 2006-2010 Serguei Dosyukov
+ *
+ * CSS rules - Frames - iPhoto
+ */
+
+.g-album-grid-container .g-column-3>li { width: 30%; }
+#g-album-grid>li { padding: 10px 6px 10px 10px; }
+.g-thumbslide { background: transparent; }
+.g-default .g-thumbslide .g-description, .g-expanded .g-thumbslide .g-description, .g-thumbslide .g-metadata { background-color: #FFF; border-color: #ADAEAD; color: #111; margin: 0 0 1px 1px; }
+.g-thumbcrop { border: #ADAEAD 1px solid; } 
+
+.g-thumbtype-sqr { background: url('images/thumb-sqr.png') no-repeat top left; }
+.g-thumbtype-flm { background: url('images/thumb-flm.png') no-repeat top left; }
+.g-thumbtype-dgt { background: url('images/thumb-dgt.png') no-repeat top left; }
+.g-thumbtype-wd  { background: url('images/thumb-wd.png') no-repeat top left; }
+
+.g-thumbtype-sqr.g-extended { background-image: url('images/thumb-sqr-ext.png'); }
+.g-thumbtype-flm.g-extended { background-image: url('images/thumb-flm-ext.png'); }
+.g-thumbtype-dgt.g-extended { background-image: url('images/thumb-dgt-ext.png'); }
+.g-thumbtype-wd.g-extended  { background-image: url('images/thumb-wd-ext.png'); }
+
+.g-thumbtype-sqr.g-expanded { background-image: url('images/thumb-sqr-e.png'); }
+.g-thumbtype-flm.g-expanded { background-image: url('images/thumb-flm-e.png'); }
+.g-thumbtype-dgt.g-expanded { background-image: url('images/thumb-dgt-e.png'); }
+.g-thumbtype-wd.g-expanded  { background-image: url('images/thumb-wd-e.png'); }
+
+.g-thumbtype-sqr.g-expanded.g-extended { background-image: url('images/thumb-sqr-eext.png'); }
+.g-thumbtype-flm.g-expanded.g-extended { background-image: url('images/thumb-flm-eext.png'); }
+.g-thumbtype-dgt.g-expanded.g-extended { background-image: url('images/thumb-dgt-eext.png'); }
+.g-thumbtype-wd.g-expanded.g-extended  { background-image: url('images/thumb-wd-eext.png'); }

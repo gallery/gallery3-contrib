@@ -1,0 +1,14 @@
+/**
+ * Gallery 3 Grey Dragon Theme
+ * Copyright (C) 2006-2010 Serguei Dosyukov
+ *
+ * CSS rules - Frames - GreyDragon
+ */
+
+.g-thumbslide .g-description { margin: 0 0 0 1px; }
+.g-thumbslide .g-metadata    { margin: 0 0 1px 1px; }
+
+.g-thumbslide, .g-thumbslide-ext, .g-thumbcrop { border-width: 1px; border-style: solid; background-color: inherit; }
+.g-album .g-thumbslide, .g-album .g-thumbslide-ext { border-right-width: 4px; border-right-style: double; border-bottom-width: 4px; border-bottom-style: double; }
+.g-photo .g-thumbslide, .g-photo .g-thumbslide-ext { margin-bottom: 4px; } /* Need to compensate for double border in album's thumbs */
+

@@ -1,0 +1,47 @@
+/**
+ * Gallery 3 Grey Dragon Theme
+ * Copyright (C) 2006-2011 Serguei Dosyukov
+ *
+ * CSS rules related to general layout
+ * Defined as 70em wide
+ */
+
+.rtl { direction: rtl; }
+
+.rtl #g-header, .rtl #g-main, .rtl #g-sidebar, .rtl #g-footer, 
+.rtl caption, .rtl th, .rtl #g-dialog, 
+.rtl .g-context-menu li a, .rtl #g-site-menu a,
+.rtl .g-metadata li, .rtl DIV.g-resize .g-description,
+.rtl .g-message-box li, .rtl #g-site-status li { text-align: right; }
+
+.rtl .g-text-right { text-align: left; }
+
+.rtl #g-site-menu li:hover ul ul,
+.rtl #g-site-menu li:hover ul ul ul,
+.rtl #g-site-menu li.iemhover ul ul,
+.rtl #g-site-menu li.iemhover ul ul ul { left: 999em; }
+
+.rtl .g-left, .rtl .g-inline li, .rtl .g-breadcrumbs li, .rtl .g-paginator li,
+.rtl .g-navigation li .rtl .g-buttonset li, .rtl .ui-icon-left .ui-icon,
+.rtl .g-metadata li, 
+.rtl #g-column-bottom .g-block,
+.rtl .g-short-form li, .rtl form ul ul li, .rtl input[type="submit"],
+.rtl input[type="reset"], .rtl input.checkbox, .rtl input[type=checkbox],
+.rtl input.radio, .rtl input[type=radio] { float: right; }
+
+.rtl .g-paginator .g-navigation { text-align: left; }
+
+.rtl #g-column-centerfull #g-album-header h1 { padding-right: 12em; }
+.rtl .g-buttonset .g-menu-link { text-indent: 9999px; }
+
+.rtl .g-thumbslide { padding-left: 0; padding-right: 6px; }
+.rtl .g-thumbslide .g-description { padding-left: 10px; }
+
+.rtl .ui-icon-first { background-position: -210px -178px; }
+.rtl .ui-icon-first-d { background-position: -210px -162px; }
+.rtl .ui-icon-prev { background-position: -194px -178px; }
+.rtl .ui-icon-prev-d { background-position: -194px -162px; }
+.rtl .ui-icon-next { background-position: -178px -178px; }
+.rtl .ui-icon-next-d { background-position: -178px -162px; }
+.rtl .ui-icon-last { background-position: -162px -178px; }
+.rtl .ui-icon-last-d { background-position: -162px -162px; }

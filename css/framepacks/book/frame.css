@@ -1,0 +1,56 @@
+/**
+ * Gallery 3 Grey Dragon Theme
+ * Copyright (C) 2006-2010 Serguei Dosyukov
+ *
+ * CSS rules - Frames - Book
+ */
+
+.g-album-grid-container .g-column-3>li { width: 30%; }
+#g-album-grid>li { padding: 10px 6px 10px 14px; }
+.g-thumbslide { background: transparent; }
+.g-default .g-thumbslide .g-description, .g-expanded .g-thumbslide .g-description, .g-thumbslide .g-metadata { background-color: #FFF; border-color: #ADAEAD; color: #111; margin: 0 0 1px 1px; }
+.g-thumbcrop { border: #ADAEAD 1px solid; } 
+
+.g-album .g-thumbslide .g-description { background-image: none; }
+.g-album .g-thumbslide .g-description .g-title { padding-left: 0; }
+.g-expanded.g-album .g-thumbslide .g-description .g-title { padding-left: 0; }
+
+.g-album.g-thumbtype-sqr { background: url('images/a-thumb-sqr.png') no-repeat top left; }
+.g-album.g-thumbtype-flm { background: url('images/a-thumb-flm.png') no-repeat top left; }
+.g-album.g-thumbtype-dgt { background: url('images/a-thumb-dgt.png') no-repeat top left; }
+.g-album.g-thumbtype-wd  { background: url('images/a-thumb-wd.png') no-repeat top left; }
+
+.g-album.g-thumbtype-sqr.g-extended { background-image: url('images/a-thumb-sqr-ext.png'); }
+.g-album.g-thumbtype-flm.g-extended { background-image: url('images/a-thumb-flm-ext.png'); }
+.g-album.g-thumbtype-dgt.g-extended { background-image: url('images/a-thumb-dgt-ext.png'); }
+.g-album.g-thumbtype-wd.g-extended  { background-image: url('images/a-thumb-wd-ext.png'); }
+
+.g-album.g-thumbtype-sqr.g-expanded { background-image: url('images/a-thumb-sqr-e.png'); }
+.g-album.g-thumbtype-flm.g-expanded { background-image: url('images/a-thumb-flm-e.png'); }
+.g-album.g-thumbtype-dgt.g-expanded { background-image: url('images/a-thumb-dgt-e.png'); }
+.g-album.g-thumbtype-wd.g-expanded  { background-image: url('images/a-thumb-wd-e.png'); }
+
+.g-album.g-thumbtype-sqr.g-expanded.g-extended { background-image: url('images/a-thumb-sqr-eext.png'); }
+.g-album.g-thumbtype-flm.g-expanded.g-extended { background-image: url('images/a-thumb-flm-eext.png'); }
+.g-album.g-thumbtype-dgt.g-expanded.g-extended { background-image: url('images/a-thumb-dgt-eext.png'); }
+.g-album.g-thumbtype-wd.g-expanded.g-extended  { background-image: url('images/a-thumb-wd-eext.png'); }
+
+.g-photo.g-thumbtype-sqr { background: url('images/thumb-sqr.png') no-repeat top left; }
+.g-photo.g-thumbtype-flm { background: url('images/thumb-flm.png') no-repeat top left; }
+.g-photo.g-thumbtype-dgt { background: url('images/thumb-dgt.png') no-repeat top left; }
+.g-photo.g-thumbtype-wd  { background: url('images/thumb-wd.png') no-repeat top left; }
+
+.g-photo.g-thumbtype-sqr.g-extended { background-image: url('images/thumb-sqr-ext.png'); }
+.g-photo.g-thumbtype-flm.g-extended { background-image: url('images/thumb-flm-ext.png'); }
+.g-photo.g-thumbtype-dgt.g-extended { background-image: url('images/thumb-dgt-ext.png'); }
+.g-photo.g-thumbtype-wd.g-extended  { background-image: url('images/thumb-wd-ext.png'); }
+
+.g-photo.g-thumbtype-sqr.g-expanded { background-image: url('images/thumb-sqr-e.png'); }
+.g-photo.g-thumbtype-flm.g-expanded { background-image: url('images/thumb-flm-e.png'); }
+.g-photo.g-thumbtype-dgt.g-expanded { background-image: url('images/thumb-dgt-e.png'); }
+.g-photo.g-thumbtype-wd.g-expanded  { background-image: url('images/thumb-wd-e.png'); }
+
+.g-photo.g-thumbtype-sqr.g-expanded.g-extended { background-image: url('images/thumb-sqr-eext.png'); }
+.g-photo.g-thumbtype-flm.g-expanded.g-extended { background-image: url('images/thumb-flm-eext.png'); }
+.g-photo.g-thumbtype-dgt.g-expanded.g-extended { background-image: url('images/thumb-dgt-eext.png'); }
+.g-photo.g-thumbtype-wd.g-expanded.g-extended  { background-image: url('images/thumb-wd-eext.png'); }

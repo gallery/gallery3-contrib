@@ -1,0 +1,15 @@
+/**
+ * Gallery 3 Grey Dragon Theme
+ * Copyright (C) 2006-2011 Serguei Dosyukov
+ *
+ * CSS rules - Kitchen sync
+ *
+ * Color rules for font/background/lines can be found in dedicated colorpack files
+ */
+
+@import "layout.css";
+@import "menus.css";
+@import "modules.css";
+@import "forms.css";
+@import "base.css";
+@import "rtl.css";
