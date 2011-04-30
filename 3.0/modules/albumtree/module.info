@@ -1,6 +1,6 @@
 name = "Album Tree"
 description = "Provides a block in the sidebar with quick links to all other albums."
-version = 2
+version = 3
 author_name = ""
 author_url = ""
 info_url = "http://codex.gallery2.org/Gallery3:Modules:albumtree"
