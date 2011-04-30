@@ -21,7 +21,7 @@ class rawphoto_event_Core {
   static function item_created($item) {
     if ($item->is_photo()) {
       $input_file = $item->file_path();
-      $output_file = system::tempnam(TMPPATH, "rawphoto-", ".jpg");
+      $output_file = system::temp_filename("rawphoto-", "jpg");
       $success = rawphoto_graphics::convert($input_file, $output_file);
       if ($success) {
         $item->set_data_file($output_file);
