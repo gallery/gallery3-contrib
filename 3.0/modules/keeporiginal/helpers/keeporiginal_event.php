@@ -74,7 +74,7 @@ class keeporiginal_event_Core {
     //  VARPATH/original/ as well.
 
     if ($old->is_photo() || $old->is_album()) {
-      $data_file = $new->get_data_file();
+      $data_file = $new->data_file;
       if (isset($data_file)) {
         self::_preserve($old->file_path());
       }
