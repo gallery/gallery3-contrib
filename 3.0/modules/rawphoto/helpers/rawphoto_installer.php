@@ -23,7 +23,7 @@ class rawphoto_installer {
   }
 
   static function activate() {
-    $dcraw = rawphoto_graphics::detect_dcraw()
+    $dcraw = rawphoto_graphics::detect_dcraw();
     rawphoto_graphics::report_dcraw_support($dcraw);
     $toolkit_id = module::get_var("gallery", "graphics_toolkit");
     rawphoto_graphics::report_ppm_support($toolkit_id);
