@@ -25,6 +25,9 @@ class Tag_Albums_Item_Core {
   public $thumb_width = 0;
   public $thumb_height = 0;
   public $item_type = "";
+  public $type = "";
+  public $view_count = 0;
+  public $owner;
 
   public function is_album() {
     if ($this->item_type == "album") {
@@ -106,5 +109,6 @@ class Tag_Albums_Item_Core {
     $this->title = $new_title;
     $this->url = $new_url;
     $this->item_type = $new_type;
+    $this->type = $new_type;
   }
 }
