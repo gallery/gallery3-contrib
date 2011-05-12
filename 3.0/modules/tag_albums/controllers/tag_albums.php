@@ -453,12 +453,20 @@ class tag_albums_Controller extends Controller {
         $parent_item = ORM::factory("item", $parent_item->parent_id);
       }
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
-      $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id) . "?show=" . $id;
+      if ((module::get_var("tag_albums", "tag_index_scope", "false")) && (module::get_var("tag_albums", "tag_index", "default") != "default")) {
+        $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id);
+      } else {
+        $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id) . "?show=" . $id;
+      }
       $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
     } else {
       $parent_url = url::site("tag_albums/");
       $tag_album_breadcrumbs[0] = new Tag_Albums_Breadcrumb(item::root()->title, item::root()->url());
-      $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb("All Tags", url::site("tag_albums/") . "?show=" . $id);
+      if (module::get_var("tag_albums", "tag_index", "default") == "default") {
+        $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb("All Tags", url::site("tag_albums/") . "?show=" . $id);
+      } else {
+        $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb("All Tags", url::site("tag_albums/"));
+      }
       $tag_album_breadcrumbs[2] = new Tag_Albums_Breadcrumb($display_tag->name, "");
     }
 
