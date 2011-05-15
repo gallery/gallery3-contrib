@@ -65,6 +65,14 @@ class exif_gps_installer {
     site_status::clear("exif_gps_needs_exif");
   }
 
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("exif")) {
+      $messages["warn"][] = t("The EXIF_GPS module requires the EXIF module.");
+    }
+    return $messages;
+  }
+
   static function uninstall() {
     // Delete the GPS table before uninstalling.
     $db = Database::instance();
