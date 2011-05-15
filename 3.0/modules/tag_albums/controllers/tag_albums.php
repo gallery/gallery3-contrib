@@ -729,6 +729,7 @@ class tag_albums_Controller extends Controller {
       $items_model->select("items.title");
       $items_model->select("items.view_count");
       $items_model->select("items.owner_id");
+      $items_model->select("items.rand_key");
       $items_model->select("items.type");
       $items_model->select("items.thumb_width");
       $items_model->select("items.thumb_height");
