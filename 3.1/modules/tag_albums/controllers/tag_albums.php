@@ -161,10 +161,10 @@ class tag_albums_Controller extends Controller {
     if ((module::get_var("tag_albums", "tag_index_scope", "false")) || ($id == "")) {
       $tag_album_index_type = module::get_var("tag_albums", "tag_index", "default");
       if (($tag_album_index_type == "tagcloudpage") && (module::is_active("tag_cloud_page"))) {
-        Tag_Cloud_Page_Controller::index();
+        url::redirect("tag_cloud_page/");
         return;
       } elseif (($tag_album_index_type == "alltags") && (module::is_active("all_tags"))) {
-        All_Tags_Controller::index();
+        url::redirect("all_tags/");
         return;
       }
     }
