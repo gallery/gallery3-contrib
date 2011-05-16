@@ -180,7 +180,7 @@ class tag_albums_Controller extends Controller {
     // Inherit permissions, title and description from the album that linked to this page,
     //  if available, if not use the root album and some default values.
     $album = "";
-    $page_title = t("All Tags");
+    $page_title = module::get_var("tag_albums", "tag_page_title", "All Tags");
     $page_description = "";
     if ($id == "") {
       $album = ORM::factory("item", 1);
@@ -463,9 +463,9 @@ class tag_albums_Controller extends Controller {
       $parent_url = url::site("tag_albums/");
       $tag_album_breadcrumbs[0] = new Tag_Albums_Breadcrumb(item::root()->title, item::root()->url());
       if (module::get_var("tag_albums", "tag_index", "default") == "default") {
-        $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb("All Tags", url::site("tag_albums/") . "?show=" . $id);
+        $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/") . "?show=" . $id);
       } else {
-        $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb("All Tags", url::site("tag_albums/"));
+        $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/"));
       }
       $tag_album_breadcrumbs[2] = new Tag_Albums_Breadcrumb($display_tag->name, "");
     }
@@ -585,7 +585,7 @@ class tag_albums_Controller extends Controller {
       $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
     } else {
       $tag_album_breadcrumbs[0] = new Tag_Albums_Breadcrumb(item::root()->title, item::root()->url());
-      $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb("All Tags", url::site("tag_albums/"));
+      $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/"));
       $tag_album_breadcrumbs[2] = new Tag_Albums_Breadcrumb($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id) . "?show=" . $item->id);
       $tag_album_breadcrumbs[3] = new Tag_Albums_Breadcrumb($item->title, "");
       $parent_url = url::site("tag_albums/tag/" . $display_tag->id);

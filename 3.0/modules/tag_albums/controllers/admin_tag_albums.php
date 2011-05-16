@@ -36,6 +36,9 @@ class Admin_Tag_Albums_Controller extends Admin_Controller {
                       array("id" => "g-tag-albums-admin-form"));
 
     $tag_albums_tagsort_group = $form->group("Tag_Albums_Tag_Sort")->label(t("\"All Tags\" Album Preferences"));
+    $tag_albums_tagsort_group->input("tag_page_title")
+      ->label(t("Page Title"))
+      ->value(module::get_var("tag_albums", "tag_page_title"));
     $tag_albums_tagsort_group->dropdown("tag_index")
       ->label(t("Tag album's index should display:"))
       ->options(
@@ -98,6 +101,7 @@ class Admin_Tag_Albums_Controller extends Admin_Controller {
     $form = $this->_get_admin_form();
     if ($form->validate()) {
       Kohana_Log::add("error",print_r($form,1));
+      module::set_var("tag_albums", "tag_page_title", $form->Tag_Albums_Tag_Sort->tag_page_title->value);
       module::set_var("tag_albums", "tag_index", $form->Tag_Albums_Tag_Sort->tag_index->value);
       module::set_var("tag_albums", "tag_index_scope", count($form->Tag_Albums_Tag_Sort->tag_index_scope->value));
       module::set_var("tag_albums", "tag_index_filter", count($form->Tag_Albums_Tag_Sort->tag_index_filter->value));
