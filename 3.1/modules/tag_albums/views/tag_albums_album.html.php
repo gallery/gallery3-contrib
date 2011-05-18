@@ -1,37 +1,23 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-      <div id="g-header" class="ui-helper-clearfix">
-        <? // The following code was modifed to allow module-defined breadcrumbs.
-           // Everything else in this file is a copy of the default page.html.php file.
-        ?>
-        <? if (!empty($breadcrumbs)): ?>
-        <ul class="g-breadcrumbs">
-          <? $i = 0 ?>
-          <? foreach ($breadcrumbs as $breadcrumb): ?>
-          <li<? if ($i == 0) print " class=\"g-first\"" ?>>
-            <!-- Adding ?show=<id> causes Gallery3 to display the page
-                 containing that photo.  For now, we just do it for
-                 the immediate parent so that when you go back up a
-                 level you're on the right page. -->
-            <? if ($breadcrumb->url) : ?>
-              <a href="<?= $breadcrumb->url ?>"><?= html::purify($breadcrumb->title) ?></a>
-            <? else : ?>
-              <?= html::purify($breadcrumb->title) ?>
-            <? endif ?>
-          </li>
-          <? $i++ ?>
-          <? endforeach ?>
-        </ul>
-        <? endif ?>
-        <? // End modified code ?>
-</div>
-
+<? 
+  // The g-info block was taken from album.html.php and $theme->album_top() was changed to $theme->dynamic_top().
+  // $item->title and $item->description have been changed to $title and $description.
+  //
+  // The g-album-grid block was also taken from album.html.php.  The section for uploading new photos to an empty album
+  // has been removed.  Also, $theme->context_menu has been removed as well (it was crashing the page).
+?>
 <div id="g-info">
-    <?= $theme->dynamic_top() ?>
+  <?= $theme->dynamic_top() ?>
   <h1><?= html::purify($title) ?></h1>
   <div class="g-description"><?= nl2br(html::purify($description)) ?></div>
 </div>
 
-
+<? if (isset($filter_text) && (module::get_var("tag_albums", "tag_index_filter"))): ?>
+<div id="g-tags-filter">
+<br/ >
+  <center><?= $filter_text; ?></center>
+</div>
+<? endif ?>
 
 <ul id="g-album-grid" class="ui-helper-clearfix">
 <? if (count($children)): ?>

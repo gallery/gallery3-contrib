@@ -36,6 +36,17 @@ class Admin_Tag_Albums_Controller extends Admin_Controller {
                       array("id" => "g-tag-albums-admin-form"));
 
     $tag_albums_tagsort_group = $form->group("Tag_Albums_Tag_Sort")->label(t("\"All Tags\" Album Preferences"));
+    $tag_albums_tagsort_group->input("tag_page_title")
+      ->label(t("Page Title"))
+      ->value(module::get_var("tag_albums", "tag_page_title"));
+    $tag_albums_tagsort_group->dropdown("tag_index")
+      ->label(t("Tag album's index should display:"))
+      ->options(
+        array("default" => "(default) Individual Tag Albums", 
+              "tagcloudpage" => "Tag Cloud Page Module", 
+              "alltags" => "All Tags Module"))
+      ->selected(module::get_var("tag_albums", "tag_index"));
+
     $tag_albums_tagsort_group->dropdown("tag_sort_by")
       ->label(t("Sort \"All Tags\" Albums By:"))
       ->options(
@@ -49,6 +60,14 @@ class Admin_Tag_Albums_Controller extends Admin_Controller {
         array("ASC" => "Ascending Order", 
               "DESC" => "Descending"))
       ->selected(module::get_var("tag_albums", "tag_sort_direction"));
+
+    $tag_index_scope_options["tag_index_scope"] = Array(t("Use tag album index setting for \"*\" albums as well?"), module::get_var("tag_albums", "tag_index_scope"));
+    $tag_albums_tagsort_group->checklist("tag_index_scope")
+      ->options($tag_index_scope_options);
+
+    $tag_index_filter_options["tag_index_filter"] = Array(t("Display filter links on \"All Tags\" album pages?"), module::get_var("tag_albums", "tag_index_filter"));
+    $tag_albums_tagsort_group->checklist("tag_index_filter")
+      ->options($tag_index_filter_options);
 
     $tag_albums_tagitemsort_group = $form->group("Tag_Albums_Tag_Item_Sort")->label(t("\"All Tags\" Sub-Album Preferences"));
     $tag_albums_tagitemsort_group->dropdown("subalbum_sort_by")
@@ -82,12 +101,16 @@ class Admin_Tag_Albums_Controller extends Admin_Controller {
     $form = $this->_get_admin_form();
     if ($form->validate()) {
       Kohana_Log::add("error",print_r($form,1));
+      module::set_var("tag_albums", "tag_page_title", $form->Tag_Albums_Tag_Sort->tag_page_title->value);
+      module::set_var("tag_albums", "tag_index", $form->Tag_Albums_Tag_Sort->tag_index->value);
+      module::set_var("tag_albums", "tag_index_scope", count($form->Tag_Albums_Tag_Sort->tag_index_scope->value));
+      module::set_var("tag_albums", "tag_index_filter", count($form->Tag_Albums_Tag_Sort->tag_index_filter->value));
       module::set_var("tag_albums", "tag_sort_by", $form->Tag_Albums_Tag_Sort->tag_sort_by->value);
       module::set_var("tag_albums", "tag_sort_direction", $form->Tag_Albums_Tag_Sort->tag_sort_direction->value);
       module::set_var("tag_albums", "subalbum_sort_by", $form->Tag_Albums_Tag_Item_Sort->subalbum_sort_by->value);
       module::set_var("tag_albums", "subalbum_sort_direction", $form->Tag_Albums_Tag_Item_Sort->subalbum_sort_direction->value);
-
       message::success(t("Your settings have been saved."));
+
       url::redirect("admin/tag_albums");
     }
 
