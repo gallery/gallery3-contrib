@@ -34,11 +34,23 @@ class tag_albums_installer {
     module::set_var("tag_albums", "tag_sort_direction", "ASC");
     module::set_var("tag_albums", "subalbum_sort_by", "title");
     module::set_var("tag_albums", "subalbum_sort_direction", "ASC");
+    module::set_var("tag_albums", "tag_index", "default");
+    module::set_var("tag_albums", "tag_index_scope", "0");
+    module::set_var("tag_albums", "tag_index_filter", "0");
 
     // Set the module's version number.
-    module::set_version("tag_albums", 1);
+    module::set_version("tag_albums", 2);
   }
 
+  static function upgrade($version) {
+    if ($version == 1) {
+      module::set_var("tag_albums", "tag_index", "default");
+      module::set_var("tag_albums", "tag_index_scope", "0");
+      module::set_var("tag_albums", "tag_index_filter", "0");
+      module::set_version("tag_albums", 2);
+    }
+  }
+  
   static function deactivate() {
     site_status::clear("tag_albums_needs_tag");
   }
