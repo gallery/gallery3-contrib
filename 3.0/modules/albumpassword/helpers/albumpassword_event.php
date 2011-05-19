@@ -34,7 +34,7 @@ class albumpassword_event_Core {
                       ->id("albumpassword_login")
                       ->css_id("g-album-password-login")
                       ->url(url::site("albumpassword/login"))
-                      ->label(t("Enter password")));
+                      ->label(t("Unlock albums")));
     } else {
       // If a password has been entered already
       // display the log out link, and links to the protected albums

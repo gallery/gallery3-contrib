@@ -1,3 +1,7 @@
 name = "User Info"
 description = "Logs Login, Logout, Failed Login, Re-Authenticate, and User Created Information"
 version = 2
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:user_info"
+discuss_url = "http://gallery.menalto.com/forum_module_user_info"

@@ -1,3 +1,7 @@
 name = "MetaDescription"
 description = "Automatically generates and inserts KEYWORD and DESCRIPTION meta tags into any theme."
 version = 1
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:metadescription"
+discuss_url = "http://gallery.menalto.com/forum_module_metadescription"
