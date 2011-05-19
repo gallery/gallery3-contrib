@@ -1,0 +1,7 @@
+name = "Carousel"
+description = "Add a vertical carousel for recent & popular items in the sidebar."
+version = 1.0
+author_name = "floridave"
+author_url = "http://codex.gallery2.org/User:Floridave"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:carousel"
+discuss_url = "http://gallery.menalto.com/forum_module_all_carousel"

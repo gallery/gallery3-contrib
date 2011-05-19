@@ -1,36 +1,41 @@
+/**
+ * rWatcher Edit:  This file used to be server_add.js from server_add module.
+ * All occurences of server-add have been replaced with videos
+ *
+ */
 (function($) {
-   $.widget("ui.gallery_server_add",  {
+   $.widget("ui.gallery_videos",  {
      _init: function() {
        var self = this;
-       $("#g-server-add-add-button", this.element).click(function(event) {
+       $("#g-videos-add-button", this.element).click(function(event) {
          event.preventDefault();
          $(".g-progress-bar", this.element).
            progressbar().
            progressbar("value", 0);
-         $("#g-server-add-progress", this.element).slideDown("fast", function() { self.start_add(); });
+         $("#g-videos-progress", this.element).slideDown("fast", function() { self.start_add(); });
        });
-       $("#g-server-add-pause-button", this.element).click(function(event) {
+       $("#g-videos-pause-button", this.element).click(function(event) {
          self.pause = true;
-         $("#g-server-add-pause-button", this.element).hide();
-         $("#g-server-add-continue-button", this.element).show();
+         $("#g-videos-pause-button", this.element).hide();
+         $("#g-videos-continue-button", this.element).show();
        });
-       $("#g-server-add-continue-button", this.element).click(function(event) {
+       $("#g-videos-continue-button", this.element).click(function(event) {
          self.pause = false;
-         $("#g-server-add-pause-button", this.element).show();
-         $("#g-server-add-continue-button", this.element).hide();
+         $("#g-videos-pause-button", this.element).show();
+         $("#g-videos-continue-button", this.element).hide();
          self.run_add();
        });
-       $("#g-server-add-close-button", this.element).click(function(event) {
+       $("#g-videos-close-button", this.element).click(function(event) {
          $("#g-dialog").dialog("close");
          window.location.reload();
        });
-       $("#g-server-add-tree span.g-directory", this.element).dblclick(function(event) {
+       $("#g-videos-tree span.g-directory", this.element).dblclick(function(event) {
          self.open_dir(event);
        });
-       $("#g-server-add-tree span.g-file, #g-server-add-tree span.g-directory", this.element).click(function(event) {
+       $("#g-videos-tree span.g-file, #g-videos-tree span.g-directory", this.element).click(function(event) {
          self.select_file(event);
        });
-       $("#g-server-add-tree span.g-directory", this.element).dblclick(function(event) {
+       $("#g-videos-tree span.g-directory", this.element).dblclick(function(event) {
          self.open_dir(event);
        });
        $("#g-dialog").bind("dialogclose", function(event, ui) {
@@ -48,8 +53,8 @@
 	 paths.push($(this).attr("ref"));
        });
 
-       $("#g-server-add-add-button", this.element).hide();
-       $("#g-server-add-pause-button", this.element).show();
+       $("#g-videos-add-button", this.element).hide();
+       $("#g-videos-pause-button", this.element).show();
 
        $.ajax({
          url: START_URL,
@@ -77,10 +82,10 @@
            $("#g-status").html(data.status);
            $(".g-progress-bar", self.element).progressbar("value", data.percent_complete);
            if (data.done) {
-	     $("#g-server-add-progress", this.element).slideUp();
-             $("#g-server-add-add-button", this.element).show();
-             $("#g-server-add-pause-button", this.element).hide();
-             $("#g-server-add-continue-button", this.element).hide();
+         $("#g-videos-progress", this.element).slideUp();
+             $("#g-videos-add-button", this.element).show();
+             $("#g-videos-pause-button", this.element).hide();
+             $("#g-videos-continue-button", this.element).hide();
            } else {
              if (!self.pause) {
                setTimeout(function() { self.run_add(); }, 25);
@@ -99,11 +104,11 @@
        $.ajax({
          url: GET_CHILDREN_URL.replace("__PATH__", path),
          success: function(data, textStatus) {
-           $("#g-server-add-tree", self.element).html(data);
-           $("#g-server-add-tree span.g-directory", self.element).dblclick(function(event) {
+           $("#g-videos-tree", self.element).html(data);
+           $("#g-videos-tree span.g-directory", self.element).dblclick(function(event) {
              self.open_dir(event);
            });
-           $("#g-server-add-tree span.g-file, #g-server-add-tree span.g-directory", this.element).click(function(event) {
+           $("#g-videos-tree span.g-file, #g-videos-tree span.g-directory", this.element).click(function(event) {
              self.select_file(event);
            });
          }
@@ -115,10 +120,10 @@
       */
      select_file:  function (event) {
        $(event.target).toggleClass("selected");
-       if ($("#g-server-add span.selected").length) {
-         $("#g-server-add-add-button").enable(true).removeClass("ui-state-disabled");
+       if ($("#g-videos span.selected").length) {
+         $("#g-videos-add-button").enable(true).removeClass("ui-state-disabled");
        } else {
-         $("#g-server-add-add-button").enable(false).addClass("ui-state-disabled");
+         $("#g-videos-add-button").enable(false).addClass("ui-state-disabled");
        }
      }
   });

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,5 +17,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Videos_File_Model extends ORM {
+class all_tags_event_Core {
+	static function site_menu($menu, $theme) {
+		if (module::get_var("all_tags", "hidden")  != true) {
+    		$menu->add_after("home", Menu::factory("link")
+                ->id("all_tags")
+                ->label(t("All Tags"))
+                ->url(url::site("all_tags/")));
+		}
+	}
 }

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,5 +17,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Videos_File_Model extends ORM {
-}
+/**
+ * PHP Mail Configuration parameters
+ * from        => email address that appears as the from address
+ * line-length => word wrap length (PHP documentations suggest no larger tha 70 characters
+ * reply-to    => what goes into the reply to header
+ */
+$config["ranges"] = array(
+  "Addthis1" => array("low" => "65.249.152.0", "high" => "65.249.159.255"),
+  "Addthis2" => array("low" => "208.122.55.0", "high" => "208.122.55.255")
+);
