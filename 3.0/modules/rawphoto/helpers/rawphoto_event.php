@@ -39,10 +39,14 @@ class rawphoto_event_Core {
          ->url(url::site("admin/rawphoto")));
   }
 
-  static function legal_file_extensions($extensions_wrapper) {
+  static function legal_photo_extensions($extensions_wrapper) {
     array_push($extensions_wrapper->extensions,
                "bay", "bmq", "cr2", "crw", "cs1", "dc2", "dcr", "dng", "fff", "k25", "kdc",
                "mos", "mrw", "nef", "orf", "pef", "raf", "raw", "rdc", "srf", "x3f");
+  }
+
+  static function legal_photo_types($types_wrapper) {
+    array_push($types_wrapper->types, "image/tiff");
   }
 
   static function graphics_toolkit_change($toolkit_id) {
