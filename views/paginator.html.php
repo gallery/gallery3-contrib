@@ -1,21 +1,4 @@
-<?php defined("SYSPATH") or die("No direct script access.");
-/**
- * Grey Dragon Theme - a custom theme for Gallery 3
- * This theme was designed and built by Serguei Dosyukov, whose blog you will find at http://blog.dragonsoft.us
- * Copyright (C) 2009-2011 Serguei Dosyukov
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General
- * Public License as published by the Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program; if not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
- */
-?>
+<?php defined("SYSPATH") or die("No direct script access.") ?>
 <?
 // This is a generic paginator for album, photo and movie pages.  Depending on the page type,
 // there are different sets of variables available.  With this data, you can make a paginator
@@ -43,146 +26,62 @@
 //
 ?>
 
-<?
-  $_pagelist = array();
-
-  switch ($page_type) {
-    case "collection":
-      if (isset($item)):
-        $parent = $item->parent();
-      endif;
-      $current_page = $page;
-      $total_pages = $max_pages;
-      // Prepare page url list
-      for ($i = 1; $i <= $total_pages; $i++):
-        $_pagelist[$i] = url::site(url::merge(array("page" => $i)));
-      endfor;
-      break;
-    case "item":
-      if (isset($item)):
-        $parent = $item->parent();
-      endif;
-      $current_page = $position; 
-      $total_pages = $total;
-      if (isset($parent)):
-        $siblings = $parent->children();
-        for ($i = 1; $i <= $total; $i++):
-          $_pagelist[$i] = $siblings[$i-1]->url();
-        endfor;
-      endif;
-      break;
-    default:
-      $current_page = 1;
-      $total_pages = 1;
-      $_pagelist[1] = url::site();
-      break;
-  }
-
-  if ($total_pages <= 1):
-    $pagination_msg = "&nbsp;";
-  else:
-    $pagination_msg = t("Page:") . ' ';
-    if ($total_pages < 13):
-      for ($i = 1; $i <= $total_pages; $i++):
-        if ($i == $current_page):
-          $pagination_msg .= '<span>' . t($i) . '</span>';
-        else:                                                                
-          $pagination_msg .= '<span><a href="' . $_pagelist[$i] . '" title="' . t("Page") . ' ' . t($i) . '">' . t($i) . '</a></span>';
-        endif;
-        if ($i < $total_pages):
-          $pagination_msg .= '&middot;'; 
-        endif;
-      endfor;
-    elseif ($current_page < 9):
-      for ($i = 1; $i <= 10; $i++):
-        if ($i == $current_page): 
-          $pagination_msg .= '<span>' . t($i) . '</span>';
-        else:
-          $pagination_msg .= '<span><a href="' . $_pagelist[$i] . '" title="' . t("Page") . ' ' . t($i) . '">' . t($i) . '</a></span>';
-        endif;
-        if ($i < 10):
-          $pagination_msg .= '&middot;'; 
-        endif;
-      endfor;
-      
-      $pagination_msg .= '&hellip;';
-      $pagination_msg .= '<span><a href="' . $_pagelist[$total_pages - 1] . '" title="' . t("Page") . ' ' . t($total_pages - 1) . '">' . t($total_pages - 1) . '</a></span>';
-      $pagination_msg .= '&middot;';
-      $pagination_msg .= '<span><a href="' . $_pagelist[$total_pages] . '" title="' . t("Page") . ' ' . t($total_pages) . '">' . t($total_pages) . '</a></span>';
-
-    elseif ($current_page > $total_pages - 8):
-      $pagination_msg .= '<span><a href="' . $_pagelist[1] . '" title="' . t("Page") . ' ' . t(1) . '">' . t(1) . '</a></span>';
-      $pagination_msg .= '&middot;';
-      $pagination_msg .= '<span><a href="' . $_pagelist[2] . '" title="' . t("Page") . ' ' . t(2) . '">' . t(2) . '</a></span>';
-      $pagination_msg .= '&hellip;';
-
-      for ($i = $total_pages - 9; $i <= $total_pages; $i++):
-        if ($i == $current_page): 
-          $pagination_msg .= '<span>' . t($i) . '</span>';
-        else:
-          $pagination_msg .= '<span><a href="' . $_pagelist[$i] . '" title="' . t("Page") . ' ' . t($i) . '">' . t($i) . '</a></span>';
-        endif;
-        if ($i < $total_pages):
-          $pagination_msg .= '&middot;';
-        endif;
-      endfor;
-
-    else:
-      $pagination_msg .= '<span><a href="' . $_pagelist[1] . '" title="' . t("Page") . ' ' . t(1) . '">' . t(1) . '</a></span>';
-      $pagination_msg .= '&middot;';
-      $pagination_msg .= '<span><a href="' . $_pagelist[2] . '" title="' . t("Page") . ' ' . t(2) . '">' . t(2) . '</a></span>';
-      $pagination_msg .= '&hellip;';
-
-      for ($i = $current_page - 5; $i <= $current_page + 5; $i++):
-        if ($i == $current_page): 
-          $pagination_msg .= '<span>' . t($i) . '</span>';
-        else:
-          $pagination_msg .= '<span><a href="' . $_pagelist[$i] . '" title="' . t("Page") . ' ' . t($i) . '">' . t($i) . '</a></span>';
-        endif;
-        if ($i < $current_page + 5):
-          $pagination_msg .= '&middot;';
-        endif;
-      endfor;
-
-      $pagination_msg .= '&hellip;';
-      $pagination_msg .= '<span><a href="' . $_pagelist[$total_pages - 1] . '" title="' . t("Page") . ' ' . t($total_pages - 1) . '">' . t($total_pages - 1) . '</a></span>';
-      $pagination_msg .= '&middot;';
-      $pagination_msg .= '<span><a href="' . $_pagelist[$total_pages] . '" title="' . t("Page") . ' ' . t($total_pages) . '">' . t($total_pages) . '</a></span>';
-    endif;
-  endif; 
-?>
-
-<ul class="g-paginator">
-  <li class="g-pagination"><?= $pagination_msg ?></li>   
-  <li class="g-navigation">
-  <? if ($current_page > 1): ?>
-    <a title="<?= t("first") ?>" id="g-navi-first" href="<?= $_pagelist[1] ?>"><span class="ui-icon ui-icon-first">&nbsp;</span></a>
-  <? else: ?>
-    <span class="ui-icon ui-icon-first-d">&nbsp;</span>
+<ul class="g-paginator ui-helper-clearfix">
+  <li class="g-first">
+  <? if ($page_type == "collection"): ?>
+    <? if (isset($first_page_url)): ?>
+      <a href="<?= $first_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all">
+        <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
+    <? else: ?>
+      <a class="g-button ui-icon-left ui-state-disabled ui-corner-all">
+        <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
+    <? endif ?>
   <? endif ?>
 
   <? if (isset($previous_page_url)): ?>
-    <a title="<?= t("previous") ?>" id="g-navi-prev" href="<?= $previous_page_url ?>"><span class="ui-icon ui-icon-prev">&nbsp;</span></a>
+    <a href="<?= $previous_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all">
+      <span class="ui-icon ui-icon-seek-prev"></span><?= t("Previous") ?></a>
   <? else: ?>
-    <span class="ui-icon ui-icon-prev-d">&nbsp;</span>
+    <a class="g-button ui-icon-left ui-state-disabled ui-corner-all">
+      <span class="ui-icon ui-icon-seek-prev"></span><?= t("Previous") ?></a>
   <? endif ?>
+  </li>
 
-  <? if (isset($parent)): ?>
-    <a title="<?= t("up") ?>" id="g-navi-parent" href="<?= $parent->url() ?>"><span class="ui-icon ui-icon-parent">&nbsp;</span></a>
-  <? else: ?>
-    <span class="ui-icon ui-icon-parent-d">&nbsp;</span>
-  <? endif ?>
+  <li class="g-info">
+    <? if ($total): ?>
+      <? if ($page_type == "collection"): ?>
+        <?= /* @todo This message isn't easily localizable */
+            t2("Photo %from_number of %count",
+               "Photos %from_number - %to_number of %count",
+               $total,
+               array("from_number" => $first_visible_position,
+                     "to_number" => $last_visible_position,
+                     "count" => $total)) ?>
+      <? else: ?>
+        <?= t("%position of %total", array("position" => $position, "total" => $total)) ?>
+      <? endif ?>
+    <? else: ?>
+      <?= t("No photos") ?>
+    <? endif ?>
+  </li>
 
+  <li class="g-text-right">
   <? if (isset($next_page_url)): ?>
-    <a title="<?= t("next") ?>" class="ui-right" id="g-navi-next" href="<?= $next_page_url ?>"><span class="ui-icon ui-icon-next">&nbsp;</span></a>
+    <a href="<?= $next_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
+      <span class="ui-icon ui-icon-seek-next"></span><?= t("Next") ?></a>
   <? else: ?>
-    <span class="ui-icon ui-icon-next-d">&nbsp;</span>
+    <a class="g-button ui-state-disabled ui-icon-right ui-corner-all">
+      <span class="ui-icon ui-icon-seek-next"></span><?= t("Next") ?></a>
   <? endif ?>
 
-  <? if ($current_page < $total_pages): ?>
-      <a title="<?= t("last") ?>" class="ui-right" id="g-navi-last" href="<?= $_pagelist[$total_pages] ?>"><span class="ui-icon ui-icon-last">&nbsp;</span></a>
-  <? else: ?>
-    <span class="ui-icon ui-icon-last-d">&nbsp;</span>
+  <? if ($page_type == "collection"): ?>
+    <? if (isset($last_page_url)): ?>
+      <a href="<?= $last_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
+        <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
+    <? else: ?>
+      <a class="g-button ui-state-disabled ui-icon-right ui-corner-all">
+        <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
+    <? endif ?>
   <? endif ?>
   </li>
 </ul>

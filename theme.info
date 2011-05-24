@@ -1,9 +1,6 @@
-name        = ".Pear"
-description = "Gallery4 theme that mimics the looks of gallery.mac.com"
-version     = 0.0.1
-author      = "2011 Fredrik Erlandsson"
-site        = 1
-admin       = 0
-support     = "http://gallery.menalto.com/node/"
-download    = "https://github.com/fredrike/pear4gallery3/zipball/master";
-vote        = "http://gallery.menalto.com/gallery/g3demosites/";
+name = ".Pear"
+description = "A theme with the intention to mimic Apples mobile me gallery."
+version = 1
+author = "Fredrik Erlandsson <fredrik.e@gmail.com>"
+site = 1
+admin = 0

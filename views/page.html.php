@@ -1,268 +1,161 @@
-<?php defined("SYSPATH") or die("No direct script access.");
-/**
- * Grey Dragon Theme - a custom theme for Gallery 3
- * This theme was designed and built by Serguei Dosyukov, whose blog you will find at http://blog.dragonsoft.us
- * Copyright (C) 2009-2011 Serguei Dosyukov
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General
- * Public License as published by the Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program; if not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
- */
-?>
+<?php defined("SYSPATH") or die("No direct script access.") ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<? $theme->load_sessioninfo(); ?>
-<!-- <?= $theme->themename ?> v.<?= $theme->themeversion ?> (ColorPack: <?= $theme->colorpack ?>) - Copyright (c) 2009-2011 Serguei Dosyukov - All Rights Reserved -->
-<html xmlns="http://www.w3.org/1999/xhtml" <?= $theme->html_attributes() ?> xml:lang="en" lang="en" <?= ($theme->is_rtl)? "dir=rtl" : null; ?> >
-<?
-  $item = $theme->item();
-  if (($theme->enable_pagecache) and (isset($item))):
-    // Page will expire in 60 seconds
-    header('Expires: ' . gmdate('D, d M Y H:i:s', time() + 60).'GMT');  
-    header("Cache-Control: public");
-    header("Cache-Control: post-check=3600, pre-check=43200", false);
-    header("Content-Type: text/html; charset=UTF-8");
-    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-  endif;
-?>
-<head>
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-<? $theme->start_combining("script,css") ?>
-<? if ($page_title): ?>
-<?   $_title = $page_title ?> 
-<? else: ?>
-<?   if ($theme->item()): ?>
-<?     $_title = $theme->bb2html($theme->item()->title, 2); ?>
-<?   elseif ($theme->tag()): ?>
-<?     $_title = t("Photos tagged with %tag_title", array("tag_title" => $theme->bb2html($theme->tag()->name, 2))) ?>
-<?   else: /* Not an item, not a tag, no page_title specified.  Help! */ ?>
-<?     $_title = $theme->bb2html(item::root()->title, 2); ?>
-<?   endif ?>
-<? endif ?>
-<title><?= $_title ?></title>
-<? if ($theme->disable_seosupport): ?>
-<meta name="robots" content="noindex, nofollow, noarchive" />
-<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noodp, noimageindex, notranslate" />
-<meta name="slurp" content="noindex, nofollow, noarchive, nosnippet, noodp, noydir" />
-<meta name="msnbot" content="noindex, nofollow, noarchive, nosnippet, noodp" />
-<meta name="teoma" content="noindex, nofollow, noarchive" />
-<? endif; ?>
-<? if ($theme->blendpagetrans): ?>
-<meta http-equiv="Page-Enter" content="blendTrans(Duration=0.5)" />
-<meta http-equiv="Page-Exit" content="blendTrans(Duration=0.5)" />
-<? endif; ?>
-<!-- Internet Explorer 9 Meta tags : Start -->
-<meta name="application-name" content="<?= $_title; ?>" />
-<meta name="msapplication-tooltip" content="<?= t("Start"); ?> <?= $_title; ?>" />
-<meta name="msapplication-starturl" content="<?= item::root()->url() ?>" />
-<? if ($theme->allow_root_page): ?>
-<meta name="msapplication-task" content="name=<?= t("Gallery") ?>: <?= t("Root Page") ?>; action-uri=<?= item::root()->url(); ?>?root=yes; icon-uri=favicon.ico" />
-<meta name="msapplication-task" content="name=<?= t("Gallery") ?>: <?= t("Root Album") ?>; action-uri=<?= item::root()->url(); ?>?root=no; icon-uri=favicon.ico" />
-<? else: ?>
-<meta name="msapplication-task" content="name=<?= t("Gallery") ?>: <?= t("Root Album") ?>; action-uri=<?= item::root()->url(); ?>; icon-uri=favicon.ico" />
-<? endif; ?>
-<? if (identity::active_user()->admin): ?>
-<meta name="msapplication-task-separator" content="gallery3-greydragon" />
-<meta name="msapplication-task" content="name=<?= t("Admin") ?>: <?= t("Dashboard") ?>; action-uri=<?= url::site("admin"); ?>; icon-uri=favicon.ico" />
-<? endif; ?>
-<!-- Internet Explorer 9 Meta tags : End -->
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" <?= $theme->html_attributes() ?> xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <? $theme->start_combining("script,css") ?>
+    <title>
+      <? if ($page_title): ?>
+        <?= $page_title ?>
+      <? else: ?>
+        <? if ($theme->item()): ?>
+          <?= $theme->item()->title ?>
+        <? elseif ($theme->tag()): ?>
+          <?= t("Photos tagged with %tag_title", array("tag_title" => $theme->tag()->name)) ?>
+        <? else: /* Not an item, not a tag, no page_title specified.  Help! */ ?>
+          <?= item::root()->title ?>
+        <? endif ?>
+      <? endif ?>
+    </title>
+    <link rel="shortcut icon"
+          href="<?= url::file(module::get_var("gallery", "favicon_url")) ?>"
+          type="image/x-icon" />
 
-<link rel="shortcut icon" href="<?= $theme->favicon ?>" type="image/x-icon" />
-<? if ($theme->appletouchicon): ?>
-<link rel="apple-touch-icon" href="<?= $theme->appletouchicon; ?>"/>
-<? endif; ?>
-<?= $theme->script("json2-min.js") ?>
-<?= $theme->script("jquery.js") ?>
-<?= $theme->script("jquery.form.js") ?>
-<?= $theme->script("jquery-ui.js") ?>
-<?= $theme->script("gallery.common.js") ?>
-<? /* MSG_CANCEL is required by gallery.dialog.js */ ?>
-<script type="text/javascript">
-  var MSG_CANCEL = <?= t('Cancel')->for_js() ?>;
-</script>
-<?= $theme->script("gallery.ajax.js"); ?>
-<?= $theme->script("gallery.dialog.js"); ?>
+    <? if ($theme->page_type == "collection"): ?>
+      <? if ($thumb_proportion != 1): ?>
+        <? $new_width = round($thumb_proportion * 213) ?>
+        <? $new_height = round($thumb_proportion * 240) ?>
+        <style type="text/css">
+        .g-view #g-content #g-album-grid .g-item {
+          width: <?= $new_width ?>px;
+          height: <?= $new_height ?>px;
+          /* <?= $thumb_proportion ?> */
+        }
+        </style>
+      <? endif ?>
+    <? endif ?>
 
-<? /* These are page specific but they get combined */ ?>
-<? if ($theme->page_subtype == "photo"): ?>
-<?=  $theme->script("jquery.scrollTo.js"); ?>
-<? elseif ($theme->page_subtype == "movie"): ?>
-<?=  $theme->script("flowplayer.js") ?>
-<? endif ?>
+    <?= $theme->script("json2-min.js") ?>
+    <?= $theme->script("jquery.js") ?>
+    <?= $theme->script("jquery.form.js") ?>
+    <?= $theme->script("jquery-ui.js") ?>
+    <?= $theme->script("gallery.common.js") ?>
+    <? /* MSG_CANCEL is required by gallery.dialog.js */ ?>
+    <script type="text/javascript">
+    var MSG_CANCEL = <?= t('Cancel')->for_js() ?>;
+    </script>
+    <?= $theme->script("gallery.ajax.js") ?>
+    <?= $theme->script("gallery.dialog.js") ?>
+    <?= $theme->script("superfish/js/superfish.js") ?>
+    <?= $theme->script("jquery.localscroll.js") ?>
 
-<?= $theme->head() ?>
+    <? /* These are page specific but they get combined */ ?>
+    <? if ($theme->page_subtype == "photo"): ?>
+    <?= $theme->script("jquery.scrollTo.js") ?>
+    <?= $theme->script("gallery.show_full_size.js") ?>
+    <? elseif ($theme->page_subtype == "movie"): ?>
+    <?= $theme->script("flowplayer.js") ?>
+    <? endif ?>
 
-<? /* Theme specific CSS/JS goes last so that it can override module CSS/JS */ ?>
-<?= $theme->script("animation.js"); ?>
-<?= $theme->script("ui.support.js"); ?>
+    <?= $theme->head() ?>
 
-<?= $theme->theme_css_inject(); ?>
+    <? /* Theme specific CSS/JS goes last so that it can override module CSS/JS */ ?>
+    <?= $theme->script("ui.init.js") ?>
+    <?= $theme->script("jquery-ui-1.7.3.custom.min.js") ?>
+    <?= $theme->script("jquery.parsequery.js") ?>
+    <?= $theme->css("yui/reset-fonts-grids.css") ?>
+    <?= $theme->css("superfish/css/superfish.css") ?>
+    <?= $theme->css("themeroller/ui.base.css") ?>
+    <?= $theme->css("screen.css") ?>
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
+          media="screen,print,projection" />
+    <![endif]-->
 
-<!-- LOOKING FOR YOUR CSS? It's all been combined into the link below -->
-<?= $theme->get_combined("css"); ?>
+    <!-- LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link below -->
+    <?= $theme->get_combined("script") ?>
 
-<?= $theme->css_link("colorpacks/" . $theme->colorpack . "/colors.css", FALSE); ?>
-<?= $theme->css_link("framepacks/" . $theme->framepack . "/frame.css",  FALSE); ?>
-<? if ($theme->custom_css_path != ""): ?>
-<?=  $theme->css_link($theme->custom_css_path, TRUE); ?>
-<? endif; ?>
-<!-- LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link below -->
-<?= $theme->get_combined("script") ?>
+    <!-- LOOKING FOR YOUR CSS? It's all been combined into the link below -->
+    <?= $theme->get_combined("css") ?>
+		<link rel="stylesheet" type="text/css" href="<?= $theme->url("css/pear.css") ?>" media="screen,print,projection" />
+		<link rel="stylesheet" type="text/css" href="<?= $theme->url("icons/pear.css") ?>" media="screen,print,projection" />
+		<script type="text/javascript" src="<?= $theme->url("js/pear.js") ?>" />
+  </head>
 
-<!--[if IE 6]>
-  <link rel="stylesheet" href="<?= $theme->url("css/old_ie.css") ?>" type="text/css" media="screen,print,projection" />
-<![endif]-->
-<? if ($theme->thumb_inpage): ?>
-<style type="text/css"> #g-column-bottom #g-thumbnav-block, #g-column-top #g-thumbnav-block { display: none; } </style>
-<? endif; ?>
-</head>
-<? if ($theme->item()): ?>
-<?   $item = $theme->item(); ?>
-<? else: ?>
-<?   $item = item::root(); ?>
-<? endif; ?>                             
-<body <?= $theme->body_attributes() ?><?= ($theme->show_root_page)? ' id="g-rootpage"' : null; ?> <?= ($theme->is_rtl)? "class=\"rtl\"" : null; ?> >
-<?= $theme->page_top() ?>
-<?= $theme->site_status() ?>
-<? if (((!$user->guest) or ($theme->show_guest_menu)) and ($theme->mainmenu_position == "bar")): ?>
-  <style type="text/css">	html { margin-top: 30px !important; }	</style>
-  <div id="g-site-menu" class="g-<?= $theme->mainmenu_position; ?>">
-  <?= $theme->site_menu($theme->item() ? "#g-item-id-{$theme->item()->id}" : "") ?>
-  </div>
-<? endif ?>
-<div id="g-header">
-<?= $theme->header_top() ?>
-<? if ($header_text = module::get_var("gallery", "header_text")): ?>
-<span id="g-header-text"><?=  $theme->bb2html($header_text, 1) ?></span>
-<? else: ?>
-  <a id="g-logo" href="<?= item::root()->url() ?><?= ($theme->allow_root_page)? "?root=yes" : null; ?>" title="<?= t("go back to the Gallery home")->for_html_attr() ?>">
-    <img alt="<?= t("Gallery logo: Your photos on your web site")->for_html_attr() ?>" src="<?= $theme->logopath ?>" />
-  </a>
-<? endif ?>
+  <body <?= $theme->body_attributes() ?> onload="bodyLoad(1);">
+    <?= $theme->page_top() ?>
+      <?= $theme->site_status() ?>
+      <div id="g-header" class="ui-helper-clearfix" style="display: none;">
+        <div id="g-banner">
+          <?= $theme->user_menu() ?>
+          <?= $theme->header_top() ?>
 
-<? if (((!$user->guest) or ($theme->show_guest_menu)) and ($theme->mainmenu_position != "bar")): ?>
-  <div id="g-site-menu" class="g-<?= $theme->mainmenu_position; ?>">
-  <?= $theme->site_menu($theme->item() ? "#g-item-id-{$theme->item()->id}" : "") ?>
-  </div>
-<? endif ?>
+          <!-- hide the menu until after the page has loaded, to minimize menu flicker -->
+          <div id="g-site-menu" style="visibility: hidden">
+            <?= $theme->site_menu($theme->item() ? "#g-item-id-{$theme->item()->id}" : "") ?>
+          </div>
+          <script type="text/javascript"> $(document).ready(function() { $("#g-site-menu").css("visibility", "visible"); }) </script>
 
-<?= $theme->messages() ?>
-<?= $theme->header_bottom() ?>
-
-<? if ($theme->loginmenu_position == "header"): ?>
-<?=  $theme->user_menu() ?>
-<? endif ?>
-<? if (empty($parents)): ?>
-<?= $theme->breadcrumb_menu($theme, null); ?>
-<? else: ?>
-<?= $theme->breadcrumb_menu($theme, $parents); ?>
-<? endif; ?>
-<?= $theme->custom_header(); ?>
+          <?= $theme->header_bottom() ?>
+        </div>
 </div>
-<? if (($theme->page_subtype != "login") and ($theme->page_subtype != "reauthenticate") and ($theme->sidebarvisible == "top")): ?>
-<div id="g-column-top">
-  <?= new View("sidebar.html") ?>
-</div>
-<? endif; ?>
-<div id="g-main">
-  <div id="g-main-in">
-<?  if (!$theme->show_root_page): ?>
-    <?= $theme->sidebar_menu($item->url()) ?>
-    <div id="g-view-menu" class="g-buttonset<?= ($theme->sidebarallowed != "any")? " g-buttonset-shift" : null; ?>">
-<?    if ($page_subtype == "album"): ?>
-      <?= $theme->album_menu() ?>
-<?    elseif ($page_subtype == "photo") : ?>
-      <?= $theme->photo_menu() ?>
-<?    elseif ($page_subtype == "movie") : ?>
-      <?= $theme->movie_menu() ?>
-<?    elseif ($page_subtype == "tag") : ?>
-      <?= $theme->tag_menu() ?>
-<?    endif ?>
-    </div>
-<?  endif; ?>
-<? switch ($theme->sidebarvisible):
-     case "left":
-       echo '<div id="g-column-left">';
-       $closediv = TRUE;
-       break;
-     case "none":
-     case "top":
-     case "bottom":
-       if (($theme->thumb_inpage) and ($page_subtype == "photo")):
-         echo '<div id="g-column-right">';
-         $closediv = TRUE;
-       else:
-         $closediv = FALSE;
-       endif;
-       break;
-     default:
-       echo '<div id="g-column-right">';
-       $closediv = TRUE;
-       break;
-   endswitch; ?>
-<? if (($theme->page_subtype != "login") and ($theme->page_subtype != "reauthenticate")): ?>
-<?   if (($theme->sidebarvisible == "none") or ($theme->sidebarvisible == "bottom") or ($theme->sidebarvisible == "top")): ?>
-<?     if (($theme->thumb_inpage) and ($page_subtype == "photo")): ?>
-<?=      '<div class="g-toolbar"><h1>&nbsp;</h1></div>'; ?>
-<?=      $theme->get_block_html("thumbnav"); ?>
-<?     endif; ?>
-<?   else: ?>
-<?=    new View("sidebar.html") ?>
-<?   endif; ?>
-<? endif ?>
-<?= ($closediv)? "</div>" : null; ?>
 
-<? switch ($theme->sidebarvisible):
-     case "left":
-       echo '<div id="g-column-centerright">';
-       break;
-     case "none":
-     case "top":
-     case "bottom":
-       if (($theme->thumb_inpage) and ($page_subtype == "photo")):
-         echo '<div id="g-column-centerleft">';
-       else:
-         echo '<div id="g-column-centerfull">';
-       endif;
-       break;
-     default:
-       echo '<div id="g-column-centerleft">';
-       break;
-   endswitch;
+<div id="gsNavBar" class="gcBorder1">
+	<div class="lNavBar">
+	<? if ($theme->item() && !empty($parents)): ?>
+	<? $parent = end($parents) ?>
+		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>';// + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
+	<? endif ?>
+	</div>
+	<div class="pearTitle"> <?= html::purify(text::limit_chars($theme->item()->title, module::get_var("gallery", "visible_title_length"))) ?> &nbsp;
+		<span class="count">(<?//$theme->item()->children;?>)</span>
+	</div>
+	<div class="rNavBar">
+		<button class="large push large-with-push" onclick="$('#g-header').css('display', 'block');toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
+	</div>
+</div>
 
-   if ($theme->show_root_page):
-     echo new View("rootpage.html");
-   else:
-     echo $content;
-   endif; ?>
-    </div> 
-  </div>
+<?= $content ?>
+		
+<div id="footerWrapper">
+	<div title="Change size of photos" id="sliderView" class="sliderView">
+		<div class="sliderRightCap"></div>
+		<div title="View at smallest photo size" class="smaller" onclick="$('#slider').slider('value', 0);"></div>
+		<div title="View at largest photo size" class="larger" onclick="$('#slider').slider('value', 250);"></div>
+		<div id="imgSlider" class="track">
+		</div>
+	</div>
+
+	<div style="" class="" id="colorPicker">
+		<div class="label">Color:</div>
+		<div title="View this album with a black background" id="black" class="swatch" onclick="swatchSkin('black');return false;"> </div>
+		<div title="View this album with a dark gray background" id="dkgrey" class="swatch" onclick="swatchSkin('dkgrey');return false;"> </div>
+		<div title="View this album with a light gray background" id="ltgrey" class="swatch" onclick="swatchSkin('ltgrey');return false;"> </div>
+		<div title="View this album with a white background" id="white" class="swatch" onclick="swatchSkin('white');return false;"> </div>
+	</div>
+
+	<div class="" style="" id="viewControls">
+		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher grid-with-sel grid-with-viewSwitcher sel-with-viewSwitcher grid-with-sel-with-viewSwitcher" onclick="switchToGrid();"><!--the extra class names, i.e. grid, mosaic, carousel, and slideshow, are for IE6, because it won't do #id.classname sometimes. Flaky. -->
+		<!-- <div style="margin-top:-2px;margin-left:-2px;"> -->
+			<div class="label">Grid</div>
+		</div>
+		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic mosaic-with-viewSwitcher" onclick="switchToMosaic();">
+			<!-- <div style="margin-top:-2px;margin-left:-4px;"> -->
+			<div class="label">Mosaic</div>
+		</div>
+		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher carousel-with-viewSwitcher" onclick="startImageFlow();">
+			<!-- <div style="margin-top:-2px;"> -->
+			<div class="label">Carousel</div>
+		</div>
+		<div title="Play a slideshow of this album" id="slideshow" class="viewSwitcher slideshow slideshow-with-viewSwitcher">
+			<!-- <div style="margin-top:-2px;margin-left:-2px;"> -->
+			<div class="label">Slideshow</div>
+		</div>
+		<div class="clear"></div>
+	</div>
+	<button id="logoButton"></button>
 </div>
-<? if (($theme->page_subtype != "login") and ($theme->page_subtype != "reauthenticate") and ($theme->sidebarvisible == "bottom")): ?>
-<div id="g-column-bottom">
-  <?= new View("sidebar.html") ?>
-</div>
-<? endif; ?>
-<div id="g-footer">
-<?= $theme->footer() ?>
-<? if ($footer_text = module::get_var("gallery", "footer_text")): ?>
-<span id="g-footer-text"><?=  $theme->bb2html($footer_text, 1) ?></span>
-<? endif ?>
-  <?= $theme->credits() ?>
-  <ul id="g-footer-rightside"><li><?= $theme->copyright ?></li></ul>
-<? if ($theme->loginmenu_position == "default"): ?>
-  <?= $theme->user_menu() ?>
-<? endif ?>
-<?= $theme->custom_footer(); ?>
-</div>
-<?= $theme->page_bottom() ?>
-</body>
+
+  </body>
 </html>

@@ -1,26 +1,16 @@
-<?php defined("SYSPATH") or die("No direct script access.");
-/**
- * Grey Dragon Theme - a custom theme for Gallery 3
- * This theme was designed and built by Serguei Dosyukov, whose blog you will find at http://blog.dragonsoft.us
- * Copyright (C) 2009-2011 Serguei Dosyukov
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General
- * Public License as published by the Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program; if not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
- */
-?>
+<?php defined("SYSPATH") or die("No direct script access.") ?>
 <?= $theme->sidebar_top() ?>
-<div class="g-toolbar"><h1>&nbsp;</h1></div>
-<? try {
-     echo $theme->sidebar_blocks();
-   } catch (Exception $e) { 
-   } 
-?>
+<div id="g-view-menu" class="g-buttonset ui-helper-clearfix">
+  <? if ($page_subtype == "album"):?>
+    <?= $theme->album_menu() ?>
+  <? elseif ($page_subtype == "photo") : ?>
+    <?= $theme->photo_menu() ?>
+  <? elseif ($page_subtype == "movie") : ?>
+    <?= $theme->movie_menu() ?>
+  <? elseif ($page_subtype == "tag") : ?>
+    <?= $theme->tag_menu() ?>
+  <? endif ?>
+</div>
+
+<?= $theme->sidebar_blocks() ?>
 <?= $theme->sidebar_bottom() ?>

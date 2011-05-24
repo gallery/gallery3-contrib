@@ -1,38 +1,68 @@
-<?php defined("SYSPATH") or die("No direct script access.");
-/**
- * Grey Dragon Theme - a custom theme for Gallery 3
- * This theme was designed and built by Serguei Dosyukov, whose blog you will find at http://blog.dragonsoft.us
- * Copyright (C) 2009-2011 Serguei Dosyukov
- *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General
- * Public License as published by the Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
- * implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program; if not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
- */
-?>
-<div id="g-album-header">
-  <?= $theme->album_top() ?>
-  <h1><?= $theme->bb2html(html::purify($item->title), 1) ?></h1>
-</div>
-
-<?= $theme->add_paginator("top"); ?>
-
-<? if (($theme->album_descmode == "top") and ($item->description)): ?>
-  <div id="g-info"><div class="g-description"><?= $theme->bb2html(html::purify($item->description), 1) ?></div></div>
-<? endif; ?>
-
-<div class="g-album-grid-container">
-<ul id="g-album-grid" class="<?= $theme->get_grid_column_class(); ?>">
+<?php defined("SYSPATH") or die("No direct script access.") ?>
+<? /* Placeholder for infromation in mosaic view. */ ?>
+<table id="mosaicTable" style="width: 100%; margin: -2px -2px 0px 0px; overflow: hidden"> 
+<tr>
+<td  class="left" style="	width: 65%; vertical-align: middle; padding: 0px;">
+<div id="gsImageView" class="gbBlock gcBorder1" style="padding: 0px !important; text-align: center;"> 
+	<div style="padding: 0px; width: 0px; margin-top: 0px; opacity: 0.999999; display: none;" id="mosaicDetail"> 
+		<div id="photo"> <img id="mosaicImg" src="" alt="Main image"/> </div> 
+		<div class="gsContentDetail" style="width: 100%;"> 
+			<div class="gbBlock gcBorder1" id="imageTitle"> </div>
+		</div>
+	</div>
+</div> 
+</td>
+<td class="right" style="margin: 0px; padding: 0px; width: 35%; vertical-align: top;">
+<div class="gallery-album" id="mosaicGridContainer" style="display: block;">
 <? if (count($children)): ?>
   <? foreach ($children as $i => $child): ?>
-    <?= $theme->get_thumb_element($child, TRUE) ?>
+    <? $item_class = "g-photo"; ?>
+    <? if ($child->is_album()): ?>
+      <? $item_class = "g-album\" \"onclick=\"window.location='".$child->url()."/'+getAlbumHash(skimimg);"; ?>
+    <? endif ?>
+    <? $img_class = "g-thumbnail"; ?>
+    <? if ($child->is_photo()): ?>
+      <? $img_class = "g-thumbnail p-photo"; ?>
+    <? endif ?>
+  <div id="g-thumb-id-<?= $child->id ?>" class="gallery-thumb <?= $item_class ?>">
+    <?= $theme->thumb_top($child) ?>
+    <? if ($child->is_album()): ?>
+		<div class="gallery-thumb-round" style="height: 200px; width: 200px;"></div>
+    <? endif ?>
+      <? if ($child->has_thumb()): ?>
+		<?= $child->thumb_img(array("class" => $img_class, "id" => "thumb_$child->id", "style" => "width: 200px; height 200px;")) ?>
+      <? endif ?>
+<?// Begin skimming 
+if($child->is_album()):
+	$granchildren = $child->viewable()->children();
+	$offset = 0;
+	$step = round(200/count($granchildren));
+	foreach ($granchildren as $i => $granchild):?>
+      <? if ($child->has_thumb()): ?>
+      <?= $granchild->thumb_img(array("style" => "display: none;")) ?>
+	<div class="skimm_div" style="height: 200px; width: <?=$step?>px; left: <?=$offset?>px; top: 0px;" onmouseover="$('#thumb_<?=$child->id?>').attr('src', '<?=$granchild->thumb_url()?>');skimimg=<?=$i?>;" id="area_<?=$granchild->id?>"></div>
+      <? endif ?>
+<?		$offset+=$step;
+endforeach; 
+endif; 
+// End skimming // ?>
+    <?= $theme->thumb_bottom($child) ?>
+    <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
+    <h2><span class="<?= $item_class ?>"></span>
+      <a href="<?= $child->url() ?>"><?= html::purify($child->title) ?></a></h2>
+    <div class="g-metadata">
+      <ol><?= $theme->thumb_info($child) ?></ol>
+    </div>
+  </div>
   <? endforeach ?>
+<script type="text/javascript">
+  var slideshowImages = new Array();
+<? foreach ($children as $i => $child): ?>
+<? if(!($child->is_album() || $child->is_movie())): ?>
+    slideshowImages.push(['<?= $child->resize_url() ?>', '<?= $child->url() ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= $child->title ?>', '<?= $child->file_url() ?>']);
+	<? endif ?>
+<? endforeach ?>
+</script>
 <? else: ?>
   <? if ($user->admin || access::can("add", $item)): ?>
   <? $addurl = url::site("uploader/index/$item->id") ?>
@@ -42,12 +72,8 @@
   <li><?= t("There aren't any photos here yet!") ?></li>
   <? endif; ?>
 <? endif; ?>
-</ul>
 </div>
+</td></td></table>
 <?= $theme->album_bottom() ?>
 
-<? if (($theme->album_descmode == "bottom") and ($item->description)): ?>
-  <div id="g-info"><div class="g-description"><?= $theme->bb2html(html::purify($item->description), 1) ?></div></div>
-<? endif; ?>
-
-<?= $theme->add_paginator("bottom"); ?>
+<?= $theme->paginator() ?>
