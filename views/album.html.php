@@ -46,14 +46,17 @@ if($child->is_album()):
 endforeach; 
 endif; 
 // End skimming // ?>
-    <?= $theme->thumb_bottom($child) ?>
+	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify($child->title) ?> </p>
+	<? if($child->is_album()): ?><div class="giInfo"><?= count($granchildren)?> photos</div><? endif ?>
+</div>
+   <?/* <?= $theme->thumb_bottom($child) ?>
     <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
     <h2><span class="<?= $item_class ?>"></span>
       <a href="<?= $child->url() ?>"><?= html::purify($child->title) ?></a></h2>
     <div class="g-metadata">
       <ol><?= $theme->thumb_info($child) ?></ol>
     </div>
-  </div>
+  </div>*/?>
   <? endforeach ?>
 <script type="text/javascript">
   var slideshowImages = new Array();
