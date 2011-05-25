@@ -335,7 +335,9 @@ cursor: hand; /* for IE 5.x */
 #viewControls .viewSwitcher:hover, #viewControls .sel-with-viewSwitcher, #viewControls .hover-with-viewSwitcher {
 color: #ffffff;
 }
-
+#viewControls .sel-with-viewSwitcher {
+	cursor: default;
+}
 #viewControls #grid {
 background: url('grid.png') center left no-repeat;
 						text-indent: 20px;

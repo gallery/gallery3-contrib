@@ -18,13 +18,13 @@
   <? foreach ($children as $i => $child): ?>
     <? $item_class = "g-photo"; ?>
     <? if ($child->is_album()): ?>
-      <? $item_class = "g-album\" \"onclick=\"window.location='".$child->url()."/'+getAlbumHash(skimimg);"; ?>
+      <? $item_class = "g-album\" onclick=\"window.location='".$child->url()."/'+getAlbumHash(skimimg);"; ?>
     <? endif ?>
     <? $img_class = "g-thumbnail"; ?>
     <? if ($child->is_photo()): ?>
       <? $img_class = "g-thumbnail p-photo"; ?>
     <? endif ?>
-  <div id="g-thumb-id-<?= $child->id ?>" class="gallery-thumb <?= $item_class ?>">
+  <div id="g-thumb-id-<?= $child->id ?>" class="g-item gallery-thumb <?= $item_class ?>">
     <?= $theme->thumb_top($child) ?>
     <? if ($child->is_album()): ?>
 		<div class="gallery-thumb-round" style="height: 200px; width: 200px;"></div>

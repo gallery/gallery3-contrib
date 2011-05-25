@@ -254,6 +254,7 @@ $(function() {
 	$('#next_detail').click(function(){ swatchImg(currentImg+1); });
 	
 	if(!slideshowImages.length) opt=1;
+	opt=1;
 	switch (opt) {
 		case 1:
 			switchToGrid();
@@ -273,9 +274,9 @@ $(function() {
 function switchToGrid()
 {
 	toggleReflex(true);
-	if($('pearImageFlow')) $('pearImageFlow').hide();
-	$('ContentAlbum').show();
-	if(!$('mosaicGridContainer')) return;
+	$('#pearImageFlow').hide();
+	$('#ContentAlbum').show();
+	if(!$('#mosaicGridContainer').length) return;
 	mosaicView=false;
 	maxSize=225;
 	checkCookie();
@@ -290,9 +291,9 @@ function switchToGrid()
 function switchToMosaic()
 {
 	toggleReflex(false);
-	if($('pearImageFlow')) $('pearImageFlow').hide(); //.hide(); 
-	$('ContentAlbum').show();
-	if(!$('mosaicGridContainer')){return;}
+	$('#pearImageFlow').hide(); //.hide(); 
+	$('#ContentAlbum').show();
+	if(!$('#mosaicGridContainer').length) return;
 	mosaicView=true;
 	maxSize=125;
 	checkCookie();
@@ -344,16 +345,16 @@ function togglePlayPause()
 function focusImage(id)
 {
 	currentImg=id;
-	$('imageTitleLabel').update("<h2>"+slideshowImages[id][4]+"</h2>");
-	$('play_detail').hide();
-	$('pause_detail').hide();
+	$('#imageTitleLabel').html("<h2>"+slideshowImages[id][4]+"</h2>");
+	$('#play_detail').hide();
+	$('#pause_detail').hide();
 	swatchImg(id);
-	new Effect.Appear('detailView', { duration: 1.0 });
+	$('#detailView').fadeIn('slow');
 	hideHoverV = setTimeout("hideHoverView()",3000);
 	//Image count.
 	detailViewMode=true;
 	updateHash();
-	new Ajax.Request(slideshowImages[currentImg][1], { method:'get' });
+	$.get(slideshowImages[currentImg][1]);
 }
 
 function startImageFlow()
@@ -419,31 +420,18 @@ function setKeys()
 }
 function showHoverView(){
 	if(hideHoverV != null) clearTimeout(hideHoverV);
-	$('hoverView').show();
+	$('#hoverView').show();
 	hideHoverV = setTimeout("hideHoverView()",3000);
 }
 function hideHoverView(){
-	if(!hovering) $('hoverView').fade();
+	if(!hovering) $('#hoverView').fadeOut();
 	hideHoverV = null;
 }
 var hideHoverV=null;
 var hovering=false;
 function switchMode(mode){
-	$('mosaic').className="viewSwitcher mosaic mosaic-with-viewSwitcher";
-	$('grid').className="viewSwitcher grid grid-with-viewSwitcher";
-	$('carousel').className="viewSwitcher carousel carousel-with-viewSwitcher";
-
-	switch(mode){
-		case 'grid':
-			$('grid').className="sel grid viewSwitcher grid-with-sel grid-with-viewSwitcher sel-with-viewSwitcher grid-with-sel-with-viewSwitcher";
-			break;
-		case 'mosaic':
-			$('mosaic').className="mosaic viewSwitcher sel mosaic-with-viewSwitcher sel-with-viewSwitcher mosaic-with-sel mosaic-with-sel-with-viewSwitcher";
-			break;
-		case 'carousel':
-			$('carousel').className="sel carousel viewSwitcher carousel-with-sel carousel-with-viewSwitcher sel-with-viewSwitcher carousel-with-sel-with-viewSeitcher";
-			break;
-	}
+	$('#mosaic,#grid,#carousel').removeClass("sel sel-with-viewSwitcher");
+	$('#'+mode).addClass("sel sel-with-viewSwitcher");
 }
 
 function preFetch()

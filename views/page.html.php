@@ -80,11 +80,12 @@
     <?= $theme->get_combined("css") ?>
 		<link rel="stylesheet" type="text/css" href="<?= $theme->url("css/pear.css") ?>" media="screen,print,projection" />
 		<link rel="stylesheet" type="text/css" href="<?= $theme->url("icons/pear.css") ?>" media="screen,print,projection" />
-		<script type="text/javascript" src="<?= $theme->url("js/pear.js") ?>" />
+		<script type="text/javascript" src="<?= $theme->url("js/pear.js"); ?>"></script>
   </head>
 
-  <body <?= $theme->body_attributes() ?> onload="bodyLoad(1);">
-    <?= $theme->page_top() ?>
+  <body <?= $theme->body_attributes() ?>>
+     <?= new View("hoverView.html") ?>
+		 <?= $theme->page_top() ?>
       <?= $theme->site_status() ?>
       <div id="g-header" class="ui-helper-clearfix" style="display: none;">
         <div id="g-banner">
@@ -112,7 +113,7 @@
 		<span class="count">(<?//$theme->item()->children;?>)</span>
 	</div>
 	<div class="rNavBar">
-		<button class="large push large-with-push" onclick="$('#g-header').css('display', 'block');toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
+		<button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
 	</div>
 </div>
 
@@ -136,15 +137,14 @@
 	</div>
 
 	<div class="" style="" id="viewControls">
-		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher grid-with-sel grid-with-viewSwitcher sel-with-viewSwitcher grid-with-sel-with-viewSwitcher" onclick="switchToGrid();"><!--the extra class names, i.e. grid, mosaic, carousel, and slideshow, are for IE6, because it won't do #id.classname sometimes. Flaky. -->
-		<!-- <div style="margin-top:-2px;margin-left:-2px;"> -->
+		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid();">
 			<div class="label">Grid</div>
 		</div>
-		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic mosaic-with-viewSwitcher" onclick="switchToMosaic();">
+		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic" onclick="switchToMosaic();">
 			<!-- <div style="margin-top:-2px;margin-left:-4px;"> -->
 			<div class="label">Mosaic</div>
 		</div>
-		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher carousel-with-viewSwitcher" onclick="startImageFlow();">
+		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher" onclick="startImageFlow();">
 			<!-- <div style="margin-top:-2px;"> -->
 			<div class="label">Carousel</div>
 		</div>
