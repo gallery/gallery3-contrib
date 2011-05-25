@@ -308,9 +308,9 @@ var slideShowMode=false
 function startSlideshow()
 {
 	slideShowMode=true;
-	$('play_detail').hide();
-	$('pause_detail').show();
-	new Effect.Appear('detailView', { duration: 1.0 });
+	$('#play_detail').hide();
+	$('#pause_detail').show();
+	$('#detailView').fadeIn('slow');
 	hideHoverV = setTimeout("hideHoverView()",3000);
 	slideShowId=currentImg;
 	slideShowId=0;
@@ -330,14 +330,14 @@ function togglePlayPause()
 {
 	if(slideShow == null)//We are paused
 	{
-		$('play_detail').hide();
-		$('pause_detail').show();
+		$('#play_detail').hide();
+		$('#pause_detail').show();
 		slideShow = setTimeout("slideShowUpdate("+ (slideShowId+1) +")", 1000);
 	}
 	else //We are playing
 	{
-		$('pause_detail').hide();
-		$('play_detail').show();
+		$('#pause_detail').hide();
+		$('#play_detail').show();
 		clearTimeout(slideShow);
 		slideShow=null;
 	}
@@ -455,7 +455,7 @@ function toggleReflex(hide)
 
 function hideDetailView()
 {
-	$('detailView').hide();
+	$('#detailView').hide();
 	slideShowMode=detailViewMode=false; 
 	if(slideShow!=null) 
 		clearTimeout(slideShow);
