@@ -68,7 +68,7 @@ class tag_albums_Controller extends Controller {
         $index = $this->_get_position($child->$sort_page_field, $child->id, $tag_ids, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, true);
         if ($index) {
           $page = ceil($index / $page_size);
-          url::redirect("tag_albums/album/" . $id . "?page=$page");
+          url::redirect("tag_albums/album/" . $id . "/" . urlencode($album->name) . "?page=$page");
         }
       }
 
@@ -97,7 +97,7 @@ class tag_albums_Controller extends Controller {
       $tag_children = $this->_get_records($tag_ids, $page_size, $offset, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, true); 
       $children = Array();
       foreach ($tag_children as $one_child) {
-        $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/0/" . $id), $one_child->type);
+        $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/0/" . $id . "/" . urlencode($one_child->name)), $one_child->type);
         $child_tag->id = $one_child->id;
         $child_tag->view_count = $one_child->view_count;
         $child_tag->owner = identity::lookup_user($one_child->owner_id);
@@ -161,10 +161,18 @@ class tag_albums_Controller extends Controller {
     if ((module::get_var("tag_albums", "tag_index_scope", "false")) || ($id == "")) {
       $tag_album_index_type = module::get_var("tag_albums", "tag_index", "default");
       if (($tag_album_index_type == "tagcloudpage") && (module::is_active("tag_cloud_page"))) {
-        url::redirect("tag_cloud_page/");
+        $redirect_url = "tag_cloud_page/";
+        if ($id) {
+          $redirect_url .= "?album={$id}";
+        }
+        url::redirect($redirect_url);
         return;
       } elseif (($tag_album_index_type == "alltags") && (module::is_active("all_tags"))) {
-        url::redirect("all_tags/");
+        $redirect_url = "all_tags/";
+        if ($id) {
+          $redirect_url .= "?album={$id}";
+        }
+        url::redirect($redirect_url);
         return;
       }
     }
@@ -228,7 +236,7 @@ class tag_albums_Controller extends Controller {
         if ($id == "") {
           url::redirect("tag_albums/?page=$page");
         } else {
-          url::redirect("tag_albums/album/" . $id . "?page=$page");
+          url::redirect("tag_albums/album/" . $id . "/" . urlencode($album->title) . "?page=$page");
         }
       }
     }
@@ -307,7 +315,7 @@ class tag_albums_Controller extends Controller {
         ->where("items_tags.tag_id", "=", $one_tag->id)
         ->order_by("items.id", "DESC")
         ->find_all(1, 0);
-      $child_tag =  new Tag_Albums_Item($one_tag->name, url::site("tag_albums/tag/" . $one_tag->id . "/" . $id), "album");
+      $child_tag =  new Tag_Albums_Item($one_tag->name, url::site("tag_albums/tag/" . $one_tag->id . "/" . $id . "/" . urlencode($one_tag->name)), "album");
       if (count($tag_item) > 0) {
         if ($tag_item[0]->has_thumb()) {
           $child_tag->set_thumb($tag_item[0]->thumb_url(), $tag_item[0]->thumb_width, $tag_item[0]->thumb_height);
@@ -414,7 +422,7 @@ class tag_albums_Controller extends Controller {
     // Create an array of "fake" items to display on the page.
     $children = Array();
     foreach ($tag_children as $one_child) {
-      $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/" . $id . "/" . $album_id), $one_child->type);
+      $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/" . $id . "/" . $album_id . "/" . urlencode($one_child->name)), $one_child->type);
       $child_tag->id = $one_child->id;
       $child_tag->view_count = $one_child->view_count;
       $child_tag->owner = identity::lookup_user($one_child->owner_id);
@@ -453,10 +461,11 @@ class tag_albums_Controller extends Controller {
         $parent_item = ORM::factory("item", $parent_item->parent_id);
       }
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+      $parent_item = ORM::factory("item", $album_tags[0]->album_id);
       if ((module::get_var("tag_albums", "tag_index_scope", "false")) && (module::get_var("tag_albums", "tag_index", "default") != "default")) {
-        $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id);
+        $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id . "/" . urlencode($parent_item->name));
       } else {
-        $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id) . "?show=" . $id;
+        $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id . "/" . urlencode($parent_item->name)) . "?show=" . $id;
       }
       $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
     } else {
