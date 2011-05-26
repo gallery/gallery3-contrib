@@ -24,7 +24,7 @@
     <? if ($child->is_photo()): ?>
       <? $img_class = "g-thumbnail p-photo"; ?>
     <? endif ?>
-  <div id="g-thumb-id-<?= $child->id ?>" class="g-item gallery-thumb <?= $item_class ?>">
+  <div id="g-thumb-id-<?= $child->id ?>" class="g-item gallery-thumb <?= $item_class ?>" title="<?= $child->description?>">
     <?= $theme->thumb_top($child) ?>
     <? if ($child->is_album()): ?>
 		<div class="gallery-thumb-round" style="height: 200px; width: 200px;"></div>

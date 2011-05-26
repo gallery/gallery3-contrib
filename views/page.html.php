@@ -109,8 +109,8 @@
 		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>';// + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
 	<? endif ?>
 	</div>
-	<div class="pearTitle"> <?= html::purify(text::limit_chars($theme->item()->title, module::get_var("gallery", "visible_title_length"))) ?> &nbsp;
-		<span class="count">(<?//$theme->item()->children;?>)</span>
+	<div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
+		<span class="count">(<?= count($theme->item()->children())?>)</span>
 	</div>
 	<div class="rNavBar">
 		<button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
