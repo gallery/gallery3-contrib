@@ -87,20 +87,6 @@
      <?= new View("hoverView.html") ?>
 		 <?= $theme->page_top() ?>
       <?= $theme->site_status() ?>
-      <div id="g-header" class="ui-helper-clearfix" style="display: none;">
-        <div id="g-banner">
-          <?= $theme->user_menu() ?>
-          <?= $theme->header_top() ?>
-
-          <!-- hide the menu until after the page has loaded, to minimize menu flicker -->
-          <div id="g-site-menu" style="visibility: hidden">
-            <?= $theme->site_menu($theme->item() ? "#g-item-id-{$theme->item()->id}" : "") ?>
-          </div>
-          <script type="text/javascript"> $(document).ready(function() { $("#g-site-menu").css("visibility", "visible"); }) </script>
-
-          <?= $theme->header_bottom() ?>
-        </div>
-</div>
 
 <div id="gsNavBar" class="gcBorder1">
 	<div class="lNavBar">
@@ -114,6 +100,21 @@
 	</div>
 	<div class="rNavBar">
 		<button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
+	</div>
+</div>
+
+<div id="g-header" class="ui-helper-clearfix" style="display: none;">
+	<div id="g-banner">
+		<?= $theme->user_menu() ?>
+		<?= $theme->header_top() ?>
+
+		<!-- hide the menu until after the page has loaded, to minimize menu flicker -->
+		<div id="g-site-menu" style="visibility: hidden">
+			<?= $theme->site_menu($theme->item() ? "#g-item-id-{$theme->item()->id}" : "") ?>
+		</div>
+		<script type="text/javascript"> $(document).ready(function() { $("#g-site-menu").css("visibility", "visible"); }) </script>
+
+		<?= $theme->header_bottom() ?>
 	</div>
 </div>
 

@@ -57,3 +57,11 @@ h2 {
 .center {
 	text-align: center !important;
 }
+
+#g-header {
+	margin-top: -2px;
+	position: fixed;
+	top: 44px;
+	width: 100%;
+	z-index: 50;
+}
