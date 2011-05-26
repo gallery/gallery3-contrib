@@ -31,19 +31,29 @@ th, td {
 	margin-right: 0px;
 	text-align: left;
 }
-
-.giTitle {
+body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 62.5%;
+	color: #999 !important;
+	background-color: #000;
+}
+.giTitle {
+	font-size: 1.1em;
 	font-weight: bold;
 	margin: 3px 10px !important;
 	padding: 0 0; 
 	text-align: left;
 }
 
+#gsNavBar div {
+font-weight: bold;
+}
+
+h2 {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
 .center {
 	text-align: center !important;
-}
-body, html {
-	background-color: #000;
 }
