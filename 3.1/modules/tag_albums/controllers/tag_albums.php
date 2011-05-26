@@ -132,7 +132,7 @@ class tag_albums_Controller extends Controller {
 
       // Set up and display the actual page.
       $parent_album = ORM::factory("item", $album->parent_id);
-      $template = new Theme_View("calpage.html", "collection", "Tag Albums");
+      $template = new Theme_View("calpage.html", "other", "Tag Albums");
       $template->page_title = $page_title;
       $template->set_global("page", $page);
       $template->set_global("page_size", $page_size);
@@ -346,7 +346,7 @@ class tag_albums_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("calpage.html", "collection", "Tag Albums");
+    $template = new Theme_View("calpage.html", "other", "Tag Albums");
     $template->page_title = $page_title;
     $template->set_global("page", $page);
     $template->set_global("page_size", $page_size);
@@ -480,7 +480,7 @@ class tag_albums_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("calpage.html", "collection", "Tag Albums");
+    $template = new Theme_View("calpage.html", "other", "Tag Albums");
     $template->page_title = $display_tag->name;
     $template->set_global("page", $page);
     $template->set_global("page_size", $page_size);
