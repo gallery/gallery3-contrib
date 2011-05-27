@@ -87,17 +87,23 @@
      <?= new View("hoverView.html") ?>
 		 <?= $theme->page_top() ?>
       <?= $theme->site_status() ?>
+<? if (($theme->page_subtype == "login") or ($theme->page_subtype == "reauthenticate")): ?>
+	<?= $content ?>
+<? else: /*not login | reauthenticate */ ?>
+<div class="pear">
 
 <div id="gsNavBar" class="gcBorder1">
 	<div class="lNavBar">
-	<? if ($theme->item() && !empty($parents)): ?>
-	<? $parent = end($parents) ?>
+	<? if ($theme->item()): ?>
+		<? if(!empty($parents)): ?>
+		<? $parent = end($parents) ?>
 		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>';// + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
-	<? endif ?>
+		<? endif ?>
 	</div>
 	<div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
-		<span class="count">(<?= count($theme->item()->children())?>)</span>
+		<span class="count">(<?= $theme->item()->children() ?>)</span>
 	</div>
+	<? endif ?>
 	<div class="rNavBar">
 		<button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
 	</div>
@@ -157,6 +163,7 @@
 	</div>
 	<button id="logoButton"></button>
 </div>
-
+</div> <? /*class="pear"*/ ?>
+<? endif ?>
   </body>
 </html>

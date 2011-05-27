@@ -31,9 +31,9 @@ th, td {
 	margin-right: 0px;
 	text-align: left;
 }
-body {
+.pear {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 62.5%;
+	font-size: 10px;
 	color: #999 !important;
 	background-color: #000;
 }

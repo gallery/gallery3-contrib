@@ -196,16 +196,14 @@ background: transparent url('pear_logo_sml.png') no-repeat center left;
 /************************ SLIDER VIEW **************************/
 
 .sliderView {
-
-	padding: 7px 37px 7px 3%;
+padding: 7px 37px 7px 3%;
 position: relative;
 color: #FFFFFF;
 top: 10px;
 height: 3px;
 width: 154px;
 float: right;
-			 z-index: 10000;
-
+z-index: 10000;
 }
 
 .sliderView .smaller {	
@@ -255,6 +253,7 @@ width: 137px;
 height: 15px;
 background: transparent url(track_fill_left.png) scroll top left no-repeat;
 position: relative;
+border: 0px;
 }
 
 .sliderView .ui-slider-handle {
@@ -265,7 +264,8 @@ width: 16px;
 height: 16px;
 cursor: pointer; /* hand-shaped cursor */
 cursor: hand; /* for IE 5.x */
-				margin-left: -7px;
+margin-left: -7px;
+border: 0px;
 }
 
 .disabled-with-sliderView {
