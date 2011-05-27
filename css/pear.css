@@ -65,3 +65,54 @@ h2 {
 	width: 100%;
 	z-index: 50;
 }
+/*Menu*/
+.sf-menu li:hover, .sf-menu li.sfHover, .sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
+  background: none repeat scroll 0 0 #333333;
+	outline: 0 none;
+}
+.sf-menu li {
+    background: none repeat scroll 0 0 #000000;
+    float: left;
+    position: relative;
+}
+.sf-menu li li, .sf-menu li li ul li {
+    background-color: #000;
+}
+.sf-menu ul {
+    background: none repeat scroll 0 0 #000000;
+}
+.sf-menu, .sf-menu * {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-state-hover, input.ui-state-hover, button.ui-state-hover {
+    color: #777777 !important;
+    cursor: pointer !important;
+    text-decoration: none;
+}
+.sf-menu a, .sf-menu a:visited {
+    color: #555555;
+}
+.sf-menu a {
+    border-left: 1px solid #333;
+    border-top: 1px solid #222;
+    padding: 0.75em 1em;
+    text-decoration: none;
+    display: block;
+    position: relative;
+}
+.ui-state-default, .ui-widget-content .ui-state-default {
+    background: #ccc;
+    border: 1px solid #C5DBEC;
+    color: #555
+    font-weight: bold;
+    outline: medium none;
+}
+#g-banner {
+    background-color: #555;
+    border-bottom: 1px solid #333333;
+    min-height: 5em;
+    padding: 1em 20px;
+    position: relative;
+}
