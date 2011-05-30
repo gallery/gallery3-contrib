@@ -214,7 +214,7 @@ function mosaicResize()
 	if($('#conf_imageflow').length) refresh();
 }
 
-$(function() {
+function bodyLoad(viewMode, bgcolor) {
 	/* Parse hash */
 	hash = window.location.hash;
 	var h = $.parseQuery(hash.substring(1));
@@ -253,13 +253,18 @@ $(function() {
 	$('#prev_detail').click(function(){ swatchImg(currentImg-1); });
 	$('#next_detail').click(function(){ swatchImg(currentImg+1); });
 	
-	if(!slideshowImages.length) opt=1;
-	opt=1;
-	switch (opt) {
-		case 1:
+	co=getCookie('swatchSkin');
+	if (co==null || co=="")
+		swatchSkin(bgcolor);
+
+	if(!slideshowImages.length) 
+		viewMode='grid';
+
+	switch (viewMode) {
+		case 'grid':
 			switchToGrid();
 			break;
-		case 2:
+		case 'mosaic':
 			switchToMosaic();
 			break;
 		default:
@@ -269,7 +274,7 @@ $(function() {
 	$('#loading').hide();
 	//window.setTimeout("preFetch()", 500);
 	setKeys();
-});
+}
 
 function switchToGrid()
 {

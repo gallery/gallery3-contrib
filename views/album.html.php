@@ -1,5 +1,11 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <? /* Placeholder for infromation in mosaic view. */ ?>
+<script type="text/javascript">
+$(function() {
+	bodyLoad( "<?=module::get_var("th_pear4gallery3", "mainmenu_view")?>", 
+	"<?=module::get_var("th_pear4gallery3", "background")?>");
+ });
+</script>
 <table id="mosaicTable" style="width: 100%; margin: -2px -2px 0px 0px; overflow: hidden"> 
 <tr>
 <td  class="left" style="	width: 65%; vertical-align: middle; padding: 0px;">

@@ -81,7 +81,20 @@
 		<link rel="stylesheet" type="text/css" href="<?= $theme->url("css/pear.css") ?>" media="screen,print,projection" />
 		<link rel="stylesheet" type="text/css" href="<?= $theme->url("icons/pear.css") ?>" media="screen,print,projection" />
 		<script type="text/javascript" src="<?= $theme->url("js/pear.js"); ?>"></script>
-  </head>
+		<!-- Google analytics code -->
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', '<? $account = module::get_var("th_pear4gallery3", "ga_code"); if ((!isset($account)) or ($account == "")) print "UA-23621420-1"; else print $account;?>']);
+			_gaq.push(['_setDomainName', 'none']);
+			_gaq.push(['_setAllowLinker', true]);
+			_gaq.push(['_trackPageview']);
+			(function() {
+			 var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			 })();
+		</script>
+	</head>
 
   <body <?= $theme->body_attributes() ?>>
      <?= new View("hoverView.html") ?>
@@ -101,7 +114,7 @@
 		<? endif ?>
 	</div>
 	<div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
-		<span class="count">(<?= $theme->item()->children() ?>)</span>
+		<span class="count">(<?= count($theme->item()->children()) ?>)</span>
 	</div>
 	<? endif ?>
 	<div class="rNavBar">
@@ -161,7 +174,7 @@
 		</div>
 		<div class="clear"></div>
 	</div>
-	<button id="logoButton"></button>
+	<? if (module::get_var("th_pear4gallery3", "show_logo")): ?><button id="logoButton"></button><?endif?>
 </div>
 </div> <? /*class="pear"*/ ?>
 <? endif ?>
