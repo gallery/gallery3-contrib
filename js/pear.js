@@ -222,17 +222,10 @@ function bodyLoad(viewMode, bgcolor) {
 		currentImg = h.img;
 	if(h.bgcolor != undefined)
 		swatchSkin(h.bgcolor);
-	switch(h.viewMode){
-		case('mosaic'):
-			opt = 2;
-			break;
-		case('grid'):
-			opt = 1;
-			break;
-		case('detail'):
-			focusImage(currentImg);	
-			break;
-	}
+	if(h.viewMode == 'detail')
+		focusImage(currentImg);
+	else
+		viewMode = h.viewMode;
 	/* end parse hash */
 	
 	if(navigator.appName == "Microsoft Internet Explorer") $('.track').each(function(s){$(this).css('top', '-16px');}); //Fix for IE's poor page rendering. 
