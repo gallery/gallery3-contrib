@@ -39,7 +39,7 @@
     <?= $theme->script("json2-min.js") ?>
     <?= $theme->script("jquery.js") ?>
     <?= $theme->script("jquery.form.js") ?>
-    <?= $theme->script("jquery-ui.js") ?>
+    <?= $theme->script("jquery-ui-1.7.3.custom.min.js") ?>
     <?= $theme->script("gallery.common.js") ?>
     <? /* MSG_CANCEL is required by gallery.dialog.js */ ?>
     <script type="text/javascript">
@@ -62,7 +62,6 @@
 
     <? /* Theme specific CSS/JS goes last so that it can override module CSS/JS */ ?>
     <?= $theme->script("ui.init.js") ?>
-    <?= $theme->script("jquery-ui-1.7.3.custom.min.js") ?>
     <?= $theme->script("jquery.parsequery.js") ?>
     <?= $theme->css("yui/reset-fonts-grids.css") ?>
     <?= $theme->css("superfish/css/superfish.css") ?>
