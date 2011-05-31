@@ -265,7 +265,7 @@ function bodyLoad(viewMode, bgcolor) {
 			checkCookie();
 	}
 	$('#loading').hide();
-	//window.setTimeout("preFetch()", 500);
+	window.setTimeout("preFetch()", 500);
 	setKeys();
 }
 
@@ -273,7 +273,7 @@ function switchToGrid()
 {
 	toggleReflex(true);
 	$('#pearImageFlow').hide();
-	$('#ContentAlbum').show();
+	$('#mosaicTable').show();
 	if(!$('#mosaicGridContainer').length) return;
 	mosaicView=false;
 	maxSize=225;
@@ -290,7 +290,7 @@ function switchToMosaic()
 {
 	toggleReflex(false);
 	$('#pearImageFlow').hide(); //.hide(); 
-	$('#ContentAlbum').show();
+	$('#mosaicTable').show();
 	if(!$('#mosaicGridContainer').length) return;
 	mosaicView=true;
 	maxSize=125;
@@ -354,24 +354,26 @@ function focusImage(id)
 	updateHash();
 	$.get(slideshowImages[currentImg][1]);
 }
-
+var pearCarousel;
 function startImageFlow()
 {
-	var objBody = $('gsContent');
-	$('ContentAlbum').hide();
-	if ( document.getElementById('pearImageFlow') ) {
-		objBody.removeChild( document.getElementById('pearImageFlow') );
-	}
-	var objSlide = new Element('div', {'id': 'pearImageFlow'});
+	$('#mosaicTable').hide();
 
-	objSlide.update('<div id="imageflow"><div id="images" style="offset: 300px;"> </div> <div id="captions"></div> <div id="scrollbar"> <div id="slider"></div> </div> </div>');
-	objBody.appendChild(objSlide);
+	$('#pearImageFlow').show();
 
 	toggleReflex(true);
-	for (var i = 0; i < slideshowImages.length; i++) {
-		$('images').insert(new Element('img', {'src': slideshowImages[i][0],'longdesc': 'javascript:focusImage(\''+i+'\');', 'alt': document.getElementById('mosaicGridContainer').getElementsByTagName('img')[i].getAttribute('alt')}));
-	}
 
+	for (var i = 0; i < slideshowImages.length; i++) {
+		var img = '<div class="item"><img class="content" src="'+slideshowImages[i][0]+'"/><div class="caption">'+$('#mosaicGridContainer img').eq(i).attr('alt')+'"</div></div>';
+		var img = '<img src="'+slideshowImages[i][0]+'" longdesc="'+i+'" width="'+slideshowImages[i][2]+'" height="'+slideshowImages[i][3]+'" alt="'+slideshowImages[i][4]+'" style="display: none;">';
+		console.log(img);
+		$('#pearImageFlow').append(img); 
+	}
+	if(!pearCarousel){
+	pearCarousel = new ImageFlow();
+	pearCarousel.init({ImageFlowID: 'pearImageFlow', aspectRatio: 2.4, imagesHeight: 0.6, opacity: true, reflections: false, startID: currentImg, onClick: function() {focusImage($(this).attr('longdesc'));}, startAnimation: true, xStep: 200, imageFocusM: 1.7, imageFocusMax: 4, opacityArray: [10, 9, 6, 2], percentOther: 130, captions: false, slider: false});
+	}
+/*
 	current=(currentImg)*-xstep;
 	caption_id=currentImg;
 	refresh(true);
@@ -384,19 +386,19 @@ function startImageFlow()
 
 	moveTo(current);
 	glideTo(current, caption_id);
-
+*/
 	switchMode('carousel');
 }
 function setKeys()
 {
 	/* Fixes the back button issue */
-	window.onunload = function()
+/*	window.onunload = function()
 	{
 		document = null;
 	}
-	document.onkeydown = function(event)
+*/	$(document).keydown(function(e)
 	{
-		var charCode = getKeyCode(event);
+		var charCode = (e.keyCode ? e.keyCode: e.which);
 		switch (charCode)
 		{
 			case 32: /* Space */
@@ -404,17 +406,15 @@ function setKeys()
 			case 39: /* Right arrow key */
 			case 78: /* N */
 				swatchImg(currentImg+1); 
-				if($('imageflow'))
-				 	handle(-1);
+			//	if($('imageflow')) handle(-1);
 				break;
 			case 80: /* P */
 			case 37: /* Left arrow key */
 				swatchImg(currentImg-1); 
-				if($('imageflow'))
-				  handle(1);
+			//	if($('imageflow')) handle(1);
 				break;
 		}
-	}
+	});
 }
 function showHoverView(){
 	if(hideHoverV != null) clearTimeout(hideHoverV);
@@ -434,9 +434,9 @@ function switchMode(mode){
 
 function preFetch()
 {
-	for (var i = 0; i < slideshowImages.length; i++) {
+/*	for (var i = 0; i < slideshowImages.length; i++) {
 		var tempImage = new Element('img', {'src': slideshowImages[i][0]});
-	}
+	}*/
 }
 
 function toggleReflex(hide)

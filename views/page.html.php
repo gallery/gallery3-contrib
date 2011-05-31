@@ -63,10 +63,12 @@
     <? /* Theme specific CSS/JS goes last so that it can override module CSS/JS */ ?>
     <?= $theme->script("ui.init.js") ?>
     <?= $theme->script("jquery.parsequery.js") ?>
+    <?= $theme->script("imageflow.packed.js") ?>
     <?= $theme->css("yui/reset-fonts-grids.css") ?>
     <?= $theme->css("superfish/css/superfish.css") ?>
     <?= $theme->css("themeroller/ui.base.css") ?>
     <?= $theme->css("screen.css") ?>
+    <?= $theme->css("imageflow.packed.css") ?>
     <!--[if lte IE 8]>
     <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
           media="screen,print,projection" />

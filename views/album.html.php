@@ -86,3 +86,4 @@ endif;
 <?= $theme->album_bottom() ?>
 
 <?= $theme->paginator() ?>
+<div id="pearImageFlow" class="imageflow"> </div>
