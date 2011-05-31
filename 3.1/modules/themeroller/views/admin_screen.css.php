@@ -98,7 +98,16 @@ a:hover,
   text-decoration: none;
 }
 
+/* Lists ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+ul.g-text li,
+.g-text ul li {
+  list-style-type: disc;
+  margin-left: 1em;
+}
+
 /* Forms ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
 form {
   margin: 0;
 }
@@ -413,11 +422,6 @@ th {
 .g-module-status.g-success,
 #g-log-entries .g-success {
   background-color: #<?= $bgColorContent ?>;
-}
-
-ul.enumeration li {
-  list-style-type: disc;
-  margin-left: 20px;
 }
 
 /*** ******************************************************************
