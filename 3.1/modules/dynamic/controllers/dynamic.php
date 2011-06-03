@@ -31,18 +31,16 @@ class Dynamic_Controller extends Controller {
 
     $album_defn = unserialize(module::get_var("dynamic", $album));
     $display_limit = $album_defn->limit;
-    if (empty($display_limit)) {
-      $children_count = ORM::factory("item")
-        ->viewable()
-        ->where("type", "!=", "album")
-        ->count_all();
-    } else {
-      $children_count = $display_limit;
+    $children_count = ORM::factory("item")
+      ->viewable()
+      ->where("type", "!=", "album")
+      ->count_all();
+    if (!empty($display_limit)) {
+      $children_count = min($children_count, $display_limit);
     }
 
-    $offset = ($page-1) * $page_size;
-
-    $max_pages = ceil($children_count / $page_size);
+    $offset = ($page - 1) * $page_size;
+    $max_pages = max(ceil($children_count / $page_size), 1);
 
     // Make sure that the page references a valid offset
     if ($page < 1 || ($children_count && $page > ceil($children_count / $page_size))) {
