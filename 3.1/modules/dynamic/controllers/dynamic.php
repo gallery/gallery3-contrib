@@ -30,12 +30,14 @@ class Dynamic_Controller extends Controller {
     $page = Input::instance()->get("page", "1");
 
     $album_defn = unserialize(module::get_var("dynamic", $album));
-    $children_count = $album_defn->limit;
-    if (empty($children_count)) {
+    $display_limit = $album_defn->limit;
+    if (empty($display_limit)) {
       $children_count = ORM::factory("item")
         ->viewable()
         ->where("type", "!=", "album")
         ->count_all();
+    } else {
+      $children_count = $display_limit;
     }
 
     $offset = ($page-1) * $page_size;
