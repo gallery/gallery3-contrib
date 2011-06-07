@@ -84,12 +84,16 @@ class Admin_Themeroller_Controller extends Admin_Controller {
         ->name(t("Generate theme"));
 
       $v->task = task::create($task_def,
-                              array("path" => $extract_path,
-                                    "original_name" => $form->theme->original->value,
-                                    "theme_name" => $form->theme->theme_name->value,
-                                    "display_name" => $form->theme->display_name->value,
-                                    "description" => $form->theme->description->value,
-                                    "is_admin" => $session->get("themeroller_is_admin")));
+         array("path" => $extract_path,
+               "user_name" => SafeString::purify(identity::active_user()->name),
+               "original_name" => SafeString::purify($form->theme->original->value),
+               "theme_name" => SafeString::purify($form->theme->theme_name->value),
+               "display_name" => SafeString::purify($form->theme->display_name->value),
+               "description" => SafeString::purify($form->theme->description->value),
+               "author_url" => SafeString::purify($form->theme->author_url->value),
+               "info_url" => SafeString::purify($form->theme->info_url->value),
+               "discuss_url" => SafeString::purify($form->theme->discuss_url->value),
+               "is_admin" => $session->get("themeroller_is_admin")));
 
       json::reply(array("html" => (string) $v));
     } else {
@@ -169,9 +173,13 @@ class Admin_Themeroller_Controller extends Admin_Controller {
     }
     $form_group->textarea("description")->label(t("Description"))
       ->id("g-description")
-      ->value(t("A generated theme based on the ui themeroller '%name' styling", array("name" => str_replace("admin_", "", $theme_name))))
+      ->value(t("A generated theme based on the ui themeroller '%name' styling",
+              array("name" => str_replace("admin_", "", $theme_name))))
       ->rules("required")
       ->error_messages("required", t("You must enter a theme description name"));
+    $form_group->input("author_url")->label(t("Author url"))->id("g-author-url");
+    $form_group->input("info_url")->label(t("Info url"))->id("g-info-url");
+    $form_group->input("discuss_url")->label(t("Theme Name"))->id("g-discuss-url");
     $form_group->submit("")->value(t("Create"));
 
     return $form;
