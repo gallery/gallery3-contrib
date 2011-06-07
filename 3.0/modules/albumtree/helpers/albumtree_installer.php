@@ -20,7 +20,7 @@
 class albumtree_installer {
   static function install() {
     module::set_var("albumtree", "style", "select");
-    module::set_version("albumtree", 2);
+    module::set_version("albumtree", 3);
   }
 
   static function upgrade($version) {
