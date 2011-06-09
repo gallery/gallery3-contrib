@@ -210,14 +210,14 @@ class themeroller_task_Core {
         $file = "{$theme_path}/css/screen.css";
         foreach (array("screen", "screen-rtl") as $file) {
           $css_file = "{$theme_path}/css/$file.css";
-          $v = new View(($is_admin ? "admin" : "site") . "_{$file).css");
+          $v = new View(($is_admin ? "admin" : "site") . "_{$file}.css");
           $v->display_name = $task->get("display_name");
           foreach ($parameters["colors"] as $color => $value) {
             $v->$color = $value;
           }
           ob_start();
           print $v->render();
-          file_put_contents($file, ob_get_contents());
+          file_put_contents($css_file, ob_get_contents());
           ob_end_clean();
         }
         $completed++;
