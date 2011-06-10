@@ -71,7 +71,7 @@ input.ui-state-hover { background-image: url(/themes/greydragon/images/button-gr
   <div id="gd-admin-head">
     <div id="gd-admin-title"><?= t($admin_info->name) ?> - <?= $version ?></div>
     <div id="gd-admin-hlinks">
-      <ul><li><a href="http://codex.gallery2.org/Gallery3:Themes:pear" target="_blank"><?= t("Home") ?></a>&nbsp;|&nbsp;</li>
+      <ul><li><a href="http://codex.gallery2.org/Gallery3:Themes:pear4gallery3" target="_blank"><?= t("Home") ?></a>&nbsp;|&nbsp;</li>
         <? if (isset($admin_info->support)): ?>
         <li><a href="<?= $admin_info->support;  ?>" target="_blank"><?= t("Support") ?></a>&nbsp;|&nbsp;</li>
         <? endif; ?>

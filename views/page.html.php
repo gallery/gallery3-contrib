@@ -39,6 +39,7 @@
     <?= $theme->script("json2-min.js") ?>
     <?= $theme->script("jquery.js") ?>
     <?= $theme->script("jquery.form.js") ?>
+    <?= $theme->script("jquery-ui.js") ?>
     <?= $theme->script("jquery-ui-1.7.3.custom.min.js") ?>
     <?= $theme->script("gallery.common.js") ?>
     <? /* MSG_CANCEL is required by gallery.dialog.js */ ?>
@@ -175,7 +176,7 @@
 		</div>
 		<div class="clear"></div>
 	</div>
-	<? if (module::get_var("th_pear4gallery3", "show_logo")): ?><button id="logoButton"></button><?endif?>
+	<? if (module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>
 </div>
 </div> <? /*class="pear"*/ ?>
 <? endif ?>

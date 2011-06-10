@@ -9,7 +9,8 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
   protected $min_gallery_ver = 46;
 
   private function load_theme_info() {
-    $file = THEMEPATH . "pear4gallery3/theme.info";
+    $theme_id = module::get_var("gallery", "active_site_theme");
+    $file = THEMEPATH . "$theme_id/theme.info";
     $theme_info = new ArrayObject(parse_ini_file($file), ArrayObject::ARRAY_AS_PROPS);
     return $theme_info;
   }
@@ -22,22 +23,6 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
   private function get_theme_name() {
     $theme_info = $this->load_theme_info();
     return ($theme_info->name);
-  }
-
-  private function get_packlist($type, $filename) {
-    $packlist = array();
-    $packroot = THEMEPATH . 'pear4gallery3/css/' . $type . '/';
-
-    foreach (scandir($packroot) as $pack_name):
-      if (file_exists($packroot . "$pack_name/" . $filename . ".css")):
-        if ($pack_name[0] == "."):
-          continue;
-        endif;
-
-        $packlist[$pack_name] = t($pack_name);
-      endif;
-    endforeach;
-    return $packlist;
   }
 
   private function prerequisite_check($group, $id, $is_ok, $caption, $caption_ok, $caption_failed, $iswarning, $msg_error) {
@@ -57,10 +42,11 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
 
   /* Convert old values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
   protected function upgrade_settings() {
-/*    if (module::get_var("th_pear4gallery3", "hide_thumbmeta")):
-      module::set_var("th_pear4gallery3", "thumb_metamode", "hide");
-      module::clear_var("th_pear4gallery3", "hide_thumbmeta");
-    endif;*/
+    if (module::get_var("th_pear4gallery3", "show_logo")):
+      module::clear_var("th_pear4gallery3", "show_logo");
+    else:  
+		  module::set_var("th_pear4gallery3", "hide_logo", TRUE);
+    endif;
   }
 
   protected function get_edit_form_admin() {
@@ -97,9 +83,9 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     /* Advanced Options - General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     $group = $form->group("edit_theme_adv_main")->label(t("Advanced Options - General"));
-    $group->checkbox("show_logo")
-      ->label(t("Show Bottom Pear Logo"))
-      ->checked(module::get_var("th_pear4gallery3", "show_logo"));
+    $group->checkbox("hide_logo")
+      ->label(t("Hide Bottom Pear Logo"))
+      ->checked(module::get_var("th_pear4gallery3", "hide_logo"));
     $group->dropdown("mainmenu_view")
       ->label(t("Main page View"))
       ->options(array("grid" => t("Grid (Default)"), "mosaic" => t("Mosaic")))
@@ -192,7 +178,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
   }
 
   protected function legacy() {
-    module::clear_var("th_pear4gallery3", "show_logo");
+    module::clear_var("th_pear4gallery3", "hide_logo");
     module::clear_var("th_pear4gallery3", "mainmenu_view");
     module::clear_var("th_pear4gallery3", "show_guest_menu");
     module::clear_var("th_pear4gallery3", "background");
@@ -208,6 +194,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     module::set_var("gallery", "footer_text", "");
     module::set_var("gallery", "show_credits", FALSE);
     module::clear_all_vars("th_pear4gallery3");
+    module::clear_var("th_pear4gallery3", "hide_logo");
   }
 
   public function save() {
@@ -275,7 +262,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
 
         // * Advanced Options - General ******************************************
 
-        $this->save_item_state("show_logo",       $form->edit_theme_adv_main->show_logo->value, TRUE);
+        $this->save_item_state("hide_logo",       $form->edit_theme_adv_main->hide_logo->value, TRUE);
         $this->save_item_state("mainmenu_view",         $form->edit_theme_adv_main->mainmenu_view->value != "grid", $form->edit_theme_adv_main->mainmenu_view->value);
         $this->save_item_state("show_guest_menu",$form->edit_theme_adv_main->show_guest_menu->value, TRUE);
         $this->save_item_state("background",            $form->edit_theme_adv_main->background->value != "black", $form->edit_theme_adv_main->background->value);
