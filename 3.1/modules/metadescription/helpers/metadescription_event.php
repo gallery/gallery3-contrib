@@ -31,4 +31,10 @@ class metadescription_event_Core {
       site_status::clear("metadescription_needs_tag");
     }
   }
+
+  static function pre_deactivate($data) {
+    if ($data->module == "tag") {
+      $data->messages["warn"][] = t("The MetaDescription module requires the Tags module.");
+    }
+  }
 }

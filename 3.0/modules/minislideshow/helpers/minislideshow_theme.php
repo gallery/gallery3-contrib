@@ -20,10 +20,6 @@
 
 class minislideshow_theme_Core {
   static function head($theme) {
-    if (!$theme->item()) {
-      return;
-    }
-
-    return new View("minislideshow_header_block.html");
+    return $theme->css("minislideshow_menu.css");
   }
 }
