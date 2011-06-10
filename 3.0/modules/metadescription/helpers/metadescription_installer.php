@@ -28,6 +28,14 @@ class metadescription_installer {
     site_status::clear("metadescription_needs_tag");
   }
 
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("tag")) {
+      $messages["warn"][] = t("The MetaDescription module requires the Tags module.");
+    }
+    return $messages;
+  }
+
   static function uninstall() {
     module::delete("metadescription");
   }
