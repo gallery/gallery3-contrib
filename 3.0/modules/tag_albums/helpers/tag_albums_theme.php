@@ -26,7 +26,7 @@ class tag_albums_theme_Core {
         ->where("album_id", "=", $theme->item->id)
         ->find_all();
       if (count($album_tags) > 0) {
-        url::redirect(url::abs_site("tag_albums/album/" . $album_tags[0]->id));
+        url::redirect(url::abs_site("tag_albums/album/" . $album_tags[0]->id . "/" . urlencode($theme->item->name)));
       }
     }
     return;
