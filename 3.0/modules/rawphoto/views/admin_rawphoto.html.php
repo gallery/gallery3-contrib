@@ -19,8 +19,9 @@
   <fieldset>
     <legend><?= t("Paths") ?></legend>
     <? if ($dcraw->installed): ?>
-      <p><?= t("The <em>dcraw</em> tool was detected at <code>%path</code>.",
-               array("path" => $dcraw->path)) ?></p>
+      <p><?= t("The <em>dcraw</em> tool was detected at <code>%path</code> " .
+               "with version <code>%version</code>.",
+               array("path" => $dcraw->path, "version" => $dcraw->version)) ?></p>
     <? else: ?>
       <p class="g-module-status g-error g-block"><?= $dcraw->error ?></p>
     <? endif; ?>

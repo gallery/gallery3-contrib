@@ -60,9 +60,15 @@ class Admin_RawPhoto_Controller extends Admin_Controller {
   }
 
   public function _validate_icc_path(Validation $post, $field) {
-    if (!empty($post->$field) && !@is_file($post->$field)) {
-      $post->add_error($field, t("No ICC profile exists at the location <code>%icc_path</code>",
-                                 array("icc_path" => $post->$field)));
+    if (!empty($post->$field)) {
+      if (!@is_file($post->$field)) {
+        $post->add_error($field, t("No ICC profile exists at the location <code>%icc_path</code>",
+                                   array("icc_path" => $post->$field)));
+      }
+      $dcraw = rawphoto_graphics::detect_dcraw();
+      if (version_compare($dcraw->version, "8.00", "<")) {
+        $post->add_error($field, t("Versions of <em>dcraw</em> before <code>8.00</code> do not support an ICC profile"));
+      }
     }
   }
 }

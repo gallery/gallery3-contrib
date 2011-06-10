@@ -24,18 +24,22 @@ class rawphoto_graphics {
     if (empty($path)) {
       $dcraw->installed = false;
       $dcraw->error = t("The <em>dcraw</em> tool could not be located on your system.");
-    } else if (!@is_file($path)) {
-      $dcraw->installed = false;
-      $dcraw->error = t("The <em>dcraw</em> tool is installed, but PHP's " .
-                        "<code>open_basedir</code> restriction prevents Gallery from using it.");
-    } else if (!preg_match('/^Raw [Pp]hoto [Dd]ecoder(?: "dcraw")? v(\S+)$/m',
-                           shell_exec(escapeshellcmd($path) . " 2>&1"), $matches)) {
-      $dcraw->installed = false;
-      $dcraw->error = t("The <em>dcraw</em> tool is installed, but the version is not recognized.");
     } else {
-      $dcraw->installed = true;
       $dcraw->path = $path;
-      $dcraw->version = $matches[1];
+      if (!@is_file($path)) {
+        $dcraw->installed = false;
+        $dcraw->error = t("The <em>dcraw</em> tool is installed, " .
+                          "but PHP's <code>open_basedir</code> restriction " .
+                          "prevents Gallery from using it.");
+      } else if (!preg_match('/^Raw [Pp]hoto [Dd]ecoder(?: "dcraw")? v(\S+)$/m',
+                             shell_exec(escapeshellcmd($path) . " 2>&1"), $matches)) {
+        $dcraw->installed = false;
+        $dcraw->error = t("The <em>dcraw</em> tool is installed, " .
+                          "but the version is not recognized.");
+      } else {
+        $dcraw->version = $matches[1];
+        $dcraw->installed = true;
+      }
     }
     return $dcraw;
   }
@@ -73,9 +77,15 @@ class rawphoto_graphics {
     $dcraw = rawphoto_graphics::detect_dcraw();
     if ($dcraw->installed) {
       // Use dcraw to convert from a raw image to a standard pixmap.
-      $cmd = escapeshellcmd($dcraw->path) . " -c -w -W -t 0 ";
+      $cmd = escapeshellcmd($dcraw->path) . " -c -w ";
+      if (version_compare($dcraw->version, "6.00", ">=")) {
+        $cmd .= "-t 0 ";
+      }
+      if (version_compare($dcraw->version, "8.81", ">=")) {
+        $cmd .= "-W ";
+      }
       $icc_path = module::get_var("rawphoto", "icc_path");
-      if (!empty($icc_path)) {
+      if (!empty($icc_path) && version_compare($dcraw->version, "8.00", ">=")) {
         $cmd .= "-p " . escapeshellarg($icc_path) . " ";
       }
       $cmd .= escapeshellarg($input_file);
