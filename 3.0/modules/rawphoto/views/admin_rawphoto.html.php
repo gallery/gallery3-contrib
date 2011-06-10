@@ -4,7 +4,7 @@
   <?= form::open("admin/rawphoto/saveprefs") ?>
   <?= access::csrf_form_field() ?>
   <p><?= t('<a href="%raw_url">Raw photo</a> processing depends on the ' .
-           '<a href="%dcraw_url">dcraw</a> tool, which must be installed separately. ' .
+           '<a href="%dcraw_url"><em>dcraw</em> tool</a>, which must be installed separately. ' .
            'It also depends on either the ImageMagick or GraphicsMagick graphics toolkits.',
            array("raw_url" =>
                  "http://www.adamcoupe.com/whitepapers/photography_technique_benefits_of_shooting_in_raw.htm",
@@ -12,14 +12,14 @@
   <? if (!$is_keeporiginal_active): ?>
       <p class="g-module-status g-warning g-block">
         <?= t('The photos will not be preserved in their raw format unless you ' .
-              '<a href="%modules_url">activate the Keep Original module</a>.',
+              '<a href="%modules_url">activate the <em>Keep Original</em> module</a>.',
               array("modules_url" => url::site("admin/modules"))) ?>
       </p>
   <? endif; ?>
   <fieldset>
     <legend><?= t("Paths") ?></legend>
     <? if ($dcraw->installed): ?>
-      <p><?= t("The dcraw tool was detected at <code>%path</code>.",
+      <p><?= t("The <em>dcraw</em> tool was detected at <code>%path</code>.",
                array("path" => $dcraw->path)) ?></p>
     <? else: ?>
       <p class="g-module-status g-error g-block"><?= $dcraw->error ?></p>
