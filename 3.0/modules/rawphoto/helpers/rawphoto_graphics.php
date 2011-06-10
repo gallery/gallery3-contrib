@@ -23,18 +23,19 @@ class rawphoto_graphics {
     $path = system::find_binary("dcraw");
     if (empty($path)) {
       $dcraw->installed = false;
-      $dcraw->error = t("The dcraw tool could not be located on your system.");
+      $dcraw->error = t("The <em>dcraw</em> tool could not be located on your system.");
+    } else if (!@is_file($path)) {
+      $dcraw->installed = false;
+      $dcraw->error = t("The <em>dcraw</em> tool is installed, but PHP's " .
+                        "<code>open_basedir</code> restriction prevents Gallery from using it.");
+    } else if (!preg_match('/^Raw [Pp]hoto [Dd]ecoder(?: "dcraw")? v(\S+)$/m',
+                           shell_exec(escapeshellcmd($path) . " 2>&1"), $matches)) {
+      $dcraw->installed = false;
+      $dcraw->error = t("The <em>dcraw</em> tool is installed, but the version is not recognized.");
     } else {
-      if (@is_file($path) && preg_match('/^Raw [Pp]hoto [Dd]ecoder(?: "dcraw")? v(\S+)$/m',
-                                        shell_exec($path), $matches)) {
-        $dcraw->installed = true;
-        $dcraw->path = $path;
-        $dcraw->version = $matches[1];
-      } else {
-        $dcraw->installed = false;
-        $dcraw->error = t("The dcraw tool is installed, but PHP's open_basedir restriction " .
-                          "prevents Gallery from using it.");
-      }
+      $dcraw->installed = true;
+      $dcraw->path = $path;
+      $dcraw->version = $matches[1];
     }
     return $dcraw;
   }
@@ -49,7 +50,7 @@ class rawphoto_graphics {
       site_status::clear("rawphoto_needs_dcraw");
     } else {
       site_status::warning(
-        t('The Raw Photos module requires the <a href="%dcraw_url">dcraw</a> tool to be installed.',
+        t('The <em>Raw Photos</em> module requires the <a href="%dcraw_url"><em>dcraw</em> tool</a> to be installed.',
           array("dcraw_url" => "http://www.cybercom.net/~dcoffin/dcraw/")),
         "rawphoto_needs_dcraw");
     }
@@ -60,7 +61,7 @@ class rawphoto_graphics {
       site_status::clear("rawphoto_needs_ppm_support");
     } else {
       site_status::warning(
-        t('The Raw Photos module requires a supporting graphics toolkit. ' .
+        t('The <em>Raw Photos</em> module requires a supporting graphics toolkit. ' .
           '<a href="%activate_url">Activate</a> either ImageMagick or GraphicsMagick.',
           array("activate_url" => url::site("admin/graphics"))),
         "rawphoto_needs_ppm_support");
