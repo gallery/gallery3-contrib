@@ -25,33 +25,58 @@ class Admin_Dynamic_Controller extends Admin_Controller {
     access::verify_csrf();
 
     $form = $this->_get_form();
-    if ($form->validate()) {
-      foreach (array("updates", "popular") as $album) {
-        $album_defn = unserialize(module::get_var("dynamic", $album));
-        $group = $form->inputs[$album];
-        $album_defn->enabled = $group->inputs["{$album}_enabled"]->value;
-        $album_defn->description = $group->inputs["{$album}_description"]->value;
-        $album_defn->limit = $group->inputs["{$album}_limit"] === "" ? null :
-          $group->inputs["{$album}_limit"]->value;
-        module::set_var("dynamic", $album, serialize($album_defn));
+    $errors = array_fill_keys(array_keys($form), "");
+    if ($_POST) {
+      $post = new Validation($_POST);
+      $post->add_rules("updates_enabled", array("valid", "numeric"));
+      $post->add_rules("popular_enabled", array("valid", "numeric"));
+      $post->add_rules("updates_limit", array("valid", "numeric"));
+      $post->add_rules("popular_limit", array("valid", "numeric"));
+      $post->add_rules("updates_description", "length[0,2048]");
+      $post->add_rules("popular_description", "length[0,2048]");
+      if ($post->validate()) {
+        foreach (array("updates", "popular") as $album) {
+          $album_defn = unserialize(module::get_var("dynamic", $album));
+          $album_defn->enabled = $post["{$album}_enabled"];
+          $album_defn->description = $post["{$album}_description"];
+          $album_defn->limit = $post["{$album}_limit"] === "" ? null : $post["{$album}_limit"];
+          module::set_var("dynamic", $album, serialize($album_defn));
+        }
+
+        message::success(t("Dynamic Albums Configured"));
+
+        url::redirect("admin/dynamic");
+      } else {
+        $form = arr::overwrite($form, $post->as_array());
+        $errors = arr::overwrite($errors, $post->errors());
       }
-
-      message::success(t("Dynamic Albums Configured"));
-
-      url::redirect("admin/dynamic");
     }
 
-    print $this->_get_view($form);
+    print $this->_get_view($form, $errors);
   }
 
-  private function _get_view($form=null) {
+  private function _get_view($form=null, $errors=null) {
     $v = new Admin_View("admin.html");
     $v->content = new View("admin_dynamic.html");
     $v->content->form = empty($form) ? $this->_get_form() : $form;
+    $v->content->tabs = array("updates" => t("Recent changes"), "popular" => t("Most viewed"));
+    $v->content->errors = $errors;
     return $v;
   }
 
   private function _get_form() {
+    $form = array();
+    foreach (array("updates", "popular") as $album) {
+      $album_defn = unserialize(module::get_var("dynamic", $album));
+      $form["{$album}_enabled"] = $album_defn->enabled;
+      $form["{$album}_limit"] = $album_defn->limit;
+      $form["{$album}_description"] = $album_defn->description;
+    }
+
+    return $form;
+  }
+
+  private function _get_form2() {
 
     $form = new Forge("admin/dynamic/handler", "", "post",
                       array("id" => "g-admin-form"));
