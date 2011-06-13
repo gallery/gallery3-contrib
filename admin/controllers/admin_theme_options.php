@@ -44,8 +44,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
   protected function upgrade_settings() {
     if (module::get_var("th_pear4gallery3", "show_logo")):
       module::clear_var("th_pear4gallery3", "show_logo");
-    else:  
-		  module::set_var("th_pear4gallery3", "hide_logo", TRUE);
+		  module::set_var("th_pear4gallery3", "hide_logo", FALSE);
     endif;
   }
 

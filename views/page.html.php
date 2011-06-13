@@ -176,7 +176,7 @@
 		</div>
 		<div class="clear"></div>
 	</div>
-	<? if (module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>
+	<? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>
 </div>
 </div> <? /*class="pear"*/ ?>
 <? endif ?>
