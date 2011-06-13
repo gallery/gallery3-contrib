@@ -26,4 +26,19 @@ class pages_event_Core {
                ->label(t("Pages Settings"))
                ->url(url::site("admin/pages")));
   }
+
+  static function site_menu($menu, $theme) {
+    $menu_pages = ORM::factory("static_page")
+                  ->where("display_menu", "=", true)
+                  ->order_by("title", "DESC")
+                  ->find_all();
+    if (count($menu_pages) > 0) {
+      foreach ($menu_pages as $one_page) {
+        $menu->add_after("home", Menu::factory("link")
+             ->id("pages-" . $one_page->id)
+             ->label($one_page->title)
+             ->url(url::site("pages/show/" . $one_page->name)));
+      }
+    }
+  }
 }

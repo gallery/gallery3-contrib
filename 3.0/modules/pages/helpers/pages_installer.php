@@ -26,11 +26,19 @@ class pages_installer {
                `name` varchar(255) default NULL,
                `title` varchar(255) default NULL,
                `html_code` text default NULL,
+               `display_menu` boolean default 0,
                PRIMARY KEY (`id`),
                UNIQUE KEY(`name`))
                DEFAULT CHARSET=utf8;");
 
     // Set the module version number.
-    module::set_version("pages", 1);
+    module::set_version("pages", 2);
+  }
+  static function upgrade($version) {
+    $db = Database::instance();
+    if ($version == 1) {
+      $db->query("ALTER TABLE {static_pages} ADD COLUMN `display_menu` boolean default 0");
+      module::set_version("pages", $version = 2);
+    }
   }
 }

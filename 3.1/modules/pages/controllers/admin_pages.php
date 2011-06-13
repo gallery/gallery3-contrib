@@ -57,12 +57,14 @@ class Admin_Pages_Controller extends Admin_Controller {
     $page_name = urlencode(trim(Input::instance()->post("page_name")));
     $page_title = Input::instance()->post("page_title");
     $page_code = Input::instance()->post("page_code");
+    $display_menu = Input::instance()->post("display_menu");
 
     // If $page_id is set, update an existing page.
     if (isset($page_id)) {
       $update_page = ORM::factory("static_page", $page_id);
       $update_page->title = $page_title;
       $update_page->html_code = $page_code;
+      $update_page->display_menu = $display_menu;
       $update_page->save();
       message::success(t("Page %page_name updated", array("page_name" => $update_page->name)));
       log::success("pages", t("Page %page_name updated", array("page_name" => $update_page->name)));
@@ -81,6 +83,7 @@ class Admin_Pages_Controller extends Admin_Controller {
         $new_page->name = $page_name;
         $new_page->title = $page_title;
         $new_page->html_code = $page_code;
+        $new_page->display_menu = $display_menu;
         $new_page->save();
         message::success(t("Page %page_name created", array("page_name" => $page_name)));
         log::success("pages", t("Page %page_name created", array("page_name" => $page_name)));
@@ -92,7 +95,7 @@ class Admin_Pages_Controller extends Admin_Controller {
         $view = new Admin_View("admin.html");
         $view->page_title = t("Edit page");
         $view->content = new View("admin_pages_new.html");
-        $view->content->form = $this->get_overwrite_page_form($existing_page[0]->id, $page_name, $page_title, $page_code);
+        $view->content->form = $this->get_overwrite_page_form($existing_page[0]->id, $page_name, $page_title, $page_code, $display_menu);
         print $view;
       }
     }
@@ -196,13 +199,16 @@ class Admin_Pages_Controller extends Admin_Controller {
                 ->label(t("Title"));
     $pages_group->textarea("page_code")
                 ->label(t("HTML Code"));
+    $pages_group->checkbox("display_menu")
+                ->label(t("Display in menu?"))
+                ->checked(false);
     $pages_group->submit("save_page")
                 ->value(t("Save"));
 
     return $form;
   }
 
-  private function get_overwrite_page_form($id, $name, $title, $html_code) {
+  private function get_overwrite_page_form($id, $name, $title, $html_code, $display_menu) {
     // Generate a form for overwriting an existing page.
     $form = new Forge("admin/pages/savepage", "", "post",
                       array("id" => "g-pages-admin-form"));
@@ -220,6 +226,9 @@ class Admin_Pages_Controller extends Admin_Controller {
     $pages_group->textarea("page_code")
                 ->label(t("HTML Code"))
                 ->value($html_code);
+    $pages_group->checkbox("display_menu")
+                ->label(t("Display in menu?"))
+                ->checked($display_menu);
     $pages_group->submit("save_page")
                 ->value(t("Save"));
 
@@ -228,6 +237,6 @@ class Admin_Pages_Controller extends Admin_Controller {
 
   private function get_edit_page_form($existing_page) {
     // Generate a form for editing an existing page.  Reuse the overwrite form for as it's basically the same thing.
-    return ($this->get_overwrite_page_form($existing_page->id, $existing_page->name, $existing_page->title, $existing_page->html_code));
+    return ($this->get_overwrite_page_form($existing_page->id, $existing_page->name, $existing_page->title, $existing_page->html_code, $existing_page->display_menu));
   }
 }
