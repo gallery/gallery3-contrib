@@ -195,7 +195,7 @@ function mosaicResize()
 		$('#img_detail').css({'height': iHeight+"px", 'width':iWidth+"px"});
 
 	myWidth=myWidth-7;
-	try{var myNav=document.getElementById('gbNavigator');if(myNav.innerHTML != ""){myHeight=myHeight-170;}}catch(e){myHeight=myHeight-142;}
+	($('#paginator').length != 0) ? myHeight-=165: myHeight-=138;
 
 	if ( !mosaicView )
 	{

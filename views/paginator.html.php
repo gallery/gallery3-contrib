@@ -25,27 +25,20 @@
 //   $position                - the position number of this photo
 //
 ?>
-
-<ul class="g-paginator ui-helper-clearfix" style="display: none;">
+<? if(isset($first_page_url) || isset($last_page_url)): ?>
+<ul id="paginator" class="g-paginator ui-helper-clearfix">
   <li class="g-first">
   <? if ($page_type == "collection"): ?>
     <? if (isset($first_page_url)): ?>
-      <a href="<?= $first_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all">
-        <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
-    <? else: ?>
-      <a class="g-button ui-icon-left ui-state-disabled ui-corner-all">
-        <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
+      <a href="<?= $first_page_url ?>" class="buttonAction buttonFirst" title="<?= t("First") ?>"> </a>
     <? endif ?>
   <? endif ?>
 
   <? if (isset($previous_page_url)): ?>
-    <a href="<?= $previous_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all">
-      <span class="ui-icon ui-icon-seek-prev"></span><?= t("Previous") ?></a>
-  <? else: ?>
-    <a class="g-button ui-icon-left ui-state-disabled ui-corner-all">
-      <span class="ui-icon ui-icon-seek-prev"></span><?= t("Previous") ?></a>
+    <a href="<?= $previous_page_url ?>" class="buttonAction buttonPrev" title="<?= t("Previous") ?>"> </a>
   <? endif ?>
-  </li>
+  &nbsp;
+	</li>
 
   <li class="g-info">
     <? if ($total): ?>
@@ -66,22 +59,16 @@
   </li>
 
   <li class="g-text-right">
-  <? if (isset($next_page_url)): ?>
-    <a href="<?= $next_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
-      <span class="ui-icon ui-icon-seek-next"></span><?= t("Next") ?></a>
-  <? else: ?>
-    <a class="g-button ui-state-disabled ui-icon-right ui-corner-all">
-      <span class="ui-icon ui-icon-seek-next"></span><?= t("Next") ?></a>
-  <? endif ?>
-
   <? if ($page_type == "collection"): ?>
     <? if (isset($last_page_url)): ?>
-      <a href="<?= $last_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
-        <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
-    <? else: ?>
-      <a class="g-button ui-state-disabled ui-icon-right ui-corner-all">
-        <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
+      <a href="<?= $last_page_url ?>" class="buttonAction buttonLast" title="<?= t("Last") ?>"> </a>
     <? endif ?>
   <? endif ?>
+  <? if (isset($next_page_url)): ?>
+    <a href="<?= $next_page_url ?>" class="buttonAction buttonNext" title="<?= t("Next") ?>"> </a>
+  <? endif ?>
+
+  &nbsp;
   </li>
 </ul>
+<? endif ?>

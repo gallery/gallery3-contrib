@@ -988,10 +988,6 @@ div#g-action-status {
 
 /* Pagination ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-.g-paginator {
-  padding: .2em 0;
-  width: 100%;
-}
 
 .g-paginator li {
   float: left;
