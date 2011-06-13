@@ -1,6 +1,6 @@
 name = "Pages"
 description = "Allows Gallery admins to create static pages."
-version = 1
+version = 2
 author_name = "rWatcher"
 author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:Pages"
