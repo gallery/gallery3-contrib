@@ -82,7 +82,7 @@ endif;
   <? endif; ?>
 <? endif; ?>
 </div>
-</td></td></table>
+</td></tr></table>
 <?= $theme->album_bottom() ?>
 
 <?= $theme->paginator() ?>
