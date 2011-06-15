@@ -312,6 +312,7 @@ function startSlideshow()
 	hideHoverV = setTimeout("hideHoverView()",3000);
 	slideShowId=currentImg;
 	slideShowId=0;
+	togglePlayPause();
 }
 var slideShow=null;
 var slideShowId;
