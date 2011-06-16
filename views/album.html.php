@@ -42,8 +42,9 @@ $(function() {
 if($child->is_album()):
 	$granchildren = $child->viewable()->children();
 	$offset = 0;
-	$step = round(200/count($granchildren));
+	$step = round(200/min(count($granchildren),50));
 	foreach ($granchildren as $i => $granchild):?>
+      <? if(++$i > 50) break; ?>
       <? if ($granchild->has_thumb()): ?>
       <?= $granchild->thumb_img(array("style" => "display: none;")) ?>
 	<div class="skimm_div" style="height: 200px; width: <?=$step?>px; left: <?=$offset?>px; top: 0px;" onmouseover="$('#thumb_<?=$child->id?>').attr('src', '<?=$granchild->thumb_url()?>');skimimg=<?=$i?>;" id="area_<?=$granchild->id?>"></div>
@@ -68,7 +69,7 @@ endif;
   var slideshowImages = new Array();
 <? foreach ($children as $i => $child): ?>
 <? if(!($child->is_album() || $child->is_movie())): ?>
-    slideshowImages.push(['<?= $child->resize_url() ?>', '<?= $child->url() ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= $child->title ?>', '<?= $child->file_url() ?>']);
+    slideshowImages.push(['<?= $child->resize_url() ?>', '<?= url::site("exif/show/$child->id") ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= $child->title ?>', '<?= $child->file_url() ?>']);
 	<? endif ?>
 <? endforeach ?>
 </script>

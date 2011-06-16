@@ -151,6 +151,7 @@ function swatchImg(imageId)
 		$.get(slideshowImages[currentImg][1]);
 	}
 	updateHash();
+	$('#info_detail').attr('href', slideshowImages[currentImg][1]);
 }
 
 function updateHash()
