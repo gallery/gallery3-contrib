@@ -197,6 +197,8 @@ function mosaicResize()
 
 	myWidth=myWidth-7;
 	($('#paginator').length != 0) ? myHeight-=165: myHeight-=138;
+	myHeight = myHeight - $('#g-site-status').outerHeight(true);
+	$('#g-header').css('top', $('#gsNavBar').outerHeight(true)+$('#g-site-status').outerHeight(true)-4);
 
 	if ( !mosaicView )
 	{
