@@ -69,7 +69,7 @@ endif;
   var slideshowImages = new Array();
 <? foreach ($children as $i => $child): ?>
 <? if(!($child->is_album() || $child->is_movie())): ?>
-    slideshowImages.push(['<?= $child->resize_url() ?>', '<?= url::site("exif/show/$child->id") ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= $child->title ?>', '<?= $child->file_url() ?>']);
+    slideshowImages.push(['<?= $child->resize_url() ?>', '<?= url::site("exif/show/$child->id") ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= $child->title ?>', '<?= $child->file_url() ?>', '<?= $child->url() ?>']);
 	<? endif ?>
 <? endforeach ?>
 </script>
@@ -87,4 +87,4 @@ endif;
 <?= $theme->album_bottom() ?>
 
 <?= $theme->paginator() ?>
-<div id="pearImageFlow" class="imageflow"> </div>
+<div id="pearImageFlow" class="imageflow" style="display: none;"> </div>

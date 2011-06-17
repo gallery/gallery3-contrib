@@ -148,7 +148,7 @@ function swatchImg(imageId)
 	if( detailViewMode )
 	{
 		//Image count.
-		$.get(slideshowImages[currentImg][1]);
+		$.get(slideshowImages[currentImg][6]);
 	}
 	updateHash();
 	$('#info_detail').attr('href', slideshowImages[currentImg][1]);
@@ -220,11 +220,11 @@ function bodyLoad(viewMode, bgcolor) {
 	hash = window.location.hash;
 	var h = $.parseQuery(hash.substring(1));
 	if(h.img != undefined)
-		currentImg = h.img;
+		currentImg = parseInt(h.img);
 	if(h.bgcolor != undefined)
 		swatchSkin(h.bgcolor);
 	if(h.viewMode == 'detail')
-		focusImage(currentImg);
+		focusImage(currentImg, h.redirected);
 	else
 		viewMode = h.viewMode;
 	/* end parse hash */
@@ -342,7 +342,7 @@ function togglePlayPause()
 		slideShow=null;
 	}
 }
-function focusImage(id)
+function focusImage(id, redirected)
 {
 	currentImg=id;
 	$('#imageTitleLabel').html("<h2>"+slideshowImages[id][4]+"</h2>");
@@ -351,10 +351,12 @@ function focusImage(id)
 	swatchImg(id);
 	$('#detailView').fadeIn('slow');
 	hideHoverV = setTimeout("hideHoverView()",3000);
-	//Image count.
 	detailViewMode=true;
 	updateHash();
-	$.get(slideshowImages[currentImg][1]);
+	//Image count.
+	if(!redirected)
+		$.get(slideshowImages[currentImg][6]);
+	$('#info_detail').attr('href', slideshowImages[currentImg][1]);
 }
 var pearCarousel;
 function startImageFlow()

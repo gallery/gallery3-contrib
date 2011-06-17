@@ -4,7 +4,7 @@
 		if(!($child->is_album() || $child->is_movie()))
    		if($child->url() == $_SERVER['REQUEST_URI']):?>
 				<html><body>
-					<script type="text/javascript">window.location = '<? echo end($parents)->url() . "#img=$i&viewMode=detail"?>';</script>
+					<script type="text/javascript">window.location = '<? echo end($parents)->url() . "#img=$i&viewMode=detail&redirected=true"?>';</script>
 					</body></html>
 					<? die(0) ?>
 <? endif ?>
