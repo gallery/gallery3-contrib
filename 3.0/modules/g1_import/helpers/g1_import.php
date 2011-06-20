@@ -415,7 +415,7 @@ class g1_import_Core {
     list($result, $fields) = Gallery1DataParser::loadAlbumFields($albumDir);
 
     $album->name = $fields['name'];
-    $album->slug = $fields['name']; // <= verification fails if this property has not been set!!!
+    $album->slug = item::convert_filename_to_slug($fields['name']); // <= verification fails if this property has not been set!!!
     $album->title = utf8_encode(self::_decode_html_special_chars(trim($fields['title'])));
     $album->title or $album->title = $album->name;
     $album->description = utf8_encode(self::_decode_html_special_chars(trim($fields['description'])));
@@ -687,7 +687,7 @@ class g1_import_Core {
         $item->parent_id = $album_id;
         $item->set_data_file($g1_path);
         $item->name = $g1_item.'.'.$album_item->image->type;
-        $item->slug = $g1_item;
+        $item->slug = item::convert_filename_to_slug($g1_item);
         $item->mime_type = $type;
         $item->title = utf8_encode(self::_decode_html_special_chars(trim($album_item->caption)));
         $item->title or $item->title = ' '; //don't use $item->name as this clutters up the UI
@@ -697,7 +697,7 @@ class g1_import_Core {
         try {
           $item->view_count = (int) $album_item->clicks;
         } catch (Exception $e) {
-          $view_count = 1;
+          $item->view_count = 1;
         }
       } catch (Exception $e) {
         $exception_info = (string) new G1_Import_Exception(
@@ -754,7 +754,7 @@ class g1_import_Core {
           $item->parent_id = $album_id;
           $item->set_data_file($g1_path);
           $item->name = $g1_item.'.'.$album_item->image->type;
-          $item->slug = $g1_item;
+          $item->slug = item::convert_filename_to_slug($g1_item);
           $item->mime_type = $type;
           $item->title = utf8_encode(self::_decode_html_special_chars(trim($album_item->caption)));
           $item->title or $item->title = ' '; //$item->name;
@@ -764,7 +764,7 @@ class g1_import_Core {
           try {
             $item->view_count = (int) $album_item->clicks;
           } catch (Exception $e) {
-            $view_count = 1;
+            $item->view_count = 1;
           }
         } catch (Exception $e) {
           $exception_info = (string) new G1_Import_Exception(
