@@ -19,22 +19,39 @@
  */
 
 class GalleryRemoteReply_Core {
+	private $values = array();
+	private $nl = "\n";
   /**
    * Constructor.
    * @param int $status a Gallery Remote status code
    */
-  public static function factory($status) {
+  public static function factory($status='') {
     $reply = new GalleryRemoteReply();
-    $reply->status = $status;
+    $reply->set('status', $status);
+    $reply->set('status_text', '');
     return $reply;
+  }
+
+  public function clear() {
+    $this->values = array();
   }
 
   /**
    * Set a property on this reply
    * @chainable
    */
-  public static function set($key, $value) {
-    $this->$key = $value;
+  public function set($key, $value) {
+    $this->values[$key] = $value;
     return $this;
+  }
+  
+  public function send($status='') {
+  	if($status!='') $reply->set('status', $status);
+  	//ksort($this->values);
+
+		echo '#__GR2PROTO__'.$this->nl;
+  	foreach($this->values as $key => $value) {
+  		echo $key.'='.$value.$this->nl;
+  	}
   }
 }
