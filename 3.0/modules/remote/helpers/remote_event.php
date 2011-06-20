@@ -17,41 +17,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
-class GalleryRemoteReply_Core {
-  private $values = array();
-  private $nl = "\n";
-  /**
-   * Constructor.
-   * @param int $status a Gallery Remote status code
-   */
-  public static function factory($status='') {
-    $reply = new GalleryRemoteReply();
-    $reply->set('status', $status);
-    $reply->set('status_text', '');
-    return $reply;
-  }
-
-  public function clear() {
-    $this->values = array();
-  }
-
-  /**
-   * Set a property on this reply
-   * @chainable
-   */
-  public function set($key, $value) {
-    $this->values[$key] = $value;
-    return $this;
-  }
-  
-  public function send($status='') {
-    if($status!='') $reply->set('status', $status);
-    //ksort($this->values);
-
-    echo '#__GR2PROTO__'.$this->nl;
-    foreach($this->values as $key => $value) {
-      echo $key.'='.$value.$this->nl;
-    }
+class remote_event_Core {
+  static function admin_menu($menu, $theme) {
+    $menu
+      ->get("settings_menu")
+      ->append(Menu::factory("link")
+               ->id("remote")
+               ->label(t("Gallery Remote"))
+               ->url(url::site("admin/remote")));
   }
 }

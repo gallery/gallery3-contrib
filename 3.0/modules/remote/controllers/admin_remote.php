@@ -17,41 +17,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
+class Admin_remote_Controller extends Admin_Controller {
+  public function index() {
 
-class GalleryRemoteReply_Core {
-  private $values = array();
-  private $nl = "\n";
-  /**
-   * Constructor.
-   * @param int $status a Gallery Remote status code
-   */
-  public static function factory($status='') {
-    $reply = new GalleryRemoteReply();
-    $reply->set('status', $status);
-    $reply->set('status_text', '');
-    return $reply;
-  }
-
-  public function clear() {
-    $this->values = array();
-  }
-
-  /**
-   * Set a property on this reply
-   * @chainable
-   */
-  public function set($key, $value) {
-    $this->values[$key] = $value;
-    return $this;
-  }
-  
-  public function send($status='') {
-    if($status!='') $reply->set('status', $status);
-    //ksort($this->values);
-
-    echo '#__GR2PROTO__'.$this->nl;
-    foreach($this->values as $key => $value) {
-      echo $key.'='.$value.$this->nl;
-    }
+    $view = new Admin_View('admin.html');
+    $view->page_title = t('Gallery Remote Protocol 2');
+    $view->content = new View('admin_remote.html');
+    print $view;
   }
 }
