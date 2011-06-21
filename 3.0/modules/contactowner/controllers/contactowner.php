@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ContactOwner_Controller extends Controller {
-  static function get_email_form($user_id, $item_id) {
+  static function get_email_form($user_id, $item_id=null) {
     // Determine name of the person the message is going to.
     $str_to_name = "";
     if ($user_id == -1) {
@@ -34,7 +34,7 @@ class ContactOwner_Controller extends Controller {
 
     // If item_id is set, include a link to the item.
     $email_body = "";
-    if ($item_id <> "") {
+    if (!empty($item_id)) {
       $item = ORM::factory("item", $item_id);
       $email_body = "This message refers to <a href=\"" . url::abs_site("{$item->type}s/{$item->id}") . "\">this page</a>.";
     }
