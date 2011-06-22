@@ -248,7 +248,7 @@ class Admin_Pages_Controller extends Admin_Controller {
 
     $pages_group = $form->group("preferences")->label(t("Settings"));
     $pages_group->checkbox("display_sidebar")
-                ->label(t("Display sidebar on Pages?"))
+                ->label(t("Hide sidebar on Pages?"))
                 ->checked(module::get_var("pages", "show_sidebar"));
     $pages_group->submit("save_prefs")
                 ->value(t("Save"));
