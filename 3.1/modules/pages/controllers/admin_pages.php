@@ -25,6 +25,7 @@ class Admin_Pages_Controller extends Admin_Controller {
     $view->content = new View("admin_pages.html");
     $query = ORM::factory("static_page");
     $view->content->pages = $query->order_by("name", "ASC")->find_all();
+    $view->content->form = $this->get_prefs_form();
     print $view;
   }
 
@@ -238,5 +239,33 @@ class Admin_Pages_Controller extends Admin_Controller {
   private function get_edit_page_form($existing_page) {
     // Generate a form for editing an existing page.  Reuse the overwrite form for as it's basically the same thing.
     return ($this->get_overwrite_page_form($existing_page->id, $existing_page->name, $existing_page->title, $existing_page->html_code, $existing_page->display_menu));
+  }
+  
+  private function get_prefs_form() {
+    // Generate a form for global preferences.
+    $form = new Forge("admin/pages/saveprefs", "", "post",
+                      array("id" => "g-pages-admin-form"));
+
+    $pages_group = $form->group("preferences")->label(t("Settings"));
+    $pages_group->checkbox("display_sidebar")
+                ->label(t("Display sidebar on Pages?"))
+                ->checked(module::get_var("pages", "show_sidebar"));
+    $pages_group->submit("save_prefs")
+                ->value(t("Save"));
+
+    return $form;
+  }
+  
+  public function saveprefs() {
+    // Save a preferences to the database.
+
+    access::verify_csrf();
+
+    // Save form variables.
+    module::set_var("pages", "show_sidebar", Input::instance()->post("display_sidebar"));
+
+    // Display message and load main pages admin screen.
+    message::success(t("Your settings have been saved."));
+    url::redirect("admin/pages");
   }
 }

@@ -17,7 +17,7 @@
 
 <div class="g-block">
   <h1> <?= t("Manage pages") ?> </h1>
-
+  <?= $form; ?>
   <div class="g-block-content">
     <table id="g-page-admin">
       <caption>
