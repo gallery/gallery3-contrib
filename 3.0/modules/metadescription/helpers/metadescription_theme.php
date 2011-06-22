@@ -42,7 +42,7 @@ class metadescription_theme_Core {
     // Load the meta tags into the top of the page.
     // @todo: metadescription_block.html requires an item so for now, don't render it unless we
     // have one.
-    if ($theme->item()) {
+    if ($theme->item() || $theme->tag()) {
       $metaView = new View("metadescription_block.html");
       $metaView->tags = $tagsItem;
       return $metaView;

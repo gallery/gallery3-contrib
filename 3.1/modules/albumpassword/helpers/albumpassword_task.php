@@ -26,11 +26,70 @@ class albumpassword_task_Core {
       ->join("albumpassword_idcaches", "items_albumpasswords.id", "albumpassword_idcaches.password_id", "LEFT OUTER")
       ->and_where("albumpassword_idcaches.password_id", "IS", NULL)->count_all();
 
-    return array(Task_Definition::factory()
-                 ->callback("albumpassword_task::update_idcaches")
-                 ->name(t("Rebuild Album Password ID Caches DB"))
-                 ->description(t("Logs the contents of all protected albums into the db."))
-                 ->severity($bad_albums ? log::WARNING : log::SUCCESS));
+    $tasks = array();
+
+    $tasks[] = Task_Definition::factory()
+               ->callback("albumpassword_task::update_idcaches")
+               ->name(t("Rebuild Album Password ID Caches DB"))
+               ->description(t("Logs the contents of all protected albums into the db."))
+               ->severity($bad_albums ? log::WARNING : log::SUCCESS);
+
+    $tasks[] = Task_Definition::factory()
+               ->callback("albumpassword_task::lowercase_passwords")
+               ->name(t("Fix Password DB Casing"))
+               ->description(t("Fixes case sensitivity issues."))
+               ->severity(log::SUCCESS);
+
+    return $tasks;
+  }
+
+  static function lowercase_passwords($task) {
+    // Converts all passwords to lower case.
+
+    $start = microtime(true);
+    $total = $task->get("total");
+    $existing_passwords = ORM::factory("items_albumpassword")->find_all();
+
+    if (empty($total)) {
+      // Set the initial values for all variables.
+      $task->set("total", count($existing_passwords));
+      $total = $task->get("total");
+      $task->set("last_password_id", 0);
+      $task->set("completed_passwords", 0);
+    }
+
+    // Retrieve the values for variables from the last time this
+    //  function was run.
+    $last_password_id = $task->get("last_password_id");
+    $completed_passwords = $task->get("completed_passwords");
+
+    foreach (ORM::factory("items_albumpassword")
+             ->where("id", ">", $last_password_id)
+             ->order_by("id")
+             ->find_all(100) as $one_password) {
+      $one_password->password = strtolower($one_password->password);
+	  $one_password->save();
+
+      $last_password_id = $one_password->id;
+      $completed_passwords++;
+
+      if ($completed_passwords == count($existing_passwords) || microtime(true) - $start > 1.5) {
+        break;
+      }
+    }
+	
+    $task->set("last_password_id", $last_password_id);
+    $task->set("completed_passwords", $completed_passwords);
+
+    if ($completed_passwords == count($existing_passwords)) {
+      $task->done = true;
+      $task->state = "success";
+      $task->percent_complete = 100;
+    } else {
+      $task->percent_complete = round(100 * $completed_passwords / count($existing_passwords));
+    }
+    $task->status = t2("One password fixed", "%count / %total passwords fixed", $completed_passwords,
+                       array("total" => count($existing_passwords)));
   }
 
   static function update_idcaches($task) {

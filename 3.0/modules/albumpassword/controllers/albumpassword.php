@@ -71,7 +71,7 @@ class albumpassword_Controller extends Controller {
 
     // Convert submitted data to local variables.
     $album_id = Input::instance()->post("item_id");
-    $album_password = Input::instance()->post("assignpassword_password");
+    $album_password = strtolower(Input::instance()->post("assignpassword_password"));
 
     // Check for, and remove, any existing passwords and cached ids.
     $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $album_id)->find_all();
@@ -109,7 +109,7 @@ class albumpassword_Controller extends Controller {
 
     // Display a success message and close the dialog.
     message::success(t("Password saved."));
-    print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
+    json::reply(array("result" => "success"));
   }
 
   public function logout() {
@@ -126,7 +126,7 @@ class albumpassword_Controller extends Controller {
     access::verify_csrf();
 
     // Convert submitted data to local variables.
-    $album_password = Input::instance()->post("albumpassword_password");
+    $album_password = strtolower(Input::instance()->post("albumpassword_password"));
 
     // See if the submitted password matches any in the database.
     $existing_password = ORM::factory("items_albumpassword")
@@ -139,10 +139,10 @@ class albumpassword_Controller extends Controller {
       cookie::delete("g3_albumpassword_id");
       cookie::set("g3_albumpassword", $album_password);
       message::success(t("Password Accepted."));
-      print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
+      json::reply(array("result" => "success"));
     } else {
       message::error(t("Password Rejected."));
-      print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
+      json::reply(array("result" => "success"));
     }
   }
 
