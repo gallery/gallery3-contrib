@@ -41,6 +41,12 @@ class minislideshow_event_Core {
     }
   }
 
+  static function pre_deactivate($data) {
+    if ($data->module == "rss") {
+      $data->messages["warn"][] = t("The MiniSlide Show module requires the RSS module.");
+    }
+  }
+
   static function album_menu($menu, $theme) {
     // Add an option to access the slideshow from the album view.
     $menu

@@ -19,7 +19,15 @@
  */
 class tagsinalbum_installer {
   static function install() {
-    module::set_version("tagsinalbum", 1);
+    module::set_var("tagsinalbum", "max_display_tags", 0);
+    module::set_version("tagsinalbum", 2);
+  }
+
+  static function upgrade($version) {
+    if ($version == 1) {
+      module::set_var("tagsinalbum", "max_display_tags", 0);
+      module::set_version("tagsinalbum", $version = 2);
+    }
   }
 
   static function deactivate() {

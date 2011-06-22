@@ -208,15 +208,18 @@ class themeroller_task_Core {
         break;
       case "generate_screen_css":
         $file = "{$theme_path}/css/screen.css";
-        $v = new View(($is_admin ? "admin" : "site") . "_screen.css");
-        $v->display_name = $task->get("display_name");
-        foreach ($parameters["colors"] as $color => $value) {
-          $v->$color = $value;
+        foreach (array("screen", "screen-rtl") as $file) {
+          $css_file = "{$theme_path}/css/$file.css";
+          $v = new View(($is_admin ? "admin" : "site") . "_{$file}.css");
+          $v->display_name = $task->get("display_name");
+          foreach ($parameters["colors"] as $color => $value) {
+            $v->$color = $value;
+          }
+          ob_start();
+          print $v->render();
+          file_put_contents($css_file, ob_get_contents());
+          ob_end_clean();
         }
-        ob_start();
-        print $v->render();
-        file_put_contents($file, ob_get_contents());
-        ob_end_clean();
         $completed++;
         $task->log(t("Generated screen css: %path", array("path" => $file)));
         $task->status = t("Screen css generated");
@@ -229,14 +232,18 @@ class themeroller_task_Core {
         $task->status = t("Thumbnail generated");
         $task->set("mode", "generate_theme_info");
         $completed++;
-        $task->log(t("Generated theme thumbnail: %path", array("path" => "{$theme_path}thumbnail.png")));
+        $task->log(t("Generated theme thumbnail: %path",
+                   array("path" => "{$theme_path}thumbnail.png")));
         break;
       case "generate_theme_info":
         $file = "{$theme_path}/theme.info";
         $v = new View("theme.info");
         $v->display_name = $task->get("display_name");
         $v->description = $task->get("description");
-        $v->user_name = identity::active_user()->name;
+        $v->user_name = $task->get("user_name");
+        $v->author_url = $task->get("author_url");
+        $v->info_url = $task->get("info_url");
+        $v->discuss_url = $task->get("discuss_url");
         $v->is_admin = $is_admin;
         $v->definition = json_encode($parameters["colors"]);
         ob_start();

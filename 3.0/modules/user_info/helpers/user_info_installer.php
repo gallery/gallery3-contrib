@@ -64,19 +64,19 @@ class user_info_installer {
 
 
 
-//  static function uninstall() {
+  static function uninstall() {
 //    $db = Database::instance();
 //    $db->query("DROP TABLE IF EXISTS {userinfo};");
 //    /* @todo Put database table drops here */
 //    module::delete("userinfo");
-//  }
-
-
-  static function deactivate() {
-    site_status::clear("user_info");
-    $db = Database::instance();
-    $db->query("DROP TABLE IF EXISTS {user_infos};");
   }
+
+
+//  static function deactivate() {
+//    site_status::clear("user_info");
+//    $db = Database::instance();
+//    $db->query("DROP TABLE IF EXISTS {user_infos};");
+//  }
 
 
 }

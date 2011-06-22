@@ -32,6 +32,12 @@ class tagsmap_event_Core {
     }
   }
 
+  static function pre_deactivate($data) {
+    if ($data->module == "tag") {
+      $data->messages["warn"][] = t("The TagsMap module requires the Tags module.");
+    }
+  }
+
   static function admin_menu($menu, $theme) {
     // Add a link to the TagsMap admin page to the Content menu.
     $menu->get("content_menu")

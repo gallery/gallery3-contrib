@@ -1,4 +1,8 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<?
+  $latitude = 0;
+  $longitude = 0;
+?>
 <script type="text/javascript" src="http://www.google.com/jsapi?key=<?= module::get_var("exif_gps", "googlemap_api_key"); ?>"></script>
 <script type="text/javascript">
   google.load("maps", "3",{"other_params":"sensor=false"});
@@ -20,6 +24,8 @@
       <? if (!isset($currLat)) { ?>
         <? $currLat = $item_coordinates->latitude; ?>
         <? $currLong = $item_coordinates->longitude; ?>
+        <? $latitude = $item_coordinates->latitude; ?>
+        <? $longitude = $item_coordinates->longitude; ?>
         var marker<?=$counter; ?> = new google.maps.Marker({
           position: new google.maps.LatLng(<?=$item_coordinates->latitude; ?>,<?=$item_coordinates->longitude; ?>), 
           map: map
@@ -35,14 +41,14 @@
       <? } else { ?>
       <? } ?>
     <? } ?>
-    <? if (module::get_var("exif_gps", "googlemap_max_autozoom") != "") : ?>
+    <? if (($max_autozoom = module::get_var("exif_gps", "googlemap_max_autozoom")) != "") : ?>
     // If there is a maximum auto-zoom value, then set up an event to check the zoom
     // level the first time it is changed, and adjust it if necessary.
     // (if we call map.getZoom right after .fitBounds, getZoom will return the initial 
     // zoom level, not the auto zoom level, this way we get the auto zoomed value).
     google.maps.event.addListener(map, 'zoom_changed', function() {
       if (google_zoom_hack) {
-        if (map.getZoom() > 18) map.setZoom(18);
+        if (map.getZoom() > <?= $max_autozoom ?>) map.setZoom(<?= $max_autozoom ?>);
         google_zoom_hack = false;
       }
     });
@@ -56,4 +62,4 @@
 
 </script>
 
-<div id="sidebar_map_canvas" style="width:205px; height:214px"></div>
+<div id="sidebar_map_canvas" style="width:205px; height:214px"><img src="http://maps.google.com/maps/api/staticmap?center=<?=$latitude; ?>,<?=$longitude; ?>&zoom=<?= module::get_var("exif_gps", "sidebar_zoom"); ?>&size=205x214&maptype=<?=$sidebar_map_type ?>&markers=color:red|color:red|<?=$latitude; ?>,<?=$longitude; ?>&sensor=false"></div>

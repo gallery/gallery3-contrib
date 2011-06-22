@@ -36,18 +36,28 @@ class Admin_PHPMailer_Controller extends Admin_Controller {
     $str_phpmailer_from_addr = Input::instance()->post("phpmailer_from_address");
     $str_phpmailer_from_name = Input::instance()->post("phpmailer_from_name");    
     $str_smtp_server = Input::instance()->post("phpmailer_smtp_server");
+    $str_use_ssl = Input::instance()->post("phpmailer_use_ssl");
     $str_smtp_login = Input::instance()->post("phpmailer_smtp_login");
     $str_smtp_pass = Input::instance()->post("phpmailer_smtp_password");
-        
+    $str_smtp_port = Input::instance()->post("phpmailer_smtp_port");
+
+    if (count($str_use_ssl) > 0) {
+      $str_use_ssl = true;
+    } else {
+      $str_use_ssl = false;
+    }
+
     // Save Settings.
     module::set_var("phpmailer", "phpmailer_path", $str_phpmailer_path);
     module::set_var("phpmailer", "phpmailer_from_address", $str_phpmailer_from_addr);
     module::set_var("phpmailer", "phpmailer_from_name", $str_phpmailer_from_name);
     module::set_var("phpmailer", "smtp_server", $str_smtp_server);
+    module::set_var("phpmailer", "use_ssl", $str_use_ssl);
     module::set_var("phpmailer", "smtp_login", $str_smtp_login);
     module::set_var("phpmailer", "smtp_password", $str_smtp_pass);
+    module::set_var("phpmailer", "smtp_port", $str_smtp_port);
     message::success(t("Your Settings Have Been Saved."));
-    
+
     // Load Admin page.
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_phpmailer.html");
@@ -80,9 +90,15 @@ class Admin_PHPMailer_Controller extends Admin_Controller {
     $phpmailerSMTP->input("phpmailer_smtp_login")
                    ->label(t("SMTP Login Name"))
                    ->value(module::get_var("phpmailer", "smtp_login"));
-    $phpmailerSMTP->input("phpmailer_smtp_password")
+    $phpmailerSMTP->password("phpmailer_smtp_password")
                    ->label(t("SMTP Password"))
                    ->value(module::get_var("phpmailer", "smtp_password"));
+    $phpmailerSMTP->input("phpmailer_smtp_port")
+                   ->label(t("SMTP Port"))
+                   ->value(module::get_var("phpmailer", "smtp_port"));
+    $phpmailer_checklist["use_ssl_checkbox"] = array(t("Use SSL?"), module::get_var("phpmailer", "use_ssl"));
+    $phpmailerSMTP->checklist("phpmailer_use_ssl")
+                  ->options($phpmailer_checklist);
 
     // Add a save button to the form.
     $form->submit("SaveSettings")->value(t("Save"));
