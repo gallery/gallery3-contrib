@@ -17,7 +17,6 @@
     }
     <? endif ?>
   </style>
-  <? print module::get_var("gallery", "active_site_theme"); ?>
 <? endif ?>
 <div class="g-page-block">
   <h1> <?= $title ?> </h1>
