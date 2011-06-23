@@ -1,9 +1,10 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" <?= $theme->html_attributes() ?> xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <? $theme->start_combining("script,css") ?>
     <title>
       <? if ($page_title): ?>
         <?= t("Gallery Admin: %page_title", array("page_title" => $page_title)) ?>
@@ -11,31 +12,46 @@
         <?= t("Admin dashboard") ?>
       <? endif ?>
     </title>
-    <link rel="shortcut icon" href="<?= url::file(module::get_var("gallery", "favicon_url")) ?>" type="image/x-icon" />
+    <link rel="shortcut icon"
+          href="<?= url::file(module::get_var("gallery", "favicon_url")) ?>"
+          type="image/x-icon" />
+    <link rel="apple-touch-icon-precomposed"
+          href="<?= url::file(module::get_var("gallery", "apple_touch_icon_url")) ?>" />
 
+    <?= $theme->script("jquery.js") ?>
+    <?= $theme->script("jquery.form.js") ?>
+    <?= $theme->script("jquery-ui.js") ?>
+    <?= $theme->script("gallery.common.js") ?>
+    <? /* MSG_CANCEL is required by gallery.dialog.js */ ?>
+    <script type="text/javascript">
+    var MSG_CANCEL = <?= t("Cancel")->for_js() ?>;
+    </script>
+    <?= $theme->script("gallery.ajax.js") ?>
+    <?= $theme->script("gallery.dialog.js") ?>
+    <?= $theme->script("superfish/js/superfish.js") ?>
+    <?= $theme->script("jquery.scrollTo.js") ?>
+
+    <?= $theme->admin_head() ?>
+
+    <? /* Theme specific CSS/JS goes last so that it can override module CSS/JS */ ?>
+    <?= $theme->script("ui.init.js") ?>
     <?= $theme->css("yui/reset-fonts-grids.css") ?>
     <?= $theme->css("themeroller/ui.base.css") ?>
     <?= $theme->css("superfish/css/superfish.css") ?>
     <?= $theme->css("screen.css") ?>
+    <? if (locales::is_rtl()): ?>
+    <?= $theme->css("screen-rtl.css") ?>
+    <? endif; ?>
     <!--[if lt IE 8]>
-    <link rel="stylesheet" type="text/css" href="<?= $theme->url("fix-ie.css") ?>"
+    <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
           media="screen,print,projection" />
     <![endif]-->
 
-   <?= $theme->script("jquery.js") ?>
-   <?= $theme->script("jquery.form.js") ?>
-   <?= $theme->script("jquery-ui.js") ?>
-   <?= $theme->script("gallery.common.js") ?>
-   <? /* MSG_CANCEL is required by gallery.dialog.js */ ?>
-   <script type="text/javascript">
-   var MSG_CANCEL = <?= t("Cancel")->for_js() ?>;
-   </script>
-   <?= $theme->script("gallery.ajax.js") ?>
-   <?= $theme->script("gallery.dialog.js") ?>
-   <?= $theme->script("superfish/js/superfish.js") ?>
-   <?= $theme->script("ui.init.js") ?>
+    <!-- LOOKING FOR YOUR CSS? It's all been combined into the link below -->
+    <?= $theme->get_combined("css") ?>
 
-   <?= $theme->admin_head() ?>
+    <!-- LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link below -->
+    <?= $theme->get_combined("script") ?>
   </head>
 
   <body <?= $theme->body_attributes() ?>>
