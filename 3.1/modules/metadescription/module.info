@@ -1,0 +1,3 @@
+name = "MetaDescription"
+description = "Automatically generates and inserts KEYWORD and DESCRIPTION meta tags into any theme."
+version = 1
