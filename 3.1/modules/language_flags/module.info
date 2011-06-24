@@ -1,0 +1,3 @@
+name = "Language Flags"
+description = "Replaces the language selection drop-down box with clickable flags."
+version = 1
