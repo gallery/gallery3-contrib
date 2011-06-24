@@ -2,7 +2,7 @@
 
 
 <div id="g-admin-moduleupdates" class="g-block">
-  <h1> <?= t("Module Updates v".$mu_version.".0") ?> </h1>
+  <h1> <?= t("ModuleUpdates v".$mu_version) ?> </h1>
   <?= t("Compares your installed module version against the ones stored in the GitHub and GalleryModules.") ?>
   
   <div class="g-block-content">
@@ -16,7 +16,7 @@
           <li><?= t("<font color=green>Green = Your version is newer than the GitHub</font><br>") ?></li>
           <li><?= t("<font color=orange>Orange = Your file version is newer than the installed version</font><br>") ?></li>
           <li><?= t("<font color=pink>Pink = Your installed version is newer than file version</font><br>") ?></li>
-          <li><?= t("Outbound Status: " . $Google . " - GitHub Status: " . $GitHub . "<br>") ?></li>
+          <li><?= t("Outbound Status: " . $Google . " - GitHub Status: " . $GitHub . " - Execution Time: " . $ExecutionTime . " s <br>") ?></li>
           <li><input type="submit" value="<?= t("Check Modules for Updates")?>" class="submit" /> <? if($update_time == ""){ echo "&nbsp;- Last Scan: Unknown";}else{ echo "&nbsp;- Last Scan: ".$update_time;} ?></li>
         </ul>
       </fieldset>
