@@ -4,9 +4,22 @@
 <!-- Use javascript to show the full size as an overlay on the current page -->
 <script type="text/javascript">
   $(document).ready(function() {
+    full_dims = [<?= $theme->item()->width ?>, <?= $theme->item()->height ?>];
     $(".g-fullsize-link").click(function() {
-      $.gallery_show_full_size(<?= html::js_string($theme->item()->file_url()) ?>, "<?= $theme->item()->width ?>", "<?= $theme->item()->height ?>");
+      $.gallery_show_full_size(<?= html::js_string($theme->item()->file_url()) ?>, full_dims[0], full_dims[1]);
       return false;
+    });
+
+    // After the image is rotated or replaced we have to reload the image dimensions
+    // so that the full size view isn't distorted.
+    $("#g-photo").bind("gallery.change", function() {
+      $.ajax({
+        url: "<?= url::site("items/dimensions/" . $theme->item()->id) ?>",
+        dataType: "json",
+        success: function(data, textStatus) {
+          full_dims = data.full;
+        }
+      });
     });
   });
 </script>

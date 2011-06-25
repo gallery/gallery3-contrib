@@ -1,3 +1,7 @@
 name = "Hide"
 description = "Allows admins to hide some items from everyone but a given group."
 version = 1
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:hide"
+discuss_url = "http://gallery.menalto.com/forum_module_hide"

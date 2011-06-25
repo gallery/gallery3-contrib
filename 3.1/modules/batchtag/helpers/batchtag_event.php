@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,12 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class batchtag_event_Core {
+  static function pre_deactivate($data) {
+    if ($data->module == "tag") {
+      $data->messages["warn"][] = t("The BatchTag module requires the Tags module.");
+    }
+  }
+
   static function module_change($changes) {
     // See if the Tags module is installed,
     //   tell the user to install it if it isn't.

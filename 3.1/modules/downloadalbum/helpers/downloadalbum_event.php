@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,22 @@
  */
 class downloadalbum_event_Core {
   static function album_menu($menu, $theme) {
-    if (access::can("view_full", $theme->item)) {
-      $downloadLink = url::site("downloadalbum/zip/{$theme->item->id}");
-      $menu
-        ->append(Menu::factory("link")
-             ->id("downloadalbum")
-             ->label(t("Download Album"))
-             ->url($downloadLink)
-             ->css_id("g-download-album-link"));
-    }
+    $downloadLink = url::site("downloadalbum/zip/album/{$theme->item->id}");
+    $menu
+      ->append(Menu::factory("link")
+          ->id("downloadalbum")
+          ->label(t("Download Album"))
+          ->url($downloadLink)
+          ->css_id("g-download-album-link"));
   }
+
+  static function tag_menu($menu, $theme) {
+    $downloadLink = url::site("downloadalbum/zip/tag/{$theme->tag()->id}");
+    $menu
+      ->append(Menu::factory("link")
+          ->id("downloadalbum")
+          ->label(t("Download Album"))
+          ->url($downloadLink)
+          ->css_id("g-download-album-link"));
+  } 
 }

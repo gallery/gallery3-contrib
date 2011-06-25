@@ -1,3 +1,0 @@
-name = "Photo Annotation"
-description = "Allows you to assign tags and notes to areas on your photos. This module is partially compatible with the TagFaces module by rWatcher. This means that notes and faces that you create in either one will be shown and are editable by the other module as well. If you added users to an annotation area though they will only be displayed with the Photo Annotation module. You cannot run both modules at the same time."
-version = 4
