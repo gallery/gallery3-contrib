@@ -21,7 +21,8 @@
     <link rel="shortcut icon"
           href="<?= url::file(module::get_var("gallery", "favicon_url")) ?>"
           type="image/x-icon" />
-
+    <link rel="apple-touch-icon-precomposed"
+          href="<?= url::file(module::get_var("gallery", "apple_touch_icon_url")) ?>" />
     <?= $theme->script("json2-min.js") ?>
     <?= $theme->script("jquery.js") ?>
     <?= $theme->script("jquery.form.js") ?>
@@ -53,6 +54,9 @@
     <?= $theme->css("DISABLED_superfish/css/superfish.css") ?>
     <?= $theme->css("DISABLED_themeroller/ui.base.css") ?>
     <?= $theme->css("screen.css") ?>
+    <? if (locales::is_rtl()): ?>
+    <?= $theme->css("screen-rtl.css") ?>
+    <? endif; ?>
     <!--[if lte IE 8]>
     <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
           media="screen,print,projection" />
