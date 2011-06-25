@@ -1,0 +1,793 @@
+.gallery-thumb-round {
+	background: url('rounded.png') no-repeat scroll left top;
+	position: absolute;
+}
+
+.skimm_div {
+	position: absolute;
+}
+
+.skimm_small {
+	position: absolute;
+}
+
+.rNavBar{
+	position: relative;
+	float: right;
+	top: -22px;
+}
+
+.lNavBar{
+	position: relative;
+	float: left;
+}
+
+.pearTitle {
+color: #ddd;
+margin: auto;
+position: relative;
+text-align: center;
+width: 50%;
+font-variant: small-caps;
+font-size: 1.7em !important;
+}
+
+.count {
+color: #666;
+font-size: 0.7em !important;
+}
+
+#gsNavBar {
+background:transparent url('top_bar_bg.png') repeat-x 100% -12px;
+position: static;
+height: 37px;
+padding-top: 10px;
+overflow: hidden;
+text-shadow: 0 -1px 2px #111111;
+font-weight: bold;
+}
+
+#footerWrapper {
+	min-width: 800px; 
+width: 100%;
+background:transparent url('footer_bg.png') top center;
+height:40px;
+ clear:both; 
+}
+
+#logoButton {
+	display: block;
+	z-index: 100;
+background: transparent url('pear_logo_sml.png') no-repeat center left;
+width: 83px;
+height: 40px;
+border: 0px;
+padding: 0px;
+margin: auto;
+position: relative;
+cursor: pointer; /* hand-shaped cursor */
+cursor: hand; /* for IE 5.x */
+}
+
+#logoButton:hover, #logoButton.hover {
+border: 0px;
+background: transparent url('pear_logo_sml.png') no-repeat center left;
+}
+
+/************************ COLOR PICKER **************************/
+
+
+#colorPicker {
+	position: relative;
+	color: #FFFFFF;
+	height: 17px;
+	padding: 0px 0px;
+	width: auto;
+	float: right;
+	z-index: 100;
+	font-size: 12px;
+	top: 11px;
+}
+
+
+
+
+#colorPicker div.label {
+	margin-top: 2px;
+	margin-right: 6px;
+	float: left;
+	background-color: transparent ! important;
+	width: auto ! important;
+	height: 20px;
+	color: #666666;
+	display: block;
+	font-size: 12px;
+	text-shadow: #111111 0px -1px 1px;
+}
+
+#colorPicker.disabled  div.label{
+	text-shadow: #242424 0px -1px 1px;
+	color: #3f3f3f;
+}
+
+#colorPicker .swatch {
+	float: left;
+	background-color: #ffffff;
+	height: 15px;
+	width: 14px;
+	display: block;
+	margin-right: 6px;
+	margin-top: 2px;
+	cursor: pointer;
+/*	background-position: 0px -58px;
+*/	background-color: transparent;
+	background-repeat: no-repeat;
+}
+/*
+#colorPicker .hover-with-swatch, #colorPicker .swatch:hover {
+	background-position:  -1px  -37px !important;
+}
+*/
+
+
+#colorPicker .sel-with-swatch, #colorPicker .hover-with-sel-with-swatch {
+	cursor: default ! important;
+}
+
+#colorPicker .disabled-with-swatch, #colorPicker.disabled-with-sel-with-swatch, #colorPicker .disabled-with-hover-with-swatch  
+{
+/*	background-position: 0px 0px ! important; */
+	cursor: default ! important;
+}
+
+#colorPicker #black {
+	background-image: url('color_picker.png') ;
+	background-position: -1px 0px;
+}
+
+#colorPicker #black:hover {
+	background-position: -1px -40px;
+}
+
+.black-with-sel-with-swatch{
+	background-position: -1px -20px ! important;
+}
+
+#colorPicker #dkgrey {
+	background-image: url('color_picker.png') ;
+	background-position: -23px 0px;
+}
+
+#colorPicker #dkgrey:hover {
+	background-position: -23px -40px;
+}
+
+.dkgrey-with-sel-with-swatch{
+	background-position: -23px -20px ! important;
+}
+
+#colorPicker #ltgrey {
+	background-image: url('color_picker.png');
+	background-position: -43px 0px;
+}
+
+#colorPicker #ltgrey:hover {
+	background-position: -43px -40px;
+}
+
+.ltgrey-with-sel-with-swatch{
+	background-position: -43px -20px ! important;
+}
+
+#colorPicker #white {
+	background-image: url('color_picker.png');
+	background-position: -63px 0px;
+	margin-right: 16px;
+}
+
+#colorPicker #white:hover {
+	background-position: -63px -40px;
+}
+
+.white-with-sel-with-swatch{
+	background-position: -63px -20px ! important;
+}
+
+/************************ SLIDER VIEW **************************/
+
+.sliderView {
+padding: 7px 37px 7px 3%;
+position: relative;
+color: #FFFFFF;
+top: 10px;
+height: 3px;
+width: 154px;
+float: right;
+z-index: 100;
+}
+
+.sliderView .smaller {	
+height: 14px;
+width: 14px;
+float: left;
+position: relative;
+left: -24px;
+top: -4px;
+cursor: pointer; /* hand-shaped cursor */
+cursor: hand; /* for IE 5.x */
+background: url(smaller.png) top center no-repeat;
+}
+
+.sliderView .larger {
+height: 16px;
+width: 16px;
+float: left;
+position: relative;
+top: -4px;
+left: 133px;
+cursor: pointer; /* hand-shaped cursor */
+cursor: hand; /* for IE 5.x */
+background: url(larger.png) top center no-repeat;
+}
+
+/*.sliderView .sliderLeftCap {
+height: 15px;
+width: 5px;
+float: left;
+position: relative;
+left: 0px;
+background: url(view_control/track_left.png) top center repeat-x;
+}*/
+
+.sliderView .sliderRightCap {
+height: 15px;
+width: 3px;
+float: left;
+position: relative;
+left: 137px;
+background: transparent url(track_fill_right.png) scroll top right no-repeat;
+}
+
+.sliderView .track {
+width: 137px;
+height: 15px;
+background: transparent url(track_fill_left.png) scroll top left no-repeat;
+position: relative;
+border: 0px;
+}
+
+.sliderView .ui-slider-handle {
+background: transparent url('knob.png') top left no-repeat;
+position: absolute;
+top: -5px;
+width: 16px;
+height: 16px;
+cursor: pointer; /* hand-shaped cursor */
+cursor: hand; /* for IE 5.x */
+margin-left: -7px;
+border: 0px;
+}
+
+.disabled-with-sliderView {
+
+}
+
+.disabled-with-sliderView .smaller, .disabled-with-sliderView .larger, .disabled-with-sliderView .handle{
+cursor: default;
+}
+
+.disabled-with-sliderView .smaller {
+	background-image: url('view_control/smaller_dim.png');
+}
+
+.disabled-with-sliderView .larger {
+	background-image: url('view_control/larger_dim.png');
+}
+
+.disabled-with-sliderView .handle {
+	background-image: url('view_control/knob_dim.png');
+}
+
+.disabled-with-sliderView .sliderRightCap {
+	background-image: url('view_control/track_right_dim.png')
+}
+
+.disabled-with-sliderView .track {
+	background-image: url('view_control/track_fill_left_dim.png')
+}
+
+
+/************************ VIEW CONTROLS **************************/
+#viewControls {
+position: relative;
+color: #616161;
+width: 381px;
+float: left;
+			 margin-left: 30px;
+			 margin-top: 13px;
+			 z-index: 800;
+			 font-size: 12px;
+			 text-shadow:  #111111 0px -1px 1px;
+}
+
+.japanese #viewControls {
+	font-size: 11px;
+}
+
+#viewControls .separator {
+width: 55px;
+height: 18px;
+				padding-left: 5px;
+}
+#viewControls .label {
+	margin-top:-1px;
+}
+
+#viewControls .viewSwitcher {
+height: 14px;
+
+				margin-right: 17px;
+float: left;
+cursor: pointer; /* hand-shaped cursor */
+cursor: hand; /* for IE 5.x */
+				font-weight: bold;
+}
+
+#viewControls .viewSwitcher:hover, #viewControls .sel-with-viewSwitcher, #viewControls .hover-with-viewSwitcher {
+color: #ffffff;
+}
+#viewControls .sel-with-viewSwitcher {
+	cursor: default;
+}
+#viewControls #grid {
+background: url('grid.png') center left no-repeat;
+						text-indent: 20px;
+
+}
+
+#viewControls #grid:hover,
+#viewControls #grid.sel {
+color: #ffffff;
+background: url('grid_active.png') center left no-repeat;
+
+}
+
+#viewControls #carousel {
+	text-indent: 22px;
+background: url('carousel.png') center left no-repeat;
+
+}
+
+#viewControls #carousel:hover,
+#viewControls #carousel.sel {
+background: url('carousel_active.png') center left no-repeat;
+
+}
+
+
+
+#viewControls #mosaic {
+
+background: url('mosaic.png') center left no-repeat;
+						text-indent: 20px;
+}
+
+#viewControls #mosaic:hover,
+#viewControls #mosaic.sel {
+background: url('mosaic_active.png') center left no-repeat;
+
+}
+
+#viewControls #slideshow {
+	text-indent: 16px;
+background: url('slideshow.png') center left no-repeat;
+float: left;
+			 margin-right: 0px;
+}
+
+#viewControls #slideshow:hover,
+#viewControls #slideshow.sel {
+color: #ffffff;
+background: url('slideshow_active.png') center left no-repeat;
+
+}
+/************************ DETAIL VIEW **************************/
+
+#detailView {
+	margin: 0 auto;
+	position: fixed;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+	background-color: #000000;
+	display: none;
+}
+
+#detailView .iMovieVideo {
+	background-color: #000000 ! important;
+}
+
+.titleLabel {	
+	color:#AAAAAA;
+	font-size:13px;
+	font-weight:bold;
+/*	overflow:hidden;
+*/	position:relative;
+    margin:0px auto;
+  	margin-top:16px;
+	text-align:center;
+	text-shadow:black 0px 0px 1px;
+	white-space:nowrap;
+	height:21px;
+	text-overflow: ellipsis;
+}
+
+.japanese .titleLabel {	
+	font-size:12px;
+}
+
+.titleLabel:hover  {
+/*	color: #fff;*/
+}
+
+#detailView .overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+;
+
+/*	filter
+
+: alpha(opacity=95);
+	opacity: 0.95;
+	-moz-opacity:0.95;	 */
+}
+
+#detailView .content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+#detailView .iMovieVideo
+{
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.under-panel #detailView .content {
+	overflow: hidden;
+}
+
+#detailView .imageContainer {
+	text-align: center;
+/*	margin: 69px 69px 0px 69px;*/
+	margin-top: 32px;
+	cursor: pointer;
+}
+
+
+#slideshowView .imageContainer {
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px;
+	overflow: hidden;
+}
+
+#slideshowView .reflectionContainer {
+	position: absolute;
+	max-height:50px;
+	overflow: hidden;
+}
+
+#slideshowView .reflection {
+	vertical-align: top;
+/*	height: 20%;*/
+	width: 100%;
+	left:0px;
+	position: absolute;
+
+}
+
+#slideshowView .reflectionMask {
+	background: transparent url('reflection-black.png') repeat-x  0px bottom;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	display: block;
+	z-index: 100;
+	position: absolute;
+	vertical-align: top;
+	left:0px;
+	padding-bottom: 2px ;
+}
+
+
+.bg_white #slideshowView .reflectionMask {
+	background-image: url('reflection-white.png');
+}
+
+.bg_ltgrey #slideshowView .reflectionMask {
+	background-image: url('reflection-lightgrey.png');
+}
+
+
+.bg_dkgrey #slideshowView .reflectionMask {
+	background-image: url('reflections-darkgrey.png');
+}
+
+
+#slideshowView #slideshowHoverView {
+	height:58px;
+}
+
+
+/************************ HOVER VIEW **************************/
+
+#hoverView {
+	height: 58px;
+	position: absolute;
+	bottom: 30px;
+	width: 99%;
+	text-align: center;
+	z-index: 999;
+}
+
+#hoverView #hoverViewMenu {
+	margin: 0 auto;
+	position: relative;
+	width: 262px;
+	height: 58px;
+	width: 300px;
+	height: 60px;
+	background: url('hud_control/controlsbg.png') top left no-repeat;
+}
+
+#hoverView .download_detail_disabled {
+	position: absolute;
+	top: 0px;
+	top: 10px;
+	left: 9px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/download_disabled.png') top left no-repeat;
+}
+
+#hoverView .download_detail {
+  	cursor: pointer; /* hand-shaped cursor */
+  	cursor: hand; /* for IE 5.x */
+	position: absolute;
+	top: 0px;
+	top: 10px;
+	left: 9px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/download.png') top left no-repeat;
+}
+
+#hoverView .download_detail:hover {
+	background: url('hud_control/download_over.png') top left no-repeat;
+}
+
+#hoverView .prev_detail_disabled {
+	position: absolute;
+	top: 0px;
+	top: 18px;
+	left: 82px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/prev_disabled.png') top left no-repeat;
+}
+
+#hoverView .prev_detail {
+  	cursor: pointer; /* hand-shaped cursor */
+  	cursor: hand; /* for IE 5.x */
+	position: absolute;
+	top: 0px;
+	top: 18px;
+	left: 82px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/prev.png') top left no-repeat;
+}
+
+#hoverView .prev_detail:hover {
+	background: url('hud_control/prev_over.png') top left no-repeat;
+}
+
+#hoverView .play_detail {
+  	cursor: pointer; /* hand-shaped cursor */
+  	cursor: hand; /* for IE 5.x */
+	position: absolute;
+	top: 0px;
+	top: 10px;
+	left: 134px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/play.png') top left no-repeat;
+}
+
+#hoverView .play_detail:hover {
+	background: url('hud_control/play_over.png') top left no-repeat;
+}
+
+#hoverView .pause_detail {
+  	cursor: pointer; /* hand-shaped cursor */
+  	cursor: hand; /* for IE 5.x */
+	position: absolute;
+	top: 0px;
+	top: 10px;
+	left: 134px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/pause.png') top left no-repeat;
+}
+
+#hoverView .pause_detail:hover {
+	background: url('hud_control/pause_over.png') top left no-repeat;
+}
+
+#hoverView .next_detail_disabled {
+	position: absolute;
+	top: 0px;
+	top: 18px;
+	left: 177px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/next_disabled.png') top left no-repeat;
+}
+
+#hoverView .next_detail {
+  	cursor: pointer; /* hand-shaped cursor */
+  	cursor: hand; /* for IE 5.x */
+	position: absolute;
+	top: 0px;
+	top: 18px;
+	left: 177px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/next.png') top left no-repeat;
+}
+
+#hoverView .next_detail:hover {
+	background: url('hud_control/next_over.png') top left no-repeat;
+}
+
+
+#hoverView #comment_detail {
+  	cursor: pointer; /* hand-shaped cursor */
+  	cursor: hand; /* for IE 5.x */
+	position: absolute;
+	top: 0px;
+	left: 209px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/comment.png') top left no-repeat;
+	padding-top: 18px;
+	text-align: center;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.japanese #hoverView #comment_detail {
+	font-size: 11px;
+}
+
+#hoverView #comment_detail:hover {
+	background: url('hud_control/comment_over.png') top left no-repeat;
+}
+
+#hoverView .info_detail_selected {
+  	cursor: pointer; /* hand-shaped cursor */
+  	cursor: hand; /* for IE 5.x */
+	position: absolute;
+	top: 0px;
+	top: 10px;
+	left: 240px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/info_over.png') top left no-repeat;
+}
+
+#hoverView .info_detail {
+  	cursor: pointer; /* hand-shaped cursor */
+  	cursor: hand; /* for IE 5.x */
+	position: absolute;
+	top: 0px;
+	top: 10px;
+	left: 240px;
+	height: 58px;
+	width: 43px;
+	background: url('hud_control/info.png') top left no-repeat;
+}
+
+#hoverView .info_detail:hover {
+	background: url('hud_control/info_over.png') top left no-repeat;
+}
+
+
+/* ******************** Button Alts *************** */
+#backToAlbumLink {
+	left: 24px;
+	float: left;
+	position: absolute;
+	top: 13px;
+	white-space: nowrap;
+}
+
+#backToAlbumButton .outer{
+	min-width: 108px !important;
+}
+
+button.push {
+	background: transparent none repeat scroll 0%;
+	margin: 0px;
+	padding-right: 0px;
+	border: medium none;
+	height: 34px;
+	min-width: 80px;
+	outline-color: invert;
+	outline-style: none;
+	outline-width: medium;
+	padding-left: 20px;
+	vertical-align: baseline;
+}
+
+button.push .outer {
+	display: block;
+	padding: 0px 4px 0px 2px;
+	position: relative:
+	width: 100%;
+}
+
+button.large-with-push {
+  	cursor: pointer ;
+  	position: relative ;
+}
+
+button.large-with-push .label {
+	font-weight: bold;
+	line-height: 13px ;
+	height: 18px;
+	padding: 7px 25px 10px 20px;
+	margin-left: 6px;
+	text-indent: -14px;
+	background: transparent url('button_right.png') no-repeat scroll right -71px;
+	right: -6px;
+	color: #E0E0E0;
+	text-shadow: #1E1E1E 0px 0px 2px;
+}
+
+button.large-with-push .outer {
+	height: 34px;
+	padding-left: 2px;
+	margin-left: -3px;
+	background: transparent url('button_left.png') no-repeat scroll  0px -71px;
+	
+}
+
+button.large-with-push:active .label, 
+button.active-with-large-with-push .label{
+
+	color: #939393;
+	text-shadow: black 0px 0px 0px;	
+	background: transparent url('button_right.png') no-repeat scroll right -106px ;
+}
+
+button.large-with-push:active img, 
+button.active-with-large-with-push img {
+	opacity: .5;
+	filter: alpha(opacity=50);
+}
+
+
+button.large-with-push:active .outer,
+button.active-with-large-with-push .outer {
+		background: transparent url('button_left.png') no-repeat scroll  left -106px;
+}

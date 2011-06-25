@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,32 +20,50 @@
 
 class item extends item_Core {
   static function viewable($model) {
-    // Hide the contents of a password protected album,
-    // Unless the current user is an admin, or the albums owner.
+    // Hide password protected albums until the correct password is entered, 
+    // unless the current user is an admin, or the albums owner.
 
     $model = item_Core::viewable($model);
-    $album_item = ORM::factory("item")->where("id", "=", $model->id)->find();
 
-    // Figure out if the user can access this album.
-    $deny_access = false;
-    $existing_password = ORM::factory("items_albumpassword")->where("album_id", "=", $model->id)->find();
-    if ($existing_password->loaded()) {
-      if ((cookie::get("g3_albumpassword") != $existing_password->password) &&
-          (identity::active_user()->id != $album_item->owner_id))
-        $deny_access = true;
-    }
+    // If the user is an admin, don't hide anything anything.
+    //   If not, hide whatever is restricted by an album password
+    //   that the current user is not the owner of.
+    if (!identity::active_user()->admin) {
 
-    // set access::DENY if necessary.
-    if ($deny_access == true) {
-      $view_restrictions = array();
-      if (!identity::active_user()->admin) {
-        foreach (identity::group_ids_for_active_user() as $id) {
-          $view_restrictions[] = array("items.view_$id", "=", access::DENY);
+      // Display items that are not in idcaches.
+      $model->and_open()->join("albumpassword_idcaches", "items.id", "albumpassword_idcaches.item_id", "LEFT OUTER")
+            ->and_where("albumpassword_idcaches.item_id", "IS", NULL);
+
+      // If in hide only mode, check and see if the current item is protected.
+      //   If it is, log the user in with the password to view it.
+      if (module::get_var("albumpassword", "hideonly") == true) {
+        $existing_cacheditem = ORM::factory("albumpassword_idcache")->where("item_id", "=", $model->id)->order_by("cache_id")->find_all();
+        if (count($existing_cacheditem) > 0) {
+          $existing_cacheditem_password = ORM::factory("items_albumpassword")->where("id", "=",  $existing_cacheditem[0]->password_id)->find_all();
+          if (cookie::get("g3_albumpassword") != $existing_cacheditem_password[0]->password) {
+            cookie::set("g3_albumpassword", $existing_cacheditem_password[0]->password);
+            cookie::set("g3_albumpassword_id", $existing_cacheditem_password[0]->id);
+            $model->or_where("albumpassword_idcaches.password_id", "=", $existing_cacheditem_password[0]->id);
+          }
         }
       }
-    }
-    if (count($view_restrictions)) {
-      $model->and_open()->merge_or_where($view_restrictions)->close();
+
+      // ... Unless their password id corresponds with a valid password.
+      $existing_password = ORM::factory("items_albumpassword")->where("password", "=", cookie::get("g3_albumpassword"))->find_all();
+      if (count($existing_password) > 0) {
+        foreach ($existing_password as $one_password) {
+          if (cookie::get("g3_albumpassword_id") != "") {
+            if (cookie::get("g3_albumpassword_id") == $one_password->id) {
+              $model->or_where("albumpassword_idcaches.password_id", "=", $one_password->id);
+            }
+          } else {
+            $model->or_where("albumpassword_idcaches.password_id", "=", $one_password->id);
+          }
+        }
+      }
+
+      // Or the current user is the owner of the item.
+      $model->or_where("items.owner_id", "=", identity::active_user()->id)->close();
     }
 
     return $model;

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,12 @@ class tagsmap_event_Core {
         "tagsmap_needs_tag");
     } else {
       site_status::clear("tagsmap_needs_tag");
+    }
+  }
+
+  static function pre_deactivate($data) {
+    if ($data->module == "tag") {
+      $data->messages["warn"][] = t("The TagsMap module requires the Tags module.");
     }
   }
 

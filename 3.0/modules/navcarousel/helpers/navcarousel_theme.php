@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2010 Bharat Mediratta
+ * Copyright (C) 2000-2011 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,6 @@ class navcarousel_theme_Core {
                 }\n";
       }
       $thumbsize = module::get_var("navcarousel", "thumbsize", "50");
-      $theme->script("jquery.jcarousel.min.js");
-      $theme->css("skin.css");
       $showelements = module::get_var("navcarousel", "showelements", "7");
       $childcount = $theme->item->parent()->viewable()->children_count();
       $itemoffset = intval(floor($showelements / 2));
@@ -64,7 +62,10 @@ class navcarousel_theme_Core {
         $onwinload = "});\n
                   $(window).load(function () {\n";
       }
-      Return "\n<!-- Navcaoursel -->
+      return
+        $theme->script("jquery.jcarousel.min.js")
+        . $theme->css("skin.css")
+        . "\n<!-- Navcarousel -->
                 <style type=\"text/css\">\n
                 ". $containerwidth ."
                 .jcarousel-skin-tango .jcarousel-clip-horizontal {\n
