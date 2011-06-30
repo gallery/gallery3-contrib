@@ -30,6 +30,7 @@ class g1_import_Core {
   public static $thumb_size = null;
   public static $tree = array();
   public static $version = null;
+  public static $warn_utf8 = array();
 
   public static $queued_items = array();
   public static $queued_comments = array();
@@ -146,8 +147,15 @@ class g1_import_Core {
     return self::$version;
   }
 
-  static function recursiveCountGallery($albumDir, $array, $level) {
+  static function recursiveCountGallery($albumDir, &$array, $level) {
     $countAlbum = 0;
+    
+    foreach($array as $key => &$value) {
+      $converted = utf8_encode($key);
+      if( $converted != $key )
+        self::$warn_utf8[] = $converted;
+    }
+    
     foreach($array as $key => $value) {
       if($key!='') {
         $countAlbum++;
@@ -236,6 +244,7 @@ class g1_import_Core {
       self::$queued_highlights = array();
       self::$albums_flat = array();
       self::$albums_hidden = array();
+      self::$warn_utf8 = array();
       if(count(self::$tree)) $stats['albums'] = 1 /* <= THE ROOT ALBUM!!!*/ + g1_import::recursiveCountGallery($albumDir, self::$tree, 0);
       
       $stats['photos'] = count(self::$queued_items);
@@ -291,16 +300,16 @@ class g1_import_Core {
     list($album, $tree) = each($queue);
     unset($queue[$album]);
 
-     foreach($tree as $key => $value) {
+    foreach($tree as $key => $value) {
       $queue[$album.'/'.$key] = $value;
     }
 
     // Special handling for the root album
     if ($album == '') {
-     if (!self::map('', '', 'album')) {
+      if (!self::map('', '', 'album')) {
         $album = item::root();
-       self::set_map($album->id, '', '', 'album');
-     }
+        self::set_map($album->id, '', '', 'album');
+      }
       return $messages;
     }
 
