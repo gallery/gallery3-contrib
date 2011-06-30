@@ -48,6 +48,11 @@ class Admin_g1_import_Controller extends Admin_Controller {
     $view->content->resize_size = module::get_var('gallery', 'resize_size');
 
     if (g1_import::is_initialized()) {
+
+    	if (count(g1_import::$warn_utf8)>0) {
+      	message::error(t('Your G1 contains %count folder(s) containing nonstandard characters that G3 doesn\'t work with: <pre>%names</pre>Please rename the above folders in G1 before trying to import your data.', array('count' => count(g1_import::$warn_utf8), 'names' => "\n\n  ".implode("\n  ", g1_import::$warn_utf8)."\n\n")));
+      }
+
       if ((bool)ini_get('eaccelerator.enable') || (bool)ini_get('xcache.cacher')) {
         message::warning(t('The eAccelerator and XCache PHP performance extensions are known to cause issues.  If you\'re using either of those and are having problems, please disable them while you do your import.  Add the following lines: <pre>%lines</pre> to gallery3/.htaccess and remove them when the import is done.', array('lines' => "\n\n  php_value eaccelerator.enable 0\n  php_value xcache.cacher off\n  php_value xcache.optimizer off\n\n")));
       }
