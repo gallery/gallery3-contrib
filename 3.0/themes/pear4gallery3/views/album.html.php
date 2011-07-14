@@ -53,7 +53,7 @@ if($child->is_album()):
 endforeach; 
 endif; 
 // End skimming // ?>
-	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify($child->title) ?> </p>
+	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify(text::limit_chars($child->title, 20)) ?> </p>
 	<? if($child->is_album()): ?><div class="giInfo"><?= count($granchildren)?> photos</div><? endif ?>
 </div>
    <?/* <?= $theme->thumb_bottom($child) ?>
