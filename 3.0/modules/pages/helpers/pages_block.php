@@ -39,7 +39,7 @@ class pages_block_Core {
         // Loop through each page and generate an HTML list of their links and titles.
         $content = "<ul id=\"g-pages-list\">";
         foreach ($pages as $one_page) {
-          $content .= "<li style=\"clear: both;\"><a href=\"" . url::site("pages/show/" . $one_page->name) . "\">" . $one_page->title . "</a></li>";
+          $content .= "<li style=\"clear: both;\"><a href=\"" . url::site("pages/show/" . $one_page->name) . "\">" . t($one_page->title) . "</a></li>";
         }
         $content .= "</ul>";
 
