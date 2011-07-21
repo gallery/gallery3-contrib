@@ -38,12 +38,12 @@ class custom_menus_event_Core {
         if ($one_menu->url == "") {
           $menu->add_after("home", $new_menu = Menu::factory("submenu")
              ->id("custom_menus-" . $one_menu->id)
-             ->label($one_menu->title));
+             ->label(t($one_menu->title)));
           custom_menus_event::add_sub_menus($one_menu->id, $new_menu);
         } else {
           $menu->add_after("home", Menu::factory("link")
              ->id("custom_menus-" . $one_menu->id)
-             ->label($one_menu->title)
+             ->label(t($one_menu->title))
              ->url($one_menu->url));
         }
       }
@@ -61,12 +61,12 @@ class custom_menus_event_Core {
         if ($one_menu->url == "") {
           $parent_menu->append($new_menu = Menu::factory("submenu")
              ->id("custom_menus-" . $one_menu->id)
-             ->label($one_menu->title));
+             ->label(t($one_menu->title)));
           custom_menus_event::add_sub_menus($one_menu->id, $new_menu);
         } else {
             $parent_menu->append(Menu::factory("link")
                               ->id("custom_menus-" . $one_menu->id)
-                              ->label($one_menu->title)
+                              ->label(t($one_menu->title))
                               ->url($one_menu->url));
         }
       }
