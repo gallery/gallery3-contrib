@@ -33,7 +33,7 @@ class Pages_Controller extends Controller {
 
     // Display the page.
     $template = new Theme_View("page.html", "other", "Pages");
-    $template->page_title = t("Gallery :: ") . $existing_page[0]->title;
+    $template->page_title = t("Gallery :: ") . t($existing_page[0]->title);
     $template->content = new View("pages_display.html");
     $template->content->title = $existing_page[0]->title;
     $template->content->body = $existing_page[0]->html_code;

@@ -19,8 +19,8 @@
   </style>
 <? endif ?>
 <div class="g-page-block">
-  <h1> <?= $title ?> </h1>
+  <h1> <?= t($title) ?> </h1>
   <div class="g-page-block-content">
-    <?=$body ?>
+    <?=t($body) ?>
   </div>
 </div>
