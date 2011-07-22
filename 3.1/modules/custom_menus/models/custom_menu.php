@@ -17,28 +17,5 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class pages_event_Core {
-  static function admin_menu($menu, $theme) {
-    // Add a settings link to the admin menu.
-    $menu->get("content_menu")
-      ->append(Menu::factory("link")
-               ->id("pages")
-               ->label(t("Pages Settings"))
-               ->url(url::site("admin/pages")));
-  }
-
-  static function site_menu($menu, $theme) {
-    $menu_pages = ORM::factory("static_page")
-                  ->where("display_menu", "=", true)
-                  ->order_by("title", "DESC")
-                  ->find_all();
-    if (count($menu_pages) > 0) {
-      foreach ($menu_pages as $one_page) {
-        $menu->add_after("home", Menu::factory("link")
-             ->id("pages-" . $one_page->id)
-             ->label(t($one_page->title))
-             ->url(url::site("pages/show/" . $one_page->name)));
-      }
-    }
-  }
+class Custom_Menu_Model extends ORM {
 }
