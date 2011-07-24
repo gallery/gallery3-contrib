@@ -1,0 +1,7 @@
+name = "Win Platform"
+description = "An alternate version of Gallery's admin dashboard platform information block for unsupported configurations."
+version = 1
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:win_platform"
+discuss_url = "http://gallery.menalto.com/node/102809"

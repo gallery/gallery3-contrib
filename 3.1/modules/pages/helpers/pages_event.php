@@ -20,7 +20,7 @@
 class pages_event_Core {
   static function admin_menu($menu, $theme) {
     // Add a settings link to the admin menu.
-    $menu->get("settings_menu")
+    $menu->get("content_menu")
       ->append(Menu::factory("link")
                ->id("pages")
                ->label(t("Pages Settings"))
@@ -36,7 +36,7 @@ class pages_event_Core {
       foreach ($menu_pages as $one_page) {
         $menu->add_after("home", Menu::factory("link")
              ->id("pages-" . $one_page->id)
-             ->label($one_page->title)
+             ->label(t($one_page->title))
              ->url(url::site("pages/show/" . $one_page->name)));
       }
     }
