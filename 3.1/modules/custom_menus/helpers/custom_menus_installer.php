@@ -17,28 +17,21 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class pages_event_Core {
-  static function admin_menu($menu, $theme) {
-    // Add a settings link to the admin menu.
-    $menu->get("content_menu")
-      ->append(Menu::factory("link")
-               ->id("pages")
-               ->label(t("Pages Settings"))
-               ->url(url::site("admin/pages")));
-  }
+class custom_menus_installer {
+  static function install() {
+    // Create a table to store menu info in.
+    $db = Database::instance();
+    $db->query("CREATE TABLE IF NOT EXISTS {custom_menus} (
+               `id` int(9) NOT NULL auto_increment,
+               `title` varchar(255) default NULL,
+               `url` text default NULL,
+               `parent_id` int(9) NOT NULL default 0,
+               `order_by` int(9) NOT NULL default 0,
+               PRIMARY KEY (`id`),
+               UNIQUE KEY(`id`))
+               DEFAULT CHARSET=utf8;");
 
-  static function site_menu($menu, $theme) {
-    $menu_pages = ORM::factory("static_page")
-                  ->where("display_menu", "=", true)
-                  ->order_by("title", "DESC")
-                  ->find_all();
-    if (count($menu_pages) > 0) {
-      foreach ($menu_pages as $one_page) {
-        $menu->add_after("home", Menu::factory("link")
-             ->id("pages-" . $one_page->id)
-             ->label(t($one_page->title))
-             ->url(url::site("pages/show/" . $one_page->name)));
-      }
-    }
+    // Set the module version number.
+    module::set_version("custom_menus", 1);
   }
 }
