@@ -1,0 +1,145 @@
+.gallery-thumb {
+	float: left;
+	margin-bottom: 5px;
+	margin-left: 5px;
+	margin-right: 5px;
+	position: relative;
+	text-align: center;
+	cursor: pointer;
+}
+
+.gallery-album {
+	display: block;
+	height: 400px;
+	overflow: auto;
+	padding-bottom: 10px;
+	padding-top: 10px;
+}
+
+th, td {
+	padding: 0;
+	border-width: 0;
+}
+
+.giInfo {
+	color: #888888;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	height: 11px;
+	margin-bottom: 0px;
+	margin-left: 12px;
+	margin-right: 0px;
+	text-align: left;
+}
+.pear {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #999 !important;
+	background-color: #000;
+}
+.giTitle {
+	font-size: 1.1em;
+	font-weight: bold;
+	margin: 3px 10px !important;
+	padding: 0 0; 
+	text-align: left;
+}
+
+#gsNavBar div {
+font-weight: bold;
+}
+
+h2 {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+.center {
+	text-align: center !important;
+}
+
+#g-header {
+	margin-top: -2px;
+	position: fixed;
+	top: 44px;
+	width: 100%;
+	z-index: 50;
+}
+/*Menu*/
+.sf-menu li:hover, .sf-menu li.sfHover, .sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
+  background: none repeat scroll 0 0 #333333;
+	outline: 0 none;
+}
+.sf-menu li {
+    background: none repeat scroll 0 0 #000000;
+    float: left;
+    position: relative;
+}
+.sf-menu li li, .sf-menu li li ul li {
+    background-color: #000;
+}
+.sf-menu ul {
+    background: none repeat scroll 0 0 #000000;
+}
+.sf-menu, .sf-menu * {
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+}
+a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-state-hover, input.ui-state-hover, button.ui-state-hover {
+    color: #777777 !important;
+    cursor: pointer !important;
+    text-decoration: none;
+}
+.sf-menu a, .sf-menu a:visited {
+    color: #555555;
+}
+.sf-menu a {
+    border-left: 1px solid #333;
+    border-top: 1px solid #222;
+    padding: 0.75em 1em;
+    text-decoration: none;
+    display: block;
+    position: relative;
+}
+.ui-state-default, .ui-widget-content .ui-state-default {
+    background: #ccc;
+    border: 1px solid #C5DBEC;
+    color: #555
+    font-weight: bold;
+    outline: medium none;
+}
+#g-banner {
+    background-color: #555;
+    border-bottom: 1px solid #333333;
+    min-height: 5em;
+    padding: 1em 20px;
+    position: relative;
+}
+
+.g-paginator {
+ margin-bottom: 5px;
+ margin-left: 15px;
+ margin-right: 15px;
+ padding-top: 6px;
+}
+
+a.buttonFirst { background-position: 0px 0px !important; }
+a.buttonFirst:hover { background-position: -15px 0px !important; }
+a.buttonPrev { background-position:  0px -15px !important; }
+a.buttonPrev:hover { background-position:  -15px -15px !important; }
+a.buttonNext { background-position: 0px -30px !important;}
+a.buttonNext:hover { background-position: -15px -30px !important;}
+a.buttonLast { background-position: 0px -45px !important; }
+a.buttonLast:hover { background-position: -15px -45px !important; }
+
+a.buttonNext, a.buttonLast { float: right; }
+a.buttonFirst, a.buttonPrev { float: left; }
+
+.g-paginator .buttonAction {
+	background: url("../icons/paginator.gif") no-repeat 0 0;
+	height: 15px;
+	width: 15px;
+	margin-left: 0;
+	display: block;
+}

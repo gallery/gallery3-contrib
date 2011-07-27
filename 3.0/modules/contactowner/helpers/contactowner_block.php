@@ -53,7 +53,7 @@ class contactowner_block_Core {
         if ((count($userDetails) > 0) && ($userDetails[0]->email != "") &&
             (module::get_var("contactowner", "contact_user_link") == true)) {
           $block->content->userLink = "<a href=\"" . url::site("contactowner/emailid/" .
-                                      $theme->item->owner_id) . "/" . $theme->item->id . "\">" . t("Contact") . " " .
+                                      $theme->item->owner_id) . "/" . $theme->item->id . "\" class='g-dialog-link'>" . t("Contact") . " " .
                                       $userDetails[0]->name . "</a>";
           $displayBlock = true;
         }
@@ -63,10 +63,10 @@ class contactowner_block_Core {
       if (module::get_var("contactowner", "contact_owner_link")) {
         if ($theme->item()) {
           $block->content->ownerLink = "<a href=\"" . url::site("contactowner/emailowner") . "/" . $theme->item->id . 
-                                       "\">" . t(module::get_var("contactowner", "contact_button_text")) . "</a>";
+                                       "\" class='g-dialog-link'>" . t(module::get_var("contactowner", "contact_button_text")) . "</a>";
         } else {
           $block->content->ownerLink = "<a href=\"" . url::site("contactowner/emailowner") .
-                                       "\">" . t(module::get_var("contactowner", "contact_button_text")) . "</a>";
+                                       "\" class='g-dialog-link'>" . t(module::get_var("contactowner", "contact_button_text")) . "</a>";
         }
         $displayBlock = true;
       }

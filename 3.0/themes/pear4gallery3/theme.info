@@ -1,0 +1,10 @@
+name = ".Pear Theme"
+description = "A theme with the intention to mimic Apples mobile me gallery."
+version = 2.3
+author = "Fredrik Erlandsson <fredrik.e@gmail.com>"
+site = 1
+admin = 0
+author_name = "Fredrik Erlandsson"
+author_url = "mailto:fredrik.e@gmail.com"
+info_url = "http://codex.gallery2.org/Gallery3:Themes:pear4gallery3"
+discuss_url = "http://gallery.menalto.com/node/102280"

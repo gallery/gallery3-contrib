@@ -76,7 +76,6 @@ class Admin_Minislideshow_Controller extends Admin_Controller {
     $form = new Forge("admin/minislideshow/saveprefs", "", "post",
                       array("id" => "g-mini-slideshow-admin-form"));
 
-
     // Get location of slideshow files.
     $group_slideshow_files = $form->group("Minislideshow");
     $group_slideshow_files->input("slideshow_url")
