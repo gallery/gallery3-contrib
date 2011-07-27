@@ -19,7 +19,7 @@
  */
 class rawphoto_installer {
   static function install() {
-    module::set_version("rawphoto", 1);
+    module::set_version("rawphoto", 2);
   }
 
   static function activate() {
