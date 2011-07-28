@@ -20,13 +20,16 @@
 class keeporiginal_event_Core {
   static function graphics_rotate($input_file, $output_file, $options) {
     // Make a copy of the original fullsized image before rotating it.
+    keeporiginal_event_Core::_preserve($input_file);
+  }
 
+  static function _preserve($input_file) {
     //   If $input_file is located in VARPATH/albums/ then assume its a fullsize photo.
     if (strncmp($input_file, VARPATH . "albums/", strlen(VARPATH . "albums/")) == 0) {
       // Figure out where the original copy should be stashed at.
       $temp_path = str_replace(VARPATH . "albums/", "", $input_file);
       $original_image = VARPATH . "original/" . $temp_path;
-      $individual_dirs = split("[/\]", "original/" . $temp_path);
+      $individual_dirs = preg_split("|[/\\\\]|", "original/" . $temp_path);
       // If any original file does not already exist, then create a folder structure
       //   similar to that found in VARPATH/albums/ and copy the photo over before
       //   rotating it.
@@ -71,6 +74,10 @@ class keeporiginal_event_Core {
     //  VARPATH/original/ as well.
 
     if ($old->is_photo() || $old->is_album()) {
+      $data_file = $new->data_file;
+      if (isset($data_file)) {
+        keeporiginal_event_Core::_preserve($old->file_path());
+      }
       if ($old->file_path() != $new->file_path()) {
         $old_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $old->file_path());
         $new_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $new->file_path());
@@ -105,6 +112,7 @@ class keeporiginal_event_Core {
           }
 
           // Move the file to its new location.
+          // TODO: If the files have different extensions, then the old extension should be preserved.
           @rename($old_original, $new_original);
         }
       }
