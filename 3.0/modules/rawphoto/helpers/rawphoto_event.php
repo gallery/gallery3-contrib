@@ -49,6 +49,10 @@ class rawphoto_event_Core {
     array_push($types_wrapper->types, "image/tiff");
   }
 
+  static function module_change($changes) {
+    rawphoto_version::report_item_conversion_support();
+  }
+
   static function graphics_toolkit_change($toolkit_id) {
     rawphoto_graphics::report_ppm_support($toolkit_id);
   }

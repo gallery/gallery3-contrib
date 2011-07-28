@@ -23,6 +23,7 @@ class rawphoto_installer {
   }
 
   static function activate() {
+    rawphoto_version::report_item_conversion_support();
     $dcraw = rawphoto_graphics::detect_dcraw();
     rawphoto_graphics::report_dcraw_support($dcraw);
     $toolkit_id = module::get_var("gallery", "graphics_toolkit");
@@ -30,6 +31,7 @@ class rawphoto_installer {
   }
 
   static function deactivate() {
+    site_status::clear("rawphoto_needs_item_conversion_support");
     site_status::clear("rawphoto_needs_dcraw");
     site_status::clear("rawphoto_needs_ppm_support");
   }
