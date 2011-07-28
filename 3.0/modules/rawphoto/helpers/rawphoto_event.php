@@ -41,12 +41,19 @@ class rawphoto_event_Core {
 
   static function legal_photo_extensions($extensions_wrapper) {
     array_push($extensions_wrapper->extensions,
-               "bay", "bmq", "cr2", "crw", "cs1", "dc2", "dcr", "dng", "fff", "k25", "kdc",
-               "mos", "mrw", "nef", "orf", "pef", "raf", "raw", "rdc", "srf", "x3f");
+               "3fr", "arw", "bay", "bmq", "cr2", "crw", "cs1", "dc2", "dcr", "dng", "erf",
+               "fff", "k25", "kdc", "mef", "mos", "mrw", "nef", "orf", "pef", "raf", "raw",
+               "rdc", "rw2", "sr2", "srf", "x3f");
   }
 
   static function legal_photo_types($types_wrapper) {
-    array_push($types_wrapper->types, "image/tiff");
+    array_push($types_wrapper->types,
+               // Most raw photos are detected as TIFF.
+               "image/tiff",
+               // Minolta raw photos are mis-detected as wireless bitmap format.
+               "image/vnd.wap.wbmp",
+               // All other raw photos have unrecognized formats.
+               "");
   }
 
   static function module_change($changes) {
