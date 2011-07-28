@@ -20,7 +20,7 @@
 class keeporiginal_event_Core {
   static function graphics_rotate($input_file, $output_file, $options) {
     // Make a copy of the original fullsized image before rotating it.
-    self::_preserve($input_file);
+    keeporiginal_event_Core::_preserve($input_file);
   }
 
   static function _preserve($input_file) {
@@ -76,7 +76,7 @@ class keeporiginal_event_Core {
     if ($old->is_photo() || $old->is_album()) {
       $data_file = $new->data_file;
       if (isset($data_file)) {
-        self::_preserve($old->file_path());
+        keeporiginal_event_Core::_preserve($old->file_path());
       }
       if ($old->file_path() != $new->file_path()) {
         $old_original = VARPATH . "original/" . str_replace(VARPATH . "albums/", "", $old->file_path());
