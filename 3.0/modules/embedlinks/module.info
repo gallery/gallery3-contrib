@@ -1,7 +1,7 @@
 name = "EmbedLinks"
 description = "Display BBCode and HTML code to embed links to albums/images into other web pages."
-version = 1
-author_name = ""
-author_url = ""
+version = 2
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:embedlinks"
-discuss_url = "http://gallery.menalto.com/forum_module_embedlinks"
+discuss_url = "http://gallery.menalto.com/node/88322"
