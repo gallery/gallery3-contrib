@@ -17,22 +17,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class embedlinks_theme_Core {
-  static function head($theme) {
-    // Load css code for the toolbar icon.
-    return $theme->css("embedlinks_menu.css");
+class embedlinks_installer {
+  static function install() {
+    // Set some default values.
+    module::set_var("embedlinks", "HTMLCode", true);
+    module::set_var("embedlinks", "BBCode", true);
+    module::set_var("embedlinks", "FullURL", true);
+    module::set_var("embedlinks", "InPageLinks", false);
+    module::set_var("embedlinks", "ToolbarLinks", true);
+
+    // Set the module version number.
+    module::set_version("embedlinks", 2);
   }
 
-  static function photo_bottom($theme) {
-    // If the current item is a photo and displaying "In Page" links
-    //   is enabled, then insert HTML/BBCode links into the bottom
-    //   of the page. 
-    if (module::get_var("embedlinks", "InPageLinks")) {
-      $block = new Block();
-      $block->css_id = "g-metadata";
-      $block->title = t("Links");
-      $block->content = new View("embedlinks_photo_block.html");
-      return $block;
+  static function upgrade($version) {
+    if ($version == 1) {
+    // Set some default values.
+    module::set_var("embedlinks", "ToolbarLinks", true);
+
+    // Set the module version number.
+    module::set_version("embedlinks", 2);
     }
   }
 }

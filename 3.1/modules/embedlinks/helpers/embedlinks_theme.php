@@ -18,6 +18,11 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class embedlinks_theme_Core {
+  static function head($theme) {
+    // Load css code for the toolbar icon.
+    return $theme->css("embedlinks_menu.css");
+  }
+
   static function photo_bottom($theme) {
     // If the current item is a photo and displaying "In Page" links
     //   is enabled, then insert HTML/BBCode links into the bottom
