@@ -50,8 +50,33 @@ class EmbedLinks_Controller extends Controller {
       if (access::can("view_full", $item)) {
         $linkArray[2] = array("Text:", "<a href=&quot;" . $item->file_url(true) . "&quot;>Click Here</a>");
         $linkArray[3] = array("Thumbnail:", "<a href=&quot;" . $item->file_url(true) . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
-        $linkArray[4] = array("Embed:", "<object width=&quot;" . $item->width . "&quot; height=&quot;" . $item->height . "&quot; data=&quot;" . url::abs_file("lib/flowplayer.swf") . "&quot; type=&quot;application/x-shockwave-flash&quot;><param name=&quot;movie&quot; value=&quot;" . url::abs_file("lib/flowplayer.swf") . "&quot; /><param name=&quot;allowfullscreen&quot; value=&quot;true&quot; /><param name=&quot;allowscriptaccess&quot; value=&quot;always&quot; /><param name=&quot;flashvars&quot; value='config={&quot;plugins&quot;:{&quot;pseudo&quot;:{&quot;url&quot;:&quot;flowplayer.h264streaming.swf&quot;},&quot;controls&quot;:{&quot;backgroundColor&quot;:&quot;#000000&quot;,&quot;backgroundGradient&quot;:&quot;low&quot;}},&quot;clip&quot;:{&quot;provider&quot;:&quot;pseudo&quot;,&quot;url&quot;:&quot;" . $item->file_url(true) . "&quot;},&quot;playlist&quot;:[{&quot;provider&quot;:&quot;pseudo&quot;,&quot;url&quot;:&quot;" . $item->file_url(true) . "&quot;}]}' /></object>");
-        $linkTitles[1] = array("Link To The Video File:", 3);        
+
+        // Figure out what the path of the .flv file is.
+        $str_movie_path = $item->file_url(true);
+        if (module::is_active("videos")) {
+          $items_video = ORM::factory("items_video")
+                         ->where("item_id", "=", $item->id)
+                         ->find();
+          if ($items_video->loaded()) {
+            if (file_exists($item->resize_path() . ".flv")) {
+              $str_movie_path = str_replace("?m=", ".flv?m=", $item->resize_url(true));
+            } else {
+              $str_movie_path = "";
+            }
+          }
+        }
+
+        if ($str_movie_path != "") {
+          $linkArray[4] = array("Embed:", "<object id=&quot;flowplayer&quot; classid=&quot;clsid:D27CDB6E-AE6D-11cf-96B8-444553540000&quot;" . 
+                          "width=&quot;" . $item->width . "&quot; height=&quot;" . $item->height . "&quot;><param name=&quot;movie&quot; value=&quot;" . 
+                          url::abs_file("lib/flowplayer.swf") . "&quot; /><param name=&quot;flashvars&quot; value='config={&quot;clip&quot;:&quot;" . 
+                          $str_movie_path . "&quot;}' /><embed type=&quot;application/x-shockwave-flash&quot; width=&quot;" . $item->width . 
+                          "&quot; height=&quot;" . $item->height . "&quot; src=&quot;" . url::abs_file("lib/flowplayer.swf") . "&quot; flashvars=" . 
+                          "'config={&quot;clip&quot;:&quot;" . $str_movie_path . "&quot;}'/></object>");
+          $linkTitles[1] = array("Link To The Video File:", 3);
+        } else {
+          $linkTitles[1] = array("Link To The Video File:", 2);
+        }
       }
 
     // Or else assume the item is a photo.
