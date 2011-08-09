@@ -150,7 +150,7 @@ class g1_import_Core {
   static function recursiveCountGallery($albumDir, &$array, $level) {
     $countAlbum = 0;
     
-    foreach($array as $key => &$value) {
+    foreach($array as $key => &$valdummy) {
       $converted = utf8_encode($key);
       if( $converted != $key )
         self::$warn_utf8[] = $converted;
@@ -299,9 +299,11 @@ class g1_import_Core {
     // Dequeue the current album and enqueue its children
     list($album, $tree) = each($queue);
     unset($queue[$album]);
+    g1_import::debug( t('Dequeued album %album.', array('album' => $album)) );
 
     foreach($tree as $key => $value) {
       $queue[$album.'/'.$key] = $value;
+      g1_import::debug( t('Enqueued album %album.', array('album' => $album.'/'.$key)) );
     }
 
     // Special handling for the root album
@@ -429,6 +431,14 @@ class g1_import_Core {
     $album->title or $album->title = $album->name;
     $album->description = utf8_encode(self::_decode_html_special_chars(trim($fields['description'])));
     //$album->owner_id = self::map($g1_album->getOwnerId());
+
+    if(strlen($album->title)>255) {
+        if(strlen($album->description)==0) {
+            $album->description = $album->title;
+        }
+        $album->title = substr($album->title, 0, 252).'...';
+    }
+
     try {
       $album->view_count = (int) $fields['clicks'];
     } catch (Exception $e) {
@@ -651,6 +661,7 @@ class g1_import_Core {
       case '3gp':
       case 'avi':
       case 'mp4':
+      case 'mov':
       case 'flv':
         $g1_type = 'GalleryMovieItem'; break;
       default:
@@ -703,11 +714,20 @@ class g1_import_Core {
         if(isset($album_item->description) && $album_item->description!='')
           $item->description = utf8_encode(self::_decode_html_special_chars(trim($album_item->description)));
         //$item->owner_id = self::map($g1_item->getOwnerId());
+
         try {
           $item->view_count = (int) $album_item->clicks;
         } catch (Exception $e) {
           $item->view_count = 1;
         }
+
+        if(strlen($item->title)>255) {
+            if(strlen($item->description)==0) {
+                $item->description = $item->title;
+            }
+            $item->title = substr($item->title, 0, 252).'...';
+        }
+
       } catch (Exception $e) {
         $exception_info = (string) new G1_Import_Exception(
             t("Corrupt image '%path'", array('path' => $g1_path)),
