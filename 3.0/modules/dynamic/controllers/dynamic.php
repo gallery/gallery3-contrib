@@ -27,17 +27,24 @@ class Dynamic_Controller extends Controller {
 
   private function _show($album) {
     $page_size = module::get_var("gallery", "page_size", 9);
-    $page = Input::instance()->get("page", "1");
 
     $album_defn = unserialize(module::get_var("dynamic", $album));
-    $display_limit = $album_defn->limit;
-    $children_count = ORM::factory("item")
-      ->viewable()
-      ->where("type", "!=", "album")
-      ->count_all();
-    if (!empty($display_limit)) {
-      $children_count = min($children_count, $display_limit);
+
+    $input = Input::instance();
+    $show = $input->get("show");
+
+    if ($show) {
+      $child = ORM::factory("item", $show);
+      $index = dynamic::get_position($album_defn, $child);
+      if ($index) {
+        $page = ceil($index / $page_size);
+        url::redirect("dynamic/$album" . ($page == 1 ? "" : "?page=$page"));
+      }
+    } else {
+      $page = (int) $input->get("page", "1");
     }
+
+    $children_count = dynamic::get_display_count($album_defn);
 
     $offset = ($page - 1) * $page_size;
     $max_pages = max(ceil($children_count / $page_size), 1);
@@ -47,15 +54,15 @@ class Dynamic_Controller extends Controller {
       throw new Kohana_404_Exception();
     }
 
+    Display_Context::factory("dynamic")
+      ->set(array("dynamic_type" => $album_defn, "path" => $album))
+      ->save();
+
     $template = new Theme_View("page.html", "collection", "dynamic");
     $template->set_global("page", $page);
     $template->set_global("page_size", $page_size);
     $template->set_global("max_pages", $max_pages);
-    $template->set_global("children", ORM::factory("item")
-                          ->viewable()
-                          ->where("type", "!=", "album")
-                          ->order_by($album_defn->key_field, "DESC")
-                          ->find_all($page_size, $offset));
+    $template->set_global("children", dynamic::items($album_defn->key_field, $page_size, $offset));
     $template->set_global("children_count", $children_count);
     $template->content = new View("dynamic.html");
     $template->content->title = t($album_defn->title);
