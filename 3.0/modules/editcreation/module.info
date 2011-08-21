@@ -1,7 +1,7 @@
 name = "Edit Creation"
 description = "Manually edit the creation date of an item in Gallery."
 version = 2
-author_name = ""
-author_url = ""
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:editcreation"
-discuss_url = "http://gallery.menalto.com/forum_module_editcreation"
+discuss_url = "http://gallery.menalto.com/node/90667"

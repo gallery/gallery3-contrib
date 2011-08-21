@@ -47,7 +47,7 @@ class embedlinks_block_Core {
         $block->title = t("Links");
         $block->content = new View("embedlinks_album_block.html");
       }
-	  break;
+      break;
     }
 
     return $block;

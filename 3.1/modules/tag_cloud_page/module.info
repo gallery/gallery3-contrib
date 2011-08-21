@@ -1,7 +1,7 @@
 name = "Tag Cloud Page"
 description = "Displays a tag cloud of all tags used in the Gallery on a seperate page."
 version = 1
-author_name = ""
-author_url = ""
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:tag_cloud_page"
-discuss_url = "http://gallery.menalto.com/forum_module_tag_cloud_page"
+discuss_url = "http://gallery.menalto.com/node/101279"
