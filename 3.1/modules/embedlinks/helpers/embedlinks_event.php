@@ -25,4 +25,43 @@ class embedlinks_event_Core {
                ->label(t("EmbedLinks"))
                ->url(url::site("admin/embedlinks")));
   }
+
+  static function album_menu($menu, $theme) {
+    // Display embedlinks toolbar icon, if the corresponding setting is enabled.
+    if (module::get_var("embedlinks", "ToolbarLinks") == true) {
+      $menu
+        ->append(Menu::factory("link")
+                 ->id("embedlinks")
+                 ->label(t("Link to this page"))
+                 ->url(url::site("embedlinks/showlinks/" . $theme->item()->id))
+                 ->css_class("g-dialog-link")
+                 ->css_id("g-embedlinks-link"));
+    }
+  }
+
+  static function photo_menu($menu, $theme) {
+    // Display embedlinks toolbar icon, if the corresponding setting is enabled.
+    if (module::get_var("embedlinks", "ToolbarLinks") == true) {
+      $menu
+        ->append(Menu::factory("link")
+                 ->id("embedlinks")
+                 ->label(t("Link to this page"))
+                 ->url(url::site("embedlinks/showlinks/" . $theme->item()->id))
+                 ->css_class("g-dialog-link")
+                 ->css_id("g-embedlinks-link"));
+    }
+  }
+
+  static function movie_menu($menu, $theme) {
+    // Display embedlinks toolbar icon, if the corresponding setting is enabled.
+    if (module::get_var("embedlinks", "ToolbarLinks") == true) {
+      $menu
+        ->append(Menu::factory("link")
+                 ->id("embedlinks")
+                 ->label(t("Link to this page"))
+                 ->url(url::site("embedlinks/showlinks/" . $theme->item()->id))
+                 ->css_class("g-dialog-link")
+                 ->css_id("g-embedlinks-link"));
+    }
+  }
 }
