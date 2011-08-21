@@ -39,7 +39,8 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
     $BBCodeButton = false;
     $FullURLButton = false;
     $InPageLinks = false;
-    
+    $ToolbarLinks = false;
+
     for ($i = 0; $i < count($linkOpts_array); $i++) {
       if ($linkOpts_array[$i] == "HTMLCode") {
         $HTMLButton = true;
@@ -55,15 +56,19 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
       if ($displayType_array[$i] == "InPageLinks") {
         $InPageLinks = true;
       }
+      if ($displayType_array[$i] == "ToolbarLinks") {
+        $ToolbarLinks = true;
+      }
     }
-    
+
     // Save Settings.
     module::set_var("embedlinks", "HTMLCode", $HTMLButton);
     module::set_var("embedlinks", "BBCode", $BBCodeButton);
     module::set_var("embedlinks", "FullURL", $FullURLButton);
     module::set_var("embedlinks", "InPageLinks", $InPageLinks);
+    module::set_var("embedlinks", "ToolbarLinks", $ToolbarLinks);
     message::success(t("Your Selection Has Been Saved."));
-    
+
     // Load Admin page.
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_embedlinks.html");
@@ -83,7 +88,11 @@ class Admin_EmbedLinks_Controller extends Admin_Controller {
 
     // Make an array for the different methods of displaying the links.
     $linkDisplays["InPageLinks"] = array(t("Show Links In The Actual Page"), module::get_var("embedlinks", "InPageLinks"));
-    
+
+    // Make an array for the different methods of displaying the links.
+    $linkDisplays["InPageLinks"] = array(t("Show Links In The Actual Page"), module::get_var("embedlinks", "InPageLinks"));
+    $linkDisplays["ToolbarLinks"] = array(t("Display toolbar image for HTML/BBCode/URLs links"), module::get_var("embedlinks", "ToolbarLinks"));
+
     // Setup a few checkboxes on the form.
     $add_links = $form->group("EmbedLinks");
     $add_links->checklist("LinkCodeTypeOptions")

@@ -18,9 +18,15 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class EmbedLinks_Controller extends Controller {
-  /**
-   * Display the EXIF data for an item.
-   */
+  public function showlinks($item_id) {
+    // Generate the Dialog Box for all HTML/BBCode/URLs available for $item.
+    $item = ORM::factory("item", $item_id);
+    access::required("view", $item);
+    $view = new View("embedlinks_alllinksdialog.html");
+    $view->item_id = $item_id;
+    print $view;
+  }
+
   public function showhtml($item_id) {
     // Generate the Dialog Box for HTML links.
     $item = ORM::factory("item", $item_id);
@@ -31,21 +37,46 @@ class EmbedLinks_Controller extends Controller {
       $linkArray[0] = array("Text:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;>Click Here</a>");
       $linkArray[1] = array("Thumbnail:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
       $linkTitles[0] = array("Link To This Album:", 2);
-        
+
     // If the item is a movie, don't display resize links, do display an embed link.
     } elseif ($item->is_movie()) {
       // Link to the current page.
       $linkArray[0] = array("Text:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;>Click Here</a>");
       $linkArray[1] = array("Thumbnail:", "<a href=&quot;" . url::abs_site("{$item->type}s/{$item->id}") . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
       $linkTitles[0] = array("Link To This Page:", 2);  
-      
+
       // If the visitor has suficient privlidges to see the fullsized
       //    version of the current image, then display links to it.
       if (access::can("view_full", $item)) {
         $linkArray[2] = array("Text:", "<a href=&quot;" . $item->file_url(true) . "&quot;>Click Here</a>");
         $linkArray[3] = array("Thumbnail:", "<a href=&quot;" . $item->file_url(true) . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
-        $linkArray[4] = array("Embed:", "<object width=&quot;" . $item->width . "&quot; height=&quot;" . $item->height . "&quot; data=&quot;" . url::abs_file("lib/flowplayer.swf") . "&quot; type=&quot;application/x-shockwave-flash&quot;><param name=&quot;movie&quot; value=&quot;" . url::abs_file("lib/flowplayer.swf") . "&quot; /><param name=&quot;allowfullscreen&quot; value=&quot;true&quot; /><param name=&quot;allowscriptaccess&quot; value=&quot;always&quot; /><param name=&quot;flashvars&quot; value='config={&quot;plugins&quot;:{&quot;pseudo&quot;:{&quot;url&quot;:&quot;flowplayer.h264streaming.swf&quot;},&quot;controls&quot;:{&quot;backgroundColor&quot;:&quot;#000000&quot;,&quot;backgroundGradient&quot;:&quot;low&quot;}},&quot;clip&quot;:{&quot;provider&quot;:&quot;pseudo&quot;,&quot;url&quot;:&quot;" . $item->file_url(true) . "&quot;},&quot;playlist&quot;:[{&quot;provider&quot;:&quot;pseudo&quot;,&quot;url&quot;:&quot;" . $item->file_url(true) . "&quot;}]}' /></object>");
-        $linkTitles[1] = array("Link To The Video File:", 3);        
+
+        // Figure out what the path of the .flv file is.
+        $str_movie_path = $item->file_url(true);
+        if (module::is_active("videos")) {
+          $items_video = ORM::factory("items_video")
+                         ->where("item_id", "=", $item->id)
+                         ->find();
+          if ($items_video->loaded()) {
+            if (file_exists($item->resize_path() . ".flv")) {
+              $str_movie_path = str_replace("?m=", ".flv?m=", $item->resize_url(true));
+            } else {
+              $str_movie_path = "";
+            }
+          }
+        }
+
+        if ($str_movie_path != "") {
+          $linkArray[4] = array("Embed:", "<object id=&quot;flowplayer&quot; classid=&quot;clsid:D27CDB6E-AE6D-11cf-96B8-444553540000&quot;" . 
+                          "width=&quot;" . $item->width . "&quot; height=&quot;" . $item->height . "&quot;><param name=&quot;movie&quot; value=&quot;" . 
+                          url::abs_file("lib/flowplayer.swf") . "&quot; /><param name=&quot;flashvars&quot; value='config={&quot;clip&quot;:&quot;" . 
+                          $str_movie_path . "&quot;}' /><embed type=&quot;application/x-shockwave-flash&quot; width=&quot;" . $item->width . 
+                          "&quot; height=&quot;" . $item->height . "&quot; src=&quot;" . url::abs_file("lib/flowplayer.swf") . "&quot; flashvars=" . 
+                          "'config={&quot;clip&quot;:&quot;" . $str_movie_path . "&quot;}'/></object>");
+          $linkTitles[1] = array("Link To The Video File:", 3);
+        } else {
+          $linkTitles[1] = array("Link To The Video File:", 2);
+        }
       }
 
     // Or else assume the item is a photo.
@@ -61,7 +92,7 @@ class EmbedLinks_Controller extends Controller {
       $linkArray[4] = array("Thumbnail:", "<a href=&quot;" . $item->resize_url(true) . "&quot;><img src=&quot;" . $item->thumb_url(true) . "&quot;></a>");
       $linkArray[5] = array("Image:", "<img src=&quot;" . $item->resize_url(true) . "&quot;>");
       $linkTitles[1] = array("Link To The Resized Image:", 3);  
-      
+
       // If the visitor has suficient privlidges to see the fullsized
       //    version of the current image, then display links to it.
       if (access::can("view_full", $item)) {
@@ -71,7 +102,7 @@ class EmbedLinks_Controller extends Controller {
         $linkTitles[2] = array("Link To The Full Size Image:", 3);        
       }
     }
-    
+
     $view = new View("embedlinks_htmldialog.html");
     $view->titles = $linkTitles;
     $view->details = $linkArray;
@@ -80,22 +111,22 @@ class EmbedLinks_Controller extends Controller {
 
   public function showbbcode($item_id) {
     // Generate the Dialog Box for BBCode links.
-  $item = ORM::factory("item", $item_id);
+    $item = ORM::factory("item", $item_id);
     access::required("view", $item);
-    
+
     // If the current page is an album, only display two links.
     if ($item->is_album()) {
       $linkArray[0] = array("Text:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "]Click Here[/url]");
       $linkArray[1] = array("Thumbnail:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "][img]" . $item->thumb_url(true) . "[/img][/url]");
       $linkTitles[0] = array("Link To This Album:", 2);  
-    
+
     // If the item is a movie, don't display resize links.
     } elseif ($item->is_movie()) {
       // Link to the current page.
       $linkArray[0] = array("Text:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "]Click Here[/url]");
       $linkArray[1] = array("Thumbnail:", "[url=" . url::abs_site("{$item->type}s/{$item->id}") . "][img]" . $item->thumb_url(true) . "[/img][/url]");
       $linkTitles[0] = array("Link To This Page:", 2);  
-      
+
       // If the visitor has suficient privlidges to see the fullsized
       //    version of the current image, then display links to it.
       if (access::can("view_full", $item)) {
@@ -103,7 +134,7 @@ class EmbedLinks_Controller extends Controller {
         $linkArray[3] = array("Thumbnail:", "[url=" . $item->file_url(true) . "][img]" . $item->thumb_url(true) . "[/img][/url]");
         $linkTitles[1] = array("Link To The Video File:", 2);        
       }
-    
+
     // Or else assume the item is a photo.
     } else {
       // Link to the current page.
@@ -117,7 +148,7 @@ class EmbedLinks_Controller extends Controller {
       $linkArray[4] = array("Thumbnail:", "[url=" . $item->resize_url(true) . "][img]" . $item->thumb_url(true) . "[/img][/url]");
       $linkArray[5] = array("Image:", "[img]" . $item->resize_url(true) . "[/img]");
       $linkTitles[1] = array("Link To The Resized Image:", 3);  
-      
+
       // If the visitor has suficient privlidges to see the fullsized
       //    version of the current image, then display links to it.
       if (access::can("view_full", $item)) {
@@ -127,7 +158,7 @@ class EmbedLinks_Controller extends Controller {
         $linkTitles[2] = array("Link To The Full Size Image:", 3);        
       }
     }
-    
+
     $view = new View("embedlinks_bbcodedialog.html");
     $view->titles = $linkTitles;
     $view->details = $linkArray;
@@ -136,9 +167,9 @@ class EmbedLinks_Controller extends Controller {
 
   public function showfullurl($item_id) {
     // Generate the Dialog Box for the URLs to the items thumb, resize and fullsize image.
-  $item = ORM::factory("item", $item_id);
+    $item = ORM::factory("item", $item_id);
     access::required("view", $item);
-    
+
     // If the current page is an album, only display a URL and thumnail fields.
     if ($item->is_album()) {
       $linkArray[0] = array("Album URL:", url::abs_site("{$item->type}s/{$item->id}"));
@@ -150,7 +181,7 @@ class EmbedLinks_Controller extends Controller {
       // Link to the current page.    
       $linkArray[0] = array("This Page:", url::abs_site("{$item->type}s/{$item->id}"));
       $linkArray[1] = array("Thumbnail:", $item->thumb_url(true));
-      
+
       // If the visitor has suficient privlidges to see the fullsized
       //    version of the current image, then display its URL.
       if (access::can("view_full", $item)) {
@@ -159,14 +190,14 @@ class EmbedLinks_Controller extends Controller {
       } else {
         $linkTitles[0] = array("URLs:", 2);  
       }
-    
+
     // Or else assume the item is a photo.
     } else {
       // Link to the current page.    
       $linkArray[0] = array("This Page:", url::abs_site("{$item->type}s/{$item->id}"));
       $linkArray[1] = array("Thumbnail:", $item->thumb_url(true));
       $linkArray[2] = array("Resized:", $item->resize_url(true));
-      
+
       // If the visitor has suficient privlidges to see the fullsized
       //    version of the current image, then display its URL.
       if (access::can("view_full", $item)) {
@@ -176,11 +207,10 @@ class EmbedLinks_Controller extends Controller {
         $linkTitles[0] = array("URLs:", 3);  
       }
     }
-    
+
     $view = new View("embedlinks_fullurldialog.html");
     $view->titles = $linkTitles;
     $view->details = $linkArray;
     print $view;
   }
-  
 }

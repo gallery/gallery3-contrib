@@ -1,7 +1,7 @@
 name = "VideoDimensions"
 description = "Manually edit the dimensions of a video."
 version = 1
-author_name = ""
-author_url = ""
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:videodimensions"
-discuss_url = "http://gallery.menalto.com/forum_module_videodimensions"
+discuss_url = "http://gallery.menalto.com/node/90069"
