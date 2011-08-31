@@ -50,24 +50,54 @@ class Dynamic_Controller extends Controller {
     $max_pages = max(ceil($children_count / $page_size), 1);
 
     // Make sure that the page references a valid offset
-    if ($page < 1 || ($children_count && $page > ceil($children_count / $page_size))) {
-      throw new Kohana_404_Exception();
+    if ($page < 1) {
+      url::redirect(url::merge(array("page" => 1)));
+    } else if ($page > $max_pages) {
+      url::redirect(url::merge(array("page" => $max_pages)));
     }
 
-    Display_Context::factory("dynamic")
-      ->set(array("dynamic_type" => $album_defn, "path" => $album))
-      ->save();
-
+    $root = item::root();
     $template = new Theme_View("page.html", "collection", "dynamic");
-    $template->set_global("page", $page);
-    $template->set_global("page_size", $page_size);
-    $template->set_global("max_pages", $max_pages);
-    $template->set_global("children", dynamic::items($album_defn->key_field, $page_size, $offset));
-    $template->set_global("children_count", $children_count);
+    $template->set_global(
+      array("page" => $page,
+            "max_pages" => $max_pages,
+            "page_size" => $page_size,
+            "children" => dynamic::items($album_defn->key_field, $page_size, $offset),
+            "breadcrumbs" => array(
+              Breadcrumb::instance($root->title, $root->url())->set_first(),
+              Breadcrumb::instance($album_defn->title,
+                                   url::site("dynamic/$album"))->set_last()),
+            "children_count" => $children_count));
     $template->content = new View("dynamic.html");
     $template->content->title = t($album_defn->title);
 
     print $template;
+
+    item::set_display_context_callback("Dynamic_Controller::get_display_context",
+                                       $album_defn, $album);
   }
 
+  static function get_display_context($item, $album_defn, $path) {
+    $where = array(array("type", "!=", "album"));
+
+    $position = dynamic::get_position($album_defn, $item, $where);
+    if ($position > 1) {
+      list ($previous_item, $ignore, $next_item) =
+        dynamic::items($album_defn->key_field, 3, $position - 2);
+    } else {
+      $previous_item = null;
+      list ($next_item) = dynamic::items($album_defn->key_field, 1, $position);
+    }
+
+    $root = item::root();
+    return array("position" => $position,
+                 "previous_item" => $previous_item,
+                 "next_item" => $next_item,
+                 "sibling_count" => dynamic::get_display_count($album_defn),
+                 "breadcrumbs" => array(
+                   Breadcrumb::instance($root->title, $root->url())->set_first(),
+                   Breadcrumb::instance($album_defn->title,
+                                        url::site("dynamic/$path?show={$item->id}")),
+                   Breadcrumb::instance($item->title, $item->url())->set_last()));
+  }
 }
