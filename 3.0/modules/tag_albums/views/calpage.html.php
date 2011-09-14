@@ -21,9 +21,10 @@
     <link rel="shortcut icon"
           href="<?= url::file(module::get_var("gallery", "favicon_url")) ?>"
           type="image/x-icon" />
-
+    <link rel="apple-touch-icon-precomposed"
+          href="<?= url::file(module::get_var("gallery", "apple_touch_icon_url")) ?>" />
     <? if ($theme->page_type == "collection"): ?>
-      <? if ($thumb_proportion != 1): ?>
+    <? if (($thumb_proportion = $theme->thumb_proportion($theme->item())) != 1): ?>
         <? $new_width = round($thumb_proportion * 213) ?>
         <? $new_height = round($thumb_proportion * 240) ?>
         <style type="text/css">
@@ -66,16 +67,19 @@
     <?= $theme->css("superfish/css/superfish.css") ?>
     <?= $theme->css("themeroller/ui.base.css") ?>
     <?= $theme->css("screen.css") ?>
+    <? if (locales::is_rtl()): ?>
+    <?= $theme->css("screen-rtl.css") ?>
+    <? endif; ?>
     <!--[if lte IE 8]>
     <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
           media="screen,print,projection" />
     <![endif]-->
 
-    <!-- LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link below -->
-    <?= $theme->get_combined("script") ?>
-
     <!-- LOOKING FOR YOUR CSS? It's all been combined into the link below -->
     <?= $theme->get_combined("css") ?>
+
+    <!-- LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link below -->
+    <?= $theme->get_combined("script") ?>
   </head>
 
   <body <?= $theme->body_attributes() ?>>
@@ -103,8 +107,7 @@
           <?= $theme->header_bottom() ?>
         </div>
 
-
-        <? // The following code was modifed to allow module-defined breadcrumbs.
+        <? // rWatcher Edit: The following code was modifed to allow module-defined breadcrumbs.
            // Everything else in this file is a copy of the default page.html.php file.
         ?>
         <? if (!empty($breadcrumbs)): ?>
@@ -117,9 +120,11 @@
                  the immediate parent so that when you go back up a
                  level you're on the right page. -->
             <? if ($breadcrumb->url) : ?>
-              <a href="<?= $breadcrumb->url ?>"><?= html::purify($breadcrumb->title) ?></a>
+              <a href="<?= $breadcrumb->url ?>">
+              <?= html::purify(text::limit_chars($breadcrumb->title, module::get_var("gallery", "visible_title_length"))) ?>
+			  </a>
             <? else : ?>
-              <?= html::purify($breadcrumb->title) ?>
+              <?= html::purify(text::limit_chars($breadcrumb->title, module::get_var("gallery", "visible_title_length"))) ?>
             <? endif ?>
           </li>
           <? $i++ ?>
@@ -127,8 +132,6 @@
         </ul>
         <? endif ?>
         <? // End modified code ?>
-
-
 
       </div>
       <div id="bd">
