@@ -372,7 +372,7 @@ function startImageFlow()
 	for (var i = 0; i < slideshowImages.length; i++) {
 		var img = '<div class="item"><img class="content" src="'+slideshowImages[i][0]+'"/><div class="caption">'+$('#mosaicGridContainer img').eq(i).attr('alt')+'"</div></div>';
 		var img = '<img src="'+slideshowImages[i][0]+'" longdesc="'+i+'" width="'+slideshowImages[i][2]+'" height="'+slideshowImages[i][3]+'" alt="'+slideshowImages[i][4]+'" style="display: none;">';
-		console.log(img);
+//		console.log(img);
 		$('#pearImageFlow').append(img); 
 	}
 	if(!pearCarousel){
