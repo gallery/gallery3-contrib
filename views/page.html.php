@@ -154,8 +154,8 @@
 <div id="footerWrapper">
 	<div title="Change size of photos" id="sliderView" class="sliderView">
 		<div class="sliderRightCap"></div>
-		<div title="View at smallest photo size" class="smaller" onclick="$('#slider').slider('value', 0);"></div>
-		<div title="View at largest photo size" class="larger" onclick="$('#slider').slider('value', 250);"></div>
+		<div title="View at smallest photo size" class="smaller" onclick="$('#imgSlider').slider('value', 0);"></div>
+		<div title="View at largest photo size" class="larger" onclick="$('#imgSlider').slider('value', 250);"></div>
 		<div id="imgSlider" class="track">
 		</div>
 	</div>
