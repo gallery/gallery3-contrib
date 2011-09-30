@@ -5,9 +5,8 @@ var detailViewMode=false;
 var savedHeight = 0;
 var savedWidth = 0;
 
-$(window).resize(function (e) {
-	if (window.innerHeight == savedHeight && 
-		window.innerWidth == savedWidth) { e.stop(); }
+$(window).resize(function () {
+	if (window.innerHeight == savedHeight && window.innerWidth == savedWidth) return; 
 	savedHeight = window.innerHeight;
 	savedWidth = window.innerWidth;
 	mosaicResize();
@@ -154,9 +153,10 @@ function swatchImg(imageId)
 	$('#info_detail').attr('href', slideshowImages[currentImg][1]);
 }
 
-function updateHash()
+function updateHash(viewMode)
 {
-	viewMode = detailViewMode ? "detail" : (mosaicView ? "mosaic" : "grid");
+	if(typeof viewMode == 'undefined')
+		viewMode = detailViewMode ? "detail" : (mosaicView ? "mosaic" : "grid");
 	hash = "#img=" + currentImg + "&viewMode=" + viewMode + "&bgcolor=" + bgcolor;
 	window.location.hash = hash;
 }
@@ -186,8 +186,7 @@ function mosaicResize()
 		myWidth = document.body.clientWidth;
 		myHeight = document.body.clientHeight;
 	}
-	if($('#pearImageFlow').length != 0)
-		$('#pearImageFlow').css({'height' : (myHeight-87)+'px', 'width': myWidth+'px', 'minHeight': ((myHeight-70)*0.9)+'px'});
+	$('#pearFlowPadd').css({'height' : myHeight-87-(Math.round(myWidth / 2.4))+'px'});
 	if($('#imageflow').length != 0)
 		$('#imageflow').css({'height': (myHeight-53)+'px', 'width': (((myWidth*0.5)<(myHeight-53)) ? myWidth : ((myHeight-65)*2)) +'px'});
 	$('#detailImageView').css({'height': myHeight-165+"px"});
@@ -260,6 +259,11 @@ if(typeof slideshowImages != 'undefined')
 		viewMode='grid';
 
 	switch (viewMode) {
+		case 'carousel':
+			startImageFlow();
+			switchToMosaic();
+			startImageFlow();
+			break;
 		case 'grid':
 			switchToGrid();
 			break;
@@ -278,7 +282,7 @@ if(typeof slideshowImages != 'undefined')
 function switchToGrid()
 {
 	toggleReflex(true);
-	$('#pearImageFlow').hide();
+	$('#pearImageFlow,#pearFlowPadd').hide();
 	$('#mosaicTable').show();
 	if(!$('#mosaicGridContainer').length) return;
 	mosaicView=false;
@@ -289,13 +293,12 @@ function switchToGrid()
 	$('p.giTitle,div.giInfo').each(function(s){$(this).show();});
 	switchMode('grid');
 	mosaicResize();
-	updateHash();
 }
 
 function switchToMosaic()
 {
 	toggleReflex(false);
-	$('#pearImageFlow').hide(); //.hide(); 
+	$('#pearImageFlow,#pearFlowPadd').hide();
 	$('#mosaicTable').show();
 	if(!$('#mosaicGridContainer').length) return;
 	mosaicView=true;
@@ -368,35 +371,22 @@ function startImageFlow()
 {
 	$('#mosaicTable').hide();
 
-	$('#pearImageFlow').show();
+	$('#pearImageFlow,#pearFlowPadd').show();
 
 	toggleReflex(true);
 
-	for (var i = 0; i < slideshowImages.length; i++) {
-		var img = '<div class="item"><img class="content" src="'+slideshowImages[i][0]+'"/><div class="caption">'+$('#mosaicGridContainer img').eq(i).attr('alt')+'"</div></div>';
-		var img = '<img src="'+slideshowImages[i][0]+'" longdesc="'+i+'" width="'+slideshowImages[i][2]+'" height="'+slideshowImages[i][3]+'" alt="'+slideshowImages[i][4]+'" style="display: none;">';
-//		console.log(img);
-		$('#pearImageFlow').append(img); 
-	}
 	if(!pearCarousel){
-	pearCarousel = new ImageFlow();
-	pearCarousel.init({ImageFlowID: 'pearImageFlow', aspectRatio: 2.4, imagesHeight: 0.6, opacity: true, reflections: false, startID: currentImg, onClick: function() {focusImage($(this).attr('longdesc'));}, startAnimation: true, xStep: 200, imageFocusM: 1.7, imageFocusMax: 4, opacityArray: [10, 9, 6, 2], percentOther: 130, captions: false, slider: false});
+		for (var i = 0; i < slideshowImages.length; i++) {
+			var img = '<div class="item"><img class="content" src="'+slideshowImages[i][0]+'"/><div class="caption">'+$('#mosaicGridContainer img').eq(i).attr('alt')+'"</div></div>';
+			var img = '<img src="'+slideshowImages[i][0]+'" longdesc="'+i+'" width="'+slideshowImages[i][2]+'" height="'+slideshowImages[i][3]+'" alt="'+slideshowImages[i][4]+'" style="display: none;">';
+	//		console.log(img);
+			$('#pearImageFlow').append(img); 
+		}
+		pearCarousel = new ImageFlow();
+		pearCarousel.init({ImageFlowID: 'pearImageFlow', aspectRatio: 2.4, imagesHeight: 0.6, opacity: true, reflections: false, startID: currentImg, onClick: function() {focusImage($(this).attr('longdesc'));}, startAnimation: true, xStep: 200, imageFocusM: 1.7, imageFocusMax: 4, opacityArray: [10, 9, 6, 2], percentOther: 130, captions: false, slider: false});
 	}
-/*
-	current=(currentImg)*-xstep;
-	caption_id=currentImg;
-	refresh(true);
-
-	iShow(conf_images);
-	iShow(conf_scrollbar);
-	initMouseWheel();
-	initMouseDrag();
-	mosaicResize();
-
-	moveTo(current);
-	glideTo(current, caption_id);
-*/
 	switchMode('carousel');
+
 }
 function setKeys()
 {
@@ -439,6 +429,7 @@ var hovering=false;
 function switchMode(mode){
 	$('#mosaic,#grid,#carousel').removeClass("sel sel-with-viewSwitcher");
 	$('#'+mode).addClass("sel sel-with-viewSwitcher");
+	updateHash(mode);
 }
 
 function preFetch()
