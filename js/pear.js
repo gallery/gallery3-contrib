@@ -24,7 +24,7 @@ function swatchSkin(intSkin){
 		case 'dkgrey' :
 		case 1 :
 			$('div.gallery-thumb-round').css('backgroundPosition' , "-200px 0px");
-			$('#mosaicTable').css('backgroundColor' , "#262626");
+			$('#mosaicTable,.pear').css('backgroundColor' , "#262626");
 			$('p.giTitle').css("color", "#a9a9a9");
 			$("#dkgrey").addClass("dkgrey sel dkgrey-with-sel-with-swatch");
 			bgcolor="dkgrey";
@@ -33,7 +33,7 @@ function swatchSkin(intSkin){
 		case 'ltgrey' :
 		case 2 :
 			$('div.gallery-thumb-round').css('backgroundPosition' , "-400px 0px");
-			$('#mosaicTable').css('backgroundColor' , "#d9d9d9");
+			$('#mosaicTable,.pear').css('backgroundColor' , "#d9d9d9");
 			$('p.giTitle').css("color", "#333333");
 			$("#ltgrey").addClass("ltgrey sel ltgrey-with-sel-with-swatch");
 			bgcolor="ltgrey";
@@ -42,7 +42,7 @@ function swatchSkin(intSkin){
 		case 'white' :
 		case 3 :
 			$('div.gallery-thumb-round').css('backgroundPosition' , "-600px 0px");
-			$('#mosaicTable').css('backgroundColor' , "#ffffff");
+			$('#mosaicTable,.pear').css('backgroundColor' , "#ffffff");
 			$('p.giTitle').css("color", "#444444");
 			$("#white").addClass("white sel white-with-sel-with-swatch");
 			bgcolor="white";
@@ -52,7 +52,7 @@ function swatchSkin(intSkin){
 		case 0 :
 		default:
 			$('div.gallery-thumb-round').css('backgroundPosition' , "0px 0px");
-			$('#mosaicTable').css('backgroundColor' , "#000");
+			$('#mosaicTable,.pear').css('backgroundColor' , "#000");
 			$('p.giTitle').css("color", "#a3a3a3");
 			$("#black").addClass("black sel black-with-sel-with-swatch");
 			bgcolor="black";
@@ -200,6 +200,8 @@ function mosaicResize()
 	myHeight = myHeight - $('#g-site-status').outerHeight(true);
 	$('#g-header').css('top', $('#gsNavBar').outerHeight(true)+$('#g-site-status').outerHeight(true)-4);
 
+	if($('#g-movie').length) 
+		myHeight+=18;
 	if ( !mosaicView )
 	{
 		$('#mosaicGridContainer').css({'height': (myHeight+33)+"px", 'width': myWidth+"px"});
@@ -253,6 +255,7 @@ function bodyLoad(viewMode, bgcolor) {
 	if (co==null || co=="")
 		swatchSkin(bgcolor);
 
+if(typeof slideshowImages != 'undefined')
 	if(!slideshowImages.length) 
 		viewMode='grid';
 

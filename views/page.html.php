@@ -169,6 +169,7 @@
 	</div>
 
 	<div class="" style="" id="viewControls">
+<? if ($theme->page_subtype != "movie"): ?>
 		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid();">
 			<div class="label">Grid</div>
 		</div>
@@ -185,6 +186,7 @@
 			<div class="label">Slideshow</div>
 		</div>
 		<div class="clear"></div>
+<? endif ?>
 	</div>
 	<? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>
 </div>

@@ -30,13 +30,19 @@ $(function() {
     <? if ($child->is_photo()): ?>
       <? $img_class = "g-thumbnail p-photo"; ?>
     <? endif ?>
+    <? if ($child->is_movie()): ?>
+      <a href="<?= $child->url() ?>">
+    <? endif ?>
   <div id="g-thumb-id-<?= $child->id ?>" class="g-item gallery-thumb <?= $item_class ?>" title="<?= $child->description?>">
     <?= $theme->thumb_top($child) ?>
-    <? if ($child->is_album()): ?>
-		<div class="gallery-thumb-round" style="height: 200px; width: 200px;"></div>
+    <? if ($child->is_album() || $child->is_movie()): ?>
+		<div class="gallery-thumb-round"></div>
     <? endif ?>
       <? if ($child->has_thumb()): ?>
 		<?= $child->thumb_img(array("class" => $img_class, "id" => "thumb_$child->id", "style" => "width: 200px; height 200px;")) ?>
+    <? if ($child->is_movie()): ?>
+      <span class="p-video"></span>
+    <? endif ?>
       <? endif ?>
 <?// Begin skimming 
 if($child->is_album()):
@@ -56,6 +62,9 @@ endif;
 	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify(text::limit_chars($child->title, 20)) ?> </p>
 	<? if($child->is_album()): ?><div class="giInfo"><?= count($granchildren)?> photos</div><? endif ?>
 </div>
+    <? if ($child->is_movie()): ?>
+      </a>
+    <? endif ?>
    <?/* <?= $theme->thumb_bottom($child) ?>
     <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
     <h2><span class="<?= $item_class ?>"></span>
