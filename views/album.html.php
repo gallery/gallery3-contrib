@@ -96,5 +96,5 @@ endif;
 <?= $theme->album_bottom() ?>
 
 <?= $theme->paginator() ?>
-<div id="pearFlowPadd" class="imageflow"></div>
+<div id="pearFlowPadd" class="imageflow" style="display: none;"></div>
 <div id="pearImageFlow" class="imageflow" style="display: none;"> </div>

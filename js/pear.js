@@ -186,7 +186,6 @@ function mosaicResize()
 		myWidth = document.body.clientWidth;
 		myHeight = document.body.clientHeight;
 	}
-	$('#pearFlowPadd').css({'height' : myHeight-87-(Math.round(myWidth / 2.4))+'px'});
 	if($('#imageflow').length != 0)
 		$('#imageflow').css({'height': (myHeight-53)+'px', 'width': (((myWidth*0.5)<(myHeight-53)) ? myWidth : ((myHeight-65)*2)) +'px'});
 	$('#detailImageView').css({'height': myHeight-165+"px"});
@@ -195,8 +194,9 @@ function mosaicResize()
 		$('#img_detail').css({'height': iHeight+"px", 'width':iWidth+"px"});
 
 	myWidth=myWidth-7;
-	($('#paginator').length != 0) ? myHeight-=165: myHeight-=138;
 	myHeight = myHeight - $('#g-site-status').outerHeight(true);
+	$('#pearFlowPadd').css({'height' : myHeight-90-(Math.round(myWidth / 2.4))+'px'});
+	($('#paginator').length != 0) ? myHeight-=165: myHeight-=138;
 	$('#g-header').css('top', $('#gsNavBar').outerHeight(true)+$('#g-site-status').outerHeight(true)-4);
 
 	if($('#g-movie').length) 
@@ -226,9 +226,7 @@ function bodyLoad(viewMode, bgcolor) {
 		currentImg = parseInt(h.img);
 	if(h.bgcolor != undefined)
 		swatchSkin(h.bgcolor);
-	if(h.viewMode == 'detail')
-		focusImage(currentImg, h.redirected);
-	else
+	if(h.viewMode != undefined)
 		viewMode = h.viewMode;
 	/* end parse hash */
 	
@@ -261,14 +259,15 @@ if(typeof slideshowImages != 'undefined')
 	switch (viewMode) {
 		case 'carousel':
 			startImageFlow();
-			switchToMosaic();
-			startImageFlow();
 			break;
 		case 'grid':
 			switchToGrid();
 			break;
 		case 'mosaic':
 			switchToMosaic();
+			break;
+		case 'detail':
+			focusImage(currentImg, h.redirected);
 			break;
 		default:
 			mosaicResize();
@@ -386,7 +385,7 @@ function startImageFlow()
 		pearCarousel.init({ImageFlowID: 'pearImageFlow', aspectRatio: 2.4, imagesHeight: 0.6, opacity: true, reflections: false, startID: currentImg, onClick: function() {focusImage($(this).attr('longdesc'));}, startAnimation: true, xStep: 200, imageFocusM: 1.7, imageFocusMax: 4, opacityArray: [10, 9, 6, 2], percentOther: 130, captions: false, slider: false});
 	}
 	switchMode('carousel');
-
+	mosaicResize();
 }
 function setKeys()
 {
