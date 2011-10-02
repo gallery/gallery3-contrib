@@ -110,11 +110,11 @@
         <? if (!empty($breadcrumbs)): ?>
         <ul class="g-breadcrumbs">
           <? foreach ($breadcrumbs as $breadcrumb): ?>
-           <li class="<?= $breadcumb->last ? "g-active" : ""?>
+           <li class="<?= $breadcrumb->last ? "g-active" : ""?>
                        <?= $breadcrumb->first ? "g-first" : "" ?>">
-           <? if(!$breadcumb->last): ?> <a href="<?= $breacrumb->url ?>"><? endif ?>
-           <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?>
-           <? if(!$breadcumb->last): ?> </a><? endif ?>
+           <? if(!$breadcrumb->last): ?> <a href="<?= $breadcrumb->url ?>"><? endif ?>
+           <?= html::purify(text::limit_chars($breadcrumb->title, module::get_var("gallery", "visible_title_length"))) ?>
+           <? if(!$breadcrumb->last): ?> </a><? endif ?>
           </li>
           <? endforeach ?>
         </ul>
