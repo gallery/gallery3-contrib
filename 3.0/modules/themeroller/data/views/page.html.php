@@ -24,7 +24,7 @@
     <link rel="apple-touch-icon-precomposed"
           href="<?= url::file(module::get_var("gallery", "apple_touch_icon_url")) ?>" />
     <? if ($theme->page_type == "collection"): ?>
-      <? if ($thumb_proportion != 1): ?>
+      <? if (($thumb_proportion = $theme->thumb_proportion($theme->item())) != 1): ?>
         <? $new_width = round($thumb_proportion * 213) ?>
         <? $new_height = round($thumb_proportion * 240) ?>
         <style type="text/css">
@@ -107,28 +107,16 @@
           <?= $theme->header_bottom() ?>
         </div>
 
-        <? if ($theme->item() && !empty($parents)): ?>
+        <? if (!empty($breadcrumbs)): ?>
         <ul class="g-breadcrumbs">
-          <? $i = 0 ?>
-          <? foreach ($parents as $parent): ?>
-          <li<? if ($i == 0) print " class=\"g-first\"" ?>>
-            <? // Adding ?show=<id> causes Gallery3 to display the page
-               // containing that photo.  For now, we just do it for
-               // the immediate parent so that when you go back up a
-               // level you're on the right page. ?>
-            <a href="<?= $parent->url($parent == $theme->item()->parent() ?
-                     "show={$theme->item()->id}" : null) ?>">
-              <? // limit the title length to something reasonable (defaults to 15) ?>
-              <?= html::purify(text::limit_chars($parent->title,
-                    module::get_var("gallery", "visible_title_length"))) ?>
-            </a>
+          <? foreach ($breadcrumbs as $breadcrumb): ?>
+           <li class="<?= $breadcumb->last ? "g-active" : ""?>
+                       <?= $breadcrumb->first ? "g-first" : "" ?>">
+           <? if(!$breadcumb->last): ?> <a href="<?= $breacrumb->url ?>"><? endif ?>
+           <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?>
+           <? if(!$breadcumb->last): ?> </a><? endif ?>
           </li>
-          <? $i++ ?>
           <? endforeach ?>
-          <li class="g-active<? if ($i == 0) print " g-first" ?>">
-            <?= html::purify(text::limit_chars($theme->item()->title,
-                  module::get_var("gallery", "visible_title_length"))) ?>
-          </li>
         </ul>
         <? endif ?>
       </div>
