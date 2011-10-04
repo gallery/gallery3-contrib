@@ -1,0 +1,7 @@
+name = "Quotas"
+description = "Assign quotas to user groups and track each users space usage."
+version = 1
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:quotas"
+discuss_url = "http://gallery.menalto.com/node/103606"
