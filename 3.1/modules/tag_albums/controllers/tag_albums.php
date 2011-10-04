@@ -44,6 +44,9 @@ class tag_albums_Controller extends Controller {
       $page_title = $album->title;
       $page_description = $album->description;
 
+      // URL to this page
+      $str_page_url = "tag_albums/album/" . $id . "/" . urlencode($album->name);
+
       // Determine page sort order.
       $sort_page_field = $album->sort_column;
       $sort_page_direction = $album->sort_order;
@@ -68,7 +71,7 @@ class tag_albums_Controller extends Controller {
         $index = $this->_get_position($child->$sort_page_field, $child->id, $tag_ids, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, true);
         if ($index) {
           $page = ceil($index / $page_size);
-          url::redirect("tag_albums/album/" . $id . "/" . urlencode($album->name) . "?page=$page");
+          url::redirect($str_page_url . "?page=$page");
         }
       }
 
@@ -79,7 +82,7 @@ class tag_albums_Controller extends Controller {
       //   don't allow the visitor to go below page 1.
       $page = Input::instance()->get("page", 1);
       if ($page < 1) {
-        url::redirect("tag_albums/album/" . $id);
+        url::redirect($str_page_url);
       }
 
       // First item to display.
@@ -90,7 +93,7 @@ class tag_albums_Controller extends Controller {
 
       // Don't let the visitor go past the last page.
       if ($max_pages && $page > $max_pages) {
-        url::redirect("tag_albums/album/{$id}/?page=$max_pages");
+        url::redirect($str_page_url . "/?page=$max_pages");
       }
 
       // Figure out which items to display on this page and store their details in $children.
@@ -110,11 +113,11 @@ class tag_albums_Controller extends Controller {
       // Set up the previous and next page buttons.
       if ($page > 1) {
         $previous_page = $page - 1;
-        $view->previous_page_link = url::site("tag_albums/album/{$id}/?page={$previous_page}");
+        $view->previous_page_link = url::site($str_page_url . "/?page={$previous_page}");
       }
       if ($page < $max_pages) {
         $next_page = $page + 1;
-        $view->next_page_link = url::site("tag_albums/album/{$id}/?page={$next_page}");
+        $view->next_page_link = url::site($str_page_url . "/?page={$next_page}");
       }
 
       // Set up breadcrumbs.
@@ -132,7 +135,7 @@ class tag_albums_Controller extends Controller {
 
       // Set up and display the actual page.
       $parent_album = ORM::factory("item", $album->parent_id);
-      $template = new Theme_View("calpage.html", "other", "Tag Albums");
+      $template = new Theme_View("calpage.html", "collection", "Tag Albums");
       $template->page_title = $page_title;
       $template->set_global("page", $page);
       $template->set_global("page_size", $page_size);
@@ -153,7 +156,7 @@ class tag_albums_Controller extends Controller {
     //  tags whose name begins with $filter.
     $this->index($id, $filter);
   }
-  
+
   public function index($id, $filter) {
     // Load a page containing sub-albums for each tag in the gallery.
 
@@ -190,14 +193,17 @@ class tag_albums_Controller extends Controller {
     $album = "";
     $page_title = module::get_var("tag_albums", "tag_page_title", "All Tags");
     $page_description = "";
+    $str_page_url = "";
     if ($id == "") {
       $album = ORM::factory("item", 1);
       access::required("view", $album);
+      $str_page_url = "tag_albums/";
     } else {
       $album = ORM::factory("item", $album_tags[0]->album_id);
       access::required("view", $album);
       $page_title = $album->title;
       $page_description = $album->description;
+      $str_page_url = "tag_albums/album/" . $id . "/" . urlencode($album->title);
     }
 
     // Figure out sort order from module preferences.
@@ -233,11 +239,7 @@ class tag_albums_Controller extends Controller {
       }
       if ($index) {
         $page = ceil($index / $page_size);
-        if ($id == "") {
-          url::redirect("tag_albums/?page=$page");
-        } else {
-          url::redirect("tag_albums/album/" . $id . "/" . urlencode($album->title) . "?page=$page");
-        }
+        url::redirect("$str_page_url?page=$page");
       }
     }
 
@@ -245,7 +247,7 @@ class tag_albums_Controller extends Controller {
     //	don't allow the visitor to go below page 1.
     $page = Input::instance()->get("page", 1);
     if ($page < 1) {
-      url::redirect("tag_albums/");
+      url::redirect($str_page_url);
     }
 
     // First item to display.
@@ -274,7 +276,7 @@ class tag_albums_Controller extends Controller {
 
     // Don't let the visitor go past the last page.
     if ($max_pages && $page > $max_pages) {
-      url::redirect("tag_albums/?page=$max_pages");
+      url::redirect("$str_page_url?page=$max_pages");
     }
 
     // Figure out which items to display on this page.
@@ -298,11 +300,11 @@ class tag_albums_Controller extends Controller {
     // Set up the previous and next page buttons.
     if ($page > 1) {
       $previous_page = $page - 1;
-      $view->previous_page_link = url::site("tag_albums/album/" . $id . "/?page={$previous_page}");
+      $view->previous_page_link = url::site($str_page_url . "?page={$previous_page}");
     }
     if ($page < $max_pages) {
       $next_page = $page + 1;
-      $view->next_page_link = url::site("tag_albums/album/" . $id . "/?page={$next_page}");
+      $view->next_page_link = url::site($str_page_url . "?page={$next_page}");
     }
 
     // Generate an arry of "fake" items, one for each tag on the page.
@@ -346,7 +348,7 @@ class tag_albums_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("calpage.html", "other", "Tag Albums");
+    $template = new Theme_View("calpage.html", "collection", "Tag Albums");
     $template->page_title = $page_title;
     $template->set_global("page", $page);
     $template->set_global("page_size", $page_size);
@@ -376,9 +378,15 @@ class tag_albums_Controller extends Controller {
       $album_id = "";
     }
 
+    // Load the current tag.
+    $display_tag = ORM::factory("tag", $id);
+
     // Figure out sort order from module preferences.
     $sort_page_field = module::get_var("tag_albums", "subalbum_sort_by", "title");
     $sort_page_direction = module::get_var("tag_albums", "subalbum_sort_direction", "ASC");
+
+    // Figure out the URL to this page.
+    $str_page_url = "tag_albums/tag/{$id}/{$album_id}/" . urlencode($display_tag->name);
 
     // Figure out how many items to display on each page.
     $page_size = module::get_var("gallery", "page_size", 9);
@@ -390,7 +398,7 @@ class tag_albums_Controller extends Controller {
       $index = $this->_get_position($child->$sort_page_field, $child->id, Array($id), "items." . $sort_page_field, $sort_page_direction, "OR", true);
       if ($index) {
         $page = ceil($index / $page_size);
-        url::redirect("tag_albums/tag/" . $id . "/" . $album_id . "?page=$page");
+        url::redirect($str_page_url . "?page=$page");
       }
     }
 
@@ -398,7 +406,7 @@ class tag_albums_Controller extends Controller {
     //	don't allow the visitor to go below page 1.
     $page = Input::instance()->get("page", 1);
     if ($page < 1) {
-      url::redirect("tag_albums/tag/" . $id . "/" . $album_id);
+      url::redirect($str_page_url);
     }
 
     // First item to display.
@@ -413,7 +421,7 @@ class tag_albums_Controller extends Controller {
 
     // Don't let the visitor go past the last page.
     if ($max_pages && $page > $max_pages) {
-      url::redirect("tag_albums/tag/{$id}/" . $album_id . "/?page=$max_pages");
+      url::redirect($str_page_url . "/?page=$max_pages");
     }
 
     // Figure out which items to display on this page.
@@ -435,15 +443,12 @@ class tag_albums_Controller extends Controller {
     // Set up the previous and next page buttons.
     if ($page > 1) {
       $previous_page = $page - 1;
-      $view->previous_page_link = url::site("tag_albums/tag/{$id}/" . $album_id . "/?page={$previous_page}");
+      $view->previous_page_link = url::site($str_page_url . "/?page={$previous_page}");
     }
     if ($page < $max_pages) {
       $next_page = $page + 1;
-      $view->next_page_link = url::site("tag_albums/tag/{$id}/" . $album_id . "/?page={$next_page}");
+      $view->next_page_link = url::site($str_page_url . "/?page={$next_page}");
     }
-
-    // Load the current tag.
-    $display_tag = ORM::factory("tag", $id);
 
     // Set up breadcrumbs for the page.
     $tag_album_breadcrumbs = Array();
@@ -480,7 +485,7 @@ class tag_albums_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("calpage.html", "other", "Tag Albums");
+    $template = new Theme_View("calpage.html", "collection", "Tag Albums");
     $template->page_title = $display_tag->name;
     $template->set_global("page", $page);
     $template->set_global("page_size", $page_size);
@@ -537,12 +542,12 @@ class tag_albums_Controller extends Controller {
       if ($position > 1) {
         $previous_item_object = $this->_get_records(Array($tag_id), 1, $position-2, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
         if (count($previous_item_object) > 0) {
-          $previous_item =  new Tag_Albums_Item($previous_item_object[0]->title, url::site("tag_albums/show/" . $previous_item_object[0]->id . "/" . $tag_id . "/" . $album_id), $previous_item_object[0]->type);
+          $previous_item =  new Tag_Albums_Item($previous_item_object[0]->title, url::site("tag_albums/show/" . $previous_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($previous_item_object[0]->name)), $previous_item_object[0]->type);
         }
       }
       $next_item_object = $this->_get_records(Array($tag_id), 1, $position, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
       if (count($next_item_object) > 0) {
-        $next_item =  new Tag_Albums_Item($next_item_object[0]->title, url::site("tag_albums/show/" . $next_item_object[0]->id . "/" . $tag_id . "/" . $album_id), $next_item_object[0]->type);
+        $next_item =  new Tag_Albums_Item($next_item_object[0]->title, url::site("tag_albums/show/" . $next_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($next_item_object[0]->name)), $next_item_object[0]->type);
       }
       $dynamic_siblings = $this->_get_records(Array($tag_id), null, null, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
     } else {
@@ -559,12 +564,12 @@ class tag_albums_Controller extends Controller {
       if ($position > 1) {
         $previous_item_object = $this->_get_records($tag_ids, 1, $position-2, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
         if (count($previous_item_object) > 0) {
-          $previous_item =  new Tag_Albums_Item($previous_item_object[0]->title, url::site("tag_albums/show/" . $previous_item_object[0]->id . "/" . $tag_id . "/" . $album_id), $previous_item_object[0]->type);
+          $previous_item =  new Tag_Albums_Item($previous_item_object[0]->title, url::site("tag_albums/show/" . $previous_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($previous_item_object[0]->name)), $previous_item_object[0]->type);
         }
       }
       $next_item_object = $this->_get_records($tag_ids, 1, $position, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
       if (count($next_item_object) > 0) {
-        $next_item =  new Tag_Albums_Item($next_item_object[0]->title, url::site("tag_albums/show/" . $next_item_object[0]->id . "/" . $tag_id . "/" . $album_id), $next_item_object[0]->type);
+        $next_item =  new Tag_Albums_Item($next_item_object[0]->title, url::site("tag_albums/show/" . $next_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($next_item_object[0]->name)), $next_item_object[0]->type);
       }
       $dynamic_siblings = $this->_get_records($tag_ids, null, null, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
     }
@@ -575,15 +580,15 @@ class tag_albums_Controller extends Controller {
       $counter = 0;
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($item->title, "");
       if ($album_tags[0]->tags == "*") {
-        $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id . "/" . $album_id));
+        $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id . "/" . $album_id . "/" . urlencode($display_tag->name)));
       }
       $parent_item = ORM::factory("item", $album_tags[0]->album_id);
       if ($album_tags[0]->tags == "*") {
-        $parent_url =  url::site("tag_albums/tag/" . $display_tag->id . "/" . $album_id);
+        $parent_url =  url::site("tag_albums/tag/" . $display_tag->id . "/" . $album_id . "/" . urlencode($display_tag->name));
       } else {
         $parent_url =  $parent_item->url();
       }
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, url::site("tag_albums/album/" . $album_id));
+      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, url::site("tag_albums/album/" . $album_id . "/" . urlencode($parent_item->name)));
       $parent_item = ORM::factory("item", $parent_item->parent_id);
       while ($parent_item->id != 1) {
         $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
@@ -595,9 +600,9 @@ class tag_albums_Controller extends Controller {
     } else {
       $tag_album_breadcrumbs[0] = new Tag_Albums_Breadcrumb(item::root()->title, item::root()->url());
       $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/"));
-      $tag_album_breadcrumbs[2] = new Tag_Albums_Breadcrumb($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id) . "?show=" . $item->id);
+      $tag_album_breadcrumbs[2] = new Tag_Albums_Breadcrumb($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id . "/" . urlencode($display_tag->name)) . "?show=" . $item->id);
       $tag_album_breadcrumbs[3] = new Tag_Albums_Breadcrumb($item->title, "");
-      $parent_url = url::site("tag_albums/tag/" . $display_tag->id);
+      $parent_url = url::site("tag_albums/tag/" . $display_tag->id . "/" . urlencode($display_tag->name));
     }
 
     // Increase the items view count.
@@ -780,7 +785,11 @@ class tag_albums_Controller extends Controller {
     $str_html = "Filter: ";
     if ($str_filter != "") {
       if ($album_id > 0) {
-        $str_html .= "<a href=\"" . url::site("tag_albums/album/" . $album_id) . "\">(All)</a> ";
+        $album_tags = ORM::factory("tags_album_id")
+          ->where("id", "=", $album_id)
+          ->find_all();
+        $album = ORM::factory("item", $album_tags[0]->album_id);
+        $str_html .= "<a href=\"" . url::site("tag_albums/album/" . $album_id . "/" . urlencode($album->name)) . "\">(All)</a> ";
       } else {
         $str_html .= "<a href=\"" . url::site("tag_albums/") . "\">(All)</a> ";
       }

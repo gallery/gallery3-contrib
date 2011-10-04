@@ -132,7 +132,7 @@
           <?= $theme->header_bottom() ?>
         </div>
 
-        <? // The following code was modifed to allow module-defined breadcrumbs.
+        <? // rWatcher EDIT: The following code was modifed to allow module-defined breadcrumbs.
            // Everything else in this file is a copy of the default page.html.php file.
         ?>
         <? if (!empty($breadcrumbs)): ?>
@@ -145,9 +145,14 @@
                  the immediate parent so that when you go back up a
                  level you're on the right page. -->
             <? if ($breadcrumb->url) : ?>
-              <a href="<?= $breadcrumb->url ?>"><?= html::purify($breadcrumb->title) ?></a>
+              <a href="<?= $breadcrumb->url ?>">
+              <? // limit the title length to something reasonable (defaults to 15) ?>
+              <?= html::purify(text::limit_chars($breadcrumb->title,
+                    module::get_var("gallery", "visible_title_length"))) ?>
+              </a>
             <? else : ?>
-              <?= html::purify($breadcrumb->title) ?>
+              <?= html::purify(text::limit_chars($breadcrumb->title,
+                    module::get_var("gallery", "visible_title_length"))) ?>
             <? endif ?>
           </li>
           <? $i++ ?>
@@ -156,7 +161,7 @@
         <? endif ?>
         <? // End modified code ?>
 
-		</div>
+      </div>
       <div id="bd">
         <div id="yui-main">
           <div class="yui-b">

@@ -53,7 +53,7 @@
     $siblings = $dynamic_siblings;
     for ($i = 1; $i <= $total_pages; $i++):
       if ($page_type == "item") {
-        $_pagelist[$i] = url::site("tag_albums/show/" . $siblings[$i-1]->id . "/" . $tag_id . "/" . $album_id);
+        $_pagelist[$i] = url::site("tag_albums/show/" . $siblings[$i-1]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($siblings[$i-1]->name));
       } elseif ($page_type == "") {
       }
     endfor;
@@ -91,6 +91,7 @@
       $_pagelist[1] = url::site();
       break;
   }
+
 // rWatcher Mod
   endif;
 // End rWatcher Mod.
