@@ -19,7 +19,7 @@
  */
 include("Mail.php");
 include("Mail/mime.php");
-include("HTTP/Request.php");
+include("HTTP/Request2.php");
 
 class Gallery3 {
   var $url;
@@ -170,30 +170,32 @@ class Gallery3 {
 
 class Gallery3_Helper {
   static function request($method, $url, $token=null, $params=array(), $file=null) {
-    $req = new HTTP_Request($url);
-    $req->setMethod($method == "get" ? HTTP_REQUEST_METHOD_GET : HTTP_REQUEST_METHOD_POST);
-    $req->addHeader("X-Gallery-Request-Method", $method);
+    $req = new HTTP_Request2($url);
+    $req->setMethod($method == "get" ? 'GET' : 'POST');
+    $req->setHeader("X-Gallery-Request-Method", $method);
     if ($token) {
-      $req->addHeader("X-Gallery-Request-Key", $token);
+      $req->setHeader("X-Gallery-Request-Key", $token);
     }
     foreach ($params as $key => $value) {
-      $req->addPostData($key, is_string($value) ? $value : json_encode($value));
+      // $req->addPostParameter($key, is_string($value) ? $value : json_encode($value));
+      $req->addPostParameter($key, $value);
     }
     if ($file) {
       $req->addFile("file", $file, mime_content_type($file));
     }
-    $req->sendRequest();
+    $response = $req->send();
+    $status = $response->getStatus();
 
-    switch ($req->getResponseCode()) {
+    switch ($status) {
     case 200:
     case 201:
-      return json_decode($req->getResponseBody());
+      return json_decode($response->getBody());
 
     case 403:
-      throw new Gallery3_Forbidden_Exception($req->getResponseBody());
+      throw new Gallery3_Forbidden_Exception($response->getBody(),$status);
 
     default:
-      throw new Gallery3_Exception($req->getResponseBody());
+      throw new Gallery3_Exception($response->getBody(),$status);
     }
   }
 }
