@@ -56,8 +56,8 @@
 <meta name="teoma" content="noindex, nofollow, noarchive" />
 <? endif; ?>
 <? if ($theme->blendpagetrans): ?>
-<meta http-equiv="Page-Enter" content="blendTrans(Duration=0.5)" />
-<meta http-equiv="Page-Exit" content="blendTrans(Duration=0.5)" />
+<meta http-equiv="Page-Enter" content="blendtrans(duration=0.5)" /> 
+<meta http-equiv="Page-Exit" content="blendtrans(duration=0.5)" />
 <? endif; ?>
 <!-- Internet Explorer 9 Meta tags : Start -->
 <meta name="application-name" content="<?= $_title; ?>" />
@@ -124,12 +124,20 @@
 <style type="text/css"> #g-column-bottom #g-thumbnav-block, #g-column-top #g-thumbnav-block { display: none; } </style>
 <? endif; ?>
 </head>
-<? if ($theme->item()): ?>
-<?   $item = $theme->item(); ?>
-<? else: ?>
-<?   $item = item::root(); ?>
-<? endif; ?>                             
-<body <?= $theme->body_attributes() ?><?= ($theme->show_root_page)? ' id="g-rootpage"' : null; ?> <?= ($theme->is_rtl)? "class=\"rtl\"" : null; ?> >
+<? if ($theme->item()):
+     $item = $theme->item();
+   else:
+     $item = item::root();
+   endif;
+   if ($theme->is_rtl):
+     $body_class = "rtl";
+   else:
+     $body_class = "";
+   endif;
+   if ($theme->viewmode == "mini"):
+     $body_class .= "viewmode-mini";
+   endif; ?>
+<body <?= $theme->body_attributes() ?><?= ($theme->show_root_page)? ' id="g-rootpage"' : null; ?> <?= ($body_class)? 'class="' . $body_class . '"' : null; ?>>
 <?= $theme->page_top() ?>
 <?= $theme->site_status() ?>
 <? if (((!$user->guest) or ($theme->show_guest_menu)) and ($theme->mainmenu_position == "bar")): ?>
@@ -140,14 +148,15 @@
 <? endif ?>
 <div id="g-header">
 <?= $theme->header_top() ?>
-<? if ($header_text = module::get_var("gallery", "header_text")): ?>
+<? if ($theme->viewmode != "mini"): ?>
+<?   if ($header_text = module::get_var("gallery", "header_text")): ?>
 <span id="g-header-text"><?=  $theme->bb2html($header_text, 1) ?></span>
-<? else: ?>
+<?   else: ?>
   <a id="g-logo" href="<?= item::root()->url() ?><?= ($theme->allow_root_page)? "?root=yes" : null; ?>" title="<?= t("go back to the Gallery home")->for_html_attr() ?>">
     <img alt="<?= t("Gallery logo: Your photos on your web site")->for_html_attr() ?>" src="<?= $theme->logopath ?>" />
   </a>
-<? endif ?>
-
+<?   endif; ?>
+<? endif; ?>
 <? if (((!$user->guest) or ($theme->show_guest_menu)) and ($theme->mainmenu_position != "bar")): ?>
   <div id="g-site-menu" class="g-<?= $theme->mainmenu_position; ?>">
   <?= $theme->site_menu($theme->item() ? "#g-item-id-{$theme->item()->id}" : "") ?>
@@ -160,12 +169,17 @@
 <? if ($theme->loginmenu_position == "header"): ?>
 <?=  $theme->user_menu() ?>
 <? endif ?>
+
 <?
   // Custom rWatcher code, based on the breadcrumb menu function.
   // The rest of this file is the original page.html.php file from the Grey Dragon theme.
 ?>
 <? if (empty($breadcrumbs)): ?>
+<? if (empty($parents)): ?>
 <?= $theme->breadcrumb_menu($theme, null); ?>
+<? else: ?>
+<?= $theme->breadcrumb_menu($theme, $parents); ?>
+<? endif; ?>
 <? else: ?>
 <?
     $breadcrumb_content = "";
@@ -193,6 +207,7 @@
 
   // End Edit.
 ?>
+
 <? endif; ?>
 <?= $theme->custom_header(); ?>
 </div>
@@ -281,15 +296,17 @@
 </div>
 <? endif; ?>
 <div id="g-footer">
-<?= $theme->footer() ?>
-<? if ($footer_text = module::get_var("gallery", "footer_text")): ?>
+<? if ($theme->viewmode != "mini"): ?>
+<?=  $theme->footer() ?>
+<?   if ($footer_text = module::get_var("gallery", "footer_text")): ?>
 <span id="g-footer-text"><?=  $theme->bb2html($footer_text, 1) ?></span>
-<? endif ?>
+<?   endif ?>
   <?= $theme->credits() ?>
   <ul id="g-footer-rightside"><li><?= $theme->copyright ?></li></ul>
-<? if ($theme->loginmenu_position == "default"): ?>
+<?   if ($theme->loginmenu_position == "default"): ?>
   <?= $theme->user_menu() ?>
-<? endif ?>
+<?   endif; ?>
+<? endif; ?>
 <?= $theme->custom_footer(); ?>
 </div>
 <?= $theme->page_bottom() ?>

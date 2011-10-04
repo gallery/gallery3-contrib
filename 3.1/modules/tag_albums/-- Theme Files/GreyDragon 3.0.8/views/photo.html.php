@@ -48,7 +48,7 @@
   <div id="g-info">
     <h1><?= $_title ?></h1>
   </div>
-  <?= $theme->add_paginator("top"); ?>
+  <?= $theme->add_paginator("top", FALSE); ?>
   <?= $theme->photo_top() ?>
   <? if (($theme->photo_descmode == "top") and ($_description)): ?>
     <div id="g-info"><div class="g-description"><?= $_description ?></div></div>
@@ -56,7 +56,7 @@
   <div id="g-photo">
     <?= $theme->resize_top($item) ?>
     <? $_resizewidth = $item->resize_width;
-
+	
 // rWatcher Modification.
     $siblings = "";
     if (isset($dynamic_siblings)) {
@@ -116,7 +116,7 @@
   <? if (($theme->photo_descmode == "bottom") and ($_description)): ?>
     <div id="g-info"><div class="g-description"><?= $_description ?></div></div>
   <? endif; ?>
-  <?= $theme->add_paginator("bottom"); ?>
+  <?= $theme->add_paginator("bottom", FALSE); ?>
   <?= $theme->photo_bottom() ?>
 </div>
 <?= $script ?>
