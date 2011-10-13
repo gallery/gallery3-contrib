@@ -56,8 +56,8 @@
   <div id="g-photo">
     <?= $theme->resize_top($item) ?>
     <? $_resizewidth = $item->resize_width;
-	
 // rWatcher Modification.
+       //ORIGINAL LINE $siblings = $item->parent()->children(); 
     $siblings = "";
     if (isset($dynamic_siblings)) {
       $siblings = $dynamic_siblings;
@@ -66,7 +66,7 @@
     }
 // End rWatcher Modification
     ?>
-
+	   
     <div class="g-resize" style="margin-left: -<?= intval($_resizewidth / 2); ?>px; ">
     <? $script  = "<script type=\"text/javascript\">\n";
        $script .= "  if (document.images) {\n";
