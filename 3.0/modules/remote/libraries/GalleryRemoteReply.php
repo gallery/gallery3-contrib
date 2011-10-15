@@ -46,7 +46,7 @@ class GalleryRemoteReply_Core {
   }
   
   public function send($status='') {
-    if($status!='') $reply->set('status', $status);
+    if($status!='') $this->set('status', $status);
     //ksort($this->values);
 
     echo '#__GR2PROTO__'.$this->nl;
