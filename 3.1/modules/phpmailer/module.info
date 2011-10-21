@@ -1,7 +1,7 @@
 name = "PHPMailer"
 description = "Use PHPMailer when sending email messages."
-version = 1
-author_name = ""
-author_url = ""
+version = 2
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:phpmailer"
-discuss_url = "http://gallery.menalto.com/forum_module_phpmailer"
+discuss_url = "http://gallery.menalto.com/node/89279"

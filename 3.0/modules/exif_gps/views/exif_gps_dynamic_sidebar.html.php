@@ -19,4 +19,4 @@
   google.setOnLoadCallback(initialize);
 
 </script>
-<div id="sidebar_map_canvas" style="width:205px; height:214px"></div>
+<div id="sidebar_map_canvas" style="width:205px; height:214px"><img src="http://maps.google.com/maps/api/staticmap?center=<?=$latitude; ?>,<?=$longitude; ?>&zoom=<?= module::get_var("exif_gps", "sidebar_zoom"); ?>&size=205x214&maptype=<?=$sidebar_map_type ?>&markers=color:red|color:red|<?=$latitude; ?>,<?=$longitude; ?>&sensor=false"></div>
