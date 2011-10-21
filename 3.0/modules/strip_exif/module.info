@@ -1,0 +1,7 @@
+name = "Strip EXIF Data"
+description = "Strip EXIF/IPTC data from uploaded photos."
+version = 1
+author_name = "jingai"
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:strip_exif"
+discuss_url = "http://gallery.menalto.com/forum_module_strip_exif"

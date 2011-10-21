@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class ContactOwner_Controller extends Controller {
-  static function get_email_form($user_id, $item_id) {
+  static function get_email_form($user_id, $item_id=null) {
     // Determine name of the person the message is going to.
     $str_to_name = "";
     if ($user_id == -1) {
@@ -34,7 +34,7 @@ class ContactOwner_Controller extends Controller {
 
     // If item_id is set, include a link to the item.
     $email_body = "";
-    if ($item_id <> "") {
+    if (!empty($item_id)) {
       $item = ORM::factory("item", $item_id);
       $email_body = "This message refers to <a href=\"" . url::abs_site("{$item->type}s/{$item->id}") . "\">this page</a>.";
     }
@@ -83,10 +83,10 @@ class ContactOwner_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "other", "Contact");
-    $template->content = new View("contactowner_emailform.html");
-    $template->content->sendmail_form = $this->get_email_form("-1", $item_id);
-    print $template;
+    $view = new View("contactowner_emailform.html");
+    $view->sendmail_form = $this->get_email_form("-1", $item_id);
+
+    print $view;
   }
 
   public function emailid($user_id, $item_id) {
@@ -98,10 +98,11 @@ class ContactOwner_Controller extends Controller {
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("page.html", "other", "Contact");
-    $template->content = new View("contactowner_emailform.html");
-    $template->content->sendmail_form = $this->get_email_form($user_id, $item_id);
-    print $template;
+    // Set up and display the actual page.
+    $view = new View("contactowner_emailform.html");
+    $view->sendmail_form = $this->get_email_form($user_id, $item_id);
+
+    print $view;
   }
 
   public function sendemail($user_id) {
@@ -154,18 +155,12 @@ class ContactOwner_Controller extends Controller {
           ->message($str_emailbody)
           ->send();
 
-        // Display a message telling the visitor that their email has been sent.
-        $template = new Theme_View("page.html", "other", "Contact");
-        $template->content = new View("contactowner_emailform.html");
-        $template->content->sendmail_form = t("Your Message Has Been Sent.");
-        print $template;
+      message::info(t("Your Message Has Been Sent."));
+      json::reply(array("result" => "success"));
 
     } else {
       // Set up and display the actual page.
-      $template = new Theme_View("page.html", "other", "Contact");
-      $template->content = new View("contactowner_emailform.html");
-      $template->content->sendmail_form = $form;
-        print $template;
+      json::reply(array("result" => "error", "html" => (string) $form));
     }
   }
 }
