@@ -71,7 +71,11 @@ class tag_albums_Controller extends Controller {
         $index = $this->_get_position($child->$sort_page_field, $child->id, $tag_ids, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, true);
         if ($index) {
           $page = ceil($index / $page_size);
-          url::redirect($str_page_url . "?page=$page");
+          if ($page == 1) {
+            url::redirect($str_page_url);
+          } else {
+            url::redirect($str_page_url . "?page=$page");
+          }
         }
       }
 
@@ -186,7 +190,7 @@ class tag_albums_Controller extends Controller {
       ->where("id", "=", $id)
       ->find_all();
     if (count($album_tags) == 0) {
-      $id = "";
+      $id = 0;
     }
 
     // Inherit permissions, title and description from the album that linked to this page,
@@ -195,7 +199,7 @@ class tag_albums_Controller extends Controller {
     $page_title = module::get_var("tag_albums", "tag_page_title", "All Tags");
     $page_description = "";
     $str_page_url = "";
-    if ($id == "") {
+    if ($id == 0) {
       $album = ORM::factory("item", 1);
       access::required("view", $album);
       $str_page_url = "tag_albums/";
@@ -240,7 +244,11 @@ class tag_albums_Controller extends Controller {
       }
       if ($index) {
         $page = ceil($index / $page_size);
-        url::redirect("$str_page_url?page=$page");
+        if ($page == 1) {
+          url::redirect("$str_page_url");
+        } else {
+          url::redirect("$str_page_url?page=$page");
+        }
       }
     }
 
@@ -330,7 +338,7 @@ class tag_albums_Controller extends Controller {
     // Set up breadcrumbs.
     $tag_album_breadcrumbs = Array();
     $parent_url = "";
-    if ($id != "") {
+    if ($id > 0) {
       $counter = 0;
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($album->title, "");
       $parent_item = ORM::factory("item", $album->parent_id);
@@ -376,7 +384,7 @@ class tag_albums_Controller extends Controller {
       ->where("id", "=", $album_id)
       ->find_all();
     if (count($album_tags) == 0) {
-      $album_id = "";
+      $album_id = 0;
     }
 
     // Load the current tag.
@@ -399,7 +407,11 @@ class tag_albums_Controller extends Controller {
       $index = $this->_get_position($child->$sort_page_field, $child->id, Array($id), "items." . $sort_page_field, $sort_page_direction, "OR", true);
       if ($index) {
         $page = ceil($index / $page_size);
-        url::redirect($str_page_url . "?page=$page");
+        if ($page == 1) {
+          url::redirect($str_page_url);
+        } else {
+          url::redirect($str_page_url . "?page=$page");
+        }
       }
     }
 
@@ -454,7 +466,7 @@ class tag_albums_Controller extends Controller {
     // Set up breadcrumbs for the page.
     $tag_album_breadcrumbs = Array();
     $parent_url = "";
-    if ($album_id != "") {
+    if ($album_id > 0) {
       $counter = 0;
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($display_tag->name, "");
       $parent_item = ORM::factory("item", $album_tags[0]->album_id);
@@ -510,7 +522,7 @@ class tag_albums_Controller extends Controller {
       ->where("id", "=", $album_id)
       ->find_all();
     if (count($album_tags) == 0) {
-      $album_id = "";
+      $album_id = 0;
     }
 
     // Load the tag and item, make sure the user has access to the item.
@@ -578,7 +590,7 @@ class tag_albums_Controller extends Controller {
 
     // Set up breadcrumbs
     $tag_album_breadcrumbs = Array();
-    if ($album_id != "") {
+    if ($album_id > 0) {
       $counter = 0;
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($item->title, "");
       if ($album_tags[0]->tags == "*") {
