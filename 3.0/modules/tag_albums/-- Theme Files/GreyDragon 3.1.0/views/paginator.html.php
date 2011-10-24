@@ -59,7 +59,7 @@
     endfor;
   else:
   // End rWatcher Mod.
-
+  
   switch ($page_type) {
     case "collection":
       if (isset($item)):
@@ -189,7 +189,7 @@
   <? if (isset($parent_url)): ?>
     <a title="<?= t("up") ?>" id="g-navi-parent" href="<?= $parent_url ?>"><span class="ui-icon ui-icon-parent">&nbsp;</span></a>
   <? elseif (isset($parent)): ?>
-    <a title="<?= t("up") ?>" id="g-navi-parent" href="<?= $parent->url() ?>"><span class="ui-icon ui-icon-parent">&nbsp;</span></a>
+    <a title="<?= t("up") ?>" id="g-navi-parent" href="<?= $parent->url("show={$item->id}"); ?>"><span class="ui-icon ui-icon-parent">&nbsp;</span></a>
   <? else: ?>
     <span class="ui-icon ui-icon-parent-d">&nbsp;</span>
   <? endif ?>
