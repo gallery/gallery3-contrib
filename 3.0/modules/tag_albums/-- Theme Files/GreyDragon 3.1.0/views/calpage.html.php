@@ -19,7 +19,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <? $theme->load_sessioninfo(); ?>
-<!-- <?= $theme->themename ?> v.<?= $theme->themeversion ?> (ColorPack: <?= $theme->colorpack ?>) - Copyright (c) 2009-2011 Serguei Dosyukov - All Rights Reserved -->
+<!-- <?= $theme->themename ?> v.<?= $theme->themeversion ?> (<?= $theme->colorpack ?> : <?= $theme->framepack ?>) - Copyright (c) 2009-2011 Serguei Dosyukov - All Rights Reserved -->
 <html xmlns="http://www.w3.org/1999/xhtml" <?= $theme->html_attributes() ?> xml:lang="en" lang="en" <?= ($theme->is_rtl)? "dir=rtl" : null; ?> >
 <?
   $item = $theme->item();
@@ -55,10 +55,6 @@
 <meta name="msnbot" content="noindex, nofollow, noarchive, nosnippet, noodp" />
 <meta name="teoma" content="noindex, nofollow, noarchive" />
 <? endif; ?>
-<? if ($theme->blendpagetrans): ?>
-<meta http-equiv="Page-Enter" content="blendtrans(duration=0.5)" /> 
-<meta http-equiv="Page-Exit" content="blendtrans(duration=0.5)" />
-<? endif; ?>
 <!-- Internet Explorer 9 Meta tags : Start -->
 <meta name="application-name" content="<?= $_title; ?>" />
 <meta name="msapplication-tooltip" content="<?= t("Start"); ?> <?= $_title; ?>" />
@@ -74,7 +70,6 @@
 <meta name="msapplication-task" content="name=<?= t("Admin") ?>: <?= t("Dashboard") ?>; action-uri=<?= url::site("admin"); ?>; icon-uri=favicon.ico" />
 <? endif; ?>
 <!-- Internet Explorer 9 Meta tags : End -->
-
 <link rel="shortcut icon" href="<?= $theme->favicon ?>" type="image/x-icon" />
 <? if ($theme->appletouchicon): ?>
 <link rel="apple-touch-icon" href="<?= $theme->appletouchicon; ?>"/>
@@ -100,22 +95,12 @@
 
 <?= $theme->head() ?>
 
-<? /* Theme specific CSS/JS goes last so that it can override module CSS/JS */ ?>
-<?= $theme->script("animation.js"); ?>
-<?= $theme->script("ui.support.js"); ?>
-
+<? // Theme specific CSS/JS goes last so that it can override module CSS/JS ?>
+<?= $theme->theme_js_inject(); ?>
 <?= $theme->theme_css_inject(); ?>
-
-<!-- LOOKING FOR YOUR CSS? It's all been combined into the link below -->
-<?= $theme->get_combined("css"); ?>
-
-<?= $theme->css_link("colorpacks/" . $theme->colorpack . "/colors.css", FALSE); ?>
-<?= $theme->css_link("framepacks/" . $theme->framepack . "/frame.css",  FALSE); ?>
-<? if ($theme->custom_css_path != ""): ?>
-<?=  $theme->css_link($theme->custom_css_path, TRUE); ?>
-<? endif; ?>
-<!-- LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link below -->
-<?= $theme->get_combined("script") ?>
+<?= $theme->get_combined("css");          // LOOKING FOR YOUR CSS? It's all been combined into the link ?>
+<?= $theme->custom_css_inject(TRUE); ?>
+<?= $theme->get_combined("script")        // LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link ?>
 
 <!--[if IE 6]>
   <link rel="stylesheet" href="<?= $theme->url("css/old_ie.css") ?>" type="text/css" media="screen,print,projection" />
@@ -128,24 +113,18 @@
      $item = $theme->item();
    else:
      $item = item::root();
-   endif;
-   if ($theme->is_rtl):
-     $body_class = "rtl";
-   else:
-     $body_class = "";
-   endif;
-   if ($theme->viewmode == "mini"):
-     $body_class .= "viewmode-mini";
    endif; ?>
-<body <?= $theme->body_attributes() ?><?= ($theme->show_root_page)? ' id="g-rootpage"' : null; ?> <?= ($body_class)? 'class="' . $body_class . '"' : null; ?>>
-<?= $theme->page_top() ?>
+<body <?= $theme->body_attributes() ?><?= ($theme->show_root_page)? ' id="g-rootpage"' : null; ?> <?= $theme->get_bodyclass(); ?>>
+<div class="QOverlay" style="left: 0px; top: 0px; width: 100%; height: 100%; position: fixed;">
+</div>
+<?= $theme->page_top() ?>                               
 <?= $theme->site_status() ?>
 <? if (((!$user->guest) or ($theme->show_guest_menu)) and ($theme->mainmenu_position == "bar")): ?>
   <style type="text/css">	html { margin-top: 30px !important; }	</style>
   <div id="g-site-menu" class="g-<?= $theme->mainmenu_position; ?>">
   <?= $theme->site_menu($theme->item() ? "#g-item-id-{$theme->item()->id}" : "") ?>
   </div>
-<? endif ?>
+<? endif; ?>
 <div id="g-header">
 <?= $theme->header_top() ?>
 <? if ($theme->viewmode != "mini"): ?>
@@ -175,40 +154,45 @@
   // The rest of this file is the original page.html.php file from the Grey Dragon theme.
 ?>
 <? if (empty($breadcrumbs)): ?>
+
+<? // This block is the original breadcrumb code ?>
 <? if (empty($parents)): ?>
 <?= $theme->breadcrumb_menu($theme, null); ?>
 <? else: ?>
 <?= $theme->breadcrumb_menu($theme, $parents); ?>
 <? endif; ?>
+<? // End Original Breadcrumb code, begin modified code. ?>
+
 <? else: ?>
 <?
+    // This is based on the libraries/My_Theme_View.php -> breadcrumb_menu function.
     $breadcrumb_content = "";
     if ($this->breadcrumbs_position == "hide"):
     else:
       $limit_title_length = module::get_var("gallery", "visible_title_length", 999);
 
-      $breadcrumb_content .= '<ul class="g-breadcrumbs g-' . module::get_var("th_greydragon", "breadcrumbs_position", "default") . '">';
+      $breadcrumb_content .= '<ul class="g-breadcrumbs g-' . $this->breadcrumbs_position . '">';
       $i = 0;
         foreach ($breadcrumbs as $breadcrumb):
-		  if ($breadcrumb->url):
-          $breadcrumb_content .= '<li ' . (($i == 0)? " class=\"g-first\"" : null) . '>';
-          $breadcrumb_content .= '<a href="' . $breadcrumb->url . '">';
-          $breadcrumb_content .= text::limit_chars($theme->bb2html(html::purify($breadcrumb->title), 2), $limit_title_length);
-          $breadcrumb_content .= '</a></li>';
-		  else:
-          $breadcrumb_content .= '<li class="g-active ' . (($i == 0)? " g-first" : null) . '">' . text::limit_chars($theme->bb2html(html::purify($breadcrumb->title), 2), $limit_title_length) . '</li>';
-		  endif;
+          if ($breadcrumb->url):
+            $breadcrumb_content .= '<li ' . (($i == 0)? " class=\"g-first\"" : null) . '>';
+            $breadcrumb_content .= (($i > 0)? " :: " : null );
+            $breadcrumb_content .= '<a href="' . $breadcrumb->url . '">';
+            $breadcrumb_content .= text::limit_chars($theme->bb2html(html::purify($breadcrumb->title), 2), $limit_title_length);
+            $breadcrumb_content .= '</a></li>';
+          else:
+            $breadcrumb_content .= '<li class="g-active ' . (($i == 0)? " g-first" : null) . '"> '. (($i > 0)? " :: " : null ) . text::limit_chars($theme->bb2html(html::purify($breadcrumb->title), 2), $limit_title_length) . '</li>';
+          endif;
           $i++;
         endforeach;
       $breadcrumb_content .= '</ul>';
     endif;
 
-    print $breadcrumb_content;
-
-  // End Edit.
+    print $breadcrumb_content;  
 ?>
+<? endif; // End Edit. ?>
 
-<? endif; ?>
+
 <?= $theme->custom_header(); ?>
 </div>
 <? if (($theme->page_subtype != "login") and ($theme->page_subtype != "reauthenticate") and ($theme->sidebarvisible == "top")): ?>

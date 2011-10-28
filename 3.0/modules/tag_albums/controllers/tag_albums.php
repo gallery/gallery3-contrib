@@ -71,7 +71,11 @@ class tag_albums_Controller extends Controller {
         $index = $this->_get_position($child->$sort_page_field, $child->id, $tag_ids, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, true);
         if ($index) {
           $page = ceil($index / $page_size);
-          url::redirect($str_page_url . "?page=$page");
+          if ($page == 1) {
+            url::redirect($str_page_url);
+          } else {
+            url::redirect($str_page_url . "?page=$page");
+          }
         }
       }
 
@@ -100,7 +104,7 @@ class tag_albums_Controller extends Controller {
       $tag_children = $this->_get_records($tag_ids, $page_size, $offset, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, true); 
       $children = Array();
       foreach ($tag_children as $one_child) {
-        $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/0/" . $id . "/" . urlencode($one_child->name)), $one_child->type);
+        $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/0/" . $id . "/" . urlencode($one_child->name)), $one_child->type, $one_child->id);
         $child_tag->id = $one_child->id;
         $child_tag->view_count = $one_child->view_count;
         $child_tag->owner = identity::lookup_user($one_child->owner_id);
@@ -141,6 +145,7 @@ class tag_albums_Controller extends Controller {
       $template->set_global("page_size", $page_size);
       $template->set_global("max_pages", $max_pages);
       $template->set_global("children", $children);
+      $template->set_global("all_siblings", $this->_get_records($tag_ids, $count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false));
       $template->set_global("children_count", $count);
       $template->set_global("parent_url", $parent_album->url()); // Used by Grey Dragon.
       $template->content = new View("tag_albums_album.html");
@@ -185,7 +190,7 @@ class tag_albums_Controller extends Controller {
       ->where("id", "=", $id)
       ->find_all();
     if (count($album_tags) == 0) {
-      $id = "";
+      $id = 0;
     }
 
     // Inherit permissions, title and description from the album that linked to this page,
@@ -194,7 +199,7 @@ class tag_albums_Controller extends Controller {
     $page_title = module::get_var("tag_albums", "tag_page_title", "All Tags");
     $page_description = "";
     $str_page_url = "";
-    if ($id == "") {
+    if ($id == 0) {
       $album = ORM::factory("item", 1);
       access::required("view", $album);
       $str_page_url = "tag_albums/";
@@ -239,7 +244,11 @@ class tag_albums_Controller extends Controller {
       }
       if ($index) {
         $page = ceil($index / $page_size);
-        url::redirect("$str_page_url?page=$page");
+        if ($page == 1) {
+          url::redirect("$str_page_url");
+        } else {
+          url::redirect("$str_page_url?page=$page");
+        }
       }
     }
 
@@ -317,7 +326,7 @@ class tag_albums_Controller extends Controller {
         ->where("items_tags.tag_id", "=", $one_tag->id)
         ->order_by("items.id", "DESC")
         ->find_all(1, 0);
-      $child_tag =  new Tag_Albums_Item($one_tag->name, url::site("tag_albums/tag/" . $one_tag->id . "/" . $id . "/" . urlencode($one_tag->name)), "album");
+      $child_tag =  new Tag_Albums_Item($one_tag->name, url::site("tag_albums/tag/" . $one_tag->id . "/" . $id . "/" . urlencode($one_tag->name)), "album", 0);
       if (count($tag_item) > 0) {
         if ($tag_item[0]->has_thumb()) {
           $child_tag->set_thumb($tag_item[0]->thumb_url(), $tag_item[0]->thumb_width, $tag_item[0]->thumb_height);
@@ -329,7 +338,7 @@ class tag_albums_Controller extends Controller {
     // Set up breadcrumbs.
     $tag_album_breadcrumbs = Array();
     $parent_url = "";
-    if ($id != "") {
+    if ($id > 0) {
       $counter = 0;
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($album->title, "");
       $parent_item = ORM::factory("item", $album->parent_id);
@@ -375,7 +384,7 @@ class tag_albums_Controller extends Controller {
       ->where("id", "=", $album_id)
       ->find_all();
     if (count($album_tags) == 0) {
-      $album_id = "";
+      $album_id = 0;
     }
 
     // Load the current tag.
@@ -398,7 +407,11 @@ class tag_albums_Controller extends Controller {
       $index = $this->_get_position($child->$sort_page_field, $child->id, Array($id), "items." . $sort_page_field, $sort_page_direction, "OR", true);
       if ($index) {
         $page = ceil($index / $page_size);
-        url::redirect($str_page_url . "?page=$page");
+        if ($page == 1) {
+          url::redirect($str_page_url);
+        } else {
+          url::redirect($str_page_url . "?page=$page");
+        }
       }
     }
 
@@ -430,7 +443,7 @@ class tag_albums_Controller extends Controller {
     // Create an array of "fake" items to display on the page.
     $children = Array();
     foreach ($tag_children as $one_child) {
-      $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/" . $id . "/" . $album_id . "/" . urlencode($one_child->name)), $one_child->type);
+      $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/" . $id . "/" . $album_id . "/" . urlencode($one_child->name)), $one_child->type, $one_child->id);
       $child_tag->id = $one_child->id;
       $child_tag->view_count = $one_child->view_count;
       $child_tag->owner = identity::lookup_user($one_child->owner_id);
@@ -453,7 +466,7 @@ class tag_albums_Controller extends Controller {
     // Set up breadcrumbs for the page.
     $tag_album_breadcrumbs = Array();
     $parent_url = "";
-    if ($album_id != "") {
+    if ($album_id > 0) {
       $counter = 0;
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($display_tag->name, "");
       $parent_item = ORM::factory("item", $album_tags[0]->album_id);
@@ -491,6 +504,7 @@ class tag_albums_Controller extends Controller {
     $template->set_global("page_size", $page_size);
     $template->set_global("max_pages", $max_pages);
     $template->set_global("children", $children);
+    $template->set_global("all_siblings", $this->_get_records(Array($id), $count, 0, "items." . $sort_page_field, $sort_page_direction, "OR", false));
     $template->set_global("children_count", $count);
     $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
     $template->content = new View("tag_albums_album.html");
@@ -508,7 +522,7 @@ class tag_albums_Controller extends Controller {
       ->where("id", "=", $album_id)
       ->find_all();
     if (count($album_tags) == 0) {
-      $album_id = "";
+      $album_id = 0;
     }
 
     // Load the tag and item, make sure the user has access to the item.
@@ -542,12 +556,12 @@ class tag_albums_Controller extends Controller {
       if ($position > 1) {
         $previous_item_object = $this->_get_records(Array($tag_id), 1, $position-2, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
         if (count($previous_item_object) > 0) {
-          $previous_item =  new Tag_Albums_Item($previous_item_object[0]->title, url::site("tag_albums/show/" . $previous_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($previous_item_object[0]->name)), $previous_item_object[0]->type);
+          $previous_item =  new Tag_Albums_Item($previous_item_object[0]->title, url::site("tag_albums/show/" . $previous_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($previous_item_object[0]->name)), $previous_item_object[0]->type, $previous_item_object[0]->id);
         }
       }
       $next_item_object = $this->_get_records(Array($tag_id), 1, $position, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
       if (count($next_item_object) > 0) {
-        $next_item =  new Tag_Albums_Item($next_item_object[0]->title, url::site("tag_albums/show/" . $next_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($next_item_object[0]->name)), $next_item_object[0]->type);
+        $next_item =  new Tag_Albums_Item($next_item_object[0]->title, url::site("tag_albums/show/" . $next_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($next_item_object[0]->name)), $next_item_object[0]->type, $next_item_object[0]->id);
       }
       $dynamic_siblings = $this->_get_records(Array($tag_id), null, null, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
     } else {
@@ -576,7 +590,7 @@ class tag_albums_Controller extends Controller {
 
     // Set up breadcrumbs
     $tag_album_breadcrumbs = Array();
-    if ($album_id != "") {
+    if ($album_id > 0) {
       $counter = 0;
       $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($item->title, "");
       if ($album_tags[0]->tags == "*") {
