@@ -34,6 +34,7 @@ class WebDAV_Controller extends Controller {
     $server->setBaseUri(url::site("webdav/gallery"));
     // $server->addPlugin($lock);
     $server->addPlugin($filter);
+    $server->addPlugin(new Sabre_DAV_Browser_GuessContentType());
 
     if ($this->_authenticate()) {
       $server->exec();
