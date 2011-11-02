@@ -26,7 +26,15 @@ from G3Items import getItemFromResp , getItemsFromResp , BaseRemote , Album , \
     RemoteImage , Tag
 from urllib import quote , urlencode
 from uuid import uuid4
-import urllib2 , os , json
+import urllib2 , os
+try:
+    import json
+except:
+    try:
+        import simplejson
+    except ImportError , e:
+        raise ImportError('You must have either the "json" or "simplejson"'
+            'library installed!')
 
 class Gallery3(object):
     """
@@ -129,7 +137,6 @@ class Gallery3(object):
         uri(str) : The uri string defining the resource on the defined host
         """
         url = self._buildUrl(uri , kwargs)
-        print url
         return self.getRespFromUrl(url)
 
     def addAlbum(self , parent , albumName , title , description=''):
