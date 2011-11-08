@@ -1,5 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<div id="detailView" style="display: none; z-index:99997;" onmousemove="showHoverView();">
+<div id="detailView" onmousemove="showHoverView();">
 	<div class="overlay"> </div>
 	<div class="content">
 		<div class="imageContainer">
@@ -16,7 +16,7 @@
 				<div id="pause_detail" style="display: none;" title="Pause" class="pause_detail" onclick="togglePlayPause();"> </div>
 				<div id="play_detail" style="display: none;" title="Play" class="play_detail" onclick="togglePlayPause();"> </div>
 				<div id="next_detail" title="(N)ext" class="next_detail"> </div>
-				<div id="info_detail" title="Show more information about this photo" class="info_detail" onclick="document.location=slideshowImages[currentImg][1]"> </div>
+				<div id="info_detail" title="Show more information about this photo" class="info_detail g-dialog-link"> </div>
 			</div>
 		</div>
 	</div>

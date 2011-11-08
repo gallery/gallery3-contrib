@@ -1,8 +1,6 @@
 .gallery-thumb {
 	float: left;
-	margin-bottom: 5px;
-	margin-left: 5px;
-	margin-right: 5px;
+	padding: 3px 5px 7px 5px;
 	position: relative;
 	text-align: center;
 	cursor: pointer;
@@ -40,9 +38,11 @@ th, td {
 .giTitle {
 	font-size: 1.1em;
 	font-weight: bold;
-	margin: 3px 10px !important;
+	margin: 0.3em 3px !important;
 	padding: 0 0; 
 	text-align: left;
+	height: 1.2em;
+	overflow: hidden;
 }
 
 #gsNavBar div {

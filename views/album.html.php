@@ -30,20 +30,27 @@ $(function() {
     <? if ($child->is_photo()): ?>
       <? $img_class = "g-thumbnail p-photo"; ?>
     <? endif ?>
+    <? if ($child->is_movie()): ?>
+      <a href="<?= $child->url() ?>">
+    <? endif ?>
   <div id="g-thumb-id-<?= $child->id ?>" class="g-item gallery-thumb <?= $item_class ?>" title="<?= $child->description?>">
     <?= $theme->thumb_top($child) ?>
-    <? if ($child->is_album()): ?>
-		<div class="gallery-thumb-round" style="height: 200px; width: 200px;"></div>
+    <? if ($child->is_album() || $child->is_movie()): ?>
+		<div class="gallery-thumb-round"></div>
     <? endif ?>
       <? if ($child->has_thumb()): ?>
 		<?= $child->thumb_img(array("class" => $img_class, "id" => "thumb_$child->id", "style" => "width: 200px; height 200px;")) ?>
+    <? if ($child->is_movie()): ?>
+      <span class="p-video"></span>
+    <? endif ?>
       <? endif ?>
 <?// Begin skimming 
 if($child->is_album()):
 	$granchildren = $child->viewable()->children();
 	$offset = 0;
-	$step = round(200/count($granchildren));
+	$step = round(200/min(count($granchildren),50));
 	foreach ($granchildren as $i => $granchild):?>
+      <? if(++$i > 50) break; ?>
       <? if ($granchild->has_thumb()): ?>
       <?= $granchild->thumb_img(array("style" => "display: none;")) ?>
 	<div class="skimm_div" style="height: 200px; width: <?=$step?>px; left: <?=$offset?>px; top: 0px;" onmouseover="$('#thumb_<?=$child->id?>').attr('src', '<?=$granchild->thumb_url()?>');skimimg=<?=$i?>;" id="area_<?=$granchild->id?>"></div>
@@ -52,9 +59,12 @@ if($child->is_album()):
 endforeach; 
 endif; 
 // End skimming // ?>
-	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify($child->title) ?> </p>
+	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify(text::limit_chars($child->title, 20)) ?> </p>
 	<? if($child->is_album()): ?><div class="giInfo"><?= count($granchildren)?> photos</div><? endif ?>
 </div>
+    <? if ($child->is_movie()): ?>
+      </a>
+    <? endif ?>
    <?/* <?= $theme->thumb_bottom($child) ?>
     <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
     <h2><span class="<?= $item_class ?>"></span>
@@ -68,7 +78,7 @@ endif;
   var slideshowImages = new Array();
 <? foreach ($children as $i => $child): ?>
 <? if(!($child->is_album() || $child->is_movie())): ?>
-    slideshowImages.push(['<?= $child->resize_url() ?>', '<?= $child->url() ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= $child->title ?>', '<?= $child->file_url() ?>']);
+    slideshowImages.push(['<?= $child->resize_url() ?>', '<?= url::site("exif/show/$child->id") ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= htmlentities($child->title, ENT_QUOTES) ?>', '<?= $child->file_url() ?>', '<?= $child->url() ?>']);
 	<? endif ?>
 <? endforeach ?>
 </script>
@@ -86,4 +96,5 @@ endif;
 <?= $theme->album_bottom() ?>
 
 <?= $theme->paginator() ?>
-<div id="pearImageFlow" class="imageflow"> </div>
+<div id="pearFlowPadd" class="imageflow" style="display: none;"></div>
+<div id="pearImageFlow" class="imageflow" style="display: none;"> </div>

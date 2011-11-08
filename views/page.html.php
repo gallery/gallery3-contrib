@@ -4,7 +4,7 @@
 		if(!($child->is_album() || $child->is_movie()))
    		if($child->url() == $_SERVER['REQUEST_URI']):?>
 				<html><body>
-					<script type="text/javascript">window.location = '<? echo end($parents)->url() . "#img=$i&viewMode=detail"?>';</script>
+					<script type="text/javascript">window.location = '<? echo end($parents)->url() . "#img=$i&viewMode=detail&redirected=true"?>';</script>
 					</body></html>
 					<? die(0) ?>
 <? endif ?>
@@ -154,8 +154,8 @@
 <div id="footerWrapper">
 	<div title="Change size of photos" id="sliderView" class="sliderView">
 		<div class="sliderRightCap"></div>
-		<div title="View at smallest photo size" class="smaller" onclick="$('#slider').slider('value', 0);"></div>
-		<div title="View at largest photo size" class="larger" onclick="$('#slider').slider('value', 250);"></div>
+		<div title="View at smallest photo size" class="smaller" onclick="$('#imgSlider').slider('value', 0);"></div>
+		<div title="View at largest photo size" class="larger" onclick="$('#imgSlider').slider('value', 250);"></div>
 		<div id="imgSlider" class="track">
 		</div>
 	</div>
@@ -169,6 +169,7 @@
 	</div>
 
 	<div class="" style="" id="viewControls">
+<? if ($theme->page_subtype != "movie"): ?>
 		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid();">
 			<div class="label">Grid</div>
 		</div>
@@ -185,6 +186,7 @@
 			<div class="label">Slideshow</div>
 		</div>
 		<div class="clear"></div>
+<? endif ?>
 	</div>
 	<? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>
 </div>
