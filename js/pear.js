@@ -71,6 +71,7 @@ function scaleIt(v,sliding){
 	$(".p-photo").each(function (i) {
 		$(this).attr({height: size+'px',width: size + 'px'});
 		$(this).css({height: size+'px',width: size+'px'});});
+	$(".g-photo").css({width: size+'px'});
 	if(!mosaicView && !sliding)
 		toggleReflex(false);
 	thumbPadding();
@@ -222,11 +223,11 @@ function mosaicResize()
 }
 function thumbPadding() {
 /* Padding on thumbs to make them flow nicer */
-	var size = Math.ceil((mosaicView) ? $('#imgSlider').slider('value')/2 : $('#imgSlider').slider('value'));
+	var size = Math.ceil((mosaicView) ? $('#imgSlider').slider('value')/2 : $('#imgSlider').slider('value'))+10;
 	var width =$('#mosaicGridContainer').innerWidth()-15;
 	var margin = width/Math.floor(width/size)-size;
 	console.log(size, width, margin,"px" );
-	$('.gallery-thumb').css({'margin-left': Math.floor(margin/2) + 'px', 'margin-right': Math.floor(margin/2) + 'px'});
+	$('.gallery-thumb').css({'margin-left': Math.ceil(margin/2) + 'px', 'margin-right': Math.floor(margin/2) + 'px'});
 }
 
 function bodyLoad(viewMode, bgcolor) {
