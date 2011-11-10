@@ -122,7 +122,7 @@
 	<? if ($theme->item()): ?>
 		<? if(!empty($parents)): ?>
 		<? $parent = end($parents) ?>
-		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>';// + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
+		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>' + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
 		<? endif ?>
 	</div>
 	<div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
@@ -170,14 +170,14 @@
 
 	<div class="" style="" id="viewControls">
 <? if ($theme->page_subtype != "movie"): ?>
-		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid();">
+		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid(true);">
 			<div class="label">Grid</div>
 		</div>
-		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic" onclick="switchToMosaic();">
+		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic" onclick="switchToMosaic(true);">
 			<!-- <div style="margin-top:-2px;margin-left:-4px;"> -->
 			<div class="label">Mosaic</div>
 		</div>
-		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher" onclick="startImageFlow();">
+		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher" onclick="startImageFlow(true);">
 			<!-- <div style="margin-top:-2px;"> -->
 			<div class="label">Carousel</div>
 		</div>
