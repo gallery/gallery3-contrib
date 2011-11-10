@@ -50,7 +50,7 @@ if($child->is_album()):
 	$offset = 0;
 	$step = round(200/min(count($granchildren),50));
 	foreach ($granchildren as $i => $granchild):?>
-      <? if(++$i > 50) break; ?>
+      <? if($i++ > 50) break; ?>
       <? if ($granchild->has_thumb()): ?>
       <?= $granchild->thumb_img(array("style" => "display: none;")) ?>
 	<div class="skimm_div" style="height: 200px; width: <?=$step?>px; left: <?=$offset?>px; top: 0px;" onmouseover="$('#thumb_<?=$child->id?>').attr('src', '<?=$granchild->thumb_url()?>');skimimg=<?=$i?>;" id="area_<?=$granchild->id?>"></div>
