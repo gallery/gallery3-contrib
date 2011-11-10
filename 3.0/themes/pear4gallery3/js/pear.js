@@ -1,3 +1,4 @@
+var viewMode="";
 var skimimg = 0;
 var hash="";
 var bgcolor="black";
@@ -154,18 +155,24 @@ function swatchImg(imageId)
 	updateHash();
 	$('#info_detail').attr('href', slideshowImages[currentImg][1]);
 }
-
-function updateHash(viewMode)
+function getViewMode()
 {
-	if(typeof viewMode == 'undefined')
-		viewMode = detailViewMode ? "detail" : (mosaicView ? "mosaic" : "grid");
-	hash = "#img=" + currentImg + "&viewMode=" + viewMode + "&bgcolor=" + bgcolor;
+	var vm = detailViewMode ? "detail" : viewMode;
+	if(vm !== '')
+		vm = "&viewMode=" + vm;
+	return vm;
+}
+function updateHash()
+{
+	var img="";
+	if(currentImg !== 0)
+		img = "img=" + currentImg;
+	hash = "#" + img + getViewMode() + "&bgcolor=" + bgcolor;
 	window.location.hash = hash;
 }
 function getAlbumHash(img)
 {
-	viewMode = detailViewMode ? "detail" : (mosaicView ? "mosaic" : "grid");
-	return "#img=" + img + "&viewMode=" + viewMode + "&bgcolor=" + bgcolor;
+	return "#img=" + img + getViewMode() +  "&bgcolor=" + bgcolor;
 }
 
 var currentImg=0;
@@ -231,7 +238,7 @@ function thumbPadding() {
 	$('.gallery-thumb').css({'margin-left': Math.ceil(margin/2) + 'px', 'margin-right': Math.floor(margin/2) + 'px'});
 }
 
-function bodyLoad(viewMode, bgcolor) {
+function bodyLoad(vm, bgcolor) {
 	/* Parse hash */
 	hash = window.location.hash;
 	var h = $.parseQuery(hash.substring(1));
@@ -239,14 +246,8 @@ function bodyLoad(viewMode, bgcolor) {
 		currentImg = parseInt(h.img);
 	if(h.bgcolor != undefined)
 		swatchSkin(h.bgcolor);
-<<<<<<< HEAD
-	if(h.viewMode == 'detail')
-		focusImage(currentImg, h.redirected);
-	else
-=======
 	if(h.viewMode != undefined)
->>>>>>> 8a784dd79c8a91fca239305aabb6a5ec58a1691f
-		viewMode = h.viewMode;
+		viewMode = vm = h.viewMode;
 	/* end parse hash */
 	
 	if(navigator.appName == "Microsoft Internet Explorer") $('.track').each(function(s){$(this).css('top', '-16px');}); //Fix for IE's poor page rendering. 
@@ -273,17 +274,17 @@ function bodyLoad(viewMode, bgcolor) {
 
 if(typeof slideshowImages != 'undefined')
 	if(!slideshowImages.length) 
-		viewMode='grid';
+		vm='grid';
 
-	switch (viewMode) {
+	switch (vm) {
 		case 'carousel':
-			startImageFlow();
+			startImageFlow(false);
 			break;
 		case 'grid':
-			switchToGrid();
+			switchToGrid(false);
 			break;
 		case 'mosaic':
-			switchToMosaic();
+			switchToMosaic(false);
 			break;
 		case 'detail':
 			focusImage(currentImg, h.redirected);
@@ -297,8 +298,11 @@ if(typeof slideshowImages != 'undefined')
 	setKeys();
 }
 
-function switchToGrid()
+function switchToGrid(userSet)
 {
+	if(userSet === true) {
+		viewMode = "grid";
+	}
 	toggleReflex(true);
 	$('#pearImageFlow,#pearFlowPadd').hide();
 	$('#mosaicTable').show();
@@ -313,8 +317,11 @@ function switchToGrid()
 	mosaicResize();
 }
 
-function switchToMosaic()
+function switchToMosaic(userSet)
 {
+	if(userSet === true) {
+		viewMode = "mosaic";
+	}
 	toggleReflex(false);
 	$('#pearImageFlow,#pearFlowPadd').hide();
 	$('#mosaicTable').show();
@@ -385,8 +392,11 @@ function focusImage(id, redirected)
 	$('#info_detail').attr('href', slideshowImages[currentImg][1]);
 }
 var pearCarousel;
-function startImageFlow()
+function startImageFlow(userSet)
 {
+	if(userSet === true) {
+		viewMode = "carousel";
+	}
 	$('#mosaicTable').hide();
 
 	$('#pearImageFlow,#pearFlowPadd').show();
@@ -447,7 +457,7 @@ var hovering=false;
 function switchMode(mode){
 	$('#mosaic,#grid,#carousel').removeClass("sel sel-with-viewSwitcher");
 	$('#'+mode).addClass("sel sel-with-viewSwitcher");
-	updateHash(mode);
+	updateHash();
 }
 
 function preFetch()
