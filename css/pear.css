@@ -119,6 +119,7 @@ a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-st
     display: block;
     position: relative;
 }
+/*
 .ui-state-default, .ui-widget-content .ui-state-default {
     background: #ccc;
     border: 1px solid #C5DBEC;
@@ -126,6 +127,7 @@ a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-st
     font-weight: bold;
     outline: medium none;
 }
+    */
 #g-banner {
     background-color: #555;
     border-bottom: 1px solid #333333;

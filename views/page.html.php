@@ -1,5 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<? if ($theme->page_subtype == "photo"): 
+<? if ($theme->page_subtype == "photo"):
 	foreach (end($parents)->viewable()->children() as $i => $child)
 		if(!($child->is_album() || $child->is_movie()))
    		if($child->url() == $_SERVER['REQUEST_URI']):?>
@@ -77,7 +77,7 @@
     <?= $theme->script("imageflow.packed.js") ?>
     <?= $theme->css("yui/reset-fonts-grids.css") ?>
     <?= $theme->css("superfish/css/superfish.css") ?>
-    <?= $theme->css("themeroller/ui.base.css") ?>
+    <?= $theme->css("dark-hive/jquery.ui.all.css") ?>
     <?= $theme->css("screen.css") ?>
     <?= $theme->css("imageflow.packed.css") ?>
     <!--[if lte IE 8]>
@@ -150,7 +150,7 @@
 </div>
 
 <?= $content ?>
-		
+
 <div id="footerWrapper">
 	<div title="Change size of photos" id="sliderView" class="sliderView">
 		<div class="sliderRightCap"></div>
