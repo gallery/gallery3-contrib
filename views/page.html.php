@@ -118,22 +118,21 @@
 <div class="pear">
 
 <div id="gsNavBar" class="gcBorder1">
-	<div class="lNavBar">
-	<? if ($theme->item()): ?>
-		<? if(!empty($parents)): ?>
-		<? $parent = end($parents) ?>
-		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>' + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
-		<? endif ?>
-	</div>
-	<div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
-		<span class="count">(<?= count($theme->item()->children()) ?>)</span>
-	</div>
-	<? endif ?>
-	<div class="rNavBar">
-		<button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
-	</div>
+<? if ($theme->item()): ?>
+    <div class="lNavBar">
+    <? if(!empty($parents)): ?>
+        <? $parent = end($parents) ?>
+        <button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>' + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
+    <? endif ?>
+    </div>
+    <div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
+        <span class="count">(<?= count($theme->item()->children()) ?>)</span>
+    </div>
+<? endif ?>
+    <div class="rNavBar">
+        <button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
+    </div>
 </div>
-
 <div id="g-header" class="ui-helper-clearfix" style="display: none;">
 	<div id="g-banner">
 		<?= $theme->user_menu() ?>
