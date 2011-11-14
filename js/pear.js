@@ -82,9 +82,9 @@ function mosaicResize() {
         $('#img_detail').css({'height': iHeight + "px", 'width': iWidth + "px"});
     }
     myWidth = myWidth - 7;
-    myHeight = myHeight - $('#g-site-status').outerHeight(true);
+    myHeight = myHeight - $('#g-site-status').outerHeight(true) - $('#paginator').outerHeight(true);
     $('#pearFlowPadd').css({'height': myHeight - 90 - (Math.round(myWidth / 2.4)) + 'px'});
-    if ($('#paginator').length !== 0) { myHeight -= 165; } else { myHeight -= 138; }
+    myHeight -= 138;
     $('#g-header').css('top', $('#gsNavBar').outerHeight(true) + $('#g-site-status').outerHeight(true) - 4);
 
     if ($('#g-movie').length) {
