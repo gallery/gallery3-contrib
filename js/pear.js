@@ -240,7 +240,7 @@ function hideHoverView() {
 function showHoverView() {
     if (hideHoverV !== null) { clearTimeout(hideHoverV); }
     $('#hoverView').show();
-    hideHoverV = setTimeout(hideHoverView(), 3000);
+    hideHoverV = setTimeout("hideHoverView()", 3000);
 }
 
 function focusImage(id, redirected) {
@@ -250,7 +250,7 @@ function focusImage(id, redirected) {
     $('#pause_detail').hide();
     swatchImg(id);
     $('#detailView').fadeIn('slow');
-    hideHoverV = setTimeout(hideHoverView(), 3000);
+    hideHoverV = setTimeout("hideHoverView()", 3000);
     detailViewMode = true;
     updateHash();
     //Image count.
@@ -323,7 +323,7 @@ function startSlideshow() {
     $('#play_detail').hide();
     $('#pause_detail').show();
     $('#detailView').fadeIn('slow');
-    hideHoverV = setTimeout(hideHoverView(), 3000);
+    hideHoverV = setTimeout("hideHoverView()", 3000);
     slideShowId = currentImg;
     slideShowId = 0;
     togglePlayPause();
@@ -334,7 +334,7 @@ function slideShowUpdate(id) {
         id = 0;
     }
     swatchImg(id);
-    slideShow = setTimeout(slideShowUpdate(id + 1), 1000);
+    slideShow = setTimeout("slideShowUpdate(" + id + 1 + ")", 5000);
 }
 
 function switchMode(mode) {
