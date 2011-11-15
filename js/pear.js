@@ -130,11 +130,13 @@ function getViewMode() {
 }
 
 function updateHash() {
-    var hash, img = "";
+    var hash, img = "", val, i;
     if (currentImg !== 0) {
         img = "img=" + currentImg;
     }
     hash = "#" + img + getViewMode() + "&bgcolor=" + bgcolor;
+    if($('#paginator')) { $('#paginator a').each(function () { val = $(this).attr("href"); i = val.indexOf("#"); if (i !== -1) { val = val.substr(0, i) } $(this).attr("href", val + hash); }); 
+    }
     window.location.hash = hash;
 }
 
