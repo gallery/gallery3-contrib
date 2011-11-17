@@ -533,7 +533,7 @@ function bodyLoad(vm, bgcolor) {
         if ($.browser.msie && $.browser.version >= 8) {
           sib_height = sib_height + 1;
         }
-        $(this).css({"height": sib_height, "position": "", "top": "", "left": ""});
+        $(this).css({"height": "", "position": "", "top": "", "left": ""});
         // Remove the placeholder and hover class from the item
         $(this).removeClass("g-hover-item");
         $("#g-place-holder").remove();
