@@ -169,22 +169,22 @@
 
 	<div class="" style="" id="viewControls">
 <? if ($theme->page_subtype != "movie"): ?>
-		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid(true);">
-			<div class="label">Grid</div>
+		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher viewSwitcher-icon" onclick="switchToGrid(true);">
+			<span class="vs-icon vs-icon-grid"></span>Grid
 		</div>
 		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic" onclick="switchToMosaic(true);">
 			<!-- <div style="margin-top:-2px;margin-left:-4px;"> -->
-			<div class="label">Mosaic</div>
+			<span class="vs-icon vs-icon-mosaic"></span>Mosaic
 		</div>
 		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher" onclick="startImageFlow(true);">
 			<!-- <div style="margin-top:-2px;"> -->
-			<div class="label">Carousel</div>
+			<span class="vs-icon vs-icon-carousel"></span>Carousel
 		</div>
 		<div title="Play a slideshow of this album" id="slideshow" class="viewSwitcher slideshow slideshow-with-viewSwitcher">
 			<!-- <div style="margin-top:-2px;margin-left:-2px;"> -->
-			<div class="label">Slideshow</div>
+			<span class="vs-icon vs-icon-slideshow"></span>Slideshow
 		</div>
-		<div class="clear"></div>
+        <div class="clear"></div>
 <? endif ?>
 	</div>
 	<? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>

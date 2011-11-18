@@ -135,7 +135,7 @@ function updateHash() {
         img = "img=" + currentImg;
     }
     hash = "#" + img + getViewMode() + "&bgcolor=" + bgcolor;
-    if($('#paginator')) { $('#paginator a').each(function () { val = $(this).attr("href"); i = val.indexOf("#"); if (i !== -1) { val = val.substr(0, i) } $(this).attr("href", val + hash); }); 
+    if($('#paginator')) { $('#paginator a').each(function () { val = $(this).attr("href"); i = val.indexOf("#"); if (i !== -1) { val = val.substr(0, i); } $(this).attr("href", val + hash); }); 
     }
     window.location.hash = hash;
 }
@@ -523,12 +523,13 @@ function bodyLoad(vm, bgcolor) {
         }
       },
       function() {
-        if(mosaicView) { return; }
+        var sib_height;
+        if (mosaicView) { return; }
         // Reset item height and position
         if ($(this).next().height()) {
-          var sib_height = $(this).next().height();
+          sib_height = $(this).next().height();
         } else {
-          var sib_height = $(this).prev().height();
+          sib_height = $(this).prev().height();
         }
         if ($.browser.msie && $.browser.version >= 8) {
           sib_height = sib_height + 1;
@@ -538,6 +539,14 @@ function bodyLoad(vm, bgcolor) {
         $(this).removeClass("g-hover-item");
         $("#g-place-holder").remove();
       }
+    );
+    $(".viewSwitcher").hover(
+        function() {
+            $(this).addClass("hover-with-viewSwitcher");
+        },
+        function() {
+            $(this).removeClass("hover-with-viewSwitcher");
+        }
     );
 }
 

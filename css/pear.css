@@ -143,22 +143,3 @@ a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-st
  padding-top: 6px;
 }
 
-a.buttonFirst { background-position: 0px 0px !important; }
-a.buttonFirst:hover { background-position: -15px 0px !important; }
-a.buttonPrev { background-position:  0px -15px !important; }
-a.buttonPrev:hover { background-position:  -15px -15px !important; }
-a.buttonNext { background-position: 0px -30px !important;}
-a.buttonNext:hover { background-position: -15px -30px !important;}
-a.buttonLast { background-position: 0px -45px !important; }
-a.buttonLast:hover { background-position: -15px -45px !important; }
-
-a.buttonNext, a.buttonLast { float: right; }
-a.buttonFirst, a.buttonPrev { float: left; }
-
-.g-paginator .buttonAction {
-	background: url("../icons/paginator.gif") no-repeat 0 0;
-	height: 15px;
-	width: 15px;
-	margin-left: 0;
-	display: block;
-}
