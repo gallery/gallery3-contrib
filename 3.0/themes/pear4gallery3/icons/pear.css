@@ -1,6 +1,17 @@
 .gallery-thumb-round {
 	background: url('rounded.png') no-repeat scroll left top;
 	position: absolute;
+	height: 200px;
+	width: 200px;
+}
+
+.p-video{
+	background: url('movie.png') no-repeat center;
+	position: absolute;
+	width: 200px;
+	height: 200px;
+	left: 0px;
+	top: 0px;
 }
 
 .skimm_div {
@@ -59,7 +70,7 @@ height:40px;
 	display: block;
 	z-index: 100;
 background: transparent url('pear_logo_sml.png') no-repeat center left;
-width: 83px;
+width: 30px;
 height: 40px;
 border: 0px;
 padding: 0px;
@@ -301,7 +312,7 @@ cursor: default;
 #viewControls {
 position: relative;
 color: #616161;
-width: 381px;
+width: 334px;
 float: left;
 			 margin-left: 30px;
 			 margin-top: 13px;

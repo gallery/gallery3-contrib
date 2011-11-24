@@ -87,7 +87,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
       ->checked(module::get_var("th_pear4gallery3", "hide_logo"));
     $group->dropdown("mainmenu_view")
       ->label(t("Main page View"))
-      ->options(array("grid" => t("Grid (Default)"), "mosaic" => t("Mosaic")))
+      ->options(array("grid" => t("Grid (Default)"), "mosaic" => t("Mosaic"), "carousel" => t("Carousel")))
       ->selected(module::get_var("th_pear4gallery3", "mainmenu_view"));
     $group->checkbox("show_guest_menu")
       ->label(t("Show Main Menu for Guest Users"))
