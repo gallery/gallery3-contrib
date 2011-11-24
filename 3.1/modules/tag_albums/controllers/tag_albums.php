@@ -102,7 +102,7 @@ class tag_albums_Controller extends Controller {
 
       // Figure out which items to display on this page and store their details in $children.
       $tag_children = $this->_get_records($tag_ids, $page_size, $offset, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, true); 
-      $children = Array();
+      $children_array = Array();
       foreach ($tag_children as $one_child) {
         $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/0/" . $id . "/" . urlencode($one_child->name)), $one_child->type, $one_child->id);
         $child_tag->id = $one_child->id;
@@ -111,8 +111,9 @@ class tag_albums_Controller extends Controller {
         if ($one_child->has_thumb()) {
           $child_tag->set_thumb($one_child->thumb_url(), $one_child->thumb_width, $one_child->thumb_height);
         }
-        $children[] = $child_tag;
+        $children_array[] = $child_tag;
       }
+      $children = new Tag_Albums_Children($children_array);
 
       // Set up the previous and next page buttons.
       if ($page > 1) {
@@ -318,7 +319,7 @@ class tag_albums_Controller extends Controller {
 
     // Generate an arry of "fake" items, one for each tag on the page.
     //   Grab thumbnails from the most recently uploaded item for each tag, if available.
-    $children = Array();
+    $children_array = Array();
     foreach ($display_tags as $one_tag) {
       $tag_item = ORM::factory("item")
         ->viewable()
@@ -332,8 +333,9 @@ class tag_albums_Controller extends Controller {
           $child_tag->set_thumb($tag_item[0]->thumb_url(), $tag_item[0]->thumb_width, $tag_item[0]->thumb_height);
         }
       }
-      $children[] = $child_tag;
+      $children_array[] = $child_tag;
     }
+    $children = new Tag_Albums_Children($children_array);
 
     // Set up breadcrumbs.
     $tag_album_breadcrumbs = Array();
@@ -441,7 +443,7 @@ class tag_albums_Controller extends Controller {
     $tag_children = $this->_get_records(Array($id), $page_size, $offset, "items." . $sort_page_field, $sort_page_direction, "OR", true); 
 
     // Create an array of "fake" items to display on the page.
-    $children = Array();
+    $children_array = Array();
     foreach ($tag_children as $one_child) {
       $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/" . $id . "/" . $album_id . "/" . urlencode($one_child->name)), $one_child->type, $one_child->id);
       $child_tag->id = $one_child->id;
@@ -450,9 +452,10 @@ class tag_albums_Controller extends Controller {
       if ($one_child->has_thumb()) {
         $child_tag->set_thumb($one_child->thumb_url(), $one_child->thumb_width, $one_child->thumb_height);
       }
-      $children[] = $child_tag;
+      $children_array[] = $child_tag;
     }
-
+    $children = new Tag_Albums_Children($children_array);
+	
     // Set up the previous and next page buttons.
     if ($page > 1) {
       $previous_page = $page - 1;
