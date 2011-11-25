@@ -169,19 +169,16 @@
 
 	<div class="" style="" id="viewControls">
 <? if ($theme->page_subtype != "movie"): ?>
-		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher viewSwitcher-icon" onclick="switchToGrid(true);">
+		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher viewSwitcher-icon">
 			<span class="vs-icon vs-icon-grid"></span>Grid
 		</div>
-		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic" onclick="switchToMosaic(true);">
-			<!-- <div style="margin-top:-2px;margin-left:-4px;"> -->
+		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic">
 			<span class="vs-icon vs-icon-mosaic"></span>Mosaic
 		</div>
-		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher" onclick="startImageFlow(true);">
-			<!-- <div style="margin-top:-2px;"> -->
+		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher">
 			<span class="vs-icon vs-icon-carousel"></span>Carousel
 		</div>
 		<div title="Play a slideshow of this album" id="slideshow" class="viewSwitcher slideshow slideshow-with-viewSwitcher">
-			<!-- <div style="margin-top:-2px;margin-left:-2px;"> -->
 			<span class="vs-icon vs-icon-slideshow"></span>Slideshow
 		</div>
         <div class="clear"></div>

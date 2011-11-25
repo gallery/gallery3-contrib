@@ -463,7 +463,6 @@ function bodyLoad(vm, bgcolor) {
     if (!$('#mosaicGridContainer').length) { $('#loading').hide(); maxSize = 0; return; }
     //Set event for Thumb Click.
     $('.p-photo').each(function (index) { $(this).click(function () { if (mosaicView) { swatchImg(index); } else {focusImage(index); } }); });
-    $('#slideshow').click(function () { startSlideshow(); });
     $('#mosaicDetail').click(function () { focusImage(currentImg); });
     $('#prev_detail').click(function () { swatchImg(currentImg - 1); });
     $('#next_detail').click(function () { swatchImg(currentImg + 1); });
@@ -540,14 +539,15 @@ function bodyLoad(vm, bgcolor) {
         $("#g-place-holder").remove();
       }
     );
-    $(".viewSwitcher").hover(
-        function() {
-            $(this).addClass("hover-with-viewSwitcher");
-        },
-        function() {
-            $(this).removeClass("hover-with-viewSwitcher");
-        }
-    );
+    if (slideshowImages.length !== 0) {
+        $(".viewSwitcher").hover( function() { $(this).addClass("hover-with-viewSwitcher"); }, function() { $(this).removeClass("hover-with-viewSwitcher"); });
+        $("#grid").click(function () { switchToGrid(true); });
+        $("#mosaic").click(function () { switchToMosaic(true); });
+        $("#carousel").click(function () { startImageFlow(true); });
+        $('#slideshow').click(function () { startSlideshow(); });
+    } else {
+        $("#grid, #mosaic, #carousel, #slideshow").addClass("disabled");
+    }
 }
 
 function preFetch() {

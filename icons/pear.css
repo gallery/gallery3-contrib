@@ -350,13 +350,12 @@ font-weight: bold;
 .vs-icon-slideshow { background-position: -60px 0px; }
 .hover-with-viewSwitcher .vs-icon-slideshow, .sel-with-viewSwitcher .vs-icon-slideshow { background-position: -60px -15px; }
 
-#viewControls .viewSwitcher:hover, #viewControls .sel-with-viewSwitcher, #viewControls .hover-with-viewSwitcher {
+#viewControls .sel-with-viewSwitcher, #viewControls .hover-with-viewSwitcher {
 color: #ffffff;
 }
-#viewControls .sel-with-viewSwitcher {
-	cursor: default;
+#viewControls .sel-with-viewSwitcher, #viewControls .disabled {
+    cursor: default !important;
 }
-
 
 /************************ DETAIL VIEW **************************/
 
