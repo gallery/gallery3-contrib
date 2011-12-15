@@ -1,3 +1,4 @@
+var viewMode="";
 var skimimg = 0;
 var hash="";
 var bgcolor="black";
@@ -5,9 +6,8 @@ var detailViewMode=false;
 var savedHeight = 0;
 var savedWidth = 0;
 
-$(window).resize(function (e) {
-	if (window.innerHeight == savedHeight && 
-		window.innerWidth == savedWidth) { e.stop(); }
+$(window).resize(function () {
+	if (window.innerHeight == savedHeight && window.innerWidth == savedWidth) return; 
 	savedHeight = window.innerHeight;
 	savedWidth = window.innerWidth;
 	mosaicResize();
@@ -24,7 +24,7 @@ function swatchSkin(intSkin){
 		case 'dkgrey' :
 		case 1 :
 			$('div.gallery-thumb-round').css('backgroundPosition' , "-200px 0px");
-			$('#mosaicTable').css('backgroundColor' , "#262626");
+			$('#mosaicTable,.pear').css('backgroundColor' , "#262626");
 			$('p.giTitle').css("color", "#a9a9a9");
 			$("#dkgrey").addClass("dkgrey sel dkgrey-with-sel-with-swatch");
 			bgcolor="dkgrey";
@@ -33,7 +33,7 @@ function swatchSkin(intSkin){
 		case 'ltgrey' :
 		case 2 :
 			$('div.gallery-thumb-round').css('backgroundPosition' , "-400px 0px");
-			$('#mosaicTable').css('backgroundColor' , "#d9d9d9");
+			$('#mosaicTable,.pear').css('backgroundColor' , "#d9d9d9");
 			$('p.giTitle').css("color", "#333333");
 			$("#ltgrey").addClass("ltgrey sel ltgrey-with-sel-with-swatch");
 			bgcolor="ltgrey";
@@ -42,7 +42,7 @@ function swatchSkin(intSkin){
 		case 'white' :
 		case 3 :
 			$('div.gallery-thumb-round').css('backgroundPosition' , "-600px 0px");
-			$('#mosaicTable').css('backgroundColor' , "#ffffff");
+			$('#mosaicTable,.pear').css('backgroundColor' , "#ffffff");
 			$('p.giTitle').css("color", "#444444");
 			$("#white").addClass("white sel white-with-sel-with-swatch");
 			bgcolor="white";
@@ -52,7 +52,7 @@ function swatchSkin(intSkin){
 		case 0 :
 		default:
 			$('div.gallery-thumb-round').css('backgroundPosition' , "0px 0px");
-			$('#mosaicTable').css('backgroundColor' , "#000");
+			$('#mosaicTable,.pear').css('backgroundColor' , "#000");
 			$('p.giTitle').css("color", "#a3a3a3");
 			$("#black").addClass("black sel black-with-sel-with-swatch");
 			bgcolor="black";
@@ -66,14 +66,16 @@ function scaleIt(v,sliding){
 
 	// Remap the 0-1 scale to fit the desired range
 	//v=.26+(v*(1.0-.26));
-	size = (mosaicView) ? v/2 : v;
+	var size = (mosaicView) ? v/2 : v;
 
 	toggleReflex(true);
 	$(".p-photo").each(function (i) {
 		$(this).attr({height: size+'px',width: size + 'px'});
 		$(this).css({height: size+'px',width: size+'px'});});
+	$(".g-photo").css({width: size+'px'});
 	if(!mosaicView && !sliding)
 		toggleReflex(false);
+	thumbPadding();
 }
 function setCookie(c_name,value,expiredays)
 {
@@ -153,17 +155,24 @@ function swatchImg(imageId)
 	updateHash();
 	$('#info_detail').attr('href', slideshowImages[currentImg][1]);
 }
-
+function getViewMode()
+{
+	var vm = detailViewMode ? "detail" : viewMode;
+	if(vm !== '')
+		vm = "&viewMode=" + vm;
+	return vm;
+}
 function updateHash()
 {
-	viewMode = detailViewMode ? "detail" : (mosaicView ? "mosaic" : "grid");
-	hash = "#img=" + currentImg + "&viewMode=" + viewMode + "&bgcolor=" + bgcolor;
+	var img="";
+	if(currentImg !== 0)
+		img = "img=" + currentImg;
+	hash = "#" + img + getViewMode() + "&bgcolor=" + bgcolor;
 	window.location.hash = hash;
 }
 function getAlbumHash(img)
 {
-	viewMode = detailViewMode ? "detail" : (mosaicView ? "mosaic" : "grid");
-	return "#img=" + img + "&viewMode=" + viewMode + "&bgcolor=" + bgcolor;
+	return "#img=" + img + getViewMode() +  "&bgcolor=" + bgcolor;
 }
 
 var currentImg=0;
@@ -186,8 +195,6 @@ function mosaicResize()
 		myWidth = document.body.clientWidth;
 		myHeight = document.body.clientHeight;
 	}
-	if($('#pearImageFlow').length != 0)
-		$('#pearImageFlow').css({'height' : (myHeight-87)+'px', 'width': myWidth+'px', 'minHeight': ((myHeight-70)*0.9)+'px'});
 	if($('#imageflow').length != 0)
 		$('#imageflow').css({'height': (myHeight-53)+'px', 'width': (((myWidth*0.5)<(myHeight-53)) ? myWidth : ((myHeight-65)*2)) +'px'});
 	$('#detailImageView').css({'height': myHeight-165+"px"});
@@ -196,10 +203,14 @@ function mosaicResize()
 		$('#img_detail').css({'height': iHeight+"px", 'width':iWidth+"px"});
 
 	myWidth=myWidth-7;
+	myHeight = myHeight - $('#g-site-status').outerHeight(true);
+	$('#pearFlowPadd').css({'height' : myHeight-90-(Math.round(myWidth / 2.4))+'px'});
 	($('#paginator').length != 0) ? myHeight-=165: myHeight-=138;
 	myHeight = myHeight - $('#g-site-status').outerHeight(true);
 	$('#g-header').css('top', $('#gsNavBar').outerHeight(true)+$('#g-site-status').outerHeight(true)-4);
 
+	if($('#g-movie').length) 
+		myHeight+=18;
 	if ( !mosaicView )
 	{
 		$('#mosaicGridContainer').css({'height': (myHeight+33)+"px", 'width': myWidth+"px"});
@@ -214,10 +225,20 @@ function mosaicResize()
 		(iRatio>(myWidth/myHeight)) ? $('#mosaicImg').attr({height: myWidth/iRatio,width: myWidth}) : $('#mosaicImg').attr({height: myHeight,width: myHeight*iRatio});
 		if(iHeight<myHeight&&iWidth<myWidth) $('#mosaicImg').attr({height:iHeight, width:iWidth});
 	}
+	thumbPadding();
+
 	if($('#conf_imageflow').length) refresh();
 }
+function thumbPadding() {
+/* Padding on thumbs to make them flow nicer */
+	var size = Math.ceil((mosaicView) ? $('#imgSlider').slider('value')/2 : $('#imgSlider').slider('value'))+10;
+	var width =$('#mosaicGridContainer').innerWidth()-15;
+	var margin = width/Math.floor(width/size)-size;
+	console.log(size, width, margin,"px" );
+	$('.gallery-thumb').css({'margin-left': Math.ceil(margin/2) + 'px', 'margin-right': Math.floor(margin/2) + 'px'});
+}
 
-function bodyLoad(viewMode, bgcolor) {
+function bodyLoad(vm, bgcolor) {
 	/* Parse hash */
 	hash = window.location.hash;
 	var h = $.parseQuery(hash.substring(1));
@@ -225,10 +246,8 @@ function bodyLoad(viewMode, bgcolor) {
 		currentImg = parseInt(h.img);
 	if(h.bgcolor != undefined)
 		swatchSkin(h.bgcolor);
-	if(h.viewMode == 'detail')
-		focusImage(currentImg, h.redirected);
-	else
-		viewMode = h.viewMode;
+	if(h.viewMode != undefined)
+		viewMode = vm = h.viewMode;
 	/* end parse hash */
 	
 	if(navigator.appName == "Microsoft Internet Explorer") $('.track').each(function(s){$(this).css('top', '-16px');}); //Fix for IE's poor page rendering. 
@@ -253,15 +272,22 @@ function bodyLoad(viewMode, bgcolor) {
 	if (co==null || co=="")
 		swatchSkin(bgcolor);
 
+if(typeof slideshowImages != 'undefined')
 	if(!slideshowImages.length) 
-		viewMode='grid';
+		vm='grid';
 
-	switch (viewMode) {
+	switch (vm) {
+		case 'carousel':
+			startImageFlow(false);
+			break;
 		case 'grid':
-			switchToGrid();
+			switchToGrid(false);
 			break;
 		case 'mosaic':
-			switchToMosaic();
+			switchToMosaic(false);
+			break;
+		case 'detail':
+			focusImage(currentImg, h.redirected);
 			break;
 		default:
 			mosaicResize();
@@ -272,10 +298,13 @@ function bodyLoad(viewMode, bgcolor) {
 	setKeys();
 }
 
-function switchToGrid()
+function switchToGrid(userSet)
 {
+	if(userSet === true) {
+		viewMode = "grid";
+	}
 	toggleReflex(true);
-	$('#pearImageFlow').hide();
+	$('#pearImageFlow,#pearFlowPadd').hide();
 	$('#mosaicTable').show();
 	if(!$('#mosaicGridContainer').length) return;
 	mosaicView=false;
@@ -286,13 +315,15 @@ function switchToGrid()
 	$('p.giTitle,div.giInfo').each(function(s){$(this).show();});
 	switchMode('grid');
 	mosaicResize();
-	updateHash();
 }
 
-function switchToMosaic()
+function switchToMosaic(userSet)
 {
+	if(userSet === true) {
+		viewMode = "mosaic";
+	}
 	toggleReflex(false);
-	$('#pearImageFlow').hide(); //.hide(); 
+	$('#pearImageFlow,#pearFlowPadd').hide();
 	$('#mosaicTable').show();
 	if(!$('#mosaicGridContainer').length) return;
 	mosaicView=true;
@@ -361,39 +392,29 @@ function focusImage(id, redirected)
 	$('#info_detail').attr('href', slideshowImages[currentImg][1]);
 }
 var pearCarousel;
-function startImageFlow()
+function startImageFlow(userSet)
 {
+	if(userSet === true) {
+		viewMode = "carousel";
+	}
 	$('#mosaicTable').hide();
 
-	$('#pearImageFlow').show();
+	$('#pearImageFlow,#pearFlowPadd').show();
 
 	toggleReflex(true);
 
-	for (var i = 0; i < slideshowImages.length; i++) {
-		var img = '<div class="item"><img class="content" src="'+slideshowImages[i][0]+'"/><div class="caption">'+$('#mosaicGridContainer img').eq(i).attr('alt')+'"</div></div>';
-		var img = '<img src="'+slideshowImages[i][0]+'" longdesc="'+i+'" width="'+slideshowImages[i][2]+'" height="'+slideshowImages[i][3]+'" alt="'+slideshowImages[i][4]+'" style="display: none;">';
-		console.log(img);
-		$('#pearImageFlow').append(img); 
-	}
 	if(!pearCarousel){
-	pearCarousel = new ImageFlow();
-	pearCarousel.init({ImageFlowID: 'pearImageFlow', aspectRatio: 2.4, imagesHeight: 0.6, opacity: true, reflections: false, startID: currentImg, onClick: function() {focusImage($(this).attr('longdesc'));}, startAnimation: true, xStep: 200, imageFocusM: 1.7, imageFocusMax: 4, opacityArray: [10, 9, 6, 2], percentOther: 130, captions: false, slider: false});
+		for (var i = 0; i < slideshowImages.length; i++) {
+			var img = '<div class="item"><img class="content" src="'+slideshowImages[i][0]+'"/><div class="caption">'+$('#mosaicGridContainer img').eq(i).attr('alt')+'"</div></div>';
+			var img = '<img src="'+slideshowImages[i][0]+'" longdesc="'+i+'" width="'+slideshowImages[i][2]+'" height="'+slideshowImages[i][3]+'" alt="'+slideshowImages[i][4]+'" style="display: none;">';
+	//		console.log(img);
+			$('#pearImageFlow').append(img); 
+		}
+		pearCarousel = new ImageFlow();
+		pearCarousel.init({ImageFlowID: 'pearImageFlow', aspectRatio: 2.4, imagesHeight: 0.6, opacity: true, reflections: false, startID: currentImg+1, onClick: function() {focusImage($(this).attr('longdesc'));}, startAnimation: true, xStep: 200, imageFocusM: 1.7, imageFocusMax: 4, opacityArray: [10, 9, 6, 2], percentOther: 130, captions: false, slider: false});
 	}
-/*
-	current=(currentImg)*-xstep;
-	caption_id=currentImg;
-	refresh(true);
-
-	iShow(conf_images);
-	iShow(conf_scrollbar);
-	initMouseWheel();
-	initMouseDrag();
-	mosaicResize();
-
-	moveTo(current);
-	glideTo(current, caption_id);
-*/
 	switchMode('carousel');
+	mosaicResize();
 }
 function setKeys()
 {
@@ -436,6 +457,7 @@ var hovering=false;
 function switchMode(mode){
 	$('#mosaic,#grid,#carousel').removeClass("sel sel-with-viewSwitcher");
 	$('#'+mode).addClass("sel sel-with-viewSwitcher");
+	updateHash();
 }
 
 function preFetch()
