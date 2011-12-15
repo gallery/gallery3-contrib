@@ -49,13 +49,15 @@ class minislideshow_event_Core {
 
   static function album_menu($menu, $theme) {
     // Add an option to access the slideshow from the album view.
-    $menu
-      ->append(Menu::factory("link")
-               ->id("minislideshow")
-               ->label(t("View MiniSlide Show"))
-               ->url(url::site("minislideshow/showslideshow/" . $theme->item()->id))
-               ->css_class("g-dialog-link")
-               ->css_id("g-mini-slideshow-link"));
+    if ($theme->item()->children_count(array(array("type", "=", "photo")))) {
+      $menu
+        ->append(Menu::factory("link")
+                 ->id("minislideshow")
+                 ->label(t("View MiniSlide Show"))
+                 ->url(url::site("minislideshow/showslideshow/" . $theme->item()->id))
+                 ->css_class("g-dialog-link")
+                 ->css_id("g-mini-slideshow-link"));
+    }
   }
 
   static function photo_menu($menu, $theme) {
