@@ -487,7 +487,7 @@ function bodyLoad(vm, bgcolor) {
     if (typeof slideshowImages !== 'undefined' && !slideshowImages.length) {
         viewMode = vm = 'grid';
     }
-    if (vm === 'detail') {view = viewMode; focusImage(currentImg, h.redirected);} else {view = vm;}
+    if (vm === 'detail') {view = viewMode; focusImage(currentImg, h.redirected);} else {view = viewMode = vm;}
     switch (view) {
     case 'carousel':
         startImageFlow(false);
