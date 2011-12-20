@@ -407,6 +407,14 @@ function startImageFlow(userSet) {
     mosaicResize();
 }
 
+function hideDetailView() {
+    $('#detailView').hide();
+    slideShowMode = detailViewMode = false;
+    if (slideShow !== null) { clearTimeout(slideShow); }
+    slideShow = null;
+    updateHash();
+}
+
 function setKeys() {
 /* Fixes the back button issue */
 /*	window.onunload = function()
@@ -438,7 +446,8 @@ document = null;
 }
 
 function bodyLoad(vm, bgcolor) {
-    var h, co;
+    var h, co, view;
+    viewMode = vm;
     /* Parse hash */
     h = $.parseQuery(window.location.hash.substring(1));
     if (h.img !== undefined) {
@@ -448,7 +457,7 @@ function bodyLoad(vm, bgcolor) {
         swatchSkin(h.bgcolor);
     }
     if (h.viewMode !== undefined) {
-        viewMode = vm = h.viewMode;
+        vm = h.viewMode;
     }
     /* end parse hash */
 
@@ -476,9 +485,10 @@ function bodyLoad(vm, bgcolor) {
     }
 
     if (typeof slideshowImages !== 'undefined' && !slideshowImages.length) {
-        vm = 'grid';
+        viewMode = vm = 'grid';
     }
-    switch (vm) {
+    if (vm === 'detail') {view = viewMode; focusImage(currentImg, h.redirected);} else {view = vm;}
+    switch (view) {
     case 'carousel':
         startImageFlow(false);
         break;
@@ -488,13 +498,11 @@ function bodyLoad(vm, bgcolor) {
     case 'mosaic':
         switchToMosaic(false);
         break;
-    case 'detail':
-        focusImage(currentImg, h.redirected);
-        break;
     default:
         mosaicResize();
         checkCookie();
     }
+
     $('#loading').hide();
     window.setTimeout("preFetch()", 500);
     setKeys();
@@ -554,15 +562,12 @@ function bodyLoad(vm, bgcolor) {
 }
 
 function preFetch() {
-    /*	for (var i = 0; i < slideshowImages.length; i++) {
-        var tempImage = new Element('img', {'src': slideshowImages[i][0]});
-        }*/
+    var i, cache = [];
+    for (i = 0; i < slideshowImages.length; i=i+1) {
+      //  var tempImage = new Element('img', {'src': slideshowImages[i][0]});
+      var cacheImage = document.createElement('img');
+      cacheImage.src = slideshowImages[i][0];
+      cache.push(cacheImage);
+    }
 }
 
-function hideDetailView() {
-    $('#detailView').hide();
-    slideShowMode = detailViewMode = false;
-    if (slideShow !== null) { clearTimeout(slideShow); }
-    slideShow = null;
-    updateHash();
-}
