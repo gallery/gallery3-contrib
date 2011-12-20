@@ -430,6 +430,9 @@ document = null;
             swatchImg(currentImg - 1);
             //	if($('imageflow')) handle(1);
             break;
+        case 27: /* Esc-key */
+            hideDetailView();
+            break;
         }
     });
 }
@@ -449,7 +452,7 @@ function bodyLoad(vm, bgcolor) {
     }
     /* end parse hash */
 
-    if (navigator.appName === "Microsoft Internet Explorer") {
+    if (navigator.appVersion.search(/MSIE [0-7]/i) !== -1) {
         $('.track').each(function (s) {$(this).css('top', '-16px'); }); //Fix for IE's poor page rendering. 
     }
     /*	
