@@ -95,6 +95,14 @@ endif;
   <? endif; ?>
 <? endif; ?>
 </div>
+<? if (module::get_var("th_pear4gallery3", "show_sidebar")): ?>
+</td><td>
+<div id="sidebar" class="sidebar" style="width: 220px;">
+  <? if ($theme->page_subtype != "login"): ?>
+  <?= new View("sidebar.html") ?>
+  <? endif ?>
+</div>
+<? endif ?>
 </td></tr></table>
 <div id="pearFlowPadd" class="imageflow" style="display: none;"></div>
 <div id="pearImageFlow" class="imageflow" style="display: none;"> </div>

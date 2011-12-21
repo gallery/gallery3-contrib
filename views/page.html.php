@@ -120,8 +120,11 @@
 <? if ($theme->item()): ?>
     <div class="lNavBar">
     <? if(!empty($parents)): ?>
-        <? $parent = end($parents) ?>
+      <? foreach ($parents as $parent): ?>
+      <? if (!module::get_var("th_pear4gallery3", "show_breadcrumbs")) $parent = end($parents); ?>
         <button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>' + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
+      <? if (!module::get_var("th_pear4gallery3", "show_breadcrumbs")) break; ?>
+      <? endforeach ?>
     <? endif ?>
     </div>
     <div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
@@ -183,7 +186,7 @@
         <div class="clear"></div>
 <? endif ?>
 	</div>
-	<? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>
+    <? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton" onclick="toggleSidebar();"></button><? endif ?>
 </div>
 </div> <? /*class="pear"*/ ?>
 <? endif ?>
