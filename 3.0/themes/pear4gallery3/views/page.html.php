@@ -122,7 +122,7 @@
 	<? if ($theme->item()): ?>
 		<? if(!empty($parents)): ?>
 		<? $parent = end($parents) ?>
-		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>';// + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
+		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>' + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
 		<? endif ?>
 	</div>
 	<div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
@@ -154,8 +154,8 @@
 <div id="footerWrapper">
 	<div title="Change size of photos" id="sliderView" class="sliderView">
 		<div class="sliderRightCap"></div>
-		<div title="View at smallest photo size" class="smaller" onclick="$('#slider').slider('value', 0);"></div>
-		<div title="View at largest photo size" class="larger" onclick="$('#slider').slider('value', 250);"></div>
+		<div title="View at smallest photo size" class="smaller" onclick="$('#imgSlider').slider('value', 0);"></div>
+		<div title="View at largest photo size" class="larger" onclick="$('#imgSlider').slider('value', 250);"></div>
 		<div id="imgSlider" class="track">
 		</div>
 	</div>
@@ -169,14 +169,15 @@
 	</div>
 
 	<div class="" style="" id="viewControls">
-		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid();">
+<? if ($theme->page_subtype != "movie"): ?>
+		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid(true);">
 			<div class="label">Grid</div>
 		</div>
-		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic" onclick="switchToMosaic();">
+		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic" onclick="switchToMosaic(true);">
 			<!-- <div style="margin-top:-2px;margin-left:-4px;"> -->
 			<div class="label">Mosaic</div>
 		</div>
-		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher" onclick="startImageFlow();">
+		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher" onclick="startImageFlow(true);">
 			<!-- <div style="margin-top:-2px;"> -->
 			<div class="label">Carousel</div>
 		</div>
@@ -185,6 +186,7 @@
 			<div class="label">Slideshow</div>
 		</div>
 		<div class="clear"></div>
+<? endif ?>
 	</div>
 	<? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>
 </div>
