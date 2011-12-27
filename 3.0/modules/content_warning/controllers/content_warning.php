@@ -20,8 +20,7 @@ class Content_Warning_Controller extends Controller {
  	public function index() {
  		if(isset($_GET['cw'])) {
 			setcookie('cw_agree', '1', time() + (60 * 60 * 24), '/');
-			header("Location: /");
-			exit;
+                        url::redirect(item::root()->abs_url());
 		}
  	}
 }
