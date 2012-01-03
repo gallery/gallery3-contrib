@@ -20,6 +20,9 @@ $(function() {
 </td>
 <td class="right" style="margin: 0px; padding: 0px; width: 35%; vertical-align: top;">
 <div class="gallery-album" id="mosaicGridContainer" style="display: block;">
+<script type="text/javascript">
+  var slideshowImages = new Array();
+</script>
 <? if (count($children)): ?>
   <? foreach ($children as $i => $child): ?>
     <? $item_class = "g-photo"; ?>
@@ -77,8 +80,7 @@ endif;
     </div>
   </div>*/?>
   <? endforeach ?>
-<script type="text/javascript">
-  var slideshowImages = new Array();
+<script>
 <? foreach ($children as $i => $child): ?>
 <? if(!($child->is_album() || $child->is_movie())): ?>
     slideshowImages.push(['<?= $child->resize_url() ?>', '<?= url::site("exif/show/$child->id") ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= htmlentities($child->title, ENT_QUOTES) ?>', '<?= $child->file_url() ?>', '<?= $child->url() ?>']);
