@@ -137,28 +137,6 @@
            this.xhrData = xhr;
          },
          success: function(data) {
-           // Pre jquery 1.4, get the saved XMLHttpRequest object
-           xhr = this.xhrData;
-           if (xhr) {
-             var mimeType = /^(\w+\/\w+)\;?/.exec(xhr.getResponseHeader("Content-Type"));
-
-             var content = "";
-             if (mimeType[1] == "application/json") {
-               data = JSON.parse(data);
-             } else {
-               data = {"html": escape(data)};
-             }
-           } else {
-             // Uploading files (eg: watermark) uses a fake xhr in jquery.form.js so
-             // all we have is in the data field, which should be some very simple JSON.
-             // Weirdly enough in Chrome the result gets wrapped in a <pre> element and
-             // looks like this:
-             //   <pre style="word-wrap: break-word; white-space: pre-wrap;">{"result":"success",
-             //   "location":"\/~bharat\/gallery3\/index.php\/admin\/watermarks"}</pre>
-             // bizarre.  Strip that off before parsing.
-             data = JSON.parse(data.match("({.*})")[0]);
-           }
-
            if (data.html) {
              $("#g-dialog").html(unescape(data.html));
              $("#g-dialog").dialog("option", "position", "center");
