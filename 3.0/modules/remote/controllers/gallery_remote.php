@@ -154,7 +154,7 @@ class Gallery_Remote_Controller extends Controller {
         $reply->set('album.name.'.$count, $item->slug);
         $reply->set('album.title.'.$count, $item->title);
         $reply->set('album.summary.'.$count, $item->description);
-        $reply->set('album.parent.'.$count, $item->parent()->id == $root->id ? '0' : $item->parent()->name);
+        $reply->set('album.parent.'.$count, $item->parent()->id == $root->id ? '0' : $item->parent()->slug);
         $reply->set('album.resize_size.'.$count, $resize_size);
         $reply->set('album.max_size.'.$count, '0');
         $reply->set('album.thumb_size.'.$count, $thumb_size);
@@ -205,7 +205,7 @@ class Gallery_Remote_Controller extends Controller {
         try {
           $album->save();
 
-          $reply->set('album_name', $album->name);
+          $reply->set('album_name', $album->slug);
           $reply->set('status_text', 'New album created successfuly.');
           $reply->send();
 
@@ -264,6 +264,21 @@ class Gallery_Remote_Controller extends Controller {
       else
         $type = self::get_mime_type($_FILES['userfile']['name']);
       
+      
+      /* <any ugly idea is welcome here> */
+      if($type=='')
+      {
+				if(function_exists('getimagesize')) {
+				  $size = getimagesize($_FILES['userfile']['tmp_name']);
+				  $type = $size['mime'];
+				}
+				else if(function_exists('exif_imagetype') && function_exists('image_type_to_mime_type')) {
+					$type = image_type_to_mime_type(exif_imagetype($_FILES['userfile']['tmp_name']));
+				}
+      }
+      /* </any ugly idea is welcome here> */
+      
+            
       if ($type!='' && !in_array($type, array('image/jpeg', 'image/gif', 'image/png'))) {
         $reply->set('status_text', t("'%path' is an unsupported image type '%type'", array('path' => $_FILES['userfile']['tmp_name'], 'type' => $type)));
         $reply->send(gallery_remote::UPLOAD_PHOTO_FAIL);
@@ -310,7 +325,7 @@ class Gallery_Remote_Controller extends Controller {
         } catch (ORM_Validation_Exception $e) {
           $validation = $e->validation;
           //print_r($validation->errors()); exit;
-          $reply->set('status_text', t('Failed to validate item %item: %errors', array('item' => $filename, 'errors' => print_r($validation->errors(),true)) ));
+          $reply->set('status_text', t('Failed to validate item %item: %errors', array('item' => $filename, 'errors' => str_replace("\n", ' ', print_r($validation->errors(),true))) ));
           $reply->send(gallery_remote::UPLOAD_PHOTO_FAIL); //FIXME gallery remote ignores this return value and continues to wait
         }
 
@@ -391,7 +406,7 @@ class Gallery_Remote_Controller extends Controller {
       } catch (ORM_Validation_Exception $e) {
         $validation = $e->validation;
         //print_r($validation->errors()); exit;
-        $reply->set('status_text', t('Failed to validate item %item.', array('item' => $name)).print_r($validation->errors(),true));
+        $reply->set('status_text', t('Failed to validate item %item.', array('item' => $name)).str_replace("\n", ' ', print_r($validation->errors(),true)) );
         $reply->send(gallery_remote::NO_WRITE_PERMISSION);
       }
 
