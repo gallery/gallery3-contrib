@@ -2,12 +2,10 @@ body {
     overflow: hidden;
 }
 .g-hover-item {
-
-      border: 1px solid #000;
-        position: absolute !important;
-          z-index: 1000 !important;
-display: block;
-
+    border: 0px solid #000;
+    position: absolute !important;
+    z-index: 11 !important;
+    display: block;
 }
 
 #g-place-holder {
@@ -137,9 +135,8 @@ a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-st
 }
 
 .g-paginator {
- margin-bottom: 5px;
- margin-left: 15px;
- margin-right: 15px;
- padding-top: 6px;
+    padding: 6px 15px 5px;
+    position: relative;
+    z-index: 20;
 }
 

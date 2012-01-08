@@ -164,7 +164,7 @@ function swatchSkin(intSkin) {
     case 'dkgrey':
     case 1:
         $('div.gallery-thumb-round').css('backgroundPosition', "-200px 0px");
-        $('#mosaicTable,.pear').css('backgroundColor', "#262626");
+        $('#mosaicTable,.pear,.g-paginator').css('backgroundColor', "#262626");
         $('p.giTitle').css("color", "#a9a9a9");
         $("#dkgrey").addClass("dkgrey sel dkgrey-with-sel-with-swatch");
         bgcolor = "dkgrey";
@@ -173,7 +173,7 @@ function swatchSkin(intSkin) {
     case 'ltgrey':
     case 2:
         $('div.gallery-thumb-round').css('backgroundPosition', "-400px 0px");
-        $('#mosaicTable,.pear').css('backgroundColor', "#d9d9d9");
+        $('#mosaicTable,.pear,.g-paginator').css('backgroundColor', "#d9d9d9");
         $('p.giTitle').css("color", "#333333");
         $("#ltgrey").addClass("ltgrey sel ltgrey-with-sel-with-swatch");
         bgcolor = "ltgrey";
@@ -182,7 +182,7 @@ function swatchSkin(intSkin) {
     case 'white':
     case 3:
         $('div.gallery-thumb-round').css('backgroundPosition', "-600px 0px");
-        $('#mosaicTable,.pear').css('backgroundColor', "#ffffff");
+        $('#mosaicTable,.pear,.g-paginator').css('backgroundColor', "#ffffff");
         $('p.giTitle').css("color", "#444444");
         $("#white").addClass("white sel white-with-sel-with-swatch");
         bgcolor = "white";
@@ -190,7 +190,7 @@ function swatchSkin(intSkin) {
         // Black is default
     default:
         $('div.gallery-thumb-round').css('backgroundPosition', "0px 0px");
-        $('#mosaicTable,.pear').css('backgroundColor', "#000");
+        $('#mosaicTable,.pear,.g-paginator').css('backgroundColor', "#000");
         $('p.giTitle').css("color", "#a3a3a3");
         $("#black").addClass("black sel black-with-sel-with-swatch");
         bgcolor = "black";

@@ -50,20 +50,23 @@ font-size: 0.7em !important;
 
 #gsNavBar {
 background:transparent url('top_bar_bg.png') repeat-x 100% -12px;
-position: static;
+position: relative;
 height: 37px;
 padding-top: 10px;
 overflow: hidden;
 text-shadow: 0 -1px 2px #111111;
 font-weight: bold;
+z-index: 100;
 }
 
 #footerWrapper {
-	min-width: 800px; 
+min-width: 800px; 
 width: 100%;
 background:transparent url('footer_bg.png') top center;
 height:40px;
- clear:both; 
+clear:both; 
+z-index: 100;
+position: relative;
 }
 
 #logoButton {
