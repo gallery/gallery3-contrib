@@ -324,7 +324,7 @@ function togglePlayPause() {
     if (slideShow === null) {
         $('#play_detail').hide();
         $('#pause_detail').show();
-        slideShow = setTimeout("slideShowUpdate(" + (slideShowId + 1) + ")", 1000);
+        slideShow = setTimeout("slideShowUpdate()", 5000);
     } else { //We are playing
         $('#pause_detail').hide();
         $('#play_detail').show();
@@ -340,16 +340,17 @@ function startSlideshow() {
     $('#detailView').fadeIn('slow');
     hideHoverV = setTimeout("hideHoverView()", 3000);
     slideShowId = currentImg;
-    slideShowId = 0;
+    swatchImg(slideShowId);
     togglePlayPause();
 }
 
-function slideShowUpdate(id) {
-    if (id > slideshowImages.length) {
-        id = 0;
+function slideShowUpdate() {
+    slideShowId = slideShowId + 1;
+    if (slideShowId > slideshowImages.length) {
+        slideShowId = 0;
     }
-    swatchImg(id);
-    slideShow = setTimeout("slideShowUpdate(" + id + 1 + ")", 5000);
+    swatchImg(slideShowId);
+    slideShow = setTimeout("slideShowUpdate()", 5000);
 }
 
 function switchMode(mode) {
