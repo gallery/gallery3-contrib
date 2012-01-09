@@ -186,7 +186,7 @@
         <div class="clear"></div>
 <? endif ?>
 	</div>
-    <? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton" onclick="toggleSidebar();"></button><? endif ?>
+    <? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><? endif ?>
 </div>
 </div> <? /*class="pear"*/ ?>
 <? endif ?>

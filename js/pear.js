@@ -575,17 +575,6 @@ function preFetch() {
     }
 }
 
-function toggleSidebar() {
-    if ($('#sidebar').length === 0) { return; }
-    if ($('#sidebar').is(':visible')) {
-        $('#sidebar').hide('slide', { direction: 'right'}, 1000);
-        $('#mosaicGridContainer').animate( { width: '+=220' }, 1000, function () { mosaicResize(); });
-    } else {
-        $('#sidebar').show('slide', { direction: 'right'}, 1000);
-        $('#mosaicGridContainer').animate( { width: '-=220' }, 1000, function () { mosaicResize(); });
-    }
-}
-
 function sidebarInit(mode) {
     switch (mode) {
         case 'toggle':
