@@ -2,6 +2,7 @@
 <? /* Placeholder for infromation in mosaic view. */ ?>
 <script type="text/javascript">
 $(function() {
+    sidebarInit('<?=module::get_var("th_pear4gallery3", "sidebar_view")?>');
 	bodyLoad( "<?=module::get_var("th_pear4gallery3", "mainmenu_view")?>",
 	"<?=module::get_var("th_pear4gallery3", "background")?>");
  });
@@ -97,12 +98,15 @@ endif;
   <? endif; ?>
 <? endif; ?>
 </div>
-<? if (module::get_var("th_pear4gallery3", "show_sidebar")): ?>
+<? if (module::get_var("th_pear4gallery3", "sidebar_view") != ''): ?>
 </td><td>
-<div id="sidebar" class="sidebar" style="width: 220px;">
+<div id="sidebarContainer">
+<div id="sidebarBorder" style="background-color: darkGrey; width: 5px; height: 100%; position: absolute;"></div>
+<div id="sidebar" class="sidebar" style="width: 220px; position: aboslute; padding-left: 5px;">
   <? if ($theme->page_subtype != "login"): ?>
   <?= new View("sidebar.html") ?>
   <? endif ?>
+</div>
 </div>
 <? endif ?>
 </td></tr></table>

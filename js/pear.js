@@ -50,16 +50,6 @@ function getCookie(c_name) {
     }
     return "";
 }
-function toggleSidebar() {
-    if ($('#sidebar').length === 0) { return; }
-    if ($('#sidebar').is(':visible')) {
-        $('#sidebar').hide('slide', { direction: 'right'}, 1000);
-        $('#mosaicGridContainer').animate( { width: '+=220' }, 1000, function () { mosaicResize(); });
-    } else {
-        $('#sidebar').show('slide', { direction: 'right'}, 1000);
-        $('#mosaicGridContainer').animate( { width: '-=220' }, 1000, function () { mosaicResize(); });
-    }
-}
 
 function mosaicResize() {
     if ($('#mosaicGridContainer').length === 0) {
@@ -101,8 +91,8 @@ function mosaicResize() {
         myHeight += 18;
     }
     /*Sidebar*/
-    if ($('#sidebar').is(':visible')) { myWidth = myWidth - 220; }
-    $('#sidebar').css('height', (myHeight + 53) + "px");
+    if ($('#sidebarContainer').is(':visible')) { myWidth = myWidth - $('#sidebarContainer').width(); }
+    $('#sidebarContainer').css('height', (myHeight + 53) + "px");
     if (!mosaicView) {
         $('#mosaicGridContainer').css({'height': (myHeight + 33) + "px", 'width': myWidth + "px"});
     } else {
@@ -582,6 +572,40 @@ function preFetch() {
       var cacheImage = document.createElement('img');
       cacheImage.src = slideshowImages[i][0];
       cache.push(cacheImage);
+    }
+}
+
+function toggleSidebar() {
+    if ($('#sidebar').length === 0) { return; }
+    if ($('#sidebar').is(':visible')) {
+        $('#sidebar').hide('slide', { direction: 'right'}, 1000);
+        $('#mosaicGridContainer').animate( { width: '+=220' }, 1000, function () { mosaicResize(); });
+    } else {
+        $('#sidebar').show('slide', { direction: 'right'}, 1000);
+        $('#mosaicGridContainer').animate( { width: '-=220' }, 1000, function () { mosaicResize(); });
+    }
+}
+
+function sidebarInit(mode) {
+    switch (mode) {
+        case 'toggle':
+            $('#sidebarContainer').width(5);
+            $('#sidebarContainer').hover(function () {
+                    $('#sidebarContainer').animate( { width: '225' }, 500);
+                    //$('#sidebar').show('slide', { direction: 'right'}, 1000);
+                    $('#mosaicGridContainer').animate( { width: '-=225' }, 500, function () { mosaicResize(); }); },
+                function () {
+                    $('#sidebarContainer').animate( { width: '5' }, 500);
+                    //$('#sidebar').hide('slide', { direction: 'right'}, 1000);
+                    $('#mosaicGridContainer').animate( { width: '+=225' }, 500, function () { mosaicResize(); });
+                });
+            break;
+        case 'static':
+            break;
+        //case 'hidden':
+        default:
+            $('#sidebarContainer').hide();
+            break;
     }
 }
 

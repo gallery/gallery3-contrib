@@ -46,6 +46,10 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
       module::clear_var("th_pear4gallery3", "show_logo");
 		  module::set_var("th_pear4gallery3", "hide_logo", FALSE);
     endif;
+    if (module::get_var("th_pear4gallery3", "show_sidebar")):
+        module::clear_var("th_pear4gallery3", "show_sidebar");
+        module::set_var("th_pear4gallery3", "sidebar_view", "toggle");
+    endif;
   }
 
   protected function get_edit_form_admin() {
@@ -99,9 +103,10 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     $group->checkbox("show_breadcrumbs")
       ->label(t("Show breadcrumbs for navigation."))
       ->checked(module::get_var("th_pear4gallery3", "show_breadcrumbs"));
-    $group->checkbox("show_sidebar")
-      ->label(t("Show Sidebar"))
-      ->checked(module::get_var("th_pear4gallery3", "show_sidebar"));
+    $group->dropdown("sidebar_view")
+      ->label(t("Show Sidebar mode"))
+      ->options(array("hidden" => t("Hidden (Default)"), "static" => t("Always visible"), "toggle" => t("Toggleable")))
+      ->selected(module::get_var("th_pear4gallery3", "sidebar_view"));
     $group->input("ga_code")
       ->label(t("<a href=\"http://www.google.com/analytics/\">Google analytics</a> code."))
       ->value(module::get_var("th_pear4gallery3", "ga_code"));
@@ -189,6 +194,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     module::clear_var("th_pear4gallery3", "background");
     module::clear_var("th_pear4gallery3", "show_breadcrumbs");
     module::clear_var("th_pear4gallery3", "show_sidebar");
+    module::clear_var("th_pear4gallery3", "sidebar_view");
     module::clear_var("th_pear4gallery3", "ga_code");
   }
 
@@ -274,7 +280,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         $this->save_item_state("show_guest_menu",$form->edit_theme_adv_main->show_guest_menu->value, TRUE);
         $this->save_item_state("background",            $form->edit_theme_adv_main->background->value != "black", $form->edit_theme_adv_main->background->value);
         $this->save_item_state("show_breadcrumbs",$form->edit_theme_adv_main->show_breadcrumbs->value, TRUE);
-        $this->save_item_state("show_sidebar",$form->edit_theme_adv_main->show_sidebar->value, TRUE);
+        $this->save_item_state("sidebar_view",$form->edit_theme_adv_main->sidebar_view->value != "hidden", $form->edit_theme_adv_main->sidebar_view->value);
         $this->save_item_state("ga_code",            $form->edit_theme_adv_main->ga_code->value, $form->edit_theme_adv_main->ga_code->value);
 
         // * Advanced Options - Photo page ***************************************
