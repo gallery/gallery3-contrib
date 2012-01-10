@@ -2,6 +2,7 @@
 <? /* Placeholder for infromation in mosaic view. */ ?>
 <script type="text/javascript">
 $(function() {
+    slideshowTimeout = <?=module::get_var("th_pear4gallery3", "slideshow_time", "5000")?>;
     mosaicEffect = "<?
 $mosaic_effect = module::get_var("th_pear4gallery3", "mosaic_effect", "blind");
 if ($mosaic_effect == "none") print "";

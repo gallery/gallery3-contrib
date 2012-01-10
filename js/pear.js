@@ -18,6 +18,7 @@ var hideHoverV = null;
 var hovering = false;
 var maxSize;
 var mosaicEffect = "";
+var slideshowTimeout = 5000;
 
 function thumbPadding() {
     var size, width, margin;
@@ -317,7 +318,7 @@ function togglePlayPause() {
     if (slideShow === null) {
         $('#play_detail').hide();
         $('#pause_detail').show();
-        slideShow = setTimeout("slideShowUpdate()", 5000);
+        slideShow = setTimeout("slideShowUpdate()", slideshowTimeout);
     } else { //We are playing
         $('#pause_detail').hide();
         $('#play_detail').show();
@@ -343,7 +344,7 @@ function slideShowUpdate() {
         slideShowId = 0;
     }
     swatchImg(slideShowId);
-    slideShow = setTimeout("slideShowUpdate()", 5000);
+    slideShow = setTimeout("slideShowUpdate()", slideshowTimeout);
 }
 
 function switchMode(mode) {

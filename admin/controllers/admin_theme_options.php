@@ -82,6 +82,9 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     $group->input("appletouchicon")
       ->label(t("URL (or relative path) to your apple-touch-icon.png"))
       ->value(module::get_var("gallery", "appletouchicon_url"));
+    $group->input("slideshow_time")
+      ->label(t("Slideshow timeout (in ms)"))
+      ->value(module::get_var("th_pear4gallery3", "slideshow_time", "5000"));
 
     /* Advanced Options - General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -218,7 +221,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
 
   protected function reset_theme() {
     // Default core theme settings
-    module::set_var("gallery", "page_size", 9);
+    module::set_var("gallery", "page_size", 50);
     module::set_var("gallery", "resize_size", 640);
     module::set_var("gallery", "thumb_size", 200);
     module::set_var("gallery", "header_text", "");
@@ -290,6 +293,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         module::set_var("gallery", "appletouchicon_url", $form->edit_theme->appletouchicon->value);
 
         $this->save_item_state("logo_path", $form->edit_theme->logo_path->value, $form->edit_theme->logo_path->value);
+        $this->save_item_state("slideshow_time", $form->edit_theme->slideshow_time->value != "5000", filter_var($form->edit_theme->slideshow_time->value, FILTER_VALIDATE_INT, array('options' => array('default' => 5000, 'min_range' => 1000))));
 
         // * Advanced Options - General ******************************************
 
