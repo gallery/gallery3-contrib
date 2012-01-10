@@ -41,6 +41,7 @@ $(document).ready(function() {
       var iconClass = $(this).parent().attr("class").match(/ui-icon-.[^\s]+/).toString();
       $(this).addClass(iconClass);
     });
+    $("ul.g-context-menu > li a span").addClass("ui-icon-carat-1-s");
   }
 
   // Remove titles for menu options since we're displaying that text anyway
