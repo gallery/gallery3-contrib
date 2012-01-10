@@ -168,8 +168,14 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
   protected function get_edit_form_help() {
     $help = '<fieldset>';
     $help .= '<legend>Help</legend><ul>';
-    $help .= '<li><h3>Prerequisites</h3>
-      <p style="color: red;">Requirements need to be met for theme to function properly.
+    $help .= '<li><h3>Prerequisites</h3>';
+
+    $gallery_ver = module::get_version("gallery");
+    if ( $gallery_ver >= $this->min_gallery_ver && (module::is_active("square_thumbs") and module::info("square_thumbs")) && (module::is_active("info") and module::info("info")) )
+        $help .= '<p style="color: green;">Requirements are met for theme to function properly.</p>';
+    else
+        $help .= '<p style="color: red;">Requirements need to be met for theme to function properly.</p>';
+    $help .= '
       </li>';
 
     $help .= '<li><h3>General Settings</h3>
