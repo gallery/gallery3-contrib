@@ -2,6 +2,11 @@
 <? /* Placeholder for infromation in mosaic view. */ ?>
 <script type="text/javascript">
 $(function() {
+    mosaicEffect = "<?
+$mosaic_effect = module::get_var("th_pear4gallery3", "mosaic_effect", "blind");
+if ($mosaic_effect == "none") print "";
+else print $mosaic_effect;
+ ?>";
     sidebarInit('<?=module::get_var("th_pear4gallery3", "sidebar_view")?>');
 	bodyLoad( "<?=module::get_var("th_pear4gallery3", "mainmenu_view")?>",
 	"<?=module::get_var("th_pear4gallery3", "background")?>");

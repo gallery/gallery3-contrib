@@ -17,6 +17,7 @@ var pearCarousel;
 var hideHoverV = null;
 var hovering = false;
 var maxSize;
+var mosaicEffect = "";
 
 function thumbPadding() {
     var size, width, margin;
@@ -203,11 +204,13 @@ function swatchImg(imageId) {
         iRatio = 1.3333;
     }
     if (mosaicView) {
-        $('#mosaicDetail').hide();
-        $('#imageTitle').html("<h2>" + slideshowImages[imageId][4] + "</h2>");
-        $('#mosaicImg').attr('src',  slideshowImages[imageId][0]);
-        $('#mosaicImg').css('cursor', "pointer");
-        $('#mosaicDetail').show("slow");
+        var options = {};
+        if ( mosaicEffect === "scale" ) { options = { percent: 0 }; }
+        $('#mosaicDetail').hide(mosaicEffect, options, "fast", function () {
+            $('#imageTitle').html("<h2>" + slideshowImages[imageId][4] + "</h2>");
+            $('#mosaicImg').attr('src',  slideshowImages[imageId][0]);
+            $('#mosaicImg').css('cursor', "pointer");
+            $('#mosaicDetail').show(mosaicEffect, options, "slow");});
     }
     mosaicResize();
 

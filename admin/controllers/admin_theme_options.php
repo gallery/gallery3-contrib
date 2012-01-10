@@ -111,13 +111,24 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
       ->label(t("<a href=\"http://www.google.com/analytics/\">Google analytics</a> code."))
       ->value(module::get_var("th_pear4gallery3", "ga_code"));
 
-    /* Advanced Options - Photo page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    /* Advanced Options - Mosaic page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+    $group = $form->group("edit_theme_adv_mosaic")->label(t("Advanced Options - Mosaic Page"));
+    $group->dropdown("mosaic_effect")
+      ->label(t("Effect of image transition"))
+      ->options(array(
+          "blind" => t("Blinds the element away and shows it by blinding it in. (default)"),
+          "clip" => t("Clips the element on and off, vertically"),
+          "drop" => t("Drops the element away and shows it by dropping it in"),
+          "explode" => t("Explodes the element into multiple pieces"),
+          "fade" => t("Fades the element, by gradually changing its opacity"),
+          "fold" => t("Folds the element like a piece of paper"),
+          "puff" => t("Scale and fade out animations create the puff effect"),
+          "slide" => t("Slides the element out of the viewport"),
+          "scale" => t("Shrink and grow an element"),
+          "none" => t("Disable effects (faster switching)")))
+      ->selected(module::get_var("th_pear4gallery3", "mosaic_effect", "blind"));
 /*
-    $group = $form->group("edit_theme_adv_photo")->label(t("Advanced Options - Photo Page"));
-    $group->dropdown("photo_popupbox")
-      ->label(t($sb_fb_caption) . " " . t("Mode"))
-      ->options(array("default" => t("Default (Slideshow/Preview)"), "preview" => t("Preview Only"), "none" => t("Disable")))
-      ->selected(module::get_var("th_pear4gallery3", "photo_popupbox"));
     $group->dropdown("photo_descmode")
       ->label(t("Description Display Mode"))
       ->options(array("overlay_top" => t("Overlay Top"), "overlay_bottom" => t("Overlay Bottom"), "bottom" => t("Bottom"), "top" => t("Top"), "hide" => t("Hide")))
@@ -166,7 +177,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
 
     $help .= '<li><h3>Advanced Options - General</h3>
       </li>';
-    $help .= '<li><h3>Advanced Options - Photo Page</h3>
+    $help .= '<li><h3>Advanced Options - Mosaic Page</h3>
       </li>';
     $help .= '<li><h3>Maintenance</h3>
       <p>Without changing image size, you can <b>Mark all Resizes for Rebuild</b>.
@@ -196,6 +207,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     module::clear_var("th_pear4gallery3", "show_sidebar");
     module::clear_var("th_pear4gallery3", "sidebar_view");
     module::clear_var("th_pear4gallery3", "ga_code");
+    module::clear_var("th_pear4gallery3", "mosaic_effect");
   }
 
   protected function reset_theme() {
@@ -284,8 +296,8 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         $this->save_item_state("ga_code",            $form->edit_theme_adv_main->ga_code->value, $form->edit_theme_adv_main->ga_code->value);
 
         // * Advanced Options - Photo page ***************************************
+        $this->save_item_state("mosaic_effect",   $form->edit_theme_adv_mosaic->mosaic_effect->value != "blind", $form->edit_theme_adv_mosaic->mosaic_effect->value);
        /*
-        $this->save_item_state("photo_descmode",   $photo_descmode != "overlay_top", $photo_descmode);
         $this->save_item_state("photo_popupbox",   $photo_popupbox != "default", $photo_popupbox);
         $this->save_item_state("thumb_inpage",     $form->edit_theme_adv_photo->thumb_inpage->value, TRUE);
         $this->save_item_state("hide_photometa",   !$form->edit_theme_adv_photo->hide_photometa->value, FALSE);
