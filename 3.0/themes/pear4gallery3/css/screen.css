@@ -753,14 +753,14 @@ form .g-error {
 
 .g-context-menu {
   background-color: #fff;
-  bottom: 0;
+  top: 0;
   left: 0;
   position: absolute;
 }
 
 .g-item .g-context-menu {
   display: none;
-  margin-top: 2em;
+  margin-top: 0em;
   width: 100%;
 }
 

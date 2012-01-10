@@ -1,5 +1,5 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<? if ($theme->page_subtype == "photo"): 
+<? if ($theme->page_subtype == "photo"):
 	foreach (end($parents)->viewable()->children() as $i => $child)
 		if(!($child->is_album() || $child->is_movie()))
    		if($child->url() == $_SERVER['REQUEST_URI']):?>
@@ -47,10 +47,9 @@
     <? endif ?>
 
     <?= $theme->script("json2-min.js") ?>
-    <?= $theme->script("jquery.js") ?>
+    <?= $theme->script("jquery-1.6.2.min.js") ?>
     <?= $theme->script("jquery.form.js") ?>
-    <?= $theme->script("jquery-ui.js") ?>
-    <?= $theme->script("jquery-ui-1.7.3.custom.min.js") ?>
+    <?= $theme->script("jquery-ui-1.8.16.custom.min.js") ?>
     <?= $theme->script("gallery.common.js") ?>
     <? /* MSG_CANCEL is required by gallery.dialog.js */ ?>
     <script type="text/javascript">
@@ -77,7 +76,7 @@
     <?= $theme->script("imageflow.packed.js") ?>
     <?= $theme->css("yui/reset-fonts-grids.css") ?>
     <?= $theme->css("superfish/css/superfish.css") ?>
-    <?= $theme->css("themeroller/ui.base.css") ?>
+    <?= $theme->css("dark-hive/jquery.ui.all.css") ?>
     <?= $theme->css("screen.css") ?>
     <?= $theme->css("imageflow.packed.css") ?>
     <!--[if lte IE 8]>
@@ -118,22 +117,24 @@
 <div class="pear">
 
 <div id="gsNavBar" class="gcBorder1">
-	<div class="lNavBar">
-	<? if ($theme->item()): ?>
-		<? if(!empty($parents)): ?>
-		<? $parent = end($parents) ?>
-		<button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>' + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
-		<? endif ?>
-	</div>
-	<div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
-		<span class="count">(<?= count($theme->item()->children()) ?>)</span>
-	</div>
-	<? endif ?>
-	<div class="rNavBar">
-		<button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
-	</div>
+<? if ($theme->item()): ?>
+    <div class="lNavBar">
+    <? if(!empty($parents)): ?>
+      <? foreach ($parents as $parent): ?>
+      <? if (!module::get_var("th_pear4gallery3", "show_breadcrumbs")) $parent = end($parents); ?>
+        <button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>' + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
+      <? if (!module::get_var("th_pear4gallery3", "show_breadcrumbs")) break; ?>
+      <? endforeach ?>
+    <? endif ?>
+    </div>
+    <div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
+        <span class="count">(<?= count($theme->item()->children()) ?>)</span>
+    </div>
+<? endif ?>
+    <div class="rNavBar">
+        <button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
+    </div>
 </div>
-
 <div id="g-header" class="ui-helper-clearfix" style="display: none;">
 	<div id="g-banner">
 		<?= $theme->user_menu() ?>
@@ -150,7 +151,7 @@
 </div>
 
 <?= $content ?>
-		
+
 <div id="footerWrapper">
 	<div title="Change size of photos" id="sliderView" class="sliderView">
 		<div class="sliderRightCap"></div>
@@ -170,25 +171,22 @@
 
 	<div class="" style="" id="viewControls">
 <? if ($theme->page_subtype != "movie"): ?>
-		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher" onclick="switchToGrid(true);">
-			<div class="label">Grid</div>
+		<div title="Display this album in a grid view" id="grid" class="grid viewSwitcher sel sel-with-viewSwitcher viewSwitcher-icon">
+			<span class="vs-icon vs-icon-grid"></span>Grid
 		</div>
-		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic" onclick="switchToMosaic(true);">
-			<!-- <div style="margin-top:-2px;margin-left:-4px;"> -->
-			<div class="label">Mosaic</div>
+		<div title="Display this album in a mosaic view" id="mosaic" class="viewSwitcher mosaic">
+			<span class="vs-icon vs-icon-mosaic"></span>Mosaic
 		</div>
-		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher" onclick="startImageFlow(true);">
-			<!-- <div style="margin-top:-2px;"> -->
-			<div class="label">Carousel</div>
+		<div title="Display this album in a carousel view" id="carousel" class="carousel viewSwitcher">
+			<span class="vs-icon vs-icon-carousel"></span>Carousel
 		</div>
 		<div title="Play a slideshow of this album" id="slideshow" class="viewSwitcher slideshow slideshow-with-viewSwitcher">
-			<!-- <div style="margin-top:-2px;margin-left:-2px;"> -->
-			<div class="label">Slideshow</div>
+			<span class="vs-icon vs-icon-slideshow"></span>Slideshow
 		</div>
-		<div class="clear"></div>
+        <div class="clear"></div>
 <? endif ?>
 	</div>
-	<? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><?endif?>
+    <? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><? endif ?>
 </div>
 </div> <? /*class="pear"*/ ?>
 <? endif ?>
