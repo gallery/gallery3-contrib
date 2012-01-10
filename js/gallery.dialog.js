@@ -65,6 +65,8 @@
 
            if ($("#g-dialog form").length) {
              self._ajaxify_dialog();
+             //Possible not necessary but kept just in case.
+             $("#g-dialog").removeClass("g-loading-small g-loading-large");
            }
          }
        });
