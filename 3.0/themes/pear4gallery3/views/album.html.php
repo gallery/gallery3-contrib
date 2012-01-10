@@ -2,24 +2,34 @@
 <? /* Placeholder for infromation in mosaic view. */ ?>
 <script type="text/javascript">
 $(function() {
-	bodyLoad( "<?=module::get_var("th_pear4gallery3", "mainmenu_view")?>", 
+    slideshowTimeout = <?=module::get_var("th_pear4gallery3", "slideshow_time", "5000")?>;
+    mosaicEffect = "<?
+$mosaic_effect = module::get_var("th_pear4gallery3", "mosaic_effect", "blind");
+if ($mosaic_effect == "none") print "";
+else print $mosaic_effect;
+ ?>";
+    sidebarInit('<?=module::get_var("th_pear4gallery3", "sidebar_view")?>');
+	bodyLoad( "<?=module::get_var("th_pear4gallery3", "mainmenu_view")?>",
 	"<?=module::get_var("th_pear4gallery3", "background")?>");
  });
 </script>
-<table id="mosaicTable" style="width: 100%; margin: -2px -2px 0px 0px; overflow: hidden"> 
+<table id="mosaicTable" style="width: 100%; margin: -2px -2px 0px 0px; overflow: hidden">
 <tr>
 <td  class="left" style="	width: 65%; vertical-align: middle; padding: 0px;">
-<div id="gsImageView" class="gbBlock gcBorder1" style="padding: 0px !important; text-align: center;"> 
-	<div style="padding: 0px; width: 0px; margin-top: 0px; opacity: 0.999999; display: none;" id="mosaicDetail"> 
-		<div id="photo"> <img id="mosaicImg" src="" alt="Main image"/> </div> 
-		<div class="gsContentDetail" style="width: 100%;"> 
+<div id="gsImageView" class="gbBlock gcBorder1" style="padding: 0px !important; text-align: center;">
+	<div style="padding: 0px; width: 0px; margin-top: 0px; opacity: 0.999999; display: none;" id="mosaicDetail">
+		<div id="photo"> <img id="mosaicImg" src="" alt="Main image"/> </div>
+		<div class="gsContentDetail" style="width: 100%;">
 			<div class="gbBlock gcBorder1" id="imageTitle"> </div>
 		</div>
 	</div>
-</div> 
+</div>
 </td>
 <td class="right" style="margin: 0px; padding: 0px; width: 35%; vertical-align: top;">
 <div class="gallery-album" id="mosaicGridContainer" style="display: block;">
+<script type="text/javascript">
+  var slideshowImages = new Array();
+</script>
 <? if (count($children)): ?>
   <? foreach ($children as $i => $child): ?>
     <? $item_class = "g-photo"; ?>
@@ -40,11 +50,13 @@ $(function() {
     <? endif ?>
       <? if ($child->has_thumb()): ?>
 		<?= $child->thumb_img(array("class" => $img_class, "id" => "thumb_$child->id", "style" => "width: 200px; height 200px;")) ?>
+      <? else: ?>
+        <span style="display: block; width: 200px; height: 200px;"></span>
+      <? endif ?>
     <? if ($child->is_movie()): ?>
       <span class="p-video"></span>
     <? endif ?>
-      <? endif ?>
-<?// Begin skimming 
+<?// Begin skimming
 if($child->is_album()):
 	$granchildren = $child->viewable()->children();
 	$offset = 0;
@@ -56,9 +68,10 @@ if($child->is_album()):
 	<div class="skimm_div" style="height: 200px; width: <?=$step?>px; left: <?=$offset?>px; top: 0px;" onmouseover="$('#thumb_<?=$child->id?>').attr('src', '<?=$granchild->thumb_url()?>');skimimg=<?=$i-1?>;" id="area_<?=$granchild->id?>"></div>
       <? endif ?>
 <?		$offset+=$step;
-endforeach; 
-endif; 
+endforeach;
+endif;
 // End skimming // ?>
+<?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
 	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify(text::limit_chars($child->title, 20)) ?> </p>
 	<? if($child->is_album()): ?><div class="giInfo"><?= count($granchildren)?> photos</div><? endif ?>
 </div>
@@ -74,8 +87,7 @@ endif;
     </div>
   </div>*/?>
   <? endforeach ?>
-<script type="text/javascript">
-  var slideshowImages = new Array();
+<script>
 <? foreach ($children as $i => $child): ?>
 <? if(!($child->is_album() || $child->is_movie())): ?>
     slideshowImages.push(['<?= $child->resize_url() ?>', '<?= url::site("exif/show/$child->id") ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= htmlentities($child->title, ENT_QUOTES) ?>', '<?= $child->file_url() ?>', '<?= $child->url() ?>']);
@@ -92,9 +104,20 @@ endif;
   <? endif; ?>
 <? endif; ?>
 </div>
+<? if (module::get_var("th_pear4gallery3", "sidebar_view") != ''): ?>
+</td><td>
+<div id="sidebarContainer">
+<div id="sidebarBorder" style="background-color: darkGrey; width: 5px; height: 100%; position: absolute;"></div>
+<div id="sidebar" class="sidebar" style="width: 220px; position: aboslute; padding-left: 5px;">
+  <? if ($theme->page_subtype != "login"): ?>
+  <?= new View("sidebar.html") ?>
+  <? endif ?>
+</div>
+</div>
+<? endif ?>
 </td></tr></table>
+<div id="pearFlowPadd" class="imageflow" style="display: none;"></div>
+<div id="pearImageFlow" class="imageflow" style="display: none;"> </div>
 <?= $theme->album_bottom() ?>
 
 <?= $theme->paginator() ?>
-<div id="pearFlowPadd" class="imageflow" style="display: none;"></div>
-<div id="pearImageFlow" class="imageflow" style="display: none;"> </div>
