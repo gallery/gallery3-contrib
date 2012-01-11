@@ -3,15 +3,14 @@ body {
 }
 .g-hover-item {
     border: 0px solid #000;
-    position: absolute !important;
+    position: relative !important;
     z-index: 11 !important;
     display: block;
 }
 
 #g-place-holder {
-    position: relative;
-    visibility: hidden;
-    z-index: 1;
+    position: absolute;
+    display: none;
 }
 .gallery-thumb {
 	float: left;

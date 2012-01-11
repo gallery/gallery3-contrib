@@ -24,7 +24,7 @@ function thumbPadding() {
     var size, width, margin;
     /* Padding on thumbs to make them flow nicer */
     size = Math.ceil((mosaicView) ? $('#imgSlider').slider('value') / 2 : $('#imgSlider').slider('value')) + 10;
-    width = $('#mosaicGridContainer').innerWidth() - 15;
+    width = $('#mosaicGridContainer').innerWidth() - 16;
     margin = width / Math.floor(width / size) - size;
 //    console.log(size, width, margin, "px");
     $('.gallery-thumb').css({'margin-left': Math.ceil(margin / 2) + 'px', 'margin-right': Math.floor(margin / 2) + 'px'});
@@ -523,36 +523,15 @@ function bodyLoad(vm, bgcolor) {
         var placeHolder = $(this).clone().attr("id", "g-place-holder");
         $(this).after($(placeHolder));
         // Style and position the hover item
-        var position = $(this).position();
-        $(this).css("top", position.top).css("left", position.left);
         $(this).addClass("g-hover-item");
         // Initialize the contextual menu
         $(this).gallery_context_menu();
         // Set the hover item's height
         $(this).height("auto");
-        var context_menu = $(this).find(".g-context-menu");
-        var adj_height = $(this).height() + context_menu.height();
-        if ($(this).next().height() > $(this).height()) {
-          $(this).height($(this).next().height());
-        } else if ($(this).prev().height() > $(this).height()) {
-          $(this).height($(this).prev().height());
-        } else {
-          $(this).height(adj_height);
-        }
       },
       function() {
         var sib_height;
         if (mosaicView) { return; }
-        // Reset item height and position
-        if ($(this).next().height()) {
-          sib_height = $(this).next().height();
-        } else {
-          sib_height = $(this).prev().height();
-        }
-        if ($.browser.msie && $.browser.version >= 8) {
-          sib_height = sib_height + 1;
-        }
-        $(this).css({"height": "", "position": "", "top": "", "left": ""});
         // Remove the placeholder and hover class from the item
         $(this).removeClass("g-hover-item");
         $("#g-place-holder").remove();
