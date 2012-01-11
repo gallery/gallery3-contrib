@@ -48,6 +48,7 @@ else print $mosaic_effect;
     <? if ($child->is_album() || $child->is_movie()): ?>
 		<div class="gallery-thumb-round"></div>
     <? endif ?>
+<?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
       <? if ($child->has_thumb()): ?>
 		<?= $child->thumb_img(array("class" => $img_class, "id" => "thumb_$child->id", "style" => "width: 200px; height 200px;")) ?>
       <? else: ?>
@@ -71,7 +72,6 @@ if($child->is_album()):
 endforeach;
 endif;
 // End skimming // ?>
-<?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
 	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify(text::limit_chars($child->title, 20)) ?> </p>
 	<? if($child->is_album()): ?><div class="giInfo"><?= count($granchildren)?> photos</div><? endif ?>
 </div>
@@ -106,7 +106,7 @@ endif;
 </div>
 <? if (module::get_var("th_pear4gallery3", "sidebar_view") != ''): ?>
 </td><td>
-<div id="sidebarContainer">
+<div id="sidebarContainer" style="overflow-y: auto;">
 <div id="sidebarBorder" style="background-color: darkGrey; width: 5px; height: 100%; position: absolute;"></div>
 <div id="sidebar" class="sidebar" style="width: 220px; position: aboslute; padding-left: 5px;">
   <? if ($theme->page_subtype != "login"): ?>
