@@ -4,7 +4,8 @@
      _init: function() {
        var self = this;
        if (!self.options.immediate) {
-         this.element.click(function(event) {
+           this.element.unbind('click');
+           this.element.click(function(event) {
            event.preventDefault();
            self._show($(event.currentTarget).attr("href"));
            return false;

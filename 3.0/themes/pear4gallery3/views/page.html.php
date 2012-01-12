@@ -1,19 +1,21 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <? if ($theme->page_subtype == "photo"):
-	foreach (end($parents)->viewable()->children() as $i => $child)
-		if(!($child->is_album() || $child->is_movie()))
-   		if($child->url() == $_SERVER['REQUEST_URI']):?>
-				<html><body>
-					<script type="text/javascript">window.location = '<? echo end($parents)->url() . "#img=$i&viewMode=detail&redirected=true"?>';</script>
-					</body></html>
-					<? die(0) ?>
-<? endif ?>
+  foreach (end($parents)->viewable()->children() as $i => $child)
+    if(!($child->is_album() || $child->is_movie()))
+      if($child->url() == $_SERVER['REQUEST_URI']):
+        $page_size = module::get_var("gallery","page_size"); ?>
+<html><body>
+  <script type="text/javascript">window.location = '<?= end($parents)->url() . "?page=".(int)($i/$page_size)."#img=".$i % $page_size ."&viewMode=detail&redirected=true"?>';</script>
+</body></html>
+        <? die(0) ?>
+      <? endif ?>
 <? endif ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" <?= $theme->html_attributes() ?> xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <? $theme->start_combining("script,css") ?>
     <title>
       <? if ($page_title): ?>
