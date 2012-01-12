@@ -5,7 +5,7 @@
       if($child->url() == $_SERVER['REQUEST_URI']):
         $page_size = module::get_var("gallery","page_size"); ?>
 <html><body>
-  <script type="text/javascript">window.location = '<?= end($parents)->url() . "?page=".(int)($i/$page_size)."#img=".$i % $page_size ."&viewMode=detail&redirected=true"?>';</script>
+  <script type="text/javascript">window.location = '<?= end($parents)->url() . "?page=".((int)($i/$page_size)+1)."#img=".$i % $page_size ."&viewMode=detail&redirected=true"?>';</script>
 </body></html>
         <? die(0) ?>
       <? endif ?>
