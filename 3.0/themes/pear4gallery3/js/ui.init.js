@@ -20,7 +20,7 @@ $(document).ready(function() {
   $("#g-action-status li").gallery_show_message();
 
   // Initialize dialogs
-  //$(".g-dialog-link").gallery_dialog();
+  $(".g-dialog-link").gallery_dialog();
 
   // Initialize short forms
   $(".g-short-form").gallery_short_form();
