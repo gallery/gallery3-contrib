@@ -144,17 +144,37 @@ class Gallery_Remote_Controller extends Controller {
     
     $thumb_size = module::get_var('gallery', 'thumb_size');
     $resize_size = module::get_var('gallery', 'resize_size');
-    $count = 0;
+
+		//* <FIXME duplication>
+    $count = 1;
+    $item = &$root;
+    $reply->set('album.name.'.$count, $item->id);
+    $reply->set('album.title.'.$count, $item->title);
+    $reply->set('album.summary.'.$count, 'Gallery Remote Interface by Thomas E. Horner');
+    $reply->set('album.parent.'.$count, '0');
+    $reply->set('album.resize_size.'.$count, $resize_size);
+    $reply->set('album.max_size.'.$count, '0');
+    $reply->set('album.thumb_size.'.$count, $thumb_size);
+    if($use_permissions) {
+      $reply->set('album.perms.add.'.$count, access::can('add', $item) ? 'true':'false');
+      $reply->set('album.perms.write.'.$count, access::can('add', $item) ? 'true':'false');
+      $reply->set('album.perms.del_item.'.$count, access::can('edit', $item) ? 'true':'false');
+      $reply->set('album.perms.del_alb.'.$count, access::can('edit', $item) ? 'true':'false');
+      $reply->set('album.perms.create_sub.'.$count, access::can('add', $item) ? 'true':'false');
+    }
+    $reply->set('album.info.extrafields.'.$count, 'Summary');
+    // </FIXME> */
+
     foreach( $root->descendants(null, null, array(array("type", "=", "album"))) as $item )
     {
       if(!$use_permissions || access::can('view', $item))
       {
         $count++;
       
-        $reply->set('album.name.'.$count, $item->slug);
+        $reply->set('album.name.'.$count, $item->id);
         $reply->set('album.title.'.$count, $item->title);
         $reply->set('album.summary.'.$count, $item->description);
-        $reply->set('album.parent.'.$count, $item->parent()->id == $root->id ? '0' : $item->parent()->slug);
+        $reply->set('album.parent.'.$count, $item->parent()->id == $root->id ? '0' : $item->parent()->id);
         $reply->set('album.resize_size.'.$count, $resize_size);
         $reply->set('album.max_size.'.$count, '0');
         $reply->set('album.thumb_size.'.$count, $thumb_size);
@@ -165,7 +185,7 @@ class Gallery_Remote_Controller extends Controller {
           $reply->set('album.perms.del_alb.'.$count, access::can('edit', $item) ? 'true':'false');
           $reply->set('album.perms.create_sub.'.$count, access::can('add', $item) ? 'true':'false');
         }
-        $reply->set('album.info.extrafields.'.$count, '');
+        $reply->set('album.info.extrafields.'.$count, 'Summary');
       }
     }
     $reply->set('album_count', $count);
@@ -183,7 +203,7 @@ class Gallery_Remote_Controller extends Controller {
     $desc = trim($input->post('newAlbumDesc'));
 
     if($album=='0') $parent = item::root();
-    else $parent = ORM::factory("item")->where("slug", "=", $album)->find();
+    else $parent = ORM::factory("item")->where("id", "=", $album)->find();
 
     if(isset($parent) && $parent->loaded() && $parent->id!='') {
       $album = ORM::factory('item');
@@ -205,7 +225,7 @@ class Gallery_Remote_Controller extends Controller {
         try {
           $album->save();
 
-          $reply->set('album_name', $album->slug);
+          $reply->set('album_name', $album->id);
           $reply->set('status_text', 'New album created successfuly.');
           $reply->send();
 
@@ -230,13 +250,13 @@ class Gallery_Remote_Controller extends Controller {
     $resize_size = module::get_var('gallery', 'resize_size');
 
     if($album=='0') $parent = item::root();
-    else $parent = ORM::factory("item")->where("slug", "=", $album)->find();
+    else $parent = ORM::factory("item")->where("id", "=", $album)->find();
 
     if(isset($parent) && $parent->loaded() && $parent->id!='') {      
       $reply->set('auto_resize', $resize_size); //resize size is the same for all g3 albums
       $reply->set('max_size', '0'); //not supported by g3
       $reply->set('add_to_beginning', 'no'); //g3 will add images to the end
-      $reply->set('extrafields', '');
+      $reply->set('extrafields', 'Summary');
       $reply->set('title', $parent->title);
       $reply->set('status_text', 'Album properties queried successfuly.');
       $reply->send();
@@ -255,7 +275,7 @@ class Gallery_Remote_Controller extends Controller {
     $autorotate = trim($input->post('auto_rotate'));
 
     if($album=='0') $parent = item::root();
-    else $parent = ORM::factory("item")->where("slug", "=", $album)->find();
+    else $parent = ORM::factory("item")->where("id", "=", $album)->find();
 
     if(isset($parent) && $parent->loaded() && $parent->id!='') {
 
@@ -313,7 +333,7 @@ class Gallery_Remote_Controller extends Controller {
           try {
             $item->save();
 
-            $reply->set('item_name', $item->name);
+            $reply->set('item_name', $item->id);
             $reply->set('status_text', 'New item created successfuly.');
             $reply->send();
 
@@ -345,10 +365,10 @@ class Gallery_Remote_Controller extends Controller {
     $name = trim($input->post('set_albumName'));
     $destination = trim($input->post('set_destalbumName'));
 
-    $album = ORM::factory("item")->where("slug", "=", $name)->find();
+    $album = ORM::factory("item")->where("id", "=", $name)->find();
 
     if($destination=='0') $parent = item::root();
-    else $parent = ORM::factory("item")->where("slug", "=", $destination)->find();
+    else $parent = ORM::factory("item")->where("id", "=", $destination)->find();
 
     if(isset($parent) && $parent->loaded() && $parent->id!='' && isset($album) && $album->loaded() && $album->id!='') {
       
@@ -382,7 +402,7 @@ class Gallery_Remote_Controller extends Controller {
     $name = trim($input->post('itemId'));
 
     if($name=='0') $item = item::root();
-    else $item = ORM::factory("item")->where("slug", "=", $name)->find();
+    else $item = ORM::factory("item")->where("id", "=", $name)->find();
 
     if(isset($item) && $item->loaded() && $item->id!='') {      
 
@@ -394,7 +414,7 @@ class Gallery_Remote_Controller extends Controller {
         try {
           $item->save();
 
-          $reply->set('item_name', $item->name);
+          $reply->set('item_name', $item->id);
           $reply->set('status_text', 'Item view count incremented successfuly.');
           $reply->send();
 
@@ -421,13 +441,13 @@ class Gallery_Remote_Controller extends Controller {
     $name = trim($input->post('itemId'));
 
     if($name=='0') $item = item::root();
-    else $item = ORM::factory("item")->where("slug", "=", $name)->find();
+    else $item = ORM::factory("item")->where("id", "=", $name)->find();
 
     if(isset($item) && $item->loaded() && $item->id!='') {      
       $info = pathinfo($item->file_path());
 
       $reply->set('status_text', 'Item properties queried successfuly.');
-      $reply->set('image.name', $item->slug);
+      $reply->set('image.name', $item->id);
       $reply->set('image.raw_width', $item->width);
       $reply->set('image.raw_height', $item->height);
       $reply->set('image.raw_filesize', filesize($item->file_path()));
@@ -438,7 +458,7 @@ class Gallery_Remote_Controller extends Controller {
       $reply->set('image.thumb_width', $item->thumb_width);
       $reply->set('image.thumb_height', $item->thumb_height);
       $reply->set('image.caption', $item->title);
-      $reply->set('image.title', $item->title);
+      $reply->set('image.title', $item->name);
       $reply->set('image.forceExtension', $info['extension']);
       $reply->set('image.hidden', access::user_can(identity::guest(), 'view', $item) ? 'no' : 'yes');
       $reply->send();
@@ -454,11 +474,11 @@ class Gallery_Remote_Controller extends Controller {
     $albums = trim($input->post('albums_too')); //yes/no [optional, since 2.13]
     $random = trim($input->post('random')); //yes/no [optional, G2 since ***]
     $limit = trim($input->post('limit')); //number-of-images [optional, G2 since ***]
-    $fields = trim($input->post('extrafields')); //yes/no [optional, G2 since 2.12]
+    $extra = trim($input->post('extrafields')); //yes/no [optional, G2 since 2.12]
     $sizes = trim($input->post('all_sizes')); //yes/no [optional, G2 since 2.14]
 
     if($name=='0') $album = item::root();
-    $album = ORM::factory("item")->where("slug", "=", $name)->find();
+    $album = ORM::factory("item")->where("id", "=", $name)->find();
 
     if(isset($album) && $album->loaded() && $album->id!='' && access::can('view', $album)) {
       
@@ -467,7 +487,7 @@ class Gallery_Remote_Controller extends Controller {
 
       $reply->set('status_text', 'Album images query successful.');
       $reply->set('album.caption', $album->title);
-      $reply->set('album.extrafields', '');
+      $reply->set('album.extrafields', 'Summary');
 
       /*
       $reply->set('image_count', '0');
@@ -484,7 +504,7 @@ class Gallery_Remote_Controller extends Controller {
           if($item->type != "album") {
             $info = pathinfo($item->file_path());
             
-            $reply->set('image.name.'.$count, $item->name);
+            $reply->set('image.name.'.$count, $item->id);
             $reply->set('image.raw_width.'.$count, $item->width);
             $reply->set('image.raw_height.'.$count, $item->height);
             $reply->set('image.raw_filesize.'.$count, filesize($item->file_path()));
@@ -503,6 +523,7 @@ class Gallery_Remote_Controller extends Controller {
             $reply->set('image.caption.'.$count, $item->title);
             $reply->set('image.title.'.$count, $item->name);
               //$reply->set('image.extrafield.fieldname.'.$count, 'value of the extra field of key fieldname');
+              $reply->set('image.extrafield.summary.'.$count, $item->description);
             $reply->set('image.clicks.'.$count, $item->view_count);
             $reply->set('image.capturedate.year.'.$count, date("Y", $item->captured));
             $reply->set('image.capturedate.mon.'.$count, date("m", $item->captured));
@@ -514,7 +535,7 @@ class Gallery_Remote_Controller extends Controller {
             $reply->set('image.hidden.'.$count, access::user_can(identity::guest(), 'view', $item) ? 'no' : 'yes');
            }
            else {
-            $reply->set('album.name.'.$count, $item->name);
+            $reply->set('album.name.'.$count, $item->id);
           }
           
         }
