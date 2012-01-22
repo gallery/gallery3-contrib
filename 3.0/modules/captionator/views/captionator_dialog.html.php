@@ -9,7 +9,7 @@
         });
       $('form input[name^=title]').change(function() {
         var title = $(this).val();
-        slug = slug.replace(/^\'/, "");
+        slug = title.replace(/^\'/, "");
         var slug = title.replace(/[^A-Za-z0-9-_]+/g, "-");
         slug = slug.replace(/^-/, "");
         slug = slug.replace(/-$/, "");
