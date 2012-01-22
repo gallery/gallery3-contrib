@@ -43,6 +43,14 @@ class tagsmap_installer {
     site_status::clear("tagsmap_needs_tag");
   }
 
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("tag")) {
+      $messages["warn"][] = t("The TagsMap module requires the Tags module.");
+    }
+    return $messages;
+  }
+
   static function uninstall() {
     // Delete the GPS table before uninstalling.
     $db = Database::instance();

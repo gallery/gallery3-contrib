@@ -17,6 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
+ 
+// rWatcher Edit:  This file used to be server_add_event.php.
+// All occurences of server_add have been replaced with videos.
+// Additionally, several new functions have been added.
 class videos_event_Core {
   static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")
@@ -34,7 +38,7 @@ class videos_event_Core {
         is_writable($item->is_album() ? $item->file_path() : $item->parent()->file_path())) {
       $menu->get("add_menu")
         ->append(Menu::factory("dialog")
-                 ->id("videos")
+                 ->id("Videos")
                  ->label(t("Add videos"))
                  ->url(url::site("videos/browse/$item->id")));
     }

@@ -1,3 +1,7 @@
 name = "Edit Captured Date"
 description = "Edit the capture date of an element manually or semiautomatically based on date of subitems."
 version = 2
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:editcaptured"
+discuss_url = "http://gallery.menalto.com/forum_module_editcaptured"

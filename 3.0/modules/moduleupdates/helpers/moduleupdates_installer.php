@@ -24,7 +24,7 @@ class moduleupdates_installer {
   
     $version = module::get_version("moduleupdates");
     if ($version < 1) {
-      module::set_version("moduleupdates", 7);
+      module::set_version("moduleupdates", 8);
       //Remove the ModuleUpdates cache entry 'JIC'
       Cache::instance()->delete("ModuleUpdates");
       //create the blank ModuleUpdates cache entry with an expiration of 0 days
@@ -34,7 +34,7 @@ class moduleupdates_installer {
   }
 
   static function upgrade($version) {
-    module::set_version("moduleupdates", 7);
+    module::set_version("moduleupdates", 8);
     //Remove the ModuleUpdates cache entry 'JIC'
     Cache::instance()->delete("ModuleUpdates");
     //Empty the ModuleUpdates cache entry so our new version starts from scratch
