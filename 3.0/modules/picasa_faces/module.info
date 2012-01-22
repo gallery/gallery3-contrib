@@ -1,3 +1,7 @@
 name = "Picasa Faces"
 description = "Import face data from Picasa so it can be used with the Photo Annotation module."
 version = 2
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:picasa_faces"
+discuss_url = "http://gallery.menalto.com/forum_module_picasa_faces"

@@ -22,4 +22,12 @@ class minislideshow_installer {
   static function deactivate() {
     site_status::clear("minislideshow_needs_rss");
   }
+
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("rss")) {
+      $messages["warn"][] = t("The MiniSlide Show module requires the RSS module.");
+    }
+    return $messages;
+  }
 }

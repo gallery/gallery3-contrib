@@ -1,0 +1,7 @@
+name = "Fit to Screen"
+description = "Dynamicaly resize the photo size to fit the screen.<br />Version 1.0 | By <a href=http://www.bouthors.fr>Matthieu Bouthors</a> | <a href=http://codex.gallery2.org/Gallery3:Modules:fittoscreen>Visit plugin Site</a> | <a href=http://gallery.menalto.com/node/103929>Support</a> | <a href=fittoscreen>Settings</a>"
+version = 10
+author_name = "Matthieu Bouthors"
+author_url = "http://www.bouthors.fr"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:Fittoscreen"
+discuss_url = "http://gallery.menalto.com/node/103929"

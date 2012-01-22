@@ -39,6 +39,9 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     */
 	public function index() {
   
+    //Start execution timer
+    $bgtime=time();
+    
 		$view = new Admin_View("admin.html");
 		$view->page_title = t("Gallery 3 :: Manage Module Updates");
 		$view->content = new View("admin_moduleupdates.html");
@@ -111,10 +114,12 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
         $font_color_local = $this->get_local_module_version_color ($module_info->version, $module_info->code_version);
         list ($core_version, $core_server) = $this->get_remote_module_version($this_module_name, "CORE");
         $font_color_core = $this->get_module_version_color ($module_info->version, $module_info->code_version, $core_version);
-        list ($contrib_version, $contrib_server) = $this->get_remote_module_version($this_module_name, "CONTRIB");
-        $font_color_contrib = $this->get_module_version_color ($module_info->version, $module_info->code_version, $contrib_version);
-        list ($gh_version, $gh_server) = $this->get_remote_module_version($this_module_name, "GH");
-        $font_color_gh = $this->get_module_version_color ($module_info->version, $module_info->code_version, $gh_version);
+        if(!is_numeric($core_version)) {
+          list ($contrib_version, $contrib_server) = $this->get_remote_module_version($this_module_name, "CONTRIB");
+          $font_color_contrib = $this->get_module_version_color ($module_info->version, $module_info->code_version, $contrib_version);
+          list ($gh_version, $gh_server) = $this->get_remote_module_version($this_module_name, "GH");
+          $font_color_gh = $this->get_module_version_color ($module_info->version, $module_info->code_version, $gh_version);
+        }
         
         if($font_color_core == "red" or $font_color_contrib == "red" or $font_color_gh == "red"){
           $update_count++;
@@ -174,6 +179,20 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     $view->content->GitHub = $GitHub;
     $view->content->Gallery_Version = substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," "));
 		
+    //End execution timer
+    $ExecutionTime = (time()-$bgtime);
+    if ($ExecutionTime < 1) {
+      $ExecutionTime = '<font color=green>1</font>';
+    }else if ($ExecutionTime <= 30){
+      $ExecutionTime = '<font color=green>' . $ExecutionTime . '</font>';
+    }else if ($ExecutionTime <= 60){
+      $ExecutionTime = '<font color=orange>' . $ExecutionTime . '</font>';
+    }else{
+      $ExecutionTime = '<font color=red>' . $ExecutionTime . '</font>';
+    }
+
+
+    $view->content->ExecutionTime = $ExecutionTime;
         
 		print $view;
 	}
@@ -252,13 +271,24 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           //Check the Gallery3 Community Contributions GitHub
           if ($file == null) {
             try {
+              $thisInstalledVersion = gallery::VERSION;
+              //Gallery versions prior to 3.0.2 contained the codename in the version string
+              if (substr_count($thisInstalledVersion, ' ') > 0 ){
+                $thisInstalledVersion = substr_replace($thisInstalledVersion,"",strpos($thisInstalledVersion," "));
+              }
+              //Truncate the minor version number
+              if (substr_count($thisInstalledVersion, '.') > 1 ){
+                $thisInstalledVersion = substr_replace($thisInstalledVersion,"",strripos($thisInstalledVersion,"."));
+              }
               $file = fopen ("http://github.com/gallery/gallery3-contrib/raw/master/". 
-              substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," "))."/modules/".$module_name."/module.info", "r");
+              $thisInstalledVersion ."/modules/".$module_name."/module.info", "r");
+
               if ($file != null) {
                 $server = '(GCC)';
               }
             }
             catch (Exception $e) {
+              //echo 'Message: ' .$e->getMessage() . '<br>';
             }
           }
           break;
@@ -302,6 +332,9 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           //GH stores only the version info
           if($line == "Not entered" or $line == "See git") {
             $line = "";
+          }
+          if (substr_count($line, '.') > 0) {
+            $line = str_replace('.','',$line);
           }
           $version = $line;
           break;

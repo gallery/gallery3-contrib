@@ -1,3 +1,7 @@
 name = "Transcode"
 description = "Transcode videos automatically to given format(s) after upload"
 version = 10
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:transcode"
+discuss_url = "http://gallery.menalto.com/forum_module_transcode"

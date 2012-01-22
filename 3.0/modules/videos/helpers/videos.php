@@ -17,6 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
+ 
+// rWatcher edit:  This file used to be server_add.php.
+//  All occurences of server_add have been replaced with videos.
+
 class videos_Core {
   static function check_config($paths=null) {
     if ($paths === null) {

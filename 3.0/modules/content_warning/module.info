@@ -1,0 +1,7 @@
+name = Content Warning
+description = "Display a cookie based warning to alert users about inappropriate content."
+version = 1
+author_name = "Manuel Sechi"
+author_url = "http://www.manuelsechi.com"
+info_url = "http://www.manuelsechi.com/progetti/gallery3-content-warning/"
+discuss_url = "http://www.manuelsechi.com/progetti/gallery3-content-warning/"
