@@ -631,7 +631,7 @@ tr.g-error td.g-error,
 .g-success,
 .g-allowed,
 #g-add-photos-status .g-success {
-  background: #d9efc2 url('../images/ico-success.png') no-repeat .4em 50%;
+  background: black url('../images/ico-success.png') no-repeat .4em 50%;
 }
 
 tr.g-success {
@@ -753,14 +753,15 @@ form .g-error {
 
 .g-context-menu {
   background-color: #fff;
-  bottom: 0;
+  top: 0;
   left: 0;
   position: absolute;
+  z-index: 1;
 }
 
 .g-item .g-context-menu {
   display: none;
-  margin-top: 2em;
+  margin-top: 0em;
   width: 100%;
 }
 
@@ -1356,3 +1357,18 @@ div#g-action-status {
   padding-left: 1.2em !important;
   padding-right: 0;
 }
+
+.uploadifyQueueItem {
+    background-color: black;
+}
+.uploadifyError {
+    background-color: #FDE5DD !important;
+    color: black;
+}
+.uploadifyProgress {
+    background-color: black;
+}
+.uploadifyProgressBar {
+    background-color: black;
+}
+

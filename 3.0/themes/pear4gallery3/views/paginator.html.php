@@ -30,15 +30,17 @@
   <li class="g-first">
   <? if ($page_type == "collection"): ?>
     <? if (isset($first_page_url)): ?>
-      <a href="<?= $first_page_url ?>" class="buttonAction buttonFirst" title="<?= t("First") ?>"> </a>
+      <a href="<?= $first_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all" style="float: left;">
+        <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
     <? endif ?>
   <? endif ?>
 
   <? if (isset($previous_page_url)): ?>
-    <a href="<?= $previous_page_url ?>" class="buttonAction buttonPrev" title="<?= t("Previous") ?>"> </a>
+    <a href="<?= $previous_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all" style="float: left;">
+      <span class="ui-icon ui-icon-seek-prev"></span><?= t("Previous") ?></a>
   <? endif ?>
   &nbsp;
-	</li>
+  </li>
 
   <li class="g-info">
     <? if ($total): ?>
@@ -60,15 +62,15 @@
 
   <li class="g-text-right">
   <? if ($page_type == "collection"): ?>
+    <? if (isset($next_page_url)): ?>
+    <a href="<?= $next_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
+      <span class="ui-icon ui-icon-seek-next"></span><?= t("Next") ?></a>
+    <? endif ?>
     <? if (isset($last_page_url)): ?>
-      <a href="<?= $last_page_url ?>" class="buttonAction buttonLast" title="<?= t("Last") ?>"> </a>
+      <a href="<?= $last_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
+        <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
     <? endif ?>
   <? endif ?>
-  <? if (isset($next_page_url)): ?>
-    <a href="<?= $next_page_url ?>" class="buttonAction buttonNext" title="<?= t("Next") ?>"> </a>
-  <? endif ?>
-
-  &nbsp;
   </li>
 </ul>
 <? endif ?>
