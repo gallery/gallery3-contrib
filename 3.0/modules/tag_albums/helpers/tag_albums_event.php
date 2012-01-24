@@ -30,8 +30,7 @@ class tag_albums_event_Core {
     //   tell the user to install it if it isn't.
     if (!module::is_active("tag") || in_array("tag", $changes->deactivate)) {
       site_status::warning(
-        t("The Tag Albums module requires the Tags module.  " .
-          "<a href=\"%url\">Activate the Tags module now</a>",
+        t("The Tag Albums module requires the Tags module.  <a href=\"%url\">Activate the Tags module now</a>",
           array("url" => url::site("admin/modules"))),
         "tag_albums_needs_tag");
     } else {
@@ -76,7 +75,7 @@ class tag_albums_event_Core {
     $tags_album_group = $form->edit_item->group("tags_album_group");
     $tags_album_group->dropdown("tags_album_type")
           ->options(
-            array("OR" => t("Display items that contain ANY of the following tags:"), 
+            array("OR" => t("Display items that contain ANY of the following tags:"),
                   "AND" => t("Display items that contain ALL of the following tags:")))
           ->selected($tag_album_type);
     $tags_album_group->input("tag_albums")
