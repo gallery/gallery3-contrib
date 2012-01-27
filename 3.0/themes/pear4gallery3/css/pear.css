@@ -1,8 +1,20 @@
+body {
+    overflow: hidden;
+}
+.g-hover-item {
+    border: 0px solid #000;
+    position: relative !important;
+    z-index: 11 !important;
+    display: block;
+}
+
+#g-place-holder {
+    position: absolute;
+    display: none;
+}
 .gallery-thumb {
 	float: left;
-	margin-bottom: 5px;
-	margin-left: 5px;
-	margin-right: 5px;
+	padding: 3px 5px 7px 5px;
 	position: relative;
 	text-align: center;
 	cursor: pointer;
@@ -40,9 +52,11 @@ th, td {
 .giTitle {
 	font-size: 1.1em;
 	font-weight: bold;
-	margin: 3px 10px !important;
+	margin: 0.3em 3px !important;
 	padding: 0 0; 
 	text-align: left;
+	height: 1.2em;
+	overflow: hidden;
 }
 
 #gsNavBar div {
@@ -102,6 +116,7 @@ a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-st
     display: block;
     position: relative;
 }
+/*
 .ui-state-default, .ui-widget-content .ui-state-default {
     background: #ccc;
     border: 1px solid #C5DBEC;
@@ -109,6 +124,7 @@ a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-st
     font-weight: bold;
     outline: medium none;
 }
+    */
 #g-banner {
     background-color: #555;
     border-bottom: 1px solid #333333;
@@ -118,28 +134,8 @@ a, .g-menu a, #g-dialog a, .g-button, .g-button:hover, .g-button:active, a.ui-st
 }
 
 .g-paginator {
- margin-bottom: 5px;
- margin-left: 15px;
- margin-right: 15px;
- padding-top: 6px;
+    padding: 6px 15px 5px;
+    position: relative;
+    z-index: 20;
 }
 
-a.buttonFirst { background-position: 0px 0px !important; }
-a.buttonFirst:hover { background-position: -15px 0px !important; }
-a.buttonPrev { background-position:  0px -15px !important; }
-a.buttonPrev:hover { background-position:  -15px -15px !important; }
-a.buttonNext { background-position: 0px -30px !important;}
-a.buttonNext:hover { background-position: -15px -30px !important;}
-a.buttonLast { background-position: 0px -45px !important; }
-a.buttonLast:hover { background-position: -15px -45px !important; }
-
-a.buttonNext, a.buttonLast { float: right; }
-a.buttonFirst, a.buttonPrev { float: left; }
-
-.g-paginator .buttonAction {
-	background: url("../icons/paginator.gif") no-repeat 0 0;
-	height: 15px;
-	width: 15px;
-	margin-left: 0;
-	display: block;
-}

@@ -1,6 +1,17 @@
 .gallery-thumb-round {
 	background: url('rounded.png') no-repeat scroll left top;
 	position: absolute;
+	height: 200px;
+	width: 200px;
+}
+
+.p-video{
+	background: url('movie.png') no-repeat center;
+	position: absolute;
+	width: 200px;
+	height: 200px;
+	left: 0px;
+	top: 0px;
 }
 
 .skimm_div {
@@ -39,27 +50,30 @@ font-size: 0.7em !important;
 
 #gsNavBar {
 background:transparent url('top_bar_bg.png') repeat-x 100% -12px;
-position: static;
+position: relative;
 height: 37px;
 padding-top: 10px;
 overflow: hidden;
 text-shadow: 0 -1px 2px #111111;
 font-weight: bold;
+z-index: 100;
 }
 
 #footerWrapper {
-	min-width: 800px; 
+min-width: 800px; 
 width: 100%;
 background:transparent url('footer_bg.png') top center;
 height:40px;
- clear:both; 
+clear:both; 
+z-index: 100;
+position: relative;
 }
 
 #logoButton {
 	display: block;
 	z-index: 100;
 background: transparent url('pear_logo_sml.png') no-repeat center left;
-width: 83px;
+width: 30px;
 height: 40px;
 border: 0px;
 padding: 0px;
@@ -81,8 +95,8 @@ background: transparent url('pear_logo_sml.png') no-repeat center left;
 	position: relative;
 	color: #FFFFFF;
 	height: 17px;
-	padding: 0px 0px;
-	width: auto;
+	padding: 0px 0px 0px 25px;
+	width: 136px;
 	float: right;
 	z-index: 100;
 	font-size: 12px;
@@ -299,98 +313,53 @@ cursor: default;
 
 /************************ VIEW CONTROLS **************************/
 #viewControls {
-position: relative;
-color: #616161;
-width: 381px;
-float: left;
-			 margin-left: 30px;
-			 margin-top: 13px;
-			 z-index: 800;
-			 font-size: 12px;
-			 text-shadow:  #111111 0px -1px 1px;
+    position: relative;
+    color: #616161;
+    width: 370px;
+    float: left;
+    padding-left: 30px;
+    padding-top: 13px;
+    z-index: 800;
+    font-size: 12px;
+    text-shadow:  #111111 0px -1px 1px;
 }
 
-.japanese #viewControls {
-	font-size: 11px;
-}
-
-#viewControls .separator {
-width: 55px;
-height: 18px;
-				padding-left: 5px;
-}
 #viewControls .label {
 	margin-top:-1px;
 }
 
 #viewControls .viewSwitcher {
 height: 14px;
-
-				margin-right: 17px;
+margin-right: 17px;
 float: left;
 cursor: pointer; /* hand-shaped cursor */
-cursor: hand; /* for IE 5.x */
-				font-weight: bold;
+font-weight: bold;
+}
+.vs-icon {
+    background-image: url('viewMode.png');
+    background-repeat: no-repeat;
+    width: 20px;
+    height: 15px;
+    display: block;
+    float: left;
 }
 
-#viewControls .viewSwitcher:hover, #viewControls .sel-with-viewSwitcher, #viewControls .hover-with-viewSwitcher {
+.vs-icon-grid { background-position: 0px 0px; } 
+.hover-with-viewSwitcher .vs-icon-grid, .sel-with-viewSwitcher .vs-icon-grid { background-position: 0px -15px; }
+.vs-icon-mosaic { background-position: -20px 0px; }
+.hover-with-viewSwitcher .vs-icon-mosaic, .sel-with-viewSwitcher .vs-icon-mosaic { background-position: -20px -15px; }
+.vs-icon-carousel { background-position: -40px 0px; }
+.hover-with-viewSwitcher .vs-icon-carousel, .sel-with-viewSwitcher .vs-icon-carousel { background-position: -40px -15px; }
+.vs-icon-slideshow { background-position: -60px 0px; }
+.hover-with-viewSwitcher .vs-icon-slideshow, .sel-with-viewSwitcher .vs-icon-slideshow { background-position: -60px -15px; }
+
+#viewControls .sel-with-viewSwitcher, #viewControls .hover-with-viewSwitcher {
 color: #ffffff;
 }
-#viewControls .sel-with-viewSwitcher {
-	cursor: default;
-}
-#viewControls #grid {
-background: url('grid.png') center left no-repeat;
-						text-indent: 20px;
-
+#viewControls .sel-with-viewSwitcher, #viewControls .disabled {
+    cursor: default !important;
 }
 
-#viewControls #grid:hover,
-#viewControls #grid.sel {
-color: #ffffff;
-background: url('grid_active.png') center left no-repeat;
-
-}
-
-#viewControls #carousel {
-	text-indent: 22px;
-background: url('carousel.png') center left no-repeat;
-
-}
-
-#viewControls #carousel:hover,
-#viewControls #carousel.sel {
-background: url('carousel_active.png') center left no-repeat;
-
-}
-
-
-
-#viewControls #mosaic {
-
-background: url('mosaic.png') center left no-repeat;
-						text-indent: 20px;
-}
-
-#viewControls #mosaic:hover,
-#viewControls #mosaic.sel {
-background: url('mosaic_active.png') center left no-repeat;
-
-}
-
-#viewControls #slideshow {
-	text-indent: 16px;
-background: url('slideshow.png') center left no-repeat;
-float: left;
-			 margin-right: 0px;
-}
-
-#viewControls #slideshow:hover,
-#viewControls #slideshow.sel {
-color: #ffffff;
-background: url('slideshow_active.png') center left no-repeat;
-
-}
 /************************ DETAIL VIEW **************************/
 
 #detailView {
