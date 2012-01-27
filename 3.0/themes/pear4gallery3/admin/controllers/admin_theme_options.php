@@ -3,7 +3,7 @@
 /*
  */
 ?>
-<?    
+<?
 class Admin_Theme_Options_Controller extends Admin_Controller {
 
   protected $min_gallery_ver = 46;
@@ -46,6 +46,10 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
       module::clear_var("th_pear4gallery3", "show_logo");
 		  module::set_var("th_pear4gallery3", "hide_logo", FALSE);
     endif;
+    if (module::get_var("th_pear4gallery3", "show_sidebar")):
+        module::clear_var("th_pear4gallery3", "show_sidebar");
+        module::set_var("th_pear4gallery3", "sidebar_view", "toggle");
+    endif;
   }
 
   protected function get_edit_form_admin() {
@@ -53,22 +57,22 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
 
     $form = new Forge("admin/theme_options/save/", "", null, array("id" =>"g-theme-options-form"));
 
-// Just commenting out, we might want rssmodule in future versions.		
+// Just commenting out, we might want rssmodule in future versions.
 //    $rssmodulecheck = (module::is_active("rss") && module::info("rss"));
 
     /* Prerequisites ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     $group = $form->group("requirements")->label(t("Prerequisites"));
     $gallery_ver = module::get_version("gallery");
-    $this->prerequisite_check($group, "vercheck", $gallery_ver >= $this->min_gallery_ver, 
+    $this->prerequisite_check($group, "vercheck", $gallery_ver >= $this->min_gallery_ver,
       t("Gallery 3 Core v.") . $this->min_gallery_ver . "+", t("Installed"), t("Required"), FALSE, sprintf(t("Check Failed. Minimum Required Version is %s. Found %s."), $this->min_gallery_ver, $gallery_ver));
-		$this->prerequisite_check($group, "square_thumbs", (module::is_active("square_thumbs") and module::info("square_thumbs")), 
+		$this->prerequisite_check($group, "square_thumbs", (module::is_active("square_thumbs") and module::info("square_thumbs")),
 			t("Square Thumbnails"), t("Found"), t("Required"), FALSE, t("Install <a href=\"http://codex.gallery2.org/Gallery3:Modules:square_thumbs\">Square Thumbnails</a> to display Thumbs correctly."));
     if (!module::get_var("th_pear4gallery3", "hide_thumbmeta")):
-      $this->prerequisite_check($group, "info", (module::is_active("info") and module::info("info")), 
+      $this->prerequisite_check($group, "info", (module::is_active("info") and module::info("info")),
         t("Info Module"), t("Found"), t("Required"), FALSE, t("Check Failed. Module is required to display Thumb metadata."));
     endif;
-    
+
     /* General Settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     $group = $form->group("edit_theme")->label(t("General Settings"));
@@ -78,6 +82,9 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     $group->input("appletouchicon")
       ->label(t("URL (or relative path) to your apple-touch-icon.png"))
       ->value(module::get_var("gallery", "appletouchicon_url"));
+    $group->input("slideshow_time")
+      ->label(t("Slideshow timeout (in ms)"))
+      ->value(module::get_var("th_pear4gallery3", "slideshow_time", "5000"));
 
     /* Advanced Options - General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -87,7 +94,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
       ->checked(module::get_var("th_pear4gallery3", "hide_logo"));
     $group->dropdown("mainmenu_view")
       ->label(t("Main page View"))
-      ->options(array("grid" => t("Grid (Default)"), "mosaic" => t("Mosaic")))
+      ->options(array("grid" => t("Grid (Default)"), "mosaic" => t("Mosaic"), "carousel" => t("Carousel")))
       ->selected(module::get_var("th_pear4gallery3", "mainmenu_view"));
     $group->checkbox("show_guest_menu")
       ->label(t("Show Main Menu for Guest Users"))
@@ -96,17 +103,35 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
       ->label(t("Background color"))
       ->options(array("black" => t("Black (Default)"), "dkgrey" => t("Dark-Grey"), "ltgrey" => t("Light-Grey"), "white" => t("White")))
       ->selected(module::get_var("th_pear4gallery3", "background"));
+    $group->checkbox("show_breadcrumbs")
+      ->label(t("Show breadcrumbs for navigation."))
+      ->checked(module::get_var("th_pear4gallery3", "show_breadcrumbs"));
+    $group->dropdown("sidebar_view")
+      ->label(t("Show Sidebar mode"))
+      ->options(array("hidden" => t("Hidden (Default)"), "static" => t("Always visible"), "toggle" => t("Toggleable")))
+      ->selected(module::get_var("th_pear4gallery3", "sidebar_view"));
     $group->input("ga_code")
       ->label(t("<a href=\"http://www.google.com/analytics/\">Google analytics</a> code."))
       ->value(module::get_var("th_pear4gallery3", "ga_code"));
 
-    /* Advanced Options - Photo page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+    /* Advanced Options - Mosaic page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+    $group = $form->group("edit_theme_adv_mosaic")->label(t("Advanced Options - Mosaic Page"));
+    $group->dropdown("mosaic_effect")
+      ->label(t("Effect of image transition"))
+      ->options(array(
+          "blind" => t("Blinds the element away and shows it by blinding it in. (default)"),
+          "clip" => t("Clips the element on and off, vertically"),
+          "drop" => t("Drops the element away and shows it by dropping it in"),
+          "explode" => t("Explodes the element into multiple pieces"),
+          "fade" => t("Fades the element, by gradually changing its opacity"),
+          "fold" => t("Folds the element like a piece of paper"),
+          "puff" => t("Scale and fade out animations create the puff effect"),
+          "slide" => t("Slides the element out of the viewport"),
+          "scale" => t("Shrink and grow an element"),
+          "none" => t("Disable effects (faster switching)")))
+      ->selected(module::get_var("th_pear4gallery3", "mosaic_effect", "blind"));
 /*
-    $group = $form->group("edit_theme_adv_photo")->label(t("Advanced Options - Photo Page"));
-    $group->dropdown("photo_popupbox")
-      ->label(t($sb_fb_caption) . " " . t("Mode"))
-      ->options(array("default" => t("Default (Slideshow/Preview)"), "preview" => t("Preview Only"), "none" => t("Disable")))
-      ->selected(module::get_var("th_pear4gallery3", "photo_popupbox"));
     $group->dropdown("photo_descmode")
       ->label(t("Description Display Mode"))
       ->options(array("overlay_top" => t("Overlay Top"), "overlay_bottom" => t("Overlay Bottom"), "bottom" => t("Bottom"), "top" => t("Top"), "hide" => t("Hide")))
@@ -139,15 +164,21 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     module::event("theme_edit_form", $form);
 
     $form->submit("g-theme-options-save")->value(t("Save Changes"));
-    
+
     return $form;
   }
 
   protected function get_edit_form_help() {
     $help = '<fieldset>';
     $help .= '<legend>Help</legend><ul>';
-    $help .= '<li><h3>Prerequisites</h3>
-      <p style="color: red;">Requirements need to be met for theme to function properly.
+    $help .= '<li><h3>Prerequisites</h3>';
+
+    $gallery_ver = module::get_version("gallery");
+    if ( $gallery_ver >= $this->min_gallery_ver && (module::is_active("square_thumbs") and module::info("square_thumbs")) && (module::is_active("info") and module::info("info")) )
+        $help .= '<p style="color: green;">Requirements are met for theme to function properly.</p>';
+    else
+        $help .= '<p style="color: red;">Requirements need to be met for theme to function properly.</p>';
+    $help .= '
       </li>';
 
     $help .= '<li><h3>General Settings</h3>
@@ -155,7 +186,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
 
     $help .= '<li><h3>Advanced Options - General</h3>
       </li>';
-    $help .= '<li><h3>Advanced Options - Photo Page</h3>
+    $help .= '<li><h3>Advanced Options - Mosaic Page</h3>
       </li>';
     $help .= '<li><h3>Maintenance</h3>
       <p>Without changing image size, you can <b>Mark all Resizes for Rebuild</b>.
@@ -181,12 +212,16 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     module::clear_var("th_pear4gallery3", "mainmenu_view");
     module::clear_var("th_pear4gallery3", "show_guest_menu");
     module::clear_var("th_pear4gallery3", "background");
+    module::clear_var("th_pear4gallery3", "show_breadcrumbs");
+    module::clear_var("th_pear4gallery3", "show_sidebar");
+    module::clear_var("th_pear4gallery3", "sidebar_view");
     module::clear_var("th_pear4gallery3", "ga_code");
+    module::clear_var("th_pear4gallery3", "mosaic_effect");
   }
 
   protected function reset_theme() {
     // Default core theme settings
-    module::set_var("gallery", "page_size", 9);
+    module::set_var("gallery", "page_size", 50);
     module::set_var("gallery", "resize_size", 640);
     module::set_var("gallery", "thumb_size", 200);
     module::set_var("gallery", "header_text", "");
@@ -258,6 +293,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         module::set_var("gallery", "appletouchicon_url", $form->edit_theme->appletouchicon->value);
 
         $this->save_item_state("logo_path", $form->edit_theme->logo_path->value, $form->edit_theme->logo_path->value);
+        $this->save_item_state("slideshow_time", $form->edit_theme->slideshow_time->value != 5000, filter_var($form->edit_theme->slideshow_time->value, FILTER_VALIDATE_INT, array('options' => array('default' => 5000, 'min_range' => 1000))));
 
         // * Advanced Options - General ******************************************
 
@@ -265,11 +301,13 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         $this->save_item_state("mainmenu_view",         $form->edit_theme_adv_main->mainmenu_view->value != "grid", $form->edit_theme_adv_main->mainmenu_view->value);
         $this->save_item_state("show_guest_menu",$form->edit_theme_adv_main->show_guest_menu->value, TRUE);
         $this->save_item_state("background",            $form->edit_theme_adv_main->background->value != "black", $form->edit_theme_adv_main->background->value);
+        $this->save_item_state("show_breadcrumbs",$form->edit_theme_adv_main->show_breadcrumbs->value, TRUE);
+        $this->save_item_state("sidebar_view",$form->edit_theme_adv_main->sidebar_view->value != "hidden", $form->edit_theme_adv_main->sidebar_view->value);
         $this->save_item_state("ga_code",            $form->edit_theme_adv_main->ga_code->value, $form->edit_theme_adv_main->ga_code->value);
 
         // * Advanced Options - Photo page ***************************************
-       /* 
-        $this->save_item_state("photo_descmode",   $photo_descmode != "overlay_top", $photo_descmode);
+        $this->save_item_state("mosaic_effect",   $form->edit_theme_adv_mosaic->mosaic_effect->value != "blind", $form->edit_theme_adv_mosaic->mosaic_effect->value);
+       /*
         $this->save_item_state("photo_popupbox",   $photo_popupbox != "default", $photo_popupbox);
         $this->save_item_state("thumb_inpage",     $form->edit_theme_adv_photo->thumb_inpage->value, TRUE);
         $this->save_item_state("hide_photometa",   !$form->edit_theme_adv_photo->hide_photometa->value, FALSE);
