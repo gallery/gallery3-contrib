@@ -1,0 +1,7 @@
+name = "Social Share"
+description = "Adds links to share the page to social media sites in the sidebar."
+version = 2
+author_name = "jasonhardin"
+author_url = "http://codex.gallery2.org/User:psychoph"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:social_share"
+discuss_url = "http://gallery.menalto.com/forum_module_social_share"
