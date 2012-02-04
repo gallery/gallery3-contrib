@@ -243,7 +243,6 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     return $font_color;
   }
   
-  
   /**
     * Parses the known GitHub repositories for new versions of modules.
     *
@@ -309,45 +308,56 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           //Check GalleryModules.com
           if ($file == null) {
             try {
-              $this_gm_repo = str_replace(".","",substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")));
-              if($this_gm_repo == "30"){
-                $file = fopen ("http://www.gallerymodules.com/m/".$module_name, "r");
-              } else {
-                $file = fopen ("http://www.gallerymodules.com/".$this_gm_repo."m/".$module_name, "r");
-              }
-              if ($file != null) {
-                $server = '(GH)';
-              }
+				$fp = fopen('gm.ini', 'w');
+				if(function_exists("curl_init")) {
+					$cp = curl_init("http://www.gallerymodules.com/gallerymodules.ini");
+					curl_setopt($cp, CURLOPT_FILE, $fp);
+				   
+					$buffer = curl_exec($cp);
+				   
+					curl_close($cp);
+					$file = 1;
+					fclose($fp);
+				} else {
+					fwrite($fp,file_get_contents("http://www.gallerymodules.com/gallerymodules.ini"));
+					fclose($fp);
+					$file = 1;
+				}
+		
+				$this_gm_repo = str_replace(".","",substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")));
+			   
+				if ($file != null) {
+					$gm_array = parse_ini_file('gm.ini',true);
+					unlink('gm.ini'); 
+					$server = '(GH)';
+				}
             }
             catch (Exception $e) {
+            	echo $e;
             }
           }
           break;
-    }
+    } 
     
-    if ($file != null) {
+	if ($file != null) {
+		if ($server_location == "GH"){ 
+			if($this_gm_repo == "30") {
+				$version = $gm_array[$module_name]['g3'];
+			} else {
+				$version = $gm_array[$module_name]['g31'];			
+			}
+		} else {
 			while (!feof ($file)) {
 				$line = fgets ($file, 1024);
-        if ($server_location == "GH"){
-          //GH stores only the version info
-          if($line == "Not entered" or $line == "See git") {
-            $line = "";
-          }
-          if (substr_count($line, '.') > 0) {
-            $line = str_replace('.','',$line);
-          }
-          $version = $line;
-          break;
-        } else {
-          //Regular expression to find & gather the version number in the remote module.info file
-          if (preg_match ("@version = (.*)@i", $line, $out)) {
-            $version = $out[1];
-            break;
-          }
-        }
+				//Regular expression to find & gather the version number in the remote module.info file
+				if (preg_match ("@version = (.*)@i", $line, $out)) {
+					$version = $out[1];
+					break;
+				}
 			}
 			fclose ($file);
 		}
+	}
     
       return array ($version, $server);
   }
