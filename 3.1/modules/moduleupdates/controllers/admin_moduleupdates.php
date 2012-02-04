@@ -93,6 +93,21 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     $update_count = 0;
     
     if($refreshCache == true){
+		// Only poll GalleryModules.com once for the ini file.
+		$fp = fopen('gm.ini', 'w');
+		if(function_exists("curl_init")) {
+			$cp = curl_init("http://www.gallerymodules.com/gallerymodules.ini");
+			curl_setopt($cp, CURLOPT_FILE, $fp);
+		   
+			$buffer = curl_exec($cp);
+		   
+			curl_close($cp);
+			fclose($fp);
+		} else {
+			fwrite($fp,file_get_contents("http://www.gallerymodules.com/gallerymodules.ini"));
+		    fclose($fp);
+		}		
+		
       foreach (module::available() as $this_module_name => $module_info) {
 
         $font_color_local = "black";
@@ -171,6 +186,8 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
       Cache::instance()->set("moduleupdates_cache_updates", serialize($cache_updates), array("ModuleUpdates"), null);
       log::success("moduleupdates", t("Completed checking remote GitHub for modules updates."));
 		}
+		
+		unlink('gm.ini'); 
     
 		$view->content->vars = $cache;
     $view->content->update_time = $cache_updates['date'];
@@ -305,37 +322,20 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           }
           break;
       case "GH":
-          //Check GalleryModules.com
-          if ($file == null) {
+          //Parse ini file from GalleryModules.com
             try {
-				$fp = fopen('gm.ini', 'w');
-				if(function_exists("curl_init")) {
-					$cp = curl_init("http://www.gallerymodules.com/gallerymodules.ini");
-					curl_setopt($cp, CURLOPT_FILE, $fp);
-				   
-					$buffer = curl_exec($cp);
-				   
-					curl_close($cp);
-					$file = 1;
-					fclose($fp);
-				} else {
-					fwrite($fp,file_get_contents("http://www.gallerymodules.com/gallerymodules.ini"));
-					fclose($fp);
-					$file = 1;
-				}
-		
 				$this_gm_repo = str_replace(".","",substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")));
-			   
+				if(file_exists('gm.ini')) {
+					$file = 1;
+				}	
 				if ($file != null) {
 					$gm_array = parse_ini_file('gm.ini',true);
-					unlink('gm.ini'); 
 					$server = '(GH)';
 				}
             }
             catch (Exception $e) {
             	echo $e;
             }
-          }
           break;
     } 
     
