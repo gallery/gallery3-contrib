@@ -93,6 +93,21 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     $update_count = 0;
     
     if($refreshCache == true){
+		// Only poll GalleryModules.com once for the ini file.
+		$fp = fopen('gm.ini', 'w');
+		if(function_exists("curl_init")) {
+			$cp = curl_init("http://www.gallerymodules.com/gallerymodules.ini");
+			curl_setopt($cp, CURLOPT_FILE, $fp);
+		   
+			$buffer = curl_exec($cp);
+		   
+			curl_close($cp);
+			fclose($fp);
+		} else {
+			fwrite($fp,file_get_contents("http://www.gallerymodules.com/gallerymodules.ini"));
+		    fclose($fp);
+		}		
+		
       foreach (module::available() as $this_module_name => $module_info) {
 
         $font_color_local = "black";
@@ -171,6 +186,8 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
       Cache::instance()->set("moduleupdates_cache_updates", serialize($cache_updates), array("ModuleUpdates"), null);
       log::success("moduleupdates", t("Completed checking remote GitHub for modules updates."));
 		}
+		
+		unlink('gm.ini'); 
     
 		$view->content->vars = $cache;
     $view->content->update_time = $cache_updates['date'];
@@ -243,7 +260,6 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     return $font_color;
   }
   
-  
   /**
     * Parses the known GitHub repositories for new versions of modules.
     *
@@ -306,48 +322,42 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           }
           break;
       case "GH":
-          //Check GalleryModules.com
-          if ($file == null) {
+          //Parse ini file from GalleryModules.com
             try {
-              $this_gm_repo = str_replace(".","",substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")));
-              if($this_gm_repo == "30"){
-                $file = fopen ("http://www.gallerymodules.com/m/".$module_name, "r");
-              } else {
-                $file = fopen ("http://www.gallerymodules.com/".$this_gm_repo."m/".$module_name, "r");
-              }
-              if ($file != null) {
-                $server = '(GH)';
-              }
+				$this_gm_repo = str_replace(".","",substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")));
+				if(file_exists('gm.ini')) {
+					$file = 1;
+				}	
+				if ($file != null) {
+					$gm_array = parse_ini_file('gm.ini',true);
+					$server = '(GH)';
+				}
             }
             catch (Exception $e) {
+            	echo $e;
             }
-          }
           break;
-    }
+    } 
     
-    if ($file != null) {
+	if ($file != null) {
+		if ($server_location == "GH"){ 
+			if($this_gm_repo == "30") {
+				$version = $gm_array[$module_name]['g3'];
+			} else {
+				$version = $gm_array[$module_name]['g31'];			
+			}
+		} else {
 			while (!feof ($file)) {
 				$line = fgets ($file, 1024);
-        if ($server_location == "GH"){
-          //GH stores only the version info
-          if($line == "Not entered" or $line == "See git") {
-            $line = "";
-          }
-          if (substr_count($line, '.') > 0) {
-            $line = str_replace('.','',$line);
-          }
-          $version = $line;
-          break;
-        } else {
-          //Regular expression to find & gather the version number in the remote module.info file
-          if (preg_match ("@version = (.*)@i", $line, $out)) {
-            $version = $out[1];
-            break;
-          }
-        }
+				//Regular expression to find & gather the version number in the remote module.info file
+				if (preg_match ("@version = (.*)@i", $line, $out)) {
+					$version = $out[1];
+					break;
+				}
 			}
 			fclose ($file);
 		}
+	}
     
       return array ($version, $server);
   }
