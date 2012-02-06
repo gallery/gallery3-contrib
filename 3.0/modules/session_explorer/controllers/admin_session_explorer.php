@@ -70,7 +70,7 @@ class Admin_Session_Explorer_Controller extends Admin_Controller {
   // Adapted from
   // http://us3.php.net/manual/en/function.session-decode.php#101687
   // by jason at joeymail dot net
-  function unserialize_session( $data ) {
+  function unserialize_session($data) {
     if (strlen($data) == 0) {
       return array();
     }
@@ -93,7 +93,13 @@ class Admin_Session_Explorer_Controller extends Admin_Controller {
     }
 
     $value_text = substr($data, $last_offset);
-    $return_array[$current_key] = unserialize($value_text);
+    try {
+      $return_array[$current_key] = unserialize($value_text);
+    } catch (ErrorException $e) {
+      // Dunno why unserialize fails.  If it fails enough, it'll show up in the aggregate
+      // counts and we can deal with it.
+      return array("user_agent" => "[unserialize fail]", "ip_address" => "[unserialize fail]");
+    }
     return $return_array;
   }
 }
