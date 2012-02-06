@@ -22,7 +22,7 @@ class Admin_Session_Explorer_Controller extends Admin_Controller {
     list($uas, $ips, $sample_size) = $this->get_uas_and_ips();
 
     $view = new Admin_View("admin.html");
-    $view->page_title = t("Akismet spam filtering");
+    $view->page_title = t("Session explorer");
     $view->content = new View("admin_session_explorer.html");
     $view->content->uas = $uas;
     $view->content->ips = $ips;
