@@ -1,4 +1,4 @@
-<?php defined("SYSPATH") or die("No direct script access.");
+41<?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2011 Bharat Mediratta
@@ -19,27 +19,29 @@
  */
 class Admin_Session_Explorer_Controller extends Admin_Controller {
   public function index() {
-    list($uas, $ips) = $this->get_uas_and_ips();
+    list($uas, $ips, $sample_size) = $this->get_uas_and_ips();
 
     $view = new Admin_View("admin.html");
     $view->page_title = t("Akismet spam filtering");
     $view->content = new View("admin_session_explorer.html");
     $view->content->uas = $uas;
     $view->content->ips = $ips;
+    $view->content->sample_size = $sample_size;
     print $view;
   }
 
   private function get_uas_and_ips() {
     $uas = array();
     $ips = array();
+    $sample_size = 0;
     $d = new Session_Database_Driver();
     foreach (db::build()
              ->select("session_id")
              ->from("sessions")
              ->execute() as $r) {
-      $data = explode("|", $d->read($r->session_id));
-      $ua = unserialize($data[4]);
-      $ip = unserialize($data[5]);
+      $data = $this->unserialize_session($d->read($r->session_id));
+      $ua = $data["user_agent"];
+      $ip = $data["ip_address"];
       if (!isset($uas[$ua])) {
         $uas[$ua] = 0;
       }
@@ -48,14 +50,49 @@ class Admin_Session_Explorer_Controller extends Admin_Controller {
       }
       $uas[$ua]++;
       $ips[$ip]++;
+
+      // Limit the sample size once we've found N user agents
+      if (++$sample_size == 5000) {
+        break;
+      }
     }
     arsort($uas);
     arsort($ips);
 
-    // Top 20 only
-    array_splice($uas, 20);
-    array_splice($ips, 20);
+    // Top N only
+    array_splice($uas, 15);
+    array_splice($ips, 15);
 
-    return array($uas, $ips);
+    return array($uas, $ips, $sample_size);
+  }
+
+  // Adapted from
+  // http://us3.php.net/manual/en/function.session-decode.php#101687
+  // by jason at joeymail dot net
+  function unserialize_session( $data ) {
+    if (strlen($data) == 0) {
+      return array();
+    }
+
+    // match all the session keys and offsets
+    preg_match_all('/(^|;|\})([a-zA-Z0-9_]+)\|/i', $data, $matches_array, PREG_OFFSET_CAPTURE);
+
+    $return_array = array();
+
+    $last_offset = null;
+    $current_key = '';
+    foreach ($matches_array[2] as $value) {
+      $offset = $value[1];
+      if(!is_null($last_offset)) {
+        $value_text = substr($data, $last_offset, $offset - $last_offset);
+        $return_array[$current_key] = unserialize($value_text);
+      }
+      $current_key = $value[0];
+      $last_offset = $offset + strlen($current_key) + 1;
+    }
+
+    $value_text = substr($data, $last_offset);
+    $return_array[$current_key] = unserialize($value_text);
+    return $return_array;
   }
 }
