@@ -24,7 +24,7 @@
   
     <br>
     <ul id="g-action-status" class="g-message-block">
-      <li class="g-warning"><?= t("Versions are compared from GitHub for Gallery Core (GC), Gallery Community Contributions (GCC), and GalleryModules.com (GM).  Versions downloaded from the forums will not be shown.") ?></li>
+      <li class="g-warning"><?= t("Versions are compared from GitHub for Gallery Core (GC) and GalleryModules.com (GM).  Versions downloaded from the forums will not be shown.") ?></li>
     </ul>
 	<fieldset>
 		<legend>Core Modules</legend>
@@ -45,7 +45,7 @@
           </tr>
         <? } ?>
 		  <? endforeach ?>
-		</table>
+		</table> 
 	</fieldset>
 	<fieldset>
 		<legend>Community Contributed Modules</legend>
@@ -53,7 +53,6 @@
 		  <tr>
 			<th> <?= t("Module")                        ?> </th>
 			<th><center> <?= t("Local /<br>Installed")  ?> </center></th>
-			<th width=50><center> <?= t("GCC")          ?> </center></th>
 			<th width=85><center> <?= t("GM")           ?> </center></th>
 			<th> <?= t("Description")                   ?> </th>
 		  </tr>
@@ -62,7 +61,6 @@
           <tr class="<?= text::alternate("g-odd", "g-even") ?>">
             <td> <?= t($module_name['name'])                                                 ?> </td>
             <td align=center> <? echo "<font color=".$module_name['font_color_local'].">";   ?> <? if($module_name['font_color_local'] != "black"){ echo "<b><u>*"; }                                                  ?> <? if (is_numeric($module_name['code_version'])) echo $module_name['code_version']; ?><? if (is_numeric($module_name['version'])) echo " / ".$module_name['version']; ?> <? if($module_name['font_color_local'] != "black"){ echo "*</b></u>"; } ?> </td>
-            <td align=center> <? echo "<font color=".$module_name['font_color_contrib'].">"; ?> <? if($module_name['font_color_contrib'] != "black" and $module_name['font_color_contrib'] != "" ){ echo "<b><u>*"; }  ?> <? if(is_numeric($module_name['contrib_version'])) if($module_name['contrib_version'] > $module_name['version'] or $module_name['core_version'] > $module_name['code_version']) { echo "<a href=\"".$module_name['contrib_dlink']."\" target=\"_blank\">".$module_name['contrib_version']."</a>";} else { echo $module_name['contrib_version']; } ?> <? if($module_name['font_color_contrib'] != "black"){ echo "*</b></u>"; }  ?> </font> </td>
             <td align=center> <? echo "<font color=".$module_name['font_color_gh'].">";      ?> <? if($module_name['font_color_gh'] != "black" and $module_name['font_color_gh'] != "" ){ echo "<b><u>*"; }            ?> <? if(is_numeric($module_name['gh_version'])) if($module_name['gh_version'] > $module_name['version'] or $module_name['core_version'] > $module_name['code_version']) { echo "<a href=\"".$module_name['gh_dlink']."\" target=\"_blank\">".$module_name['gh_version']."</a>";} else { echo $module_name['gh_version']; }                          ?> <? if($module_name['font_color_gh'] != "black"){ echo "*</b></u>"; }       ?> </font> </td>
             <td> <?= t($module_name['description'])                                          ?> </td>
           </tr>
