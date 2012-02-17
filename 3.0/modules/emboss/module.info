@@ -1,0 +1,5 @@
+name = "Emboss"
+description = "A different watermarking module"
+version = 1
+author_name = "mikemayer67@vmwishes.com"
+author_url = "http://www.vmwishes.com"
