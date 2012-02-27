@@ -1,7 +1,0 @@
-name = "Videos"
-description = "Allows authorized users to load videos directly from your web server"
-version = 4
-author_name = "rWatcher"
-author_url = "http://codex.gallery2.org/User:RWatcher"
-info_url = "http://codex.gallery2.org/Gallery3:Modules:videos"
-discuss_url = "http://gallery.menalto.com/node/98149"

@@ -1,7 +1,0 @@
-name = "Module Order"
-description = "Allows you to change the order in which modules are executed"
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:moduleorder"
-discuss_url = "http://gallery.menalto.com/forum_module_moduleorder"

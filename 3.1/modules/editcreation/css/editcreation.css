@@ -1,8 +1,0 @@
-form#g-edit-album-form fieldset ul li input,
-form#g-edit-album-form fieldset ul li select,
-form#g-edit-album-form fieldset ul li textarea,
-form#g-edit-photo-form fieldset ul li input,
-form#g-edit-photo-form fieldset ul li select,
-form#g-edit-photo-form fieldset ul li textarea {
-  display: inline;
-}

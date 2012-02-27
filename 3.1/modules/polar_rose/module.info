@@ -1,7 +1,0 @@
-name = "Polar Rose"
-description = "Integrate Gallery with the Polar Rose facial recognition service."
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:polar_rose"
-discuss_url = "http://gallery.menalto.com/forum_module_polar_rose"
