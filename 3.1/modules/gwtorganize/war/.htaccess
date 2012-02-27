@@ -1,9 +1,0 @@
-<IfModule mod_expires.c>
-<Files *.nocache.*>
-  ExpiresDefault "access"
-</Files>
-
-<Files *.cache.*>
-        ExpiresDefault "now plus 1 year"
-</Files>
-</IfModule>

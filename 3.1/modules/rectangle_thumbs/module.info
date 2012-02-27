@@ -1,7 +1,0 @@
-name = "Rectangle Thumbnails"
-description = "Force all thumbnails to be a specific rectangular aspect ratio"
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:rectangle_thumbs"
-discuss_url = "http://gallery.menalto.com/forum_module_rectangle_thumbs"

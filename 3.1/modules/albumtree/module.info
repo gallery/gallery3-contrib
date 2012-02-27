@@ -1,7 +1,0 @@
-name = "Album Tree"
-description = "Provides a block in the sidebar with quick links to all other albums."
-version = 3
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:albumtree"
-discuss_url = "http://gallery.menalto.com/forum_module_albumtree"
