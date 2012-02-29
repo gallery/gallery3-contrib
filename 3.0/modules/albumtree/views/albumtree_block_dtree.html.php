@@ -398,7 +398,7 @@ albumTree.config.cookieDomain = '';
 <?
 function addtree($album){
 ?>
-albumTree.add(<?= $album->id -1 ?>, <?= $album->parent_id -1 ?>, "<?= $album->title ?>", pf+'<?= $album->relative_url() ?>');
+albumTree.add(<?= $album->id -1 ?>, <?= $album->parent_id -1 ?>, "<?= html::clean($album->title) ?>", pf+'<?= $album->relative_url() ?>');
 <?
   foreach ($album->viewable()->children(null, null, array(array("type", "=", "album"))) as $child){
     addtree($child);
