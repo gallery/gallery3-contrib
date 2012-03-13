@@ -39,9 +39,9 @@
 #gd-admin p.g-error         { padding-left: 30px; border: none; margin-bottom: 0; background-image: none; }
 
 #g-content                  { padding: 0 1em; width: 97%; font-size: 1em; }
-#g-content form ul li input  { display: inline; float: left; margin-right: 0.8em; } 
-#g-content form ul li select { display: inline; float: left; margin-right: 0.8em; width: 50.6%; padding: 0 0 0 .2em; }
-#g-content form ul li input[type='text'] { width: 50%; }
+#g-content form ul li input  { display: inline; float: left; margin-right: 0.8em; }
+#g-content form ul li select { display: inline; float: left; margin-right: 0.8em; width: 35%; padding: 0 0 0 .2em; }
+#g-content form ul li input[type='text'] { width: 35%; }
 #g-content form ul li textarea { height: 6em; }
 #g-content form input[type="submit"] { border: #5b86ab 2px solid; padding: 0.3em; color: #fff; background: url(/themes/greydragon/images/button-grad-vs.png) #5580a6 repeat-x left top; }
 #g-content form input[type="submit"]:hover,
@@ -50,7 +50,7 @@ input.ui-state-hover { background-image: url(/themes/greydragon/images/button-gr
 </style>
 
 <script>
-  $(document).ready( function() { 
+  $(document).ready( function() {
     $('form').submit( function() {
       $('input[type=submit]', this).attr('disabled', 'disabled');
     });
@@ -72,6 +72,7 @@ input.ui-state-hover { background-image: url(/themes/greydragon/images/button-gr
     <div id="gd-admin-title"><?= t($admin_info->name) ?> - <?= $version ?></div>
     <div id="gd-admin-hlinks">
       <ul><li><a href="http://codex.gallery2.org/Gallery3:Themes:pear4gallery3" target="_blank"><?= t("Home") ?></a>&nbsp;|&nbsp;</li>
+        <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=RX4UUYVJ5D7TY&lc=SE&item_name=Pear4Gallery&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted" target="_blank"><?= t("Beer found") ?></a>&nbsp;|&nbsp;</li>
         <? if (isset($admin_info->support)): ?>
         <li><a href="<?= $admin_info->support;  ?>" target="_blank"><?= t("Support") ?></a>&nbsp;|&nbsp;</li>
         <? endif; ?>
