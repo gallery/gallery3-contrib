@@ -25,52 +25,8 @@
 //   $position                - the position number of this photo
 //
 ?>
-<? if(isset($first_page_url) || isset($last_page_url)): ?>
-<ul id="paginator" class="g-paginator ui-helper-clearfix">
-  <li class="g-first">
-  <? if ($page_type == "collection"): ?>
-    <? if (isset($first_page_url)): ?>
-      <a href="<?= $first_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all" style="float: left;">
-        <span class="ui-icon ui-icon-seek-first"></span><?= t("First") ?></a>
-    <? endif ?>
-  <? endif ?>
-
-  <? if (isset($previous_page_url)): ?>
-    <a href="<?= $previous_page_url ?>" class="g-button ui-icon-left ui-state-default ui-corner-all" style="float: left;">
-      <span class="ui-icon ui-icon-seek-prev"></span><?= t("Previous") ?></a>
-  <? endif ?>
-  &nbsp;
-  </li>
-
-  <li class="g-info">
-    <? if ($total): ?>
-      <? if ($page_type == "collection"): ?>
-        <?= /* @todo This message isn't easily localizable */
-            t2("Photo %from_number of %count",
-               "Photos %from_number - %to_number of %count",
-               $total,
-               array("from_number" => $first_visible_position,
-                     "to_number" => $last_visible_position,
-                     "count" => $total)) ?>
-      <? else: ?>
-        <?= t("%position of %total", array("position" => $position, "total" => $total)) ?>
-      <? endif ?>
-    <? else: ?>
-      <?= t("No photos") ?>
-    <? endif ?>
-  </li>
-
-  <li class="g-text-right">
-  <? if ($page_type == "collection"): ?>
-    <? if (isset($next_page_url)): ?>
-    <a href="<?= $next_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
-      <span class="ui-icon ui-icon-seek-next"></span><?= t("Next") ?></a>
-    <? endif ?>
-    <? if (isset($last_page_url)): ?>
-      <a href="<?= $last_page_url ?>" class="g-button ui-icon-right ui-state-default ui-corner-all">
-        <span class="ui-icon ui-icon-seek-end"></span><?= t("Last") ?></a>
-    <? endif ?>
-  <? endif ?>
-  </li>
-</ul>
-<? endif ?>
+<script type="text/javascript">
+var navigation = new Array();
+navigation['next'] = '<?= $next_page_url ?>';
+navigation['prev'] = '<?= $previous_page_url ?>';
+</script>

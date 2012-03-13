@@ -55,6 +55,7 @@
            }
 
            $("#g-dialog").html(content).gallery_show_loading();
+           $("#g-add-comment,#g-dialog .showCommentForm").gallery_dialog();
 
            if ($("#g-dialog form").length) {
              self.form_loaded(null, $("#g-dialog form"));
@@ -80,7 +81,7 @@
        var cssWidth = new String($("#g-dialog form").css("width"));
        var childWidth = cssWidth.replace(/[^0-9]/g,"");
        var size = $.gallery_get_viewport_size();
-       if ($("#g-dialog iframe").length) {
+       if ($("#g-dialog iframe").length && !$("#g-dialog #fb-root")) {
          dialogWidth = size.width() - 100;
          // Set the iframe width and height
          $("#g-dialog iframe").width("100%").height(size.height() - 100);
@@ -91,12 +92,18 @@
          dialogWidth = 500;
        }
        $("#g-dialog").dialog('option', 'width', dialogWidth);
+       var mosaicTableH = $("#mosaicTable").height();
+       if (mosaicTableH !== 0 && $("#g-dialog").height() > mosaicTableH) {
+         $("#g-dialog").dialog("option", "height", mosaicTableH);
+       }
+       $('#g-dialog').dialog( "option", "position", 'center' );
      },
 
      form_loaded: function(event, ui) {
        // Should be defined (and localized) in the theme
        MSG_CANCEL = MSG_CANCEL || 'Cancel';
        var eCancel = '<a href="#" class="g-cancel g-left">' + MSG_CANCEL + '</a>';
+       $("#g-dialog input[type=submit]").addClass("submit");
        if ($("#g-dialog .submit").length) {
          $("#g-dialog .submit").addClass("ui-state-default ui-corner-all");
          $.fn.gallery_hover_init();
@@ -106,6 +113,7 @@
            event.preventDefault();
          });
         }
+       $("#g-dialog textarea,#g-dialog input").addClass("ui-widget-content ui-corner-all");
        $("#g-dialog .ui-state-default").hover(
          function() {
            $(this).addClass("ui-state-hover");
@@ -153,12 +161,27 @@
              }
            }
            if (data.result == "success") {
+             if (data.view && data.form) {
+               $("#detail_comment").click();
+               return;
+             }
              if (data.location) {
                window.location = data.location;
              } else {
                window.location.reload();
              }
            }
+           else {
+             $("#g-dialog").dialog('option', 'title', 'Error');
+             if(data.form) {
+               $("#g-dialog").html(data.form);
+               self.form_loaded(null, $("#g-dialog form"));
+               self._ajaxify_dialog();
+             } else {
+               $("#g-dialog").html("Something went wrong, try again later.");
+             }
+           }
+           $('#g-dialog').dialog( "option", "position", 'center' );
          }
        });
      },
