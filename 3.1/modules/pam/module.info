@@ -1,7 +1,0 @@
-name = "PAM"
-description = "Pluggable authentication module allows users to login by using external authentication methods."
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:pam"
-discuss_url = "http://gallery.menalto.com/forum_module_pam"
