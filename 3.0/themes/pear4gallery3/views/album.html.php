@@ -5,9 +5,13 @@ var slideshowImages = new Array();
 var thumbImages = new Array();
 <?
 $defaultView = module::get_var("th_pear4gallery3", "mainmenu_view", "grid");
-$result = ORM::factory("pear_album_view")->where("album_id", "=", $item->id)->find();
-if($result->loaded()) {
-  $defaultView = $result->view_mode;
+try {
+  $result = ORM::factory("pear_album_view")->where("album_id", "=", $item->id)->find();
+  if($result->loaded()) {
+    $defaultView = $result->view_mode;
+  }
+} catch (Exception $e) {
+  unset($e);
 }
 ?>
 $(window).load(function () {

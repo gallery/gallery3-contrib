@@ -2,6 +2,7 @@ body {
   overflow: hidden;
   font-size: 10px;
   color: #999 !important;
+  text-align: left;
 }
 
 #loading {
@@ -165,6 +166,7 @@ outline: medium none;
     overflow: hidden;
     left: 0;
     right: 0;
+    margin-top: 5px;
 }
 
 #mosaicDetail {

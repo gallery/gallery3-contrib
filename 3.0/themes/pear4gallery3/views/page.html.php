@@ -171,6 +171,7 @@ if (isset($_GET['ajax'])) {
 		<?= $theme->header_bottom() ?>
 	</div>
 </div>
+<?= $theme->messages() ?>
 
 <?= $content ?>
 

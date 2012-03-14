@@ -632,6 +632,7 @@ function pearInit(options) {
         switchToGrid();
     }
     checkCookie();
+    $('#mosaicTable').css('top', 45 +$('#g-action-status').outerHeight(true));
     $('#loading').hide();
 }
 
