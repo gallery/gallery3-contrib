@@ -52,14 +52,13 @@ class Gallery1DataParser {
                     is_readable($fileName . '.bak')) {
                 $fileName .= '.bak';
             } else {
-                return array(GalleryCoreApi::error(ERROR_BAD_PARAMETER, __FILE__, __LINE__,
-                                              "Missing or not readable file: $fileName"), null);
+                return array('ERROR_BAD_PARAMETER', null);
             }
         }
         $tmp = file($fileName);
 
         if (empty($tmp)) {
-            return array(GalleryCoreApi::error(ERROR_MISSING_VALUE), null);
+            return array('ERROR_MISSING_VALUE', null);
         }
 
         $tmp = join('', $tmp);
