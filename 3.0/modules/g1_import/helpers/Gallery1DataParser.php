@@ -47,17 +47,24 @@ class Gallery1DataParser {
      *               object Unserialized user metadata
      */
     function loadFile($fileName) {
+				$fileName = str_replace('//','/',$fileName);
         if (!file_exists($fileName) || !is_readable($fileName)) {
             if (file_exists($fileName . '.bak') &&
                     is_readable($fileName . '.bak')) {
                 $fileName .= '.bak';
             } else {
+                message::warning(
+                  t('Gallery1 inconsistency: Missing or not readable file %file',
+                  array('file' => $fileName)));
                 return array('ERROR_BAD_PARAMETER', null);
             }
         }
         $tmp = file($fileName);
 
         if (empty($tmp)) {
+            message::warning(
+              t('Gallery1 inconsistency: Empty file %file',
+              array('file' => $fileName)));
             return array('ERROR_MISSING_VALUE', null);
         }
 
