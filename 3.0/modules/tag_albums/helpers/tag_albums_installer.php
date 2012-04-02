@@ -29,6 +29,14 @@ class tag_albums_installer {
                KEY(`album_id`, `id`))
                DEFAULT CHARSET=utf8;");
 
+    $db->query("CREATE TABLE IF NOT EXISTS {tags_album_tag_covers} (
+               `id` int(9) NOT NULL auto_increment,
+               `tag_id` int(9) NOT NULL,
+               `photo_id` int(9) NOT NULL,
+               PRIMARY KEY (`id`),
+               KEY(`tag_id`, `id`))
+               DEFAULT CHARSET=utf8;");
+
     // Set up some default values.
     module::set_var("tag_albums", "tag_sort_by", "name");
     module::set_var("tag_albums", "tag_sort_direction", "ASC");
@@ -43,11 +51,23 @@ class tag_albums_installer {
   }
 
   static function upgrade($version) {
+    $db = Database::instance();
     if ($version == 1) {
       module::set_var("tag_albums", "tag_index", "default");
       module::set_var("tag_albums", "tag_index_scope", "0");
       module::set_var("tag_albums", "tag_index_filter", "0");
       module::set_version("tag_albums", 2);
+    }
+
+    if ($version == 2) {
+      $db->query("CREATE TABLE IF NOT EXISTS {tags_album_tag_covers} (
+               `id` int(9) NOT NULL auto_increment,
+               `tag_id` int(9) NOT NULL,
+               `photo_id` int(9) NOT NULL,
+               PRIMARY KEY (`id`),
+               KEY(`tag_id`, `id`))
+               DEFAULT CHARSET=utf8;");
+      module::set_version("tag_albums", 3);
     }
   }
   
