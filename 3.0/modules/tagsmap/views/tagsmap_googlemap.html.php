@@ -34,8 +34,8 @@
       function createMarker(point, description, tagURL, tagName) {
         var marker = new GMarker(point);
     	GEvent.addListener(marker, "click", function() {
-          var myHtml = description + "<br/><br/>" + 
-                       "Tag: <a href=\"" + tagURL + "\">" + tagName + "</a>";
+          var myHtml = "<div id=\"g-tagsmap-dialog\">" + description + "<br/><br/>" + 
+                       "Tag: <a href=\"" + tagURL + "\">" + tagName + "</a></div>";
     	  map.openInfoWindowHtml(point, myHtml);
         });
         return marker;

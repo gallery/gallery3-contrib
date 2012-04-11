@@ -1,7 +1,0 @@
-name = "WordPress Authentication"
-description = "Use a WordPress installation for authentication"
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:wordpress_auth"
-discuss_url = "http://gallery.menalto.com/forum_module_wordpress_auth"

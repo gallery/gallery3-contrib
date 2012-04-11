@@ -1,7 +1,0 @@
-name = "export_facebook"
-description = "Export Photos from Gallery 3 to Facebook."
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:export_facebook"
-discuss_url = "http://gallery.menalto.com/forum_module_export_facebook"

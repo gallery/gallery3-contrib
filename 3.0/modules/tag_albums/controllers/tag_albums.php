@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,48 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class tag_albums_Controller extends Controller {
+  public function make_tag_album_cover($id, $tag_id, $album_id) {
+    if (!identity::active_user()->admin) {
+      message::error(t("You do not have sufficient privileges to do this"));
+      url::redirect("tag_albums/show/" . $id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($item->name));
+    }
+
+    $item = ORM::factory("item", $id);
+
+    if (($album_id > 0) && ($tag_id == 0)) {
+      // If we are dealing with a dynamic album, set it's thumbnail to this pics.
+      // Based on modules/gallery/helpers/item.php
+      $album_tags = ORM::factory("tags_album_id")
+        ->where("id", "=", $album_id)
+        ->find_all();
+      if (count($album_tags) > 0) {
+        $parent = ORM::factory("item", $album_tags[0]->album_id);
+        $parent->album_cover_item_id = $item->id;
+        $parent->thumb_dirty = 1;
+        graphics::generate($parent);
+        $parent->save();
+
+        $grand_parent = $parent->parent();
+        if ($grand_parent && access::can("edit", $grand_parent) &&
+            $grand_parent->album_cover_item_id == null)  {
+          item::make_album_cover($parent);
+        }
+      }
+      message::success(t("Made " . $item->title . " this album's cover"));
+      url::redirect("tag_albums/show/" . $id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($item->name));
+    } else {
+      // If setting a thumbnail for an auto-generated all tags->tag album.
+      $record = ORM::factory("tags_album_tag_cover")->where("tag_id", "=", $tag_id)->find();
+      if (!$record->loaded()) {
+        $record->tag_id = $tag_id;
+      }
+      $record->photo_id = $id;
+      $record->save();
+      message::success(t("Made " . $item->title . " this album's cover"));
+      url::redirect("tag_albums/show/" . $id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($item->name));
+    }
+  }
+
   public function album($id) {
     // Displays a dynamic page containing items that have been 
     //  tagged with one or more tags.
@@ -318,20 +360,47 @@ class tag_albums_Controller extends Controller {
     }
 
     // Generate an arry of "fake" items, one for each tag on the page.
-    //   Grab thumbnails from the most recently uploaded item for each tag, if available.
+    //   Grab thumbnails from a admin-specified photo, or the most recently 
+    //   uploaded item for each tag, if available.
     $children_array = Array();
     foreach ($display_tags as $one_tag) {
-      $tag_item = ORM::factory("item")
-        ->viewable()
-        ->join("items_tags", "items.id", "items_tags.item_id")
-        ->where("items_tags.tag_id", "=", $one_tag->id)
-        ->order_by("items.id", "DESC")
-        ->find_all(1, 0);
-      $child_tag =  new Tag_Albums_Item($one_tag->name, url::site("tag_albums/tag/" . $one_tag->id . "/" . $id . "/" . urlencode($one_tag->name)), "album", 0);
-      if (count($tag_item) > 0) {
-        if ($tag_item[0]->has_thumb()) {
-          $child_tag->set_thumb($tag_item[0]->thumb_url(), $tag_item[0]->thumb_width, $tag_item[0]->thumb_height);
+      $tag_thumb_url = "";
+      $tag_thumb_width = "";
+      $tag_thumb_height = "";
+
+      // Check and see if the admin specified a photo to use for this tags thumbnail.
+      $record = ORM::factory("tags_album_tag_cover")->where("tag_id", "=", $one_tag->id)->find();
+      if ($record->loaded()) {
+        $tag_thumb_item = ORM::factory("item", $record->photo_id);
+        if ($tag_thumb_item->loaded()) {
+          $tag_thumb_url = $tag_thumb_item->thumb_url();
+          $tag_thumb_width = $tag_thumb_item->thumb_width;
+          $tag_thumb_height = $tag_thumb_item->thumb_height;
         }
+      }
+
+      // If no pre-specified thumbnail was found, use the most recently uploaded photo (if available).
+      if ($tag_thumb_url == "") {
+        $tag_item = ORM::factory("item")
+          ->viewable()
+          ->join("items_tags", "items.id", "items_tags.item_id")
+          ->where("items_tags.tag_id", "=", $one_tag->id)
+          ->order_by("items.id", "DESC")
+          ->find_all(1, 0);
+        if (count($tag_item) > 0) {
+          if ($tag_item[0]->has_thumb()) {
+            $tag_thumb_url = $tag_item[0]->thumb_url();
+            $tag_thumb_width = $tag_item[0]->thumb_width;
+            $tag_thumb_height = $tag_item[0]->thumb_height;
+          }
+        }
+      }
+
+      // Create a new object to represent this virtual album, and add it to the array of objects for
+      //   this page.
+      $child_tag =  new Tag_Albums_Item($one_tag->name, url::site("tag_albums/tag/" . $one_tag->id . "/" . $id . "/" . urlencode($one_tag->name)), "album", 0);
+      if ($tag_thumb_url != "") {
+        $child_tag->set_thumb($tag_thumb_url, $tag_thumb_width, $tag_thumb_height);
       }
       $children_array[] = $child_tag;
     }

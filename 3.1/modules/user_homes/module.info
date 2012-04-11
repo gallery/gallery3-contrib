@@ -1,7 +1,0 @@
-name = "User Homes"
-description = "Allows users to have home galleries that they are redirected to when logged in."
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:user_homes"
-discuss_url = "http://gallery.menalto.com/forum_module_user_homes"

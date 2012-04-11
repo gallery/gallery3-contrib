@@ -1,4 +1,0 @@
-# Create a local file called local_config.php and add the following content:
-$SITE_URL = "http://<your domain>/gallery3/index.php/rest";
-$USER     = "<user admin Id>";
-$PASSWORD = "<user admin password>";
