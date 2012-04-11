@@ -3,21 +3,21 @@
 	<div class="overlay"> </div>
 	<div class="content">
 		<div class="imageContainer">
-			<div id="backToAlbumLink" class="dark_theme">
-				<button id="backToAlbumButton" class="large push large-with-push" title="Back to Album" onclick="hideDetailView();"> <div class="outer"> <div id="backToAlbumButtonLabel" class="label">Back to Album</div> </div> </button>
-			</div>
-			<div id="detailImageView" class=""> <img style="visibility: visible;" src="" alt="" id="img_detail"/> </div>
 			<div class="titleLabel" id="imageTitleLabel" style="bottom: width: 624px;"></div>
+			<div id="detailImageView" class=""> <img style="visibility: visible;" src="" alt="" id="img_detail"/> </div>
 		</div>
-		<div id="hoverView" class="" onmouseover="hovering=true;" onmouseout="hovering=false;">
-			<div id="hoverViewMenu">
-				<div id="download_detail" title="Download this photo" class="download_detail" onclick="document.location=slideshowImages[currentImg][5]"> </div>
-				<div id="prev_detail" title="(P)revious" class="prev_detail"> </div>
-				<div id="pause_detail" style="display: none;" title="Pause" class="pause_detail" onclick="togglePlayPause();"> </div>
-				<div id="play_detail" style="display: none;" title="Play" class="play_detail" onclick="togglePlayPause();"> </div>
-				<div id="next_detail" title="(N)ext" class="next_detail"> </div>
-				<div id="info_detail" title="Show more information about this photo" class="info_detail g-dialog-link"> </div>
-			</div>
-		</div>
+    <div id="hoverView" onmouseover="pear.hovering=true;" onmouseout="pear.hovering=false;">
+    <div id="hoverViewMenu">
+      <div id="prev" title="(P)revious" class="controller"></div>
+      <div id="pause_detail" title="Pause" class="controller" onclick="togglePlayPause();"> </div>
+      <div id="play_detail" title="Play" class="controller" onclick="togglePlayPause();"> </div>
+      <div id="next" title="(N)ext" class="controller"></div>
+    </div></div>
+    <div class="hoverViewTopMenu">
+        <div id="download" title="Download this photo" class="controller half" onclick="window.open(pear.sitePath + 'pear/download/' + slideshowImages[pear.currentImg][1])"> </div>
+        <div id="info" title="Show more information about this photo" class="controller half info_detail g-dialog-link"> </div>
+        <? if(module::is_active("comment")): ?><div id="comment" title="Comments" class="controller half comments_detail g-dialog-link" onclick=""></div><?endif ?>
+        <div id="close" title="Close" class="controller half" onclick="hideDetailView();"></div>
+    </div>
 	</div>
 </div>

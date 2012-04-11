@@ -1,7 +1,7 @@
 /**
  * Fix display in IE 6, 7, and 8
  */
-
+/*
 #g-banner {
   z-index: 2;
   zoom: 1;
@@ -57,3 +57,21 @@ input.submit {
 .g-paginator .ui-icon-right {
   width: 60px;
 }
+*/
+#mosaicDetailContainer {
+  position: static !important;
+}
+
+#hoverView {
+  position: static !important;
+}
+
+#hoverViewMenu, .hoverViewTopMenu, #hoverViewMenu > .controller, .hoverViewTopMenu > .controller {
+ zoom: 1;
+ *display: inline;
+}
+
+#hoverviewmenu > .controller.half, .hoverViewTopMenu > .controller.half {
+  background-image: url('../icons/controller_half.png');
+}
+
