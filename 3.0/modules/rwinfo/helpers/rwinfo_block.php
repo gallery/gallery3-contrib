@@ -72,6 +72,28 @@ class rwinfo_block_Core {
         }
 
         // rWatcher Edit: 
+        if (!$theme->item->is_album()) {
+          // Calculate file size.
+          $filesize_unit = array("B","kB","MB","GB","TB","PB","EB","ZB","YB");
+          $item_filesize = filesize($theme->item->file_path());
+          $unit_counter = 0;
+          while ($item_filesize > 1024) {
+            $item_filesize = $item_filesize / 1024;
+            $unit_counter++;
+          }
+          $item_filesize = number_format($item_filesize, 2) . " " . $filesize_unit[$unit_counter];
+          $info["file_size"] = array(
+            "label" => t("File size:"),
+            "value" => $item_filesize
+          );
+
+          // Display photo/video resolution.
+          $info["file_resolution"] = array(
+            "label" => t("Resolution:"),
+            "value" => $theme->item->width . " x " . $theme->item->height . " " . t("pixels")
+          );
+        }
+
         //if ($theme->item->captured && module::get_var("rwinfo", "show_captured")) {
         //  $info["captured"] = array(
         //    "label" => t("Captured:"),
