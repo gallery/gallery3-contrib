@@ -77,7 +77,7 @@ class rwinfo_block_Core {
           $filesize_unit = array("B","kB","MB","GB","TB","PB","EB","ZB","YB");
           $item_filesize = filesize($theme->item->file_path());
           $unit_counter = 0;
-          while ($item_filesize > 1024) {
+          while ($item_filesize >= 1024) {
             $item_filesize = $item_filesize / 1024;
             $unit_counter++;
           }
