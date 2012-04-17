@@ -18,10 +18,22 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class Users_Space_Usage_Model_Core extends ORM {
-  public function partial_usage_mb($file_type) {
-    // Return a value (in megabytes) for the user's total usage in fullsizes, resizes, or thumbs.
+  static function _format_usage($bytes) {
+    $usage_unit = array("B","kB","MB","GB","TB","PB","EB","ZB","YB");
+    $unit_counter = 0;
+    while ($bytes >= 1024) {
+      $bytes = $bytes / 1024;
+      $unit_counter++;
+    }
+
+    return (number_format($bytes, 2) . " " . $usage_unit[$unit_counter]);
+  }
+
+  public function partial_usage_string($file_type) {
+    // Return a string for the user's total usage in fullsizes, resizes, or thumbs
+    //   with the appropriate file size prefix.
     // $file_type should be either fullsize, resize, or thumb.
-    return ($this->$file_type / 1024 / 1024);
+    return (Users_Space_Usage_Model_Core::_format_usage($this->$file_type));
   }
   
   public function total_usage() {
@@ -29,9 +41,9 @@ class Users_Space_Usage_Model_Core extends ORM {
     return ($this->fullsize + $this->resize + $this->thumb);
   }
 
-  public function total_usage_mb() {
-    // Return the user's total usage in megabytes.
-    return (($this->total_usage()) / 1024 / 1024);
+  public function total_usage_string() {
+    // Return the user's total usage as a string with the appropriate file size prefix.
+    return (Users_Space_Usage_Model_Core::_format_usage($this->total_usage()));
   }
 
   public function current_usage() {
@@ -43,9 +55,10 @@ class Users_Space_Usage_Model_Core extends ORM {
     }
   }
 
-  public function current_usage_mb() {
-    // Return the users relevant usage in megabytes based on the use_all_sizes setting.
-    return ($this->current_usage() / 1024 / 1024);
+  public function current_usage_string() {
+    // Return the users relevant usage as a string with the appropriate file size prefix
+    //   based on the use_all_sizes setting.
+    return (Users_Space_Usage_Model_Core::_format_usage($this->current_usage()));
   }
 
   public function get_usage_limit() {
@@ -68,9 +81,15 @@ class Users_Space_Usage_Model_Core extends ORM {
     return 0;
   }
 
-  public function get_usage_limit_mb() {
-    // Returns a user's maximum limit in megabytes.
-    return ($this->get_usage_limit() / 1024 / 1024);
+  public function get_usage_limit_string() {
+    // Returns a user's maximum limit as a string with the appropriate file size prefix
+    //  or an infinity symbol if the user has no limit.
+    $user_limit = $this->get_usage_limit();
+    if ($user_limit == 0) {
+      return "&infin;";
+    } else {
+      return (Users_Space_Usage_Model_Core::_format_usage($this->get_usage_limit()));
+    }
   }
 
   public function add_item($item) {
