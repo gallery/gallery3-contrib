@@ -112,7 +112,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
 			fwrite($fp,file_get_contents("http://www.gallerymodules.com/gallerymodules.ini"));
 		    	fclose($fp);
 
-			fwrite($fp2,file_get_contents("http://www.gallerymodules.com/sandbox/core.ini"));
+			fwrite($fp2,file_get_contents("http://www.gallerymodules.com/core.ini"));
 		    	fclose($fp2);
 		}		
 		
