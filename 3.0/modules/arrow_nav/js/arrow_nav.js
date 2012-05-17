@@ -11,7 +11,6 @@ $(document).keydown(function(e) {
   
   if(url != undefined) {
       window.location = url;
+      return false;
   }
-
-  return false;
 });
