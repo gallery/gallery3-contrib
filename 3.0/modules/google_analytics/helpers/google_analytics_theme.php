@@ -18,7 +18,7 @@
  */
 class google_analytics_theme
 {
-  static function page_bottom($theme)
+  static function head($theme)
   {
   $u_o = 1;
   if ( ($theme->item->owner_id != identity::active_user()->id) && (identity::active_user()->admin == 0) ) {
