@@ -1,5 +1,4 @@
-<?php defined("SYSPATH") or die("No direct script access.");
-/**
+<?php defined("SYSPATH") or die("No direct script access.");/**
  * Gallery - a web based photo album viewer and editor
  * Copyright (C) 2000-2009 Bharat Mediratta
  *
@@ -17,12 +16,30 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class google_analytics_event_Core {
-  static function admin_menu($menu, $theme) {
-    $menu->get("settings_menu")
-      ->append(Menu::factory("link")
-			->id("google_analytics_menu")
-			->label(t("Google Analytics"))
-			->url(url::site("admin/google_analytics")));
+class google_analytics_installer
+{
+  static function install()
+  {
+	module::set_var("google_analytics", "code", "");
+	module::set_var("google_analytics", "owneradmin_hidden", "");
+    module::set_version("google_analytics", 3);
+  }
+
+  static function upgrade($version)
+  {
+  	module::set_version("google_analytics", 3);
+  }
+
+  static function deactivate()
+  {
+  	module::clear_var("google_analytics", "code");
+  	module::clear_var("google_analytics", "owneradmin_hidden");
+  }
+
+  static function uninstall()
+  {
+  	module::clear_var("google_analytics", "code");
+  	module::clear_var("google_analytics", "owneradmin_hidden");
+    module::delete("google_analytics");
   }
 }
