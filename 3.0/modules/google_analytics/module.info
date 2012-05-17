@@ -1,3 +1,7 @@
 name = Google Analytics
-description = Renders the Google Analytics Code at the end of the page.
-version = 3
+description = Renders the Google Analytics Code in the head of the page.
+version = 4
+author_name = ""
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:google_analytics"
+discuss_url = "http://gallery.menalto.com/node/88884"
