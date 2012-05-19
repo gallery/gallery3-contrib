@@ -22,12 +22,12 @@ class google_analytics_installer
   {
 	module::set_var("google_analytics", "code", "");
 	module::set_var("google_analytics", "owneradmin_hidden", "");
-    module::set_version("google_analytics", 3);
+    module::set_version("google_analytics", 4);
   }
 
   static function upgrade($version)
   {
-  	module::set_version("google_analytics", 3);
+  	module::set_version("google_analytics", 4);
   }
 
   static function deactivate()
