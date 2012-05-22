@@ -289,6 +289,9 @@ class tag_albums_Controller extends Controller {
     return array("position" => $position,
                  "previous_item" => $previous_item,
                  "next_item" => $next_item,
+                 "tag_id" => $tag_id,
+                 "album_id" => $album_id,
+                 "is_tagalbum_page" => true,
                  "sibling_count" => $sibling_count,
                  "breadcrumbs" => $tag_album_breadcrumbs);
   }
