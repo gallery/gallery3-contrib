@@ -10,6 +10,6 @@
 </center>
 <script>
   function showFotomotoDialog(window_type) {
-    FOTOMOTO.API.showWindow(window_type, "<?= url::abs_site("fotomotorw/resize/{$item->id}"); ?>");
+    FOTOMOTO.API.showWindow(window_type, "<?= url::abs_site("fotomotorw/resize/" . md5($item->created) . "/{$item->id}"); ?>");
   }
 </script>
