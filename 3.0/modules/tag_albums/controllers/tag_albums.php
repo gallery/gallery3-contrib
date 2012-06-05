@@ -144,19 +144,7 @@ class tag_albums_Controller extends Controller {
 
       // Figure out which items to display on this page and store their details in $children.
       $tag_children = $this->_get_records($tag_ids, $page_size, $offset, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, true); 
-      $children_array = Array();
-      foreach ($tag_children as $one_child) {
-        $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/0/" . $id . "/" . urlencode($one_child->name)), $one_child->type, $one_child->id);
-        $child_tag->id = $one_child->id;
-        $child_tag->view_count = $one_child->view_count;
-        $child_tag->owner = identity::lookup_user($one_child->owner_id);
-        if ($one_child->has_thumb()) {
-          $child_tag->set_thumb($one_child->thumb_url(), $one_child->thumb_width, $one_child->thumb_height);
-        }
-        $children_array[] = $child_tag;
-      }
-      $children = new Tag_Albums_Children($children_array);
-
+	  
       // Set up the previous and next page buttons.
       if ($page > 1) {
         $previous_page = $page - 1;
@@ -168,35 +156,144 @@ class tag_albums_Controller extends Controller {
       }
 
       // Set up breadcrumbs.
-      $tag_album_breadcrumbs = Array();
+      $tag_album_breadcrumbs = array();
       $counter = 0;
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($album->title, "");
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($album->title, $album->url())->set_last();
       $parent_item = ORM::factory("item", $album->parent_id);
       while ($parent_item->id != 1) {
-        $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+        $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url());
         $parent_item = ORM::factory("item", $parent_item->parent_id);
       }
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url())->set_first();
       $tag_album_breadcrumbs[1]->url .= "?show=" . $album->id;
+	  
       $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
 
       // Set up and display the actual page.
       $parent_album = ORM::factory("item", $album->parent_id);
-      $template = new Theme_View("calpage.html", "collection", "Tag Albums");
+      //$template = new Theme_View("calpage.html", "collection", "Tag Albums");
+      $template = new Theme_View("page.html", "collection", "Tag Albums");
+      $template->set_global(
+        array("page" => $page,
+              "max_pages" => $max_pages,
+              "page_size" => $page_size,
+              "children" => $tag_children,
+              "breadcrumbs" => $tag_album_breadcrumbs,
+              "children_count" => $count));
       $template->page_title = $page_title;
-      $template->set_global("page", $page);
-      $template->set_global("page_size", $page_size);
-      $template->set_global("max_pages", $max_pages);
-      $template->set_global("children", $children);
-      $template->set_global("all_siblings", $this->_get_records($tag_ids, $count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false));
-      $template->set_global("children_count", $count);
-      $template->set_global("parent_url", $parent_album->url()); // Used by Grey Dragon.
-      $template->content = new View("tag_albums_album.html");
+      $template->content = new View("dynamic.html");
       $template->content->title = $page_title;
       $template->content->description = $page_description;
-      $template->set_global("breadcrumbs", $tag_album_breadcrumbs);
+
+      $template->set_global("all_siblings", $this->_get_records($tag_ids, $count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false));
+      $template->set_global("parent_url", $parent_album->url()); // Used by Grey Dragon.
       print $template;
+
+    // Set breadcrumbs on the photo pages to point back to the calendar day view.
+    item::set_display_context_callback("tag_albums_Controller::get_display_context", 0, $id);
     }
+  }
+
+  static function get_display_context($item, $tag_id, $album_id) {
+    // Make sure #album_id is valid, clear it out if it isn't.
+    $album_tags = ORM::factory("tags_album_id")
+      ->where("id", "=", $album_id)
+      ->find_all();
+    if (count($album_tags) == 0) {
+      $album_id = 0;
+    }
+
+    // Load the tag and item, make sure the user has access to the item.
+    $display_tag = ORM::factory("tag", $tag_id);
+
+    // Figure out sort order from module preferences.
+    $sort_page_field = "";
+    $sort_page_direction = "";
+    if (($tag_id > 0) || (count($album_tags) == 0)) {
+      $sort_page_field = module::get_var("tag_albums", "subalbum_sort_by", "title");
+      $sort_page_direction = module::get_var("tag_albums", "subalbum_sort_direction", "ASC");
+    } else {
+      $parent_album = ORM::factory("item", $album_tags[0]->album_id);
+      $sort_page_field = $parent_album->sort_column;
+      $sort_page_direction = $parent_album->sort_order;
+    }
+
+    // Load the number of items in the parent album, and determine previous and next items.
+    $sibling_count = "";
+    $tag_children = "";
+    $previous_item = "";
+    $next_item = "";
+    $position = 0;
+    if ($tag_id > 0) {	
+      $sibling_count = tag_albums_Controller::_count_records(Array($tag_id), "OR", false);
+      $position = tag_albums_Controller::_get_position($item->$sort_page_field, $item->id, Array($tag_id), "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
+      if ($position > 1) {
+        $previous_item_object = tag_albums_Controller::_get_records(Array($tag_id), 1, $position-2, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
+        if (count($previous_item_object) > 0) {
+          $previous_item = $previous_item_object[0];
+        }
+      }
+      $next_item_object = tag_albums_Controller::_get_records(Array($tag_id), 1, $position, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
+      if (count($next_item_object) > 0) {
+        $next_item = $next_item_object[0];
+      }
+    } else {
+      $tag_ids = Array();
+      foreach (explode(",", $album_tags[0]->tags) as $tag_name) {
+        $tag = ORM::factory("tag")->where("name", "=", trim($tag_name))->find();
+        if ($tag->loaded()) {
+          $tag_ids[] = $tag->id;
+        }
+      }
+      $album_tags_search_type = $album_tags[0]->search_type;
+      $sibling_count = tag_albums_Controller::_count_records($tag_ids, $album_tags_search_type, false);
+      $position = tag_albums_Controller::_get_position($item->$sort_page_field, $item->id, $tag_ids, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
+      if ($position > 1) {
+        $previous_item_object = tag_albums_Controller::_get_records($tag_ids, 1, $position-2, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
+        if (count($previous_item_object) > 0) {
+          $previous_item = $previous_item_object[0];
+        }
+      }
+      $next_item_object = tag_albums_Controller::_get_records($tag_ids, 1, $position, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
+      if (count($next_item_object) > 0) {
+        $next_item = $next_item_object[0];
+      }
+	  
+    }
+
+    // Set up breadcrumbs
+    $tag_album_breadcrumbs = Array();
+    if ($album_id > 0) {
+      $counter = 0;
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($item->title, $item->url())->set_last();
+      if ($album_tags[0]->tags == "*") {
+        $tag_album_breadcrumbs[] = Breadcrumb::instance($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id . "/" . $album_id . "/" . urlencode($display_tag->name)));
+      }
+      $parent_item = ORM::factory("item", $album_tags[0]->album_id);
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, url::site("tag_albums/album/" . $album_id . "/" . urlencode($parent_item->name)));
+      $parent_item = ORM::factory("item", $parent_item->parent_id);
+      while ($parent_item->id != 1) {
+        $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url());
+        $parent_item = ORM::factory("item", $parent_item->parent_id);
+      }
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url())->set_first();
+      $tag_album_breadcrumbs[1]->url .= "?show=" . $item->id;
+      $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
+    } else {
+      $tag_album_breadcrumbs[] = Breadcrumb::instance(item::root()->title, item::root()->url())->set_first();
+      $tag_album_breadcrumbs[] = Breadcrumb::instance(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/"));
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id . "/" . urlencode($display_tag->name)) . "?show=" . $item->id);
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($item->title, $item->url())->set_last();
+    }
+
+    return array("position" => $position,
+                 "previous_item" => $previous_item,
+                 "next_item" => $next_item,
+                 "tag_id" => $tag_id,
+                 "album_id" => $album_id,
+                 "is_tagalbum_page" => true,
+                 "sibling_count" => $sibling_count,
+                 "breadcrumbs" => $tag_album_breadcrumbs);
   }
 
   public function filter($id, $filter) {
@@ -411,36 +508,38 @@ class tag_albums_Controller extends Controller {
     $parent_url = "";
     if ($id > 0) {
       $counter = 0;
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($album->title, "");
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($album->title, $album->url())->set_last();
       $parent_item = ORM::factory("item", $album->parent_id);
       $parent_url = $parent_item->url();
       while ($parent_item->id != 1) {
-        $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+        $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url());
         $parent_item = ORM::factory("item", $parent_item->parent_id);
       }
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url())->set_first();
       $tag_album_breadcrumbs[1]->url .= "?show=" . $album->id;
       $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
     } else {
       $parent_url = item::root()->url();
-      $tag_album_breadcrumbs[0] = new Tag_Albums_Breadcrumb(item::root()->title, item::root()->url());
-      $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb($page_title, "");
+      $tag_album_breadcrumbs[] = Breadcrumb::instance(item::root()->title, item::root()->url())->set_first();
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($page_title, $str_page_url)->set_first();
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("calpage.html", "collection", "Tag Albums");
+    $template = new Theme_View("page.html", "collection", "Tag Albums");
+    $template->set_global(
+      array("page" => $page,
+            "max_pages" => $max_pages,
+            "page_size" => $page_size,
+            "children" => $children,
+            "breadcrumbs" => $tag_album_breadcrumbs,
+            "children_count" => $all_tags_count));
     $template->page_title = $page_title;
-    $template->set_global("page", $page);
-    $template->set_global("page_size", $page_size);
-    $template->set_global("max_pages", $max_pages);
-    $template->set_global("children", $children);
-    $template->set_global("children_count", $all_tags_count);
-    $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
-    $template->content = new View("tag_albums_album.html");
+    $template->content = new View("dynamic.html");
     $template->content->title = $page_title;
     $template->content->description = $page_description;
+
+    $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
     $template->content->filter_text = $this->_get_filter_html($id, $filter);
-    $template->set_global("breadcrumbs", $tag_album_breadcrumbs);
     print $template;
   }
 
@@ -510,20 +609,6 @@ class tag_albums_Controller extends Controller {
 
     // Figure out which items to display on this page.
     $tag_children = $this->_get_records(Array($id), $page_size, $offset, "items." . $sort_page_field, $sort_page_direction, "OR", true); 
-
-    // Create an array of "fake" items to display on the page.
-    $children_array = Array();
-    foreach ($tag_children as $one_child) {
-      $child_tag =  new Tag_Albums_Item($one_child->title, url::site("tag_albums/show/" . $one_child->id . "/" . $id . "/" . $album_id . "/" . urlencode($one_child->name)), $one_child->type, $one_child->id);
-      $child_tag->id = $one_child->id;
-      $child_tag->view_count = $one_child->view_count;
-      $child_tag->owner = identity::lookup_user($one_child->owner_id);
-      if ($one_child->has_thumb()) {
-        $child_tag->set_thumb($one_child->thumb_url(), $one_child->thumb_width, $one_child->thumb_height);
-      }
-      $children_array[] = $child_tag;
-    }
-    $children = new Tag_Albums_Children($children_array);
 	
     // Set up the previous and next page buttons.
     if ($page > 1) {
@@ -540,203 +625,72 @@ class tag_albums_Controller extends Controller {
     $parent_url = "";
     if ($album_id > 0) {
       $counter = 0;
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($display_tag->name, "");
+      //$tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($display_tag->name, "");
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($display_tag->name, $str_page_url)->set_last();
       $parent_item = ORM::factory("item", $album_tags[0]->album_id);
       if ($album_tags[0]->tags != "*") {
         $parent_item = ORM::factory("item", $parent_item->parent_id);
       }	
       $parent_url = $parent_item->url(); // Used by Grey Dragon.
       while ($parent_item->id != 1) {
-        $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+        //$tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+        $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url());
         $parent_item = ORM::factory("item", $parent_item->parent_id);
       }
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+      //$tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url())->set_first();
       $parent_item = ORM::factory("item", $album_tags[0]->album_id);
+	  /*
       if ((module::get_var("tag_albums", "tag_index_scope", "false")) && (module::get_var("tag_albums", "tag_index", "default") != "default")) {
         $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id . "/" . urlencode($parent_item->name));
       } else {
         $tag_album_breadcrumbs[1]->url = url::site("tag_albums/album/" . $album_id . "/" . urlencode($parent_item->name)) . "?show=" . $id;
       }
+	  */
+      $tag_album_breadcrumbs[1]->url .= "?show=" . $id;
+	  
       $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
     } else {
       $parent_url = url::site("tag_albums/");
-      $tag_album_breadcrumbs[0] = new Tag_Albums_Breadcrumb(item::root()->title, item::root()->url());
+      //$tag_album_breadcrumbs[0] = new Tag_Albums_Breadcrumb(item::root()->title, item::root()->url());
+      $tag_album_breadcrumbs[] = Breadcrumb::instance(item::root()->title, item::root()->url())->set_first();
       if (module::get_var("tag_albums", "tag_index", "default") == "default") {
-        $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/") . "?show=" . $id);
+        //$tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/") . "?show=" . $id);
+        $tag_album_breadcrumbs[] = Breadcrumb::instance(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/") . "?show=" . $id);
       } else {
-        $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/"));
+        //$tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/"));
+      $tag_album_breadcrumbs[] = Breadcrumb::instance(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/"));
       }
-      $tag_album_breadcrumbs[2] = new Tag_Albums_Breadcrumb($display_tag->name, "");
+      //$tag_album_breadcrumbs[2] = new Tag_Albums_Breadcrumb($display_tag->name, "");
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($display_tag->name, $str_page_url)->set_last();
     }
 
     // Set up and display the actual page.
-    $template = new Theme_View("calpage.html", "collection", "Tag Albums");
+    $template = new Theme_View("page.html", "collection", "Tag Albums");
+    $template->set_global(
+      array("page" => $page,
+            "max_pages" => $max_pages,
+            "page_size" => $page_size,
+            "children" => $tag_children,
+            "breadcrumbs" => $tag_album_breadcrumbs,
+            "children_count" => $count));
     $template->page_title = $display_tag->name;
-    $template->set_global("page", $page);
-    $template->set_global("page_size", $page_size);
-    $template->set_global("max_pages", $max_pages);
-    $template->set_global("children", $children);
-    $template->set_global("all_siblings", $this->_get_records(Array($id), $count, 0, "items." . $sort_page_field, $sort_page_direction, "OR", false));
-    $template->set_global("children_count", $count);
-    $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
-    $template->content = new View("tag_albums_album.html");
+    $template->content = new View("dynamic.html");
     $template->content->title = $display_tag->name;
-    $template->set_global("breadcrumbs", $tag_album_breadcrumbs);
+    //$template->content->description = $page_description;
+
+    $template->set_global("all_siblings", $this->_get_records(Array($id), $count, 0, "items." . $sort_page_field, $sort_page_direction, "OR", false));
+    $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
     print $template;
+
+    // Set breadcrumbs on the photo pages to point back to the calendar day view.
+    item::set_display_context_callback("tag_albums_Controller::get_display_context", $id, $album_id);
   }
 
   public function show($item_id, $tag_id, $album_id) {
-    // Display the specified photo or video ($item_id) with breadcrumbs 
-    //  that point back to a virtual album ($tag_id / $album_id).
-
-    // Make sure #album_id is valid, clear it out if it isn't.
-    $album_tags = ORM::factory("tags_album_id")
-      ->where("id", "=", $album_id)
-      ->find_all();
-    if (count($album_tags) == 0) {
-      $album_id = 0;
-    }
-
-    // Load the tag and item, make sure the user has access to the item.
-    $display_tag = ORM::factory("tag", $tag_id);
+    item::set_display_context_callback("tag_albums_Controller::get_display_context", $tag_id, $album_id);
     $item = ORM::factory("item", $item_id);
-    access::required("view", $item);
-    $parent_url = "";
-
-    // Figure out sort order from module preferences.
-    $sort_page_field = "";
-    $sort_page_direction = "";
-    if (($tag_id > 0) || (count($album_tags) == 0)) {
-      $sort_page_field = module::get_var("tag_albums", "subalbum_sort_by", "title");
-      $sort_page_direction = module::get_var("tag_albums", "subalbum_sort_direction", "ASC");
-    } else {
-      $parent_album = ORM::factory("item", $album_tags[0]->album_id);
-      $sort_page_field = $parent_album->sort_column;
-      $sort_page_direction = $parent_album->sort_order;
-    }
-
-    // Load the number of items in the parent album, and determine previous and next items.
-    $sibling_count = "";
-    $tag_children = "";
-    $previous_item = "";
-    $next_item = "";
-    $position = 0;
-    $dynamic_siblings = "";
-    if ($tag_id > 0) {	
-      $sibling_count = $this->_count_records(Array($tag_id), "OR", false);
-      $position = $this->_get_position($item->$sort_page_field, $item->id, Array($tag_id), "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
-      if ($position > 1) {
-        $previous_item_object = $this->_get_records(Array($tag_id), 1, $position-2, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
-        if (count($previous_item_object) > 0) {
-          $previous_item =  new Tag_Albums_Item($previous_item_object[0]->title, url::site("tag_albums/show/" . $previous_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($previous_item_object[0]->name)), $previous_item_object[0]->type, $previous_item_object[0]->id);
-        }
-      }
-      $next_item_object = $this->_get_records(Array($tag_id), 1, $position, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
-      if (count($next_item_object) > 0) {
-        $next_item =  new Tag_Albums_Item($next_item_object[0]->title, url::site("tag_albums/show/" . $next_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($next_item_object[0]->name)), $next_item_object[0]->type, $next_item_object[0]->id);
-      }
-      $dynamic_siblings = $this->_get_records(Array($tag_id), null, null, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
-    } else {
-      $tag_ids = Array();
-      foreach (explode(",", $album_tags[0]->tags) as $tag_name) {
-        $tag = ORM::factory("tag")->where("name", "=", trim($tag_name))->find();
-        if ($tag->loaded()) {
-          $tag_ids[] = $tag->id;
-        }
-      }
-      $album_tags_search_type = $album_tags[0]->search_type;
-      $sibling_count = $this->_count_records($tag_ids, $album_tags_search_type, false);
-      $position = $this->_get_position($item->$sort_page_field, $item->id, $tag_ids, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
-      if ($position > 1) {
-        $previous_item_object = $this->_get_records($tag_ids, 1, $position-2, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
-        if (count($previous_item_object) > 0) {
-          $previous_item =  new Tag_Albums_Item($previous_item_object[0]->title, url::site("tag_albums/show/" . $previous_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($previous_item_object[0]->name)), $previous_item_object[0]->type);
-        }
-      }
-      $next_item_object = $this->_get_records($tag_ids, 1, $position, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
-      if (count($next_item_object) > 0) {
-        $next_item =  new Tag_Albums_Item($next_item_object[0]->title, url::site("tag_albums/show/" . $next_item_object[0]->id . "/" . $tag_id . "/" . $album_id . "/" . urlencode($next_item_object[0]->name)), $next_item_object[0]->type);
-      }
-      $dynamic_siblings = $this->_get_records($tag_ids, null, null, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
-    }
-
-    // Set up breadcrumbs
-    $tag_album_breadcrumbs = Array();
-    if ($album_id > 0) {
-      $counter = 0;
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($item->title, "");
-      if ($album_tags[0]->tags == "*") {
-        $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id . "/" . $album_id . "/" . urlencode($display_tag->name)));
-      }
-      $parent_item = ORM::factory("item", $album_tags[0]->album_id);
-      if ($album_tags[0]->tags == "*") {
-        $parent_url =  url::site("tag_albums/tag/" . $display_tag->id . "/" . $album_id . "/" . urlencode($display_tag->name));
-      } else {
-        $parent_url =  $parent_item->url();
-      }
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, url::site("tag_albums/album/" . $album_id . "/" . urlencode($parent_item->name)));
-      $parent_item = ORM::factory("item", $parent_item->parent_id);
-      while ($parent_item->id != 1) {
-        $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
-        $parent_item = ORM::factory("item", $parent_item->parent_id);
-      }
-      $tag_album_breadcrumbs[$counter++] = new Tag_Albums_Breadcrumb($parent_item->title, $parent_item->url());
-      $tag_album_breadcrumbs[1]->url .= "?show=" . $item->id;
-      $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
-    } else {
-      $tag_album_breadcrumbs[0] = new Tag_Albums_Breadcrumb(item::root()->title, item::root()->url());
-      $tag_album_breadcrumbs[1] = new Tag_Albums_Breadcrumb(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/"));
-      $tag_album_breadcrumbs[2] = new Tag_Albums_Breadcrumb($display_tag->name, url::site("tag_albums/tag/" . $display_tag->id . "/" . urlencode($display_tag->name)) . "?show=" . $item->id);
-      $tag_album_breadcrumbs[3] = new Tag_Albums_Breadcrumb($item->title, "");
-      $parent_url = url::site("tag_albums/tag/" . $display_tag->id . "/" . urlencode($display_tag->name));
-    }
-
-    // Increase the items view count.
-    $item->increment_view_count();
-
-    // Load the page.
-    if ($item->is_photo()) {
-      $template = new Theme_View("calpage.html", "item", "photo");
-      $template->page_title = $item->title;
-      $template->set_global("children", Array());
-      $template->set_global("item", $item);
-      $template->set_global("previous_item", $previous_item);
-      $template->set_global("next_item", $next_item);
-      $template->set_global("is_tagalbum_page", true); // used for grey dragon
-      $template->set_global("tag_id", $tag_id); // used for grey dragon
-      $template->set_global("album_id", $album_id); // used for grey dragon
-      $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
-      $template->set_global("dynamic_siblings", $dynamic_siblings); // Used by Grey Dragon.
-      $template->set_global("children_count", 0);
-      $template->set_global("position", $position);
-      $template->set_global("sibling_count", $sibling_count);
-      $template->content = new View("photo.html");
-      $template->content->title = $item->title;
-      $template->set_global("breadcrumbs", $tag_album_breadcrumbs);
-      print $template;
-    } elseif ($item->is_movie()) {
-      $template = new Theme_View("calpage.html", "item", "movie");
-      $template->page_title = $item->title;
-      $template->set_global("children", Array());
-      $template->set_global("item", $item);
-      $template->set_global("previous_item", $previous_item);
-      $template->set_global("next_item", $next_item);
-      $template->set_global("is_tagalbum_page", true); // used for grey dragon
-      $template->set_global("tag_id", $tag_id); // used for grey dragon
-      $template->set_global("album_id", $album_id); // used for grey dragon
-      $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
-      $template->set_global("dynamic_siblings", $dynamic_siblings); // Used by Grey Dragon.
-      $template->set_global("children_count", 0);
-      $template->set_global("position", $position);
-      $template->set_global("sibling_count", $sibling_count);
-      $template->content = new View("movie.html");
-      $template->content->title = $item->title;
-      $template->set_global("breadcrumbs", $tag_album_breadcrumbs);
-      print $template;
-    } else {
-      // If it's something we don't know how to deal with, just redirect to its real page.
-      url::redirect(url::abs_site("{$item->type}s/{$item->id}"));
-    }
+    url::redirect(url::abs_site("{$item->type}s/{$item->id}"));
   }
 
   private function _get_position($item_title, $item_id, $tag_ids, $sort_field, $sort_direction, $search_type, $include_albums) {

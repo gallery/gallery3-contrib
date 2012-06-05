@@ -17,15 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class Tag_Albums_Breadcrumb_Core {
-  // Creates a class to maintain a single breadcrumb.
-  //   Multiple breadcrumbs can be achieved by createing an array of this class type.
-  public $title = "";
-  public $id = 1;
-  public $url = "";
 
-  public function __construct($new_title, $new_url) {
-    $this->title = $new_title;
-    $this->url = $new_url;
+class fotomotorw_event_Core {
+  static function admin_menu($menu, $theme) {
+    // Display an option under the admin Settings menu.
+    $menu->get("settings_menu")
+      ->append(Menu::factory("link")
+        ->id("fotomotorw_menu")
+        ->label(t("Fotomoto"))
+        ->url(url::site("admin/fotomotorw")));
   }
 }
