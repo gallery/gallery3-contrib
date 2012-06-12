@@ -29,7 +29,7 @@ class ldap_installer {
     return $messages;
   }
 
-  static function install() {
+  static function activate() {
     IdentityProvider::change_provider("ldap");
   }
 

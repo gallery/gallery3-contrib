@@ -34,19 +34,19 @@
               <?= html::clean($user->full_name) ?>
             </td>
             <td>
-              <?= number_format($record->partial_usage_mb("fullsize"), 2); ?> MB
+              <?=$record->partial_usage_string("fullsize"); ?>
             </td>
             <td>
-              <?= number_format($record->partial_usage_mb("resize"), 2); ?> MB
+              <?=$record->partial_usage_string("resize"); ?>
             </td>
             <td>
-              <?= number_format($record->partial_usage_mb("thumb"), 2); ?> MB
+              <?=$record->partial_usage_string("thumb"); ?>
             </td>
             <td>
-              <?= number_format($record->total_usage_mb(), 2) ?> MB
+              <?=$record->total_usage_string(); ?>
             </td>
             <td>
-              <?= number_format($record->get_usage_limit_mb(), 2) ?> MB
+              <?=$record->get_usage_limit_string(); ?>
             </td>
           </tr>
           <? endforeach ?>
