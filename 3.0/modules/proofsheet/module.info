@@ -1,0 +1,7 @@
+name = "ProofSheet"
+description = "Displays links to generate a PDF proof sheet of the current album in A4 or LTR size."
+version = 5
+author_name = "Shad Laws"
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:proofsheet"
+discuss_url = "http://gallery.menalto.com/node/105856"

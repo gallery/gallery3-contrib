@@ -112,7 +112,7 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
 			fwrite($fp,file_get_contents("http://www.gallerymodules.com/gallerymodules.ini"));
 		    	fclose($fp);
 
-			fwrite($fp2,file_get_contents("http://www.gallerymodules.com/sandbox/core.ini"));
+			fwrite($fp2,file_get_contents("http://www.gallerymodules.com/core.ini"));
 		    	fclose($fp2);
 		}		
 		
@@ -186,8 +186,10 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
       log::success("moduleupdates", t("Completed checking remote GitHub for modules updates."));
 		}
 		
-		unlink('gm.ini'); 
-		unlink('gm_core.ini');		
+    if(is_file('gm.ini'))
+      unlink('gm.ini'); 
+    if(is_file('gm_core.ini'))
+      unlink('gm_core.ini');		
     
 		$view->content->vars = $cache;
     $view->content->update_time = $cache_updates['date'];
@@ -286,45 +288,63 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           //Check the main Gallery3 GitHub
           if ($file == null) {
             try {
-		if(file_exists('gm_core.ini')) {
-			$file = 1;
-		}	
-		if ($file != null) {
-			$gm_core_array = parse_ini_file('gm_core.ini',true);
-			$server = '(G)';
-		}
+              if(file_exists('gm_core.ini')) {
+                $file = 1;
+              }	
+              if ($file != null) {
+                $gm_core_array = parse_ini_file('gm_core.ini',true);
+                $server = '(G)';
+              }
             }
-            catch (Exception $e) {
+              catch (Exception $e) {
             }
           }
           break;
       case "GH":
           //Parse ini file from GalleryModules.com
             try {
-				$this_gm_repo = str_replace(".","",substr_replace(gallery::VERSION,"",strpos(gallery::VERSION," ")));
-				if(file_exists('gm.ini')) {
-					$file = 1;
-				}	
-				if ($file != null) {
-					$gm_array = parse_ini_file('gm.ini',true);
-					$server = '(GH)';
-				}
+              if(file_exists('gm.ini')) {
+                $file = 1;
+              }	
+              if ($file != null) {
+                $gm_array = parse_ini_file('gm.ini',true);
+                $server = '(GH)';
+              }
             }
             catch (Exception $e) {
             	echo $e;
             }
           break;
     } 
-    
+
 	if ($file != null) {
-		if ($server_location == "GH"){ 
-			if($this_gm_repo == "30") {
-				$version = $gm_array[$module_name]['g3'];
-			} else {
-				$version = $gm_array[$module_name]['g31'];			
-			}
+    //Search in the GM listing
+		if ($server_location == "GH"){
+			//Search if this is a Gallery 3.0 module
+      if(array_key_exists($module_name,$gm_array)){
+        if(array_key_exists('g3',$gm_array[$module_name])){
+          $version = $gm_array[$module_name]['g3'];
+        }
+        if($version == ''){
+          if(array_key_exists('g31',$gm_array[$module_name])){
+            $version = $gm_array[$module_name]['g31'];
+          }
+        }
+        if($version == ''){
+          if(array_key_exists('codex',$gm_array[$module_name])){
+            $version = $gm_array[$module_name]['codex'];
+          }
+        }
+      } else { //Module not found
+          $version = '';
+      }
+    //Search in the Core listing
 		} else {
-			$version = $gm_core_array[$module_name]['version'];
+      if(array_key_exists($module_name,$gm_core_array)){
+        $version = $gm_core_array[$module_name]['version'];
+      } else { //Module not found
+        $version = '';
+      }
 		}
 	}
     
