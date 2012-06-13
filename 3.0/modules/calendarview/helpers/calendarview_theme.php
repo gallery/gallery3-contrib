@@ -18,9 +18,8 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class calendarview_theme_Core {
-		
   static function head($theme) {
-    $theme->css("calendarview_menu.css");
-    return $theme->css("calendarview_calendar.css");
+    return $theme->css("calendarview_calendar.css") . 
+           $theme->css("calendarview_menu.css");
   }
 }
