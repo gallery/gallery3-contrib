@@ -19,45 +19,33 @@
  */
 class latestupdates_Controller extends Controller {
   public function user_profiles($str_display_type, $user_id) {
-    // Make sure user_id is valid.
+    // Make sure user_id is valid, throw a 404 error if its not.
     $current_user = ORM::factory("user", $user_id);
     if (!$current_user->loaded()) {
       throw new Kohana_404_Exception();
     }
 
-    // Grab the first 10 items for the specified display time.
+    // Grab the first 10 items for the specified display type.
     //   Default to "popular" if display type is invalid.
     $template = new View("latestupdates_user_profile_carousel.html");
+    $template->items = latestupdates_Controller::items($str_display_type, $user_id, 10);
+
+    // Figure out the text for the "View more" link.
     if ($str_display_type == "recent") {
-      $template->items = ORM::factory("item")
-        ->viewable()
-        ->where("type", "!=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->order_by("created", "DESC")
-        ->find_all(10);
       $template->str_view_more_title = t("View all recent uploads");
     } elseif ($str_display_type == "albums") {
-      $template->items = ORM::factory("item")
-        ->viewable()
-        ->where("type", "=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->order_by("created", "DESC")
-        ->find_all(10);
       $template->str_view_more_title = t("View all recent albums");
     } else {
-      $template->items = ORM::factory("item")
-        ->viewable()
-        ->where("type", "!=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->order_by("view_count", "DESC")
-        ->find_all(10);
       $template->str_view_more_title = t("View more popular uploads");
     }
+
+    // Set up a "View more" url.
     $template->str_view_more_url = url::site("latestupdates/users/{$str_display_type}/{$user_id}");
 
     // Display the page.
     print $template;
 
+    // Make item links in the carousel load as virtual albums for the view type instead of the regular album.
     item::set_display_context_callback("latestupdates_Controller::get_display_context",
                                        $str_display_type, $user_id);
     return ;
@@ -102,20 +90,7 @@ class latestupdates_Controller extends Controller {
 
     // Determine the total number of items,
     //	for page numbering purposes.
-    $count = 0;
-    if ($str_display_type == "albums") {
-      $count = ORM::factory("item")
-        ->viewable()
-        ->where("type", "=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->count_all();
-    } else {
-      $count = ORM::factory("item")
-        ->viewable()
-        ->where("type", "!=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->count_all();
-    }
+    $count = latestupdates_Controller::items_count($str_display_type, $user_id);
 
     // Figure out what the highest page number is.
     $max_pages = ceil($count / $page_size);
@@ -126,32 +101,16 @@ class latestupdates_Controller extends Controller {
     }
 
     // Figure out which items to display on this page.
-    $children = "";
+    $children = latestupdates_Controller::items($str_display_type, $user_id, $page_size, $offset);
+
+    // Figure out the page title.
     $str_page_title = "";
     if ($str_display_type == "recent") {
-      $children = ORM::factory("item")
-        ->viewable()
-        ->where("type", "!=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->order_by("created", "DESC")
-        ->find_all($page_size, $offset);
-      $str_page_title = "Recent Uploads";
+      $str_page_title = t("Recent Uploads");
     } elseif ($str_display_type == "albums") {
-      $children = ORM::factory("item")
-        ->viewable()
-        ->where("type", "=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->order_by("created", "DESC")
-        ->find_all($page_size, $offset);
-      $str_page_title = "Recent Albums";
+      $str_page_title = t("Recent Albums");
     } else {
-      $children = ORM::factory("item")
-        ->viewable()
-        ->where("type", "!=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->order_by("view_count", "DESC")
-        ->find_all($page_size, $offset);
-      $str_page_title = "Most Viewed";
+      $str_page_title = t("Most Viewed");
     }
 
     // Set up the previous and next page buttons.
@@ -183,26 +142,33 @@ class latestupdates_Controller extends Controller {
     $template->content = new View("dynamic.html");
     $template->content->title = t($str_page_title);
 
+    // Display the page.
     print $template;
 
+    // Set up the callback so links within the photo page will lead to photos within the virtual album
+    //   instead of the actual album.
     item::set_display_context_callback("latestupdates_Controller::get_display_context",
                                        $str_display_type, $user_id);
-
   }
 
   static function get_display_context($item, $str_display_type, $user_id) {
+    // Set up display elements on the photo page to link to the virtual album.
     $current_user = ORM::factory("user", $user_id);
 
+    // Figure out page title.
     $str_page_title = "";
     if ($str_display_type == "recent") {
-      $str_page_title = "Recent Uploads";
+      $str_page_title = t("Recent Uploads");
     } elseif ($str_display_type == "albums") {
-      $str_page_title = "Recent Albums";
+      $str_page_title = t("Recent Albums");
     } else {
-      $str_page_title = "Most Viewed";
+      $str_page_title = t("Most Viewed");
     }
 
+    // Figure out item position.
     $position = latestupdates_Controller::_get_position($item, $str_display_type, $user_id);
+
+    // Figure out which items are the previous and next items with the virtual album.
     if ($position > 1) {
       list ($previous_item, $ignore, $next_item) =
         latestupdates_Controller::items($str_display_type, $user_id, 3, $position - 2);
@@ -211,21 +177,10 @@ class latestupdates_Controller extends Controller {
       list ($next_item) = latestupdates_Controller::items($str_display_type, $user_id, 1, $position);
     }
 
-    $count = 0;
-    if ($str_display_type == "albums") {
-      $count = ORM::factory("item")
-        ->viewable()
-        ->where("type", "=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->count_all();
-    } else {
-      $count = ORM::factory("item")
-        ->viewable()
-        ->where("type", "!=", "album")
-        ->where("owner_id", "=", $user_id)
-        ->count_all();
-    }
+    // Figure out total number of items (excluding albums).
+    $count = latestupdates_Controller::items_count($str_display_type, $user_id);
 
+    // Return the display elements.
     $root = item::root();
     return array("position" => $position,
                  "previous_item" => $previous_item,
@@ -241,7 +196,27 @@ class latestupdates_Controller extends Controller {
                 );
   }
 
+  static function items_count($str_display_type, $user_id) {
+    // Figure out the total number of items.
+    if ($str_display_type == "albums") {
+      $count = ORM::factory("item")
+        ->viewable()
+        ->where("type", "=", "album")
+        ->where("owner_id", "=", $user_id)
+        ->count_all();
+    } else {
+      $count = ORM::factory("item")
+        ->viewable()
+        ->where("type", "!=", "album")
+        ->where("owner_id", "=", $user_id)
+        ->count_all();
+    }
+
+    return $count;
+  }
+
   static function items($str_display_type, $user_id, $limit=null, $offset=null) {
+    // Query the database for a list of items to display in the virtual album.
     $str_where = array();
     $str_orderby_field = "";
     if ($str_display_type == "recent") {
@@ -264,6 +239,7 @@ class latestupdates_Controller extends Controller {
   }
 
   private function _get_position($item, $str_display_type, $user_id) {
+    // Figure out the item's position within the virtual album.
     $str_where = array();
     $str_orderby_field = "";
     if ($str_display_type == "recent") {

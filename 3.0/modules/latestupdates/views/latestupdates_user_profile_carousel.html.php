@@ -33,5 +33,5 @@ function LoadCarousel() {
   </div>
 </div>
 <br />
-<div style="width: 510px; text-align: right;"><a href="<?=$str_view_more_url; ?>"><?=$str_view_more_title; ?></a></div>
+<div style="width: 510px; text-align: right;"><a href="<?=$str_view_more_url; ?>"><?=$str_view_more_title; ?> >></a></div>
 <? endif; ?>
