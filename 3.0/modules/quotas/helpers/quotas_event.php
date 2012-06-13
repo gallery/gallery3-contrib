@@ -109,6 +109,8 @@ class quotas_event_Core {
   }
 
   static function show_user_profile($data) {
+    // Display # of albums and photos/movies on user profile page.
+    //   Also display current disc usage.
     $v = new View("user_profile_quotas.html");
     $quotas_record = ORM::factory("users_space_usage")->where("owner_id", "=", $data->user->id)->find();
 
