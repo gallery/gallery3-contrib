@@ -90,7 +90,4 @@
 </div>
 <br />
 <div id="map_canvas" style="width:600px; height:480px;"></div>
-<? if ($return_url != ""): ?>
-<br /><a href="<?=$return_url; ?>"><?=t("Return to album"); ?></a>
-<? endif ?>
 <?= $theme->dynamic_bottom() ?>
