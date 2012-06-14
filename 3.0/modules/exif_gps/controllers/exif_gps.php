@@ -20,6 +20,8 @@
 class EXIF_GPS_Controller extends Controller {
   public function map($map_type, $type_id) {
     // Map all items in the specified album or user.
+    // Valid values for $map_type are "album" or "user", $type_id is either an 
+    //   album id# or a user id#.
 
     $map_title = "";
     if ($map_type == "album") {
