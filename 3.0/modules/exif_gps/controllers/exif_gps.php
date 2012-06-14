@@ -47,16 +47,34 @@ class EXIF_GPS_Controller extends Controller {
       $map_title = $curr_user[0]->full_name . "'s " . t("Photos");
     }
 
-    // Make a new page.
-    $template = new Theme_View("page.html", "other", "EXIFMap");
+    // Set up breadcrumbs.
+    $breadcrumbs = array();
+    if ($map_type == "album") {
+      $counter = 0;
+      $breadcrumbs[] = Breadcrumb::instance(t("Map"), url::site("exif_gps/map/album/{$type_id}"))->set_last();
+      $parent_item = ORM::factory("item", $type_id);
+      while ($parent_item->id != 1) {
+        $breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url());
+        $parent_item = ORM::factory("item", $parent_item->parent_id);
+      }
+      $breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url())->set_first();
+      $breadcrumbs = array_reverse($breadcrumbs, true);
+    } else {
+      $root = item::root();
+      $breadcrumbs[] = Breadcrumb::instance($root->title, $root->url())->set_first();
+      $breadcrumbs[] = Breadcrumb::instance(t("Photo Map"), url::site("exif_gps/map/{$map_type}/{$type_id}"))->set_last();
+    }
+
+    // Set up and display the actual page.
+    $template = new Theme_View("page.html", "other", "EXIF_GPS_MAP");
     $template->page_title = t("Gallery :: Map");
+    $template->set_global(array("breadcrumbs" => $breadcrumbs));
     $template->content = new View("exif_gps_map.html");
     if ($map_title == "") {
       $template->content->title = t("Map");
     } else {
       $template->content->title = t("Map of") . " " . $map_title;
     }
-
     // Figure out default map type.
     $int_map_type = module::get_var("exif_gps", "largemap_maptype");
     if ($int_map_type == 0) $map_type = "ROADMAP";
@@ -64,9 +82,6 @@ class EXIF_GPS_Controller extends Controller {
     if ($int_map_type == 2) $map_type = "HYBRID";
     if ($int_map_type == 3) $map_type = "TERRAIN";
     $template->content->map_type = $map_type;
-
-    // When mapping an album, generate a "return to album" link.
-    if (isset($curr_album)) $template->content->return_url = url::abs_site("{$curr_album[0]->type}s/{$curr_album[0]->id}");
 
     // Load in module preferences.
     $template->content->items = $items;
