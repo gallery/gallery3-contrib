@@ -17,9 +17,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class calendarview_theme_Core {
+ 
+class latestupdates_theme_Core {
   static function head($theme) {
-    return $theme->css("calendarview_calendar.css") . 
-           $theme->css("calendarview_menu.css");
+    // Load CSS and JS for jCarouselLite.
+    return $theme->script("jcarousellite_1.0.1.js") . 
+           $theme->css("latestupdates_jcarousel.css");
   }
 }

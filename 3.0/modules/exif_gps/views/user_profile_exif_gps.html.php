@@ -36,7 +36,7 @@
     var str_marker_html = "";
     var current_latlng = null;
 
-    jQuery.get("<?=url::abs_site("exif_gps/xml/{$query_type}/{$query_id}"); ?>", {}, function(data) {
+    jQuery.get("<?=url::abs_site("exif_gps/xml/user/{$user_id}"); ?>", {}, function(data) {
       jQuery(data).find("marker").each(function() {
         var xmlmarker = jQuery(this);
         var latlng = new google.maps.LatLng(parseFloat(xmlmarker.attr("lat")),
@@ -115,13 +115,6 @@
    #over_map { position: absolute; top: 0px; left: 0px; z-index: 99; }
 </style>
 
-<div id="g-exif-map-header">
-  <div id="g-exif-map-header-buttons">
-    <?= $theme->dynamic_top() ?>
-  </div>
-  <h1><?= html::clean($title) ?></h1>
-</div>
-<br />
 <div id="wrapper">
   <div id="map_canvas" style="width:690px; height:480px;"></div>
   <div id="over_map" style="width:690px; height:480px;">
@@ -131,4 +124,3 @@
     </p>
   </div>
 </div>
-<?= $theme->dynamic_bottom() ?>

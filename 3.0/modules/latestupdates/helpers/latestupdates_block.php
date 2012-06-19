@@ -25,7 +25,6 @@ class latestupdates_block_Core {
   static function get($block_id, $theme) {
     $block = "";
 
-
     switch ($block_id) {
     case "latestupdates":
 

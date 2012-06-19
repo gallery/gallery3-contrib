@@ -107,4 +107,18 @@ class quotas_event_Core {
     $record = ORM::factory("users_space_usage")->where("owner_id", "=", $item->owner_id)->find();
     $record->add_item($item);
   }
+
+  static function show_user_profile($data) {
+    // Display # of albums and photos/movies on user profile page.
+    //   Also display current disc usage.
+    $v = new View("user_profile_quotas.html");
+    $quotas_record = ORM::factory("users_space_usage")->where("owner_id", "=", $data->user->id)->find();
+
+    $v->user_profile_data = array();
+    $v->user_profile_data[(string) t("Albums")] = db::build()->from("items")->where("type", "=", "album")->where("owner_id", "=", $data->user->id)->count_records();
+    $v->user_profile_data[(string) t("Uploads")] = db::build()->from("items")->where("type", "!=", "album")->where("owner_id", "=", $data->user->id)->count_records();
+    $v->user_profile_data[(string) t("Disc Usage")] = $quotas_record->total_usage_string();
+
+    $data->content[] = (object) array("title" => t("User stats"), "view" => $v);
+  }
 }
