@@ -82,5 +82,5 @@
   }
 
 ?>
-<br clear="all" /><br />
+<br clear="all" /><br /><br />
 <div align="right"><a href="<?=url::site("calendarview/calendar/{$user_year}/{$user_id}"); ?>"><?=t("View full calendar"); ?> &gt;&gt;</a></div>
