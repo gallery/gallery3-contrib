@@ -17,9 +17,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class calendarview_theme_Core {
-  static function head($theme) {
-    return $theme->css("calendarview_calendar.css") . 
-           $theme->css("calendarview_menu.css");
+
+class latestupdates_event_Core {
+  static function show_user_profile($data) {
+    // Display links on the user profile pages for recent photos/albums 
+    //   and most popular photos from the specified user.
+    $v = new View("latestupdates_user_profile_info.html");
+    $v->user_id = $data->user->id;
+    $data->content[] = (object) array("title" => t("Latest Updates"), "view" => $v);
   }
 }

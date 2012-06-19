@@ -26,6 +26,11 @@ class exif_gps_block_Core {
   static function get($block_id, $theme) {
     $block = "";
 
+    // Make sure the user can view maps before displaying any sidebars.
+    if ((module::get_var("exif_gps", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
+
     switch ($block_id) {
     case "exif_gps_maps":
       // Display links to a map of the current album and
@@ -46,13 +51,13 @@ class exif_gps_block_Core {
                ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
                ->viewable()
                ->order_by("exif_coordinates.latitude", "ASC")
-               ->descendants_count();
+               ->descendants_count(1);
         $user_items_count = ORM::factory("item")
                ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
                ->where("items.owner_id", "=", $item->owner_id)
                ->viewable()
                ->order_by("exif_coordinates.latitude", "ASC")
-               ->count_all();
+               ->count_all(1);
 
         if (($album_items_count > 0) || ($user_items_count > 0)) {
           $block = new Block();
@@ -130,17 +135,19 @@ class exif_gps_block_Core {
                  ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
                  ->viewable()
                  ->order_by("exif_coordinates.latitude", "ASC")
-                 ->descendants();
+                 ->descendants(1);
         if (count($items) > 0) {
           $block = new Block();
           $block->css_id = "g-exif-gps-location";
           $block->title = t("Location");
-          $block->content = new View("exif_gps_dynamic2_sidebar.html");
+          $block->content = new View("exif_gps_dynamic_sidebar.html");
           if (module::get_var("exif_gps", "sidebar_maptype") == 0) $block->content->sidebar_map_type = "ROADMAP";
           if (module::get_var("exif_gps", "sidebar_maptype") == 1) $block->content->sidebar_map_type = "SATELLITE";
           if (module::get_var("exif_gps", "sidebar_maptype") == 2) $block->content->sidebar_map_type = "HYBRID";
           if (module::get_var("exif_gps", "sidebar_maptype") == 3) $block->content->sidebar_map_type = "TERRAIN";
-          $block->content->items = $items;
+          $block->content->album_id = $theme->item->id;
+          $block->content->latitude = 0;
+          $block->content->longitude = 0;
           $block->content->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
         }
       }

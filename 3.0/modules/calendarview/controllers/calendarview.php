@@ -234,16 +234,31 @@ class CalendarView_Controller extends Controller {
     // Generate a list of years, starting with the year the earliest photo was
     //   taken, and ending with the year of the most recent photo.
     $valid_years = Array();
-    $all_photos = ORM::factory("item")
-      ->viewable()
-      ->where("type", "!=", "album")
-      ->where("captured", "!=", "")
-      ->order_by("captured", "DESC")
-      ->find_all();
-    $counter = date('Y', $all_photos[count($all_photos)-1]->captured);
-    while ($counter <= date('Y', $all_photos[0]->captured)) {
-      $valid_years[$counter] = $counter;
-      $counter++;
+    if ($display_user == -1) {
+      $all_photos = ORM::factory("item")
+        ->viewable()
+        ->where("type", "!=", "album")
+        ->where("captured", "!=", "")
+        ->order_by("captured", "DESC")
+        ->find_all();
+      $counter = date('Y', $all_photos[count($all_photos)-1]->captured);
+      while ($counter <= date('Y', $all_photos[0]->captured)) {
+        $valid_years[$counter] = $counter;
+        $counter++;
+      }
+    } else {
+      $all_photos = ORM::factory("item")
+        ->viewable()
+        ->where("type", "!=", "album")
+        ->where("captured", "!=", "")
+        ->where("owner_id", "=", $display_user)
+        ->order_by("captured", "DESC")
+        ->find_all();
+      $counter = date('Y', $all_photos[count($all_photos)-1]->captured);
+      while ($counter <= date('Y', $all_photos[0]->captured)) {
+        $valid_years[$counter] = $counter;
+        $counter++;
+      }
     }
 
     // Create the form.
