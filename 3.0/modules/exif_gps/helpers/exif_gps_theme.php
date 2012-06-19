@@ -19,6 +19,7 @@
  */
 class exif_gps_theme_Core {
   static function head($theme) {
-    return $theme->css("exif_gps_menu.css");
+    return $theme->css("exif_gps_menu.css") . 
+           $theme->script("markerclusterer_compiled.js");
   }
 }

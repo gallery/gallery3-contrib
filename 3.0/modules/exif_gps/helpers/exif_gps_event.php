@@ -99,6 +99,13 @@ class exif_gps_event_Core {
   }
 
   static function photo_menu($menu, $theme) {
+    // Adds album and user map icons to photo pages.
+
+    // Do not display icons if the user can't view the page.
+    if ((module::get_var("exif_gps", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
+
     $album_id = "";
     $item = $theme->item;
     if ($item->is_album()) {
@@ -139,6 +146,13 @@ class exif_gps_event_Core {
   }
 
   static function movie_menu($menu, $theme) {
+    // Adds album and user map icons to movie pages.
+
+    // Do not display icons if the user can't view the page.
+    if ((module::get_var("exif_gps", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
+
     $album_id = "";
     $item = $theme->item;
     if ($item->is_album()) {
@@ -179,6 +193,13 @@ class exif_gps_event_Core {
   }
   
   static function album_menu($menu, $theme) {
+    // Adds album and user map icons to album pages.
+
+    // Do not display icons if the user can't view the page.
+    if ((module::get_var("exif_gps", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
+
     $album_id = "";
     $item = $theme->item;
     if ($item->is_album()) {
@@ -216,5 +237,36 @@ class exif_gps_event_Core {
            ->url(url::site("exif_gps/map/user/" . $item->owner_id))
            ->css_id("g-exif-gps-user-link"));
     }
+  }
+
+  static function show_user_profile($data) {
+    // Display a map on the user profile pages.
+
+    // Make sure the user can view maps before displaying one.
+    if ((module::get_var("exif_gps", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
+
+    // If there's nothing to map, hide the map.
+    $items = ORM::factory("item")
+             ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+             ->where("items.owner_id", "=", $data->user->id)
+             ->viewable()
+             ->find_all(1);
+    if (count($items) == 0) {
+      return;
+    }
+
+    // Display the map block.
+    $v = new View("user_profile_exif_gps.html");
+    $int_map_type = module::get_var("exif_gps", "largemap_maptype");
+    if ($int_map_type == 0) $map_type = "ROADMAP";
+    if ($int_map_type == 1) $map_type = "SATELLITE";
+    if ($int_map_type == 2) $map_type = "HYBRID";
+    if ($int_map_type == 3) $map_type = "TERRAIN";
+    $v->map_type = $map_type;
+    $v->user_id = $data->user->id;
+    $v->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
+    $data->content[] = (object) array("title" => t("Photo Map"), "view" => $v);
   }
 }
