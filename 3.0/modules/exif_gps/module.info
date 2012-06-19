@@ -1,6 +1,6 @@
 name = "Exif GPS Data"
 description = "Extract Exif GPS data from photos."
-version = 2
+version = 3
 author_name = "rWatcher"
 author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:exif_gps"
