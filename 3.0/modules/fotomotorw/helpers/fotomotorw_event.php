@@ -27,4 +27,16 @@ class fotomotorw_event_Core {
         ->label(t("Fotomoto"))
         ->url(url::site("admin/fotomotorw")));
   }
+
+  static function context_menu($menu, $theme, $item) {
+    // Add a "Buy Prints" option to the photo's thumbnail menu.
+    if ($item->type == "photo") {
+      $menu->get("options_menu")
+        ->append(Menu::factory("link")
+                 ->id("fotomotorw")
+                 ->label(t("Buy Prints"))
+                 ->url("javascript:showFotomotoDialog(100, '" . url::abs_site("fotomotorw/resize/" . md5($item->created) . "/{$item->id}") . "');")
+                 ->css_class("g-print-fotomotorw-link ui-icon-print"));
+    }
+  }
 }

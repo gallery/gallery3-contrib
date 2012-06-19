@@ -19,7 +19,7 @@
  */
  
 class FotomotorW_Controller extends Controller {
-  public function resize($item_id) {
+  public function resize($str_checksum, $item_id) {
     // Displayed the "resized" version of an image by it's ID number.
     //  This both gives fotomoto access to resizes regardless of permissions
     //  and forces fotomoto to track images by unique id instead of file name
@@ -28,6 +28,11 @@ class FotomotorW_Controller extends Controller {
     // Load the photo from the provided id#.  If invalid, display a 404 error.
     $item = ORM::factory("item", $item_id);
     if (!$item->loaded()) {
+      throw new Kohana_404_Exception();
+    }
+
+    // Make sure checksum matches, if not, throw a 404 error.
+    if ($str_checksum != md5($item->created)) {
       throw new Kohana_404_Exception();
     }
 
