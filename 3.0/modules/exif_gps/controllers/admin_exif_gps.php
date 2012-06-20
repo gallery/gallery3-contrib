@@ -48,19 +48,25 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
       $checkbox_album = false;
       $checkbox_user = false;
       $checkbox_restriction = false;
-      for ($i = 0; $i < count($form->Global->toolbar_map_album); $i++) {
-        if ($form->Global->toolbar_map_album->value[$i] == "checkbox_album") {
-          $checkbox_album = true;
+      if (count($form->Global->toolbar_map_album) > 0) {
+        for ($i = 0; $i < count($form->Global->toolbar_map_album); $i++) {
+          if ($form->Global->toolbar_map_album->value[$i] == "checkbox_album") {
+            $checkbox_album = true;
+          }
         }
       }
-      for ($i = 0; $i < count($form->Global->toolbar_map_user); $i++) {
-        if ($form->Global->toolbar_map_user->value[$i] == "checkbox_user") {
-          $checkbox_user = true;
+      if (count($form->Global->toolbar_map_user) > 0) {
+        for ($i = 0; $i < count($form->Global->toolbar_map_user); $i++) {
+          if ($form->Global->toolbar_map_user->value[$i] == "checkbox_user") {
+            $checkbox_user = true;
+          }
         }
       }
-      for ($i = 0; $i < count($form->Global->restrict_maps); $i++) {
-        if ($form->Global->restrict_maps->value[$i] == "checkbox_restriction") {
-          $checkbox_restriction = true;
+      if (count($form->Global->restrict_maps) > 0) {
+        for ($i = 0; $i < count($form->Global->restrict_maps); $i++) {
+          if ($form->Global->restrict_maps->value[$i] == "checkbox_restriction") {
+            $checkbox_restriction = true;
+          }
         }
       }
       module::set_var("exif_gps", "toolbar_map_album", $checkbox_album);
