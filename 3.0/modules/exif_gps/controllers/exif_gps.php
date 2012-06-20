@@ -118,7 +118,6 @@ class EXIF_GPS_Controller extends Controller {
     $template->content->query_id = $type_id;
 
     // Load in module preferences.
-    $template->content->items = $items;
     $template->content->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
 
     // Display the page.
