@@ -37,6 +37,7 @@ class exif_gps_block_Core {
       //  a map of the current user.
       if ($theme->item()) {
         $album_id = "";
+        $user_name = "";
         $item = $theme->item;
         if ($item->is_album()) {
           $album_id = $item->id;
@@ -44,7 +45,9 @@ class exif_gps_block_Core {
           $album_id = $item->parent_id;
         }
         $curr_user = ORM::factory("user")->where("id", "=", $item->owner_id)->find_all();
-        $user_name = $curr_user[0]->full_name;
+        if (count($curr_user) > 0) {
+          $user_name = $curr_user[0]->full_name;
+        }
 
         // Make sure there are actually map-able items to display.
         $album_items_count = ORM::factory("item", $album_id)
