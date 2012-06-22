@@ -45,33 +45,9 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
       module::set_var("exif_gps", "sidebar_mapformat", $form->Sidebar->sidebar_mapformat->value);
       module::set_var("exif_gps", "sidebar_maptype", $form->Sidebar->sidebar_maptype->value);
       module::set_var("exif_gps", "largemap_maptype", $form->LargeMap->largemap_maptype->value);
-      $checkbox_album = false;
-      $checkbox_user = false;
-      $checkbox_restriction = false;
-      if (count($form->Global->toolbar_map_album) > 0) {
-        for ($i = 0; $i < count($form->Global->toolbar_map_album); $i++) {
-          if ($form->Global->toolbar_map_album->value[$i] == "checkbox_album") {
-            $checkbox_album = true;
-          }
-        }
-      }
-      if (count($form->Global->toolbar_map_user) > 0) {
-        for ($i = 0; $i < count($form->Global->toolbar_map_user); $i++) {
-          if ($form->Global->toolbar_map_user->value[$i] == "checkbox_user") {
-            $checkbox_user = true;
-          }
-        }
-      }
-      if (count($form->Global->restrict_maps) > 0) {
-        for ($i = 0; $i < count($form->Global->restrict_maps); $i++) {
-          if ($form->Global->restrict_maps->value[$i] == "checkbox_restriction") {
-            $checkbox_restriction = true;
-          }
-        }
-      }
-      module::set_var("exif_gps", "toolbar_map_album", $checkbox_album);
-      module::set_var("exif_gps", "toolbar_map_user", $checkbox_user);
-      module::set_var("exif_gps", "restrict_maps", $checkbox_restriction);
+      module::set_var("exif_gps", "toolbar_map_album", $form->Global->toolbar_map_album->value);
+      module::set_var("exif_gps", "toolbar_map_user", $form->Global->toolbar_map_user->value);
+      module::set_var("exif_gps", "restrict_maps", $form->Global->restrict_maps->value);
 
       // Display a success message and redirect back to the TagsMap admin page.
       message::success(t("Your settings have been saved."));
@@ -99,15 +75,12 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
     $gps_global_group->input("max_auto_zoom_level")
       ->label(t("Maximum Auto-Zoom Level:"))
       ->value(module::get_var("exif_gps", "googlemap_max_autozoom"));
-    $checkbox_user["checkbox_user"] = array(t("Show \"Map this user\" icon?"), module::get_var("exif_gps", "toolbar_map_user"));
-    $checkbox_album["checkbox_album"] = array(t("Show \"Map this album\" icon?"), module::get_var("exif_gps", "toolbar_map_album"));
-    $checkbox_restriction["checkbox_restriction"] = array(t("Restrict maps to registered users?"), module::get_var("exif_gps", "restrict_maps"));
-    $gps_global_group->checklist("toolbar_map_album")
-      ->options($checkbox_album);
-    $gps_global_group->checklist("toolbar_map_user")
-      ->options($checkbox_user);
-    $gps_global_group->checklist("restrict_maps")
-      ->options($checkbox_restriction);
+    $gps_global_group->checkbox("toolbar_map_album")->label(t("Show \"Map this album\" icon?"))
+      ->checked(module::get_var("exif_gps", "toolbar_map_album", false));	
+    $gps_global_group->checkbox("toolbar_map_user")->label(t("Show \"Map this user\" icon?"))
+      ->checked(module::get_var("exif_gps", "toolbar_map_user", false));	
+    $gps_global_group->checkbox("restrict_maps")->label(t("Restrict maps to registered users?"))
+      ->checked(module::get_var("exif_gps", "restrict_maps", false));	
 
     // Create a group for marker cluster settings
     $gps_markercluster = $form->group("markercluster")
