@@ -44,14 +44,15 @@ class rwinfo_theme_Core {
     }
     // rWatcher End Edit
 
-    // rWatcher Edit:  Display profile instead of web site, if viewable.
-    $str_owner_url = $item->owner->url;
-    if (rwinfo_theme_Core::_can_view_profile_pages(identity::lookup_user($item->owner->id))) {
-      $str_owner_url = user_profile::url($item->owner->id);
-    }
-    // rWatcher End Edit
 
     if ($item->owner) {
+      // rWatcher Edit:  Display profile instead of web site, if viewable.
+      $str_owner_url = $item->owner->url;
+      if (rwinfo_theme_Core::_can_view_profile_pages(identity::lookup_user($item->owner->id))) {
+        $str_owner_url = user_profile::url($item->owner->id);
+      }
+      // rWatcher End Edit
+
       $results .= "<li>";
       if ($str_owner_url) {  //rW Edit str_owner_url
         $results .= t("By: <a href=\"%owner_url\">%owner_name</a>",
@@ -66,7 +67,7 @@ class rwinfo_theme_Core {
   }
 
   // This came from modules/gallery/controllers/user_profile.php.
-  private function _can_view_profile_pages($user) {
+  static private function _can_view_profile_pages($user) {
     if (!$user->loaded()) {
       return false;
     }

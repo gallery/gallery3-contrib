@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class EXIF_GPS_Controller extends Controller {
+  public static $xml_records_limit = 1000;
+
   public function item($item_id) {
     // Make sure the context callback is set to album when linking to photos from map pages.
     $item = ORM::factory("item", $item_id);
@@ -26,7 +28,7 @@ class EXIF_GPS_Controller extends Controller {
     url::redirect($item->abs_url());
   }
 
-  public function xml($query_type, $query_id) {
+  public function xml($query_type, $query_id, $offset) {
     // Generate an xml output of the photos to be mapped.
     // $query_type can be either "album" or "user", $query_id is the id# of the album or user to map.
 
@@ -42,13 +44,13 @@ class EXIF_GPS_Controller extends Controller {
                ->where("items.owner_id", "=", $query_id)
                ->viewable()
                ->order_by("exif_coordinates.latitude", "ASC")
-               ->find_all();
+               ->find_all(EXIF_GPS_Controller::$xml_records_limit, $offset);
     } elseif ($query_type == "album") {
       $items = ORM::factory("item", $query_id)
                ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
                ->viewable()
                ->order_by("exif_coordinates.latitude", "ASC")
-               ->descendants();
+               ->descendants(EXIF_GPS_Controller::$xml_records_limit, $offset);
     }
 
     $v = new View("exif_gps_coordinates_xml.html");
@@ -67,14 +69,26 @@ class EXIF_GPS_Controller extends Controller {
       throw new Kohana_404_Exception();
     }
 
-    // Figure out what to display for the page title.
+    // Figure out what to display for the page title and how many items to display.
     $map_title = "";
+    $items_count = 0;
     if ($map_type == "album") {
       $curr_album = ORM::factory("item")->where("id", "=", $type_id)->find_all();
       $map_title = $curr_album[0]->title;
+      $items_count = ORM::factory("item", $type_id)
+               ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+               ->viewable()
+               ->order_by("exif_coordinates.latitude", "ASC")
+               ->descendants_count();
     } elseif ($map_type == "user") {
       $curr_user = ORM::factory("user")->where("id", "=", $type_id)->find_all();
       $map_title = $curr_user[0]->full_name . "'s " . t("Photos");
+      $items_count = ORM::factory("item")
+               ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+               ->where("items.owner_id", "=", $type_id)
+               ->viewable()
+               ->order_by("exif_coordinates.latitude", "ASC")
+               ->count_all();
     }
 
     // Set up breadcrumbs.
@@ -105,6 +119,7 @@ class EXIF_GPS_Controller extends Controller {
     } else {
       $template->content->title = t("Map of") . " " . $map_title;
     }
+
     // Figure out default map type.
     $int_map_type = module::get_var("exif_gps", "largemap_maptype");
     if ($int_map_type == 0) $map_display_type = "ROADMAP";
@@ -116,9 +131,9 @@ class EXIF_GPS_Controller extends Controller {
     // These are used to set up the URL to the xml file.
     $template->content->query_type = $map_type;
     $template->content->query_id = $type_id;
+    $template->content->items_count = $items_count;
 
     // Load in module preferences.
-    $template->content->items = $items;
     $template->content->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
 
     // Display the page.
