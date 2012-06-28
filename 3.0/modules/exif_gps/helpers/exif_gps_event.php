@@ -191,7 +191,7 @@ class exif_gps_event_Core {
            ->css_id("g-exif-gps-user-link"));
     }
   }
-  
+
   static function album_menu($menu, $theme) {
     // Adds album and user map icons to album pages.
 
@@ -248,12 +248,13 @@ class exif_gps_event_Core {
     }
 
     // If there's nothing to map, hide the map.
-    $items = ORM::factory("item")
-             ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
-             ->where("items.owner_id", "=", $data->user->id)
-             ->viewable()
-             ->find_all(1);
-    if (count($items) == 0) {
+    $items_count = ORM::factory("item")
+      ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
+      ->where("items.owner_id", "=", $data->user->id)
+      ->viewable()
+      ->order_by("exif_coordinates.latitude", "ASC")
+      ->count_all();
+    if ($items_count == 0) {
       return;
     }
 
@@ -266,6 +267,7 @@ class exif_gps_event_Core {
     if ($int_map_type == 3) $map_type = "TERRAIN";
     $v->map_type = $map_type;
     $v->user_id = $data->user->id;
+    $v->items_count = $items_count;
     $v->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
     $data->content[] = (object) array("title" => t("Photo Map"), "view" => $v);
   }
