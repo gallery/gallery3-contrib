@@ -147,7 +147,7 @@ class rwinfo_block_Core {
   }
 
   // This came from modules/gallery/controllers/user_profile.php.
-  private function _can_view_profile_pages($user) {
+  static private function _can_view_profile_pages($user) {
     if (!$user->loaded()) {
       return false;
     }
