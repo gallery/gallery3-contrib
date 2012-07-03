@@ -48,6 +48,10 @@ class tagsmap_event_Core {
   }
 
   static function photo_menu($menu, $theme) {
+    // Make sure the user can view maps before displaying one.
+    if ((module::get_var("tagsmap", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
     $menu->append(Menu::factory("link")
          ->id("tagsmap")
          ->label(t("View Map"))
@@ -56,14 +60,34 @@ class tagsmap_event_Core {
   }
 
   static function movie_menu($menu, $theme) {
+    // Make sure the user can view maps before displaying one.
+    if ((module::get_var("tagsmap", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
     $menu->append(Menu::factory("link")
          ->id("tagsmap")
          ->label(t("View Map"))
          ->url(url::site("tagsmap/googlemap/"))
          ->css_id("g-tagsmap-link"));
   }
-  
+
+  static function tag_menu($menu, $theme) {
+    // Make sure the user can view maps before displaying one.
+    if ((module::get_var("tagsmap", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
+    $menu->append(Menu::factory("link")
+         ->id("tagsmap")
+         ->label(t("View Map"))
+         ->url(url::site("tagsmap/googlemap/"))
+         ->css_id("g-tagsmap-link"));
+  }
+
   static function album_menu($menu, $theme) {
+    // Make sure the user can view maps before displaying one.
+    if ((module::get_var("tagsmap", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
     $menu->append(Menu::factory("link")
          ->id("tagsmap")
          ->label(t("View Map"))
