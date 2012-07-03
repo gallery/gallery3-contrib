@@ -36,7 +36,15 @@ class tagsmap_installer {
     module::set_var("tagsmap", "googlemap_longitude", 134);
     module::set_var("tagsmap", "googlemap_zoom", 5);
     module::set_var("tagsmap", "googlemap_type", "G_NORMAL_MAP");
-    module::set_version("tagsmap", 2);
+    module::set_var("tagsmap", "restrict_maps", "0");
+    module::set_version("tagsmap", 3);
+  }
+
+  static function upgrade($version) {
+    if ($version == 2) {
+      module::set_var("tagsmap", "restrict_maps", "0");
+      module::set_version("tagsmap", 3);
+    }
   }
 
   static function deactivate() {

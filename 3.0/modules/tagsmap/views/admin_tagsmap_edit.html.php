@@ -9,7 +9,13 @@
 </div>
 
 
-<script src="http://www.google.com/jsapi?key=<?= module::get_var("tagsmap", "googlemap_api_key") ?>" type="text/javascript"></script>
+<? if (isset($google_map_key) && ($google_map_key != "")) {
+  print "<script src=\"http://www.google.com/jsapi?key=" . $google_map_key . "\" type=\"text/javascript\"></script>\n";
+} else {
+  print "<script src=\"http://www.google.com/jsapi\" type=\"text/javascript\"></script>\n";
+}
+?>
+
 <script type="text/javascript">
   google.load("maps", "2.160");
   var lat = $("input[name=gps_latitude]");
@@ -55,4 +61,3 @@
 
   google.setOnLoadCallback(Gload);
 </script>
-
