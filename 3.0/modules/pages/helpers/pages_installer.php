@@ -31,14 +31,22 @@ class pages_installer {
                UNIQUE KEY(`name`))
                DEFAULT CHARSET=utf8;");
 
+    // Set some initial values.
+    module::set_var("pages", "show_sidebar", true);
+    module::set_var("pages", "disable_rte", false);
+
     // Set the module version number.
-    module::set_version("pages", 2);
+    module::set_version("pages", 3);
   }
   static function upgrade($version) {
     $db = Database::instance();
     if ($version == 1) {
       $db->query("ALTER TABLE {static_pages} ADD COLUMN `display_menu` boolean default 0");
       module::set_version("pages", $version = 2);
+    }
+    if ($version == 2) {
+      module::set_var("pages", "disable_rte", false);
+      module::set_version("pages", $version = 3);
     }
   }
 }
