@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,14 @@ class tag_albums_installer {
                KEY(`album_id`, `id`))
                DEFAULT CHARSET=utf8;");
 
+    $db->query("CREATE TABLE IF NOT EXISTS {tags_album_tag_covers} (
+               `id` int(9) NOT NULL auto_increment,
+               `tag_id` int(9) NOT NULL,
+               `photo_id` int(9) NOT NULL,
+               PRIMARY KEY (`id`),
+               KEY(`tag_id`, `id`))
+               DEFAULT CHARSET=utf8;");
+
     // Set up some default values.
     module::set_var("tag_albums", "tag_sort_by", "name");
     module::set_var("tag_albums", "tag_sort_direction", "ASC");
@@ -36,18 +44,38 @@ class tag_albums_installer {
     module::set_var("tag_albums", "subalbum_sort_direction", "ASC");
     module::set_var("tag_albums", "tag_index", "default");
     module::set_var("tag_albums", "tag_index_scope", "0");
-    module::set_var("tag_albums", "tag_index_filter", "0");
+    module::set_var("tag_albums", "tag_index_filter_top", "0");
+    module::set_var("tag_albums", "tag_index_filter_bottom", "0");
 
     // Set the module's version number.
-    module::set_version("tag_albums", 2);
+    module::set_version("tag_albums", 4);
   }
 
   static function upgrade($version) {
+    $db = Database::instance();
     if ($version == 1) {
       module::set_var("tag_albums", "tag_index", "default");
       module::set_var("tag_albums", "tag_index_scope", "0");
       module::set_var("tag_albums", "tag_index_filter", "0");
       module::set_version("tag_albums", 2);
+    }
+
+    if ($version == 2) {
+      $db->query("CREATE TABLE IF NOT EXISTS {tags_album_tag_covers} (
+               `id` int(9) NOT NULL auto_increment,
+               `tag_id` int(9) NOT NULL,
+               `photo_id` int(9) NOT NULL,
+               PRIMARY KEY (`id`),
+               KEY(`tag_id`, `id`))
+               DEFAULT CHARSET=utf8;");
+      module::set_version("tag_albums", 3);
+    }
+
+    if ($version == 3) {
+      module::set_var("tag_albums", "tag_index_filter_top", module::get_var("tag_albums", "tag_index_filter", "0"));
+      module::set_var("tag_albums", "tag_index_filter_bottom", module::get_var("tag_albums", "tag_index_filter", "0"));
+      module::clear_var("tag_albums", "tag_index_filter");
+      module::set_version("tag_albums", 4);
     }
   }
   

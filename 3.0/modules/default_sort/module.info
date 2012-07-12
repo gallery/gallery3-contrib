@@ -1,0 +1,7 @@
+name = "Default Sort Order"
+description = "Set default sort order for newly-created albums."
+version = 1
+author_name = "jingai"
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:default_sort"
+discuss_url = "http://gallery.menalto.com/forum_module_default_sort"

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ class metadescription_theme_Core {
     // Load the meta tags into the top of the page.
     // @todo: metadescription_block.html requires an item so for now, don't render it unless we
     // have one.
-    if ($theme->item()) {
+    if ($theme->item() || $theme->tag()) {
       $metaView = new View("metadescription_block.html");
       $metaView->tags = $tagsItem;
       return $metaView;

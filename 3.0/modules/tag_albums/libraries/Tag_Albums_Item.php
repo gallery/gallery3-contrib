@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 class Tag_Albums_Item_Core {
   public $title = "";
   public $id = -1;
+  public $item_id = 0;
   public $url = "#";
   public $thumb_url = "";
   public $thumb_width = 0;
@@ -42,6 +43,19 @@ class Tag_Albums_Item_Core {
       return true;
     } else {
       return false;
+    }
+  }
+
+  public function full_or_resize_url() {
+    if ($this->item_id > 0) {
+      $item = ORM::factory("item", $this->item_id);
+      if (access::can("view_full", $item)) {
+        return $item->file_url();
+      } else {
+        return $item->resize_url();
+      }
+    } else {
+      return "";
     }
   }
 
@@ -105,10 +119,11 @@ class Tag_Albums_Item_Core {
     $this->thumb_height = $new_height;
   }
 
-  public function __construct($new_title, $new_url, $new_type) {
+  public function __construct($new_title, $new_url, $new_type, $new_id) {
     $this->title = $new_title;
     $this->url = $new_url;
     $this->item_type = $new_type;
     $this->type = $new_type;
+    $this->item_id = $new_id;
   }
 }

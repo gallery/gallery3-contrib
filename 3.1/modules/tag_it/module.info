@@ -1,7 +1,0 @@
-name = "Tag It"
-description = "Present an untagged photo and ask the user to tag it."
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:tag_it"
-discuss_url = "http://gallery.menalto.com/forum_module_tag_it"

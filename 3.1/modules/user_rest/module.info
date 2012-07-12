@@ -1,7 +1,0 @@
-name = "REST User Resource"
-description = "Provides access to user names via the RESTful API"
-version = 2
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:user_rest"
-discuss_url = "http://gallery.menalto.com/forum_module_user_rest"

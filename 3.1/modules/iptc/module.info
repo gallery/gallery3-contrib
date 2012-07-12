@@ -1,7 +1,0 @@
-name = "Iptc Data"
-description = "Extract Iptc data and display it on photo pages."
-version = 2
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:iptc"
-discuss_url = "http://gallery.menalto.com/forum_module_iptc"

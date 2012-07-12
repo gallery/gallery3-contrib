@@ -22,7 +22,16 @@ __all__ = ['Album' , 'Image' , 'LocalImage' , 'RemoteImage' , 'LocalMovie' ,
     'RemoteMovie' , 'getItemFromResp' , 'getItemsFromResp']
 
 from datetime import datetime
-import json , weakref , types , os , mimetypes , re
+import weakref , types , os , mimetypes , re
+try:
+    import json
+except:
+    try:
+        import simplejson
+    except ImportError , e:
+        raise ImportError('You must have either the "json" or "simplejson"'
+            'library installed!')
+
 
 class BaseRemote(object):
     def __init__(self , respObj , weakGalObj , weakParent=None):

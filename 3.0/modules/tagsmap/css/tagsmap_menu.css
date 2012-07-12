@@ -1,3 +1,7 @@
 #g-view-menu #g-tagsmap-link {
   background-image: url('../images/ico-view-tagsmap.png');
 }
+#g-tagsmap-dialog {
+  color: black;
+}
+#g-tagsmap-dialog a { color: blue !important; }

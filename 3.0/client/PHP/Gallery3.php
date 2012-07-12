@@ -1,7 +1,7 @@
 <?php
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
  */
 include("Mail.php");
 include("Mail/mime.php");
-include("HTTP/Request.php");
 
 class Gallery3 {
   var $url;
@@ -64,6 +63,7 @@ class Gallery3 {
    */
   public function __construct() {
     $this->data = new stdClass();
+    $this->data->entity = new stdClass();
     $this->token = null;
     $this->url = null;
   }
@@ -169,7 +169,55 @@ class Gallery3 {
 }
 
 class Gallery3_Helper {
+  static $instance = null;
+
   static function request($method, $url, $token=null, $params=array(), $file=null) {
+    if (!isset(self::$instance)) {
+      @include("HTTP/Request2.php");
+      if (class_exists("HTTP_Request2")) {
+        self::$instance = new Gallery3_Helper_HTTP_Request2();
+      } else {
+        include("HTTP/Request.php");
+        self::$instance = new Gallery3_Helper_HTTP_Request();
+      }
+    }
+    return self::$instance->request($method, $url, $token, $params, $file);
+  }
+}
+
+class Gallery3_Helper_HTTP_Request2 {
+  function request($method, $url, $token, $params, $file) {
+    $req = new HTTP_Request2($url);
+    $req->setMethod($method == "get" ? 'GET' : 'POST');
+    $req->setHeader("X-Gallery-Request-Method", $method);
+    if ($token) {
+      $req->setHeader("X-Gallery-Request-Key", $token);
+    }
+    foreach ($params as $key => $value) {
+      $req->addPostParameter($key, is_string($value) ? $value : json_encode($value));
+    }
+    if ($file) {
+      $req->addUpload("file", $file, basename($file), mime_content_type($file));
+    }
+    $response = $req->send();
+    $status = $response->getStatus();
+
+    switch ($status) {
+    case 200:
+    case 201:
+      return json_decode($response->getBody());
+
+    case 403:
+      throw new Gallery3_Forbidden_Exception($response->getBody(),$status);
+
+    default:
+      throw new Gallery3_Exception($response->getBody(),$status);
+    }
+  }
+}
+
+class Gallery3_Helper_HTTP_Request {
+  function request($method, $url, $token, $params, $file) {
     $req = new HTTP_Request($url);
     $req->setMethod($method == "get" ? HTTP_REQUEST_METHOD_GET : HTTP_REQUEST_METHOD_POST);
     $req->addHeader("X-Gallery-Request-Method", $method);

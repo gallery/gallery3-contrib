@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,17 +44,52 @@ class rwinfo_theme_Core {
     }
     // rWatcher End Edit
 
+
     if ($item->owner) {
+      // rWatcher Edit:  Display profile instead of web site, if viewable.
+      $str_owner_url = $item->owner->url;
+      if (rwinfo_theme_Core::_can_view_profile_pages(identity::lookup_user($item->owner->id))) {
+        $str_owner_url = user_profile::url($item->owner->id);
+      }
+      // rWatcher End Edit
+
       $results .= "<li>";
-      if ($item->owner->url) {
+      if ($str_owner_url) {  //rW Edit str_owner_url
         $results .= t("By: <a href=\"%owner_url\">%owner_name</a>",
                       array("owner_name" => $item->owner->display_name(),
-                            "owner_url" => $item->owner->url));
+                            "owner_url" => $str_owner_url));  // rW Edit str_owner_url
       } else {
         $results .= t("By: %owner_name", array("owner_name" => $item->owner->display_name()));
       }
       $results .= "</li>";
     }
     return $results;
+  }
+
+  // This came from modules/gallery/controllers/user_profile.php.
+  static private function _can_view_profile_pages($user) {
+    if (!$user->loaded()) {
+      return false;
+    }
+
+    if ($user->id == identity::active_user()->id) {
+      // You can always view your own profile
+      return true;
+    }
+
+    switch (module::get_var("gallery", "show_user_profiles_to")) {
+    case "admin_users":
+      return identity::active_user()->admin;
+
+    case "registered_users":
+      return !identity::active_user()->guest;
+
+    case "everybody":
+      return true;
+
+    default:
+      // Fail in private mode on an invalid setting
+      return false;
+    }
   }
 }

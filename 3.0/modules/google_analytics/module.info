@@ -1,7 +1,7 @@
-name = "Google Analytics"
-description = "Renders the Google Analytics Code at the end of the page. Written by 'mcp'."
-version = 2
+name = Google Analytics
+description = Renders the Google Analytics Code in the head of the page.
+version = 4
 author_name = ""
 author_url = ""
 info_url = "http://codex.gallery2.org/Gallery3:Modules:google_analytics"
-discuss_url = "http://gallery.menalto.com/forum_module_google_analytics"
+discuss_url = "http://gallery.menalto.com/node/88884"

@@ -1,0 +1,7 @@
+name = "Pages"
+description = "Allows Gallery admins to create static pages."
+version = 3
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:Pages"
+discuss_url = "http://gallery.menalto.com/node/102534"

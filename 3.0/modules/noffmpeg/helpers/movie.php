@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,10 +23,6 @@
  *
  * Note: by design, this class does not do any permission checking.
  */
- 
-// rWatcher edit:  include MP4Info.php library.
-include MODPATH . "noffmpeg/libraries/MP4Info.php";
-
 class movie_Core {
   static function get_edit_form($movie) {
     $form = new Forge("movies/update/$movie->id", "", "post", array("id" => "g-edit-movie-form"));
@@ -62,86 +58,38 @@ class movie_Core {
   }
 
   static function extract_frame($input_file, $output_file) {
-    $ffmpeg = movie::find_ffmpeg();
-    if (empty($ffmpeg)) {
-      // BEGIN rWatcher Edit.
-      copy(MODPATH . "noffmpeg/images/missing_movie.png", $output_file);
-      //throw new Exception("@todo MISSING_FFMPEG");
-      // END rWatcher Edit.
-    }
-
-    $cmd = escapeshellcmd($ffmpeg) . " -i " . escapeshellarg($input_file) .
-      " -an -ss 00:00:03 -an -r 1 -vframes 1" .
-      " -y -f mjpeg " . escapeshellarg($output_file) . " 2>&1";
-    exec($cmd);
-
-    clearstatcache();  // use $filename parameter when PHP_version is 5.3+
-    if (filesize($output_file) == 0) {
-      // Maybe the movie is shorter, fall back to the first frame.
-      $cmd = escapeshellcmd($ffmpeg) . " -i " . escapeshellarg($input_file) .
-        " -an -an -r 1 -vframes 1" .
-        " -y -f mjpeg " . escapeshellarg($output_file) . " 2>&1";
-      exec($cmd);
-
-      clearstatcache();
-      if (filesize($output_file) == 0) {
-        throw new Exception("@todo FFMPEG_FAILED");
-      }
-    }
+    // rWatcher Edit:  Just copy the generic thumb instead of extracting a frame.
+    copy(MODPATH . "noffmpeg/images/missing_movie.png", $output_file);
   }
 
   /**
    * Return the path to the ffmpeg binary if one exists and is executable, or null.
    */
   static function find_ffmpeg() {
-    if (!($ffmpeg_path = module::get_var("gallery", "ffmpeg_path")) || !file_exists($ffmpeg_path)) {
-      $ffmpeg_path = system::find_binary(
-        "ffmpeg", module::get_var("gallery", "graphics_toolkit_path"));
-      module::set_var("gallery", "ffmpeg_path", $ffmpeg_path);
-    }
-    return $ffmpeg_path;
+    // rWatcher Edit:  Return true to trick the system into thinking ffmpeg is present.
+    return true;
   }
 
   /**
    * Return the width, height, mime_type and extension of the given movie file.
    */
   static function get_file_metadata($file_path) {
-    $ffmpeg = movie::find_ffmpeg();
-    if (empty($ffmpeg)) {
-      // BEGIN rWatcher Edit.
-      $pi = pathinfo($file_path);
-      $extension = isset($pi["extension"]) ? $pi["extension"] : "flv"; // No extension?  Assume FLV.
-      $mime_type = in_array(strtolower($extension), array("mp4", "m4v")) ?
-        "video/mp4" : "video/x-flv";
-      $vid_width = 320;
-      $vid_height = 240;
-      if (strtolower($extension) == "flv") {
-        $flvinfo = new FLVMetaData($file_path);
-        $info = $flvinfo->getMetaData();
-        if (($info["width"] != "") && ($info["height"] != "")) {
-          $vid_width = $info["width"];
-          $vid_height = $info["height"];
-        }
-      }
-      return array($vid_width, $vid_height, $mime_type, $extension);
-      //throw new Exception("@todo MISSING_FFMPEG");
-      // END rWatcher Edit.
-    }
-
-    $cmd = escapeshellcmd($ffmpeg) . " -i " . escapeshellarg($file_path) . " 2>&1";
-    $result = `$cmd`;
-    if (preg_match("/Stream.*?Video:.*?(\d+)x(\d+)/", $result, $regs)) {
-      list ($width, $height) = array($regs[1], $regs[2]);
-    } else {
-      list ($width, $height) = array(0, 0);
-    }
-
+    // rWatcher Edit:  Use FLVMetaData lib instead of ffmpeg for .flv files.
+    //  For other files, just set a 320x240 default video resolution.
     $pi = pathinfo($file_path);
     $extension = isset($pi["extension"]) ? $pi["extension"] : "flv"; // No extension?  Assume FLV.
     $mime_type = in_array(strtolower($extension), array("mp4", "m4v")) ?
       "video/mp4" : "video/x-flv";
-
-    return array($width, $height, $mime_type, $extension);
+    $vid_width = 320;
+    $vid_height = 240;
+    if (strtolower($extension) == "flv") {
+      $flvinfo = new FLVMetaData($file_path);
+      $info = $flvinfo->getMetaData();
+      if (($info["width"] != "") && ($info["height"] != "")) {
+        $vid_width = $info["width"];
+        $vid_height = $info["height"];
+      }
+    }
+    return array($vid_width, $vid_height, $mime_type, $extension);
   }
-
 }

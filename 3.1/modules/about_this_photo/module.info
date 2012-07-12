@@ -1,7 +1,0 @@
-name = "About this Photo"
-description = "Show some simple, specific and useful info about a given photo"
-version = 3
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:about_this_photo"
-discuss_url = "http://gallery.menalto.com/forum_module_about_this_photo"
