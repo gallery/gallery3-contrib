@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-
 class Admin_TagsMap_Controller extends Admin_Controller {
   public function index() {
     // Generate a new admin page.
@@ -185,9 +184,8 @@ class Admin_TagsMap_Controller extends Admin_Controller {
     // Input box for the Maps API Key
     $googlemap_group = $form->group("GoogleMapsKey");
     $googlemap_group->input("google_api_key")
-      ->label(t("Google Maps API Key"))
-      ->value(module::get_var("tagsmap", "googlemap_api_key"))
-      ->rules("required");
+      ->label(t("Google APIs Console key (optional):"))
+      ->value(module::get_var("tagsmap", "googlemap_api_key"));
 
     // Input boxes for the Maps starting location map type and zoom.
     $startingmap_group = $form->group("GoogleMapsPos");
@@ -212,6 +210,8 @@ class Admin_TagsMap_Controller extends Admin_Controller {
               "G_PHYSICAL_MAP" => "Physical", 
               "G_SATELLITE_3D_MAP" => "Google Earth"))
       ->selected(module::get_var("tagsmap", "googlemap_type"));
+    $startingmap_group->checkbox("restrict_maps")->label(t("Restrict maps to registered users?"))
+      ->checked(module::get_var("tagsmap", "restrict_maps", false));
 
     // Add a save button to the form.
     $form->submit("SaveSettings")->value(t("Save"));
@@ -234,6 +234,7 @@ class Admin_TagsMap_Controller extends Admin_Controller {
       module::set_var("tagsmap", "googlemap_longitude", $form->GoogleMapsPos->google_starting_longitude->value);
       module::set_var("tagsmap", "googlemap_zoom", $form->GoogleMapsPos->google_default_zoom->value);
       module::set_var("tagsmap", "googlemap_type", $form->GoogleMapsPos->google_default_type->value);
+      module::set_var("tagsmap", "restrict_maps", $form->GoogleMapsPos->restrict_maps->value);
 
       // Display a success message and redirect back to the TagsMap admin page.
       message::success(t("Your settings have been saved."));

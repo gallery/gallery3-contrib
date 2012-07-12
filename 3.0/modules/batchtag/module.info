@@ -1,7 +1,7 @@
 name = "BatchTag"
 description = "Automatically apply a tag to the entire contents of an album."
 version = 1
-author_name = ""
-author_url = ""
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:batchtag"
-discuss_url = "http://gallery.menalto.com/forum_module_batchtag"
+discuss_url = "http://gallery.menalto.com/node/101076"

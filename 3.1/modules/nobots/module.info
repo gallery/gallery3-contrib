@@ -1,7 +1,0 @@
-name = "NoBots"
-description = "Block web crawlers from indexing your Gallery."
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:nobots"
-discuss_url = "http://gallery.menalto.com/forum_module_nobots"

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,28 @@ class rwinfo_block_Core {
         }
 
         // rWatcher Edit: 
+        if (!$theme->item->is_album()) {
+          // Calculate file size.
+          $filesize_unit = array("B","kB","MB","GB","TB","PB","EB","ZB","YB");
+          $item_filesize = filesize($theme->item->file_path());
+          $unit_counter = 0;
+          while ($item_filesize >= 1024) {
+            $item_filesize = $item_filesize / 1024;
+            $unit_counter++;
+          }
+          $item_filesize = number_format($item_filesize, 2) . " " . $filesize_unit[$unit_counter];
+          $info["file_size"] = array(
+            "label" => t("File size:"),
+            "value" => $item_filesize
+          );
+
+          // Display photo/video resolution.
+          $info["file_resolution"] = array(
+            "label" => t("Resolution:"),
+            "value" => $theme->item->width . " x " . $theme->item->height . " " . t("pixels")
+          );
+        }
+
         //if ($theme->item->captured && module::get_var("rwinfo", "show_captured")) {
         //  $info["captured"] = array(
         //    "label" => t("Captured:"),
@@ -94,11 +116,19 @@ class rwinfo_block_Core {
 
         if ($theme->item->owner && module::get_var("rwinfo", "show_owner")) {
           $display_name = $theme->item->owner->display_name();
-          if ($theme->item->owner->url) {
+
+          // rWatcher Edit:  Display profile instead of web site, if viewable.
+          $str_owner_url = $theme->item->owner->url;
+          if (rwinfo_block_Core::_can_view_profile_pages(identity::lookup_user($theme->item->owner->id))) {
+            $str_owner_url = user_profile::url($theme->item->owner->id);
+          }
+          // rWatcher End Edit
+
+          if ($str_owner_url) { //rW Edit $str_owner_url.
             $info["owner"] = array(
               "label" => t("Owner:"),
-              "value" => "<a href=\"{$theme->item->owner->url}\">" .
-                         html::clean($display_name) . "</a>"
+              "value" => "<a href=\"{$str_owner_url}\">" .
+                         html::clean($display_name) . "</a>"  //rW Edit $str_owner_url.
             );
           } else {
             $info["owner"] = array(
@@ -114,5 +144,32 @@ class rwinfo_block_Core {
       break;
     }
     return $block;
+  }
+
+  // This came from modules/gallery/controllers/user_profile.php.
+  static private function _can_view_profile_pages($user) {
+    if (!$user->loaded()) {
+      return false;
+    }
+
+    if ($user->id == identity::active_user()->id) {
+      // You can always view your own profile
+      return true;
+    }
+
+    switch (module::get_var("gallery", "show_user_profiles_to")) {
+    case "admin_users":
+      return identity::active_user()->admin;
+
+    case "registered_users":
+      return !identity::active_user()->guest;
+
+    case "everybody":
+      return true;
+
+    default:
+      // Fail in private mode on an invalid setting
+      return false;
+    }
   }
 }

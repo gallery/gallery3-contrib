@@ -1,7 +1,0 @@
-name = "TagsMap"
-description = "Assign GPS coordinates to existing tags and display them on a map."
-version = 2
-author_name = "rWatcher"
-author_url = "http://codex.gallery2.org/User:RWatcher"
-info_url = "http://codex.gallery2.org/Gallery3:Modules:tagsmap"
-discuss_url = "http://gallery.menalto.com/node/89338"

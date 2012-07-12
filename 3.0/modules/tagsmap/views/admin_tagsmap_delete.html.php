@@ -6,4 +6,3 @@
 <a href="<?= url::site("admin/tagsmap") ?>">Cancel</a>
   <?= $tagsmapdelete_form ?>
 </div>
-

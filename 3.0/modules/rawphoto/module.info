@@ -1,0 +1,7 @@
+name = "Raw Photos"
+description = "Use raw photos produced by a digital camera."
+version = 3
+author_name = "Chad Parry"
+author_url = "http://codex.gallery2.org/User:Chadparry"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:rawphoto"
+discuss_url = "http://gallery.menalto.com/node/101817"

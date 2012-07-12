@@ -247,7 +247,7 @@ dTree.prototype.closeAllChildren = function(node) {
 		if (this.aNodes[n].pid == node.id && this.aNodes[n]._hc) {
 			if (this.aNodes[n]._io) this.nodeStatus(false, n, this.aNodes[n]._ls);
 			this.aNodes[n]._io = false;
-			this.closeAllChildren(this.aNodes[n]);		
+			this.closeAllChildren(this.aNodes[n]);
 		}
 	}
 }
@@ -398,7 +398,7 @@ albumTree.config.cookieDomain = '';
 <?
 function addtree($album){
 ?>
-albumTree.add(<?= $album->id -1 ?>, <?= $album->parent_id -1 ?>, "<?= $album->title ?>", pf+'<?= $album->relative_url_cache ?>');
+albumTree.add(<?= $album->id -1 ?>, <?= $album->parent_id -1 ?>, "<?= html::purify($album->title) ?>", pf+'<?= $album->relative_url() ?>');
 <?
   foreach ($album->viewable()->children(null, null, array(array("type", "=", "album"))) as $child){
     addtree($child);

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,6 @@ class Admin_Minislideshow_Controller extends Admin_Controller {
     // Make a new Form.
     $form = new Forge("admin/minislideshow/saveprefs", "", "post",
                       array("id" => "g-mini-slideshow-admin-form"));
-
 
     // Get location of slideshow files.
     $group_slideshow_files = $form->group("Minislideshow");

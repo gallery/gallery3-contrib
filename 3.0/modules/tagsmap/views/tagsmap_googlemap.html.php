@@ -9,7 +9,12 @@
   <body>
 <? } ?>
 
-<script src="http://www.google.com/jsapi?key=<?=$google_map_key ?>" type="text/javascript"></script>
+<? if (isset($google_map_key) && ($google_map_key != "")) {
+  print "<script src=\"http://www.google.com/jsapi?key=" . $google_map_key . "\" type=\"text/javascript\"></script>\n";
+} else {
+  print "<script src=\"http://www.google.com/jsapi\" type=\"text/javascript\"></script>\n";
+}
+?>
 <script type="text/javascript"> 
   google.load("maps", "2.160");
 
@@ -34,8 +39,8 @@
       function createMarker(point, description, tagURL, tagName) {
         var marker = new GMarker(point);
     	GEvent.addListener(marker, "click", function() {
-          var myHtml = description + "<br/><br/>" + 
-                       "Tag: <a href=\"" + tagURL + "\">" + tagName + "</a>";
+          var myHtml = "<div id=\"g-tagsmap-dialog\">" + description + "<br/><br/>" + 
+                       "Tag: <a href=\"" + tagURL + "\">" + tagName + "</a></div>";
     	  map.openInfoWindowHtml(point, myHtml);
         });
         return marker;
@@ -64,8 +69,8 @@
   <div id="map_canvas" style="width: 100%; height: 100%"></div>
   </body></html>
 <? } else { ?>
-  <div id="map_canvas" style="width: 600px; height: 480px"></div> <br/>
-  <a href="<?= url::site("tagsmap/googlemap/fullsize/1")?>">
+  <div id="map_canvas" style="width: 690px; height: 480px"></div> <br/>
+  <center><a href="<?= url::site("tagsmap/googlemap/fullsize/1")?>">
            <?= t("View Fullsize")?>
-  </a><br/><br/>
+  </a></center><br/><br/>
 <? } ?>
