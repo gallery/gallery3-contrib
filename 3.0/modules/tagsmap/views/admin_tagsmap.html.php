@@ -6,7 +6,8 @@
   <h3>
     <?= t("Google Maps Settings") ?>
   </h3>
-  <br/><div>You may sign up for a Google Maps API key <a href="http://code.google.com/apis/maps/signup.html" target="_new">here</a>.</div><br/>
+  <br/><div>
+  <?=t("You may sign up for a Google APIs Console key"); ?> <a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key" target="_new">here</a>.</div><br/>
   <?= $googlemaps_form ?>
 </div>
 

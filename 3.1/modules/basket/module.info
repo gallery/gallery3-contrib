@@ -1,7 +1,0 @@
-name = "Shopping Basket"
-description = "Provides a simple shopping basket and checkout with paypal integration"
-version = 5
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:basket"
-discuss_url = "http://gallery.menalto.com/forum_module_basket"

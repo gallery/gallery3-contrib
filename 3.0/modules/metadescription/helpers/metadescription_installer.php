@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,14 @@ class metadescription_installer {
   static function deactivate() {
   // Clear the require tags message when metadescription is deactivated.
     site_status::clear("metadescription_needs_tag");
+  }
+
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("tag")) {
+      $messages["warn"][] = t("The MetaDescription module requires the Tags module.");
+    }
+    return $messages;
   }
 
   static function uninstall() {

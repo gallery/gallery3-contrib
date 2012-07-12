@@ -1,7 +1,0 @@
-name = "DisplayTags"
-description = "Display all tags for the current photo/album."
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:displaytags"
-discuss_url = "http://gallery.menalto.com/forum_module_displaytags"

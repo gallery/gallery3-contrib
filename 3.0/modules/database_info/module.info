@@ -1,7 +1,7 @@
 name = "Database Info"
 description = "View information about your Gallery 3 database on the admin dashboard."
 version = 1
-author_name = ""
-author_url = ""
+author_name = "rWatcher"
+author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:database_info"
-discuss_url = "http://gallery.menalto.com/forum_module_database_info"
+discuss_url = "http://gallery.menalto.com/node/95320"

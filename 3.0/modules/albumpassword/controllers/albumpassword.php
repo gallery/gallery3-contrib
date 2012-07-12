@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ class albumpassword_Controller extends Controller {
 
     // Display a success message and close the dialog.
     message::success(t("Password saved."));
-    print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
+    json::reply(array("result" => "success"));
   }
 
   public function logout() {
@@ -139,10 +139,10 @@ class albumpassword_Controller extends Controller {
       cookie::delete("g3_albumpassword_id");
       cookie::set("g3_albumpassword", $album_password);
       message::success(t("Password Accepted."));
-      print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
+      json::reply(array("result" => "success"));
     } else {
       message::error(t("Password Rejected."));
-      print "<html>\n<body>\n<script type=\"text/javascript\">\n$(\"#g-dialog\").dialog(\"close\");\nwindow.location.reload();\n</script>\n</body>\n</html>\n";
+      json::reply(array("result" => "success"));
     }
   }
 

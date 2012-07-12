@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,11 +36,27 @@ class tagsmap_installer {
     module::set_var("tagsmap", "googlemap_longitude", 134);
     module::set_var("tagsmap", "googlemap_zoom", 5);
     module::set_var("tagsmap", "googlemap_type", "G_NORMAL_MAP");
-    module::set_version("tagsmap", 2);
+    module::set_var("tagsmap", "restrict_maps", "0");
+    module::set_version("tagsmap", 3);
+  }
+
+  static function upgrade($version) {
+    if ($version == 2) {
+      module::set_var("tagsmap", "restrict_maps", "0");
+      module::set_version("tagsmap", 3);
+    }
   }
 
   static function deactivate() {
     site_status::clear("tagsmap_needs_tag");
+  }
+
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("tag")) {
+      $messages["warn"][] = t("The TagsMap module requires the Tags module.");
+    }
+    return $messages;
   }
 
   static function uninstall() {

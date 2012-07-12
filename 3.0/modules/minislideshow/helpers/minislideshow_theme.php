@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,6 @@
 
 class minislideshow_theme_Core {
   static function head($theme) {
-    if (!$theme->item()) {
-      return;
-    }
-
-    return new View("minislideshow_header_block.html");
+    return $theme->css("minislideshow_menu.css");
   }
 }
