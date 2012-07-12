@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,15 +41,23 @@ class minislideshow_event_Core {
     }
   }
 
+  static function pre_deactivate($data) {
+    if ($data->module == "rss") {
+      $data->messages["warn"][] = t("The MiniSlide Show module requires the RSS module.");
+    }
+  }
+
   static function album_menu($menu, $theme) {
     // Add an option to access the slideshow from the album view.
-    $menu
-      ->append(Menu::factory("link")
-               ->id("minislideshow")
-               ->label(t("View MiniSlide Show"))
-               ->url(url::site("minislideshow/showslideshow/" . $theme->item()->id))
-               ->css_class("g-dialog-link")
-               ->css_id("g-mini-slideshow-link"));
+    if ($theme->item()->children_count(array(array("type", "=", "photo")))) {
+      $menu
+        ->append(Menu::factory("link")
+                 ->id("minislideshow")
+                 ->label(t("View MiniSlide Show"))
+                 ->url(url::site("minislideshow/showslideshow/" . $theme->item()->id))
+                 ->css_class("g-dialog-link")
+                 ->css_id("g-mini-slideshow-link"));
+    }
   }
 
   static function photo_menu($menu, $theme) {

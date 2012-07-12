@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ class WebDAV_Controller extends Controller {
     $server->setBaseUri(url::site("webdav/gallery"));
     // $server->addPlugin($lock);
     $server->addPlugin($filter);
+    $server->addPlugin(new Sabre_DAV_Browser_GuessContentType());
 
     if ($this->_authenticate()) {
       $server->exec();

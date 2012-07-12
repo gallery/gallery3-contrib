@@ -1,7 +1,0 @@
-name = "Module Updates"
-description = "Compares your installed module version against the ones stored in the GitHub."
-version = 7
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:moduleupdates"
-discuss_url = "http://gallery.menalto.com/forum_module_moduleupdates"

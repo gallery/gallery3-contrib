@@ -1,6 +1,6 @@
 name = "Tag Albums"
 description = "Creates dynamic albums based on tags."
-version = 2
+version = 4
 author_name = "rWatcher"
 author_url = "http://codex.gallery2.org/User:RWatcher"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:tag_albums"

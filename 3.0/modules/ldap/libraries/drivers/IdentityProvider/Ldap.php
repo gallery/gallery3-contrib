@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,10 +17,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
+define("LDAP_GUEST_ID", 0);
+define("LDAP_EVERYBODY_ID", 0);
+define("LDAP_REGISTERED_USERS_ID", 99999);
+
 class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   static $_params;
   private static $_connection;
   private static $_guest_user;
+  private static $_everybody_group;
+  private static $_registered_users_group;
 
   /**
    * Initializes the LDAP Driver
@@ -29,6 +35,9 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    */
   public function __construct($params) {
     self::$_params = $params;
+    if (!in_array(self::$_params["everybody_group"], self::$_params["groups"]) || !in_array(self::$_params["registered_users_group"], self::$_params["groups"])) {
+      throw new Exception("Module ldap: Values of parameters \"everybody_group\" and \"registered_users_group\" must be listed in parameter \"groups\"!");
+    }
     self::$_connection = ldap_connect(self::$_params["url"]);
     ldap_set_option(self::$_connection, LDAP_OPT_PROTOCOL_VERSION, 3);
     if (self::$_params["bind_rdn"]) {
@@ -42,18 +51,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * @see IdentityProvider_Driver::guest.
    */
   public function guest() {
-    if (empty(self::$_guest_user)) {
-      self::$_guest_user = new Ldap_User();
-      self::$_guest_user->id = 0;
-      self::$_guest_user->name = "Guest";
-      self::$_guest_user->full_name = "Guest";
-      self::$_guest_user->guest = true;
-      self::$_guest_user->admin = false;
-      self::$_guest_user->locale = null;
-      self::$_guest_user->email = null;
-      self::$_guest_user->groups = array($this->everybody());
-    }
-    return self::$_guest_user;
+    return self::lookup_user_by_name(self::$_params["guest_user"]);
   }
 
   /**
@@ -86,8 +84,8 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * @see IdentityProvider_Driver::lookup_user.
    */
   public function lookup_user($id) {
-    if ($id == 0) {
-      return $this->guest();
+    if ($id == LDAP_GUEST_ID) {
+      return self::lookup_user_by_name(self::$_params["guest_user"]);
     }
     $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uidNumber=$id");
     $entries = ldap_get_entries(self::$_connection, $result);
@@ -108,6 +106,19 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
     $entries = ldap_get_entries(self::$_connection, $result);
     if ($entries["count"] > 0) {
       return new Ldap_User($entries[0]);
+    }
+    if ($name == self::$_params["guest_user"]) {
+      if (empty(self::$_guest_user)) {
+        self::$_guest_user = new Ldap_User();
+        self::$_guest_user->id = LDAP_GUEST_ID;
+        self::$_guest_user->name = "$name";
+        self::$_guest_user->full_name = "$name";
+        self::$_guest_user->guest = true;
+        self::$_guest_user->admin = false;
+        self::$_guest_user->locale = null;
+        self::$_guest_user->email = null;
+      }
+      return self::$_guest_user;
     }
     return null;
   }
@@ -137,13 +148,20 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * @see IdentityProvider_Driver::lookup_group.
    */
   public function lookup_group($id) {
+    if ($id = LDAP_EVERYBODY_GROUP_ID) {
+      return self::lookup_group_by_name(self::$_params["everybody_group"]);
+    } else if ($id = LDAP_REGISTERED_USERS_ID) {
+      return self::lookup_group_by_name(self::$_params["registered_users_group"]);
+    }
     $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "gidNumber=$id");
     $entry_id = ldap_first_entry(self::$_connection, $result);
 
     if ($entry_id !== false) {
       $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
       $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
-      return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
+      if (in_array($cn_entry, self::$_params["groups"])) {
+        return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
+      }
     }
     return null;
   }
@@ -160,7 +178,21 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
     if ($entry_id !== false) {
       $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
       $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
-      return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
+      if (in_array($cn_entry, self::$_params["groups"])) {
+        return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
+      }
+    }
+    if ($name == self::$_params["everybody_group"]) {
+      if (!self::$_everybody_group) {
+        self::$_everybody_group = new Ldap_Group(LDAP_EVERYBODY_ID, $name);
+      }
+      return self::$_everybody_group;
+    }
+    if ($name == self::$_params["registered_users_group"]) {
+      if (!self::$_registered_users_group) {
+        self::$_registered_users_group = new Ldap_Group(LDAP_REGISTERED_USERS_ID, $name);
+      }
+      return self::$_registered_users_group;
     }
     return null;
   }
@@ -171,7 +203,9 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   public function get_user_list($ids) {
     $users = array();
     foreach ($ids as $id) {
-      $users[] = $this->lookup_user($id);
+      if ($user = $this->lookup_user($id)) {
+        $users[] = $user;
+      }
     }
     return $users;
   }
@@ -182,21 +216,21 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   public function groups() {
     $groups = array();
     foreach (self::$_params["groups"] as $group_name) {
-      $groups[] = $this->lookup_group_by_name($group_name);
+      if ($group = $this->lookup_group_by_name($group_name)) {
+        $groups[] = $group;
+      }
     }
     return $groups;
   }
 
   static function groups_for($user) {
-    if ($user->guest) {
-      return $user->groups;
-    }
-
     $result = ldap_search(self::$_connection, self::$_params["group_domain"],
                           "(memberUid=$user->name)");
 
     $associated_groups = self::$_params["groups"];
     $groups = array();
+    $in_everybody_group = false;
+    $in_registered_users_group = false;
     for ($entry_id = ldap_first_entry(self::$_connection, $result);
          $entry_id != false;
          $entry_id = ldap_next_entry(self::$_connection, $entry_id)) {
@@ -205,6 +239,18 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
       if (in_array($group_name[0], $associated_groups)) {
         $groups[] = new Ldap_Group($group_id[0], $group_name[0]);
       }
+      if ($group_name[0] == self::$_params["everybody_group"]) {
+        $in_everybody_group = true;
+      }
+      if ($group_name[0] == self::$_params["registered_users_group"]) {
+        $in_registered_users_group = true;
+      }
+    }
+    if (!$in_everybody_group) {
+      $groups[] = self::lookup_group_by_name(self::$_params["everybody_group"]);
+    }
+    if (!$user->guest && !$in_registered_users_group) {
+      $groups[] = self::lookup_group_by_name(self::$_params["registered_users_group"]);
     }
     return $groups;
   }
@@ -235,7 +281,7 @@ class Ldap_User implements User_Definition {
     if (!empty($this->ldap_entry["displayname"][0])) {
       return $this->ldap_entry["displayname"][0];
     }
-    return $this->ldap_entry["cn"][0];
+    return $this->full_name;
   }
 
   public function __get($key) {
@@ -257,10 +303,20 @@ class Ldap_User implements User_Definition {
                       IdentityProvider_Ldap_Driver::$_params["admins"]);
 
     case "email":
-      return $this->ldap_entry["mail"][0];
+      if (isset($this->ldap_entry["mail"])) {
+        return $this->ldap_entry["mail"][0];
+      } else if ($this->admin) {
+        IdentityProvider_Ldap_Driver::$_params["admin_mail"];
+      } else {
+        return null;
+      }
 
     case "full_name":
-      return $this->ldap_entry["cn"][0];
+      if (isset($this->ldap_entry["cn"])) {
+        return $this->ldap_entry["cn"][0];
+      } else {
+        return $this->name;
+      }
 
     case "dn":
       return $this->ldap_entry["dn"];
@@ -280,6 +336,12 @@ class Ldap_User implements User_Definition {
   public function avatar_url($size=80, $default=null) {
     return sprintf("http://www.gravatar.com/avatar/%s.jpg?s=%d&r=pg%s",
                    md5($this->email), $size, $default ? "&d=" . urlencode($default) : "");
+  }
+
+  // Called e.g. by user_profile.php:_can_view_profile_pages()
+  // We don't have "empty" users, so just return true
+  public function loaded() {
+    return true;
   }
 }
 

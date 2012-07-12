@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2009 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ class google_analytics_event_Core {
   static function admin_menu($menu, $theme) {
     $menu->get("settings_menu")
       ->append(Menu::factory("link")
-               ->id("google_analytics_menu")
-               ->label(t("Google Analytics"))
-               ->url(url::site("admin/google_analytics")));
+			->id("google_analytics_menu")
+			->label(t("Google Analytics"))
+			->url(url::site("admin/google_analytics")));
   }
 }

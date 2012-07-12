@@ -34,10 +34,12 @@ $config["ldap"] = array(
   "driver"        => "ldap",
   "allow_updates" => false,
   "params"        => array(
+    "guest_user" => "Guest",
     "groups" => array("engineering", "everybody", "guest"),
     "everybody_group" => "guest",
     "registered_users_group" => "everybody",
     "admins" => array("alice", "bob"),
+    "admin_mail" => "unknown@unknown.com",
     "url" => "ldaps://ldap.mycompany.com/",
     "group_domain" => "ou=Posix,ou=Groups,dc=ymcompany,dc=com",
     "user_domain" => "ou=People,dc=MyCompany,dc=com",

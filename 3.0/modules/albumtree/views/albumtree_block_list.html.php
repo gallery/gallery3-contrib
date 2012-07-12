@@ -15,7 +15,7 @@ function makelist($album,$level){
 //print out the list item
 ?>
   <li>
-    <a href="<?= item::root()->url() ?><?= $album->relative_url_cache ?>"><?= str_repeat("&nbsp;&nbsp;", $level) ?><?= $album->title ?></a>
+    <a href="<?= item::root()->url() ?><?= $album->relative_url() ?>"><?= str_repeat("&nbsp;&nbsp;", $level) ?><?= html::purify($album->title) ?></a>
   </li>
 <?
   //recurse over the children, and print their list items as well

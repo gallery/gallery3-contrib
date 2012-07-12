@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,9 +65,13 @@ class Admin_Tag_Albums_Controller extends Admin_Controller {
     $tag_albums_tagsort_group->checklist("tag_index_scope")
       ->options($tag_index_scope_options);
 
-    $tag_index_filter_options["tag_index_filter"] = Array(t("Display filter links on \"All Tags\" album pages?"), module::get_var("tag_albums", "tag_index_filter"));
-    $tag_albums_tagsort_group->checklist("tag_index_filter")
-      ->options($tag_index_filter_options);
+    $tag_index_filter_top_options["tag_index_filter_top"] = Array(t("Display filter links on the top of \"All Tags\" album pages?"), module::get_var("tag_albums", "tag_index_filter_top"));
+    $tag_albums_tagsort_group->checklist("tag_index_filter_top")
+      ->options($tag_index_filter_top_options);
+
+    $tag_index_filter_bottom_options["tag_index_filter_bottom"] = Array(t("Display filter links on the bottom of \"All Tags\" album pages?"), module::get_var("tag_albums", "tag_index_filter_bottom"));
+    $tag_albums_tagsort_group->checklist("tag_index_filter_bottom")
+      ->options($tag_index_filter_bottom_options);
 
     $tag_albums_tagitemsort_group = $form->group("Tag_Albums_Tag_Item_Sort")->label(t("\"All Tags\" Sub-Album Preferences"));
     $tag_albums_tagitemsort_group->dropdown("subalbum_sort_by")
@@ -104,7 +108,8 @@ class Admin_Tag_Albums_Controller extends Admin_Controller {
       module::set_var("tag_albums", "tag_page_title", $form->Tag_Albums_Tag_Sort->tag_page_title->value);
       module::set_var("tag_albums", "tag_index", $form->Tag_Albums_Tag_Sort->tag_index->value);
       module::set_var("tag_albums", "tag_index_scope", count($form->Tag_Albums_Tag_Sort->tag_index_scope->value));
-      module::set_var("tag_albums", "tag_index_filter", count($form->Tag_Albums_Tag_Sort->tag_index_filter->value));
+      module::set_var("tag_albums", "tag_index_filter_top", count($form->Tag_Albums_Tag_Sort->tag_index_filter_top->value));
+      module::set_var("tag_albums", "tag_index_filter_bottom", count($form->Tag_Albums_Tag_Sort->tag_index_filter_bottom->value));
       module::set_var("tag_albums", "tag_sort_by", $form->Tag_Albums_Tag_Sort->tag_sort_by->value);
       module::set_var("tag_albums", "tag_sort_direction", $form->Tag_Albums_Tag_Sort->tag_sort_direction->value);
       module::set_var("tag_albums", "subalbum_sort_by", $form->Tag_Albums_Tag_Item_Sort->subalbum_sort_by->value);

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 class albumtree_installer {
   static function install() {
     module::set_var("albumtree", "style", "select");
-    module::set_version("albumtree", 2);
+    module::set_version("albumtree", 3);
   }
 
   static function upgrade($version) {

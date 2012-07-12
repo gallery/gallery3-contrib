@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,5 +24,44 @@ class embedlinks_event_Core {
                ->id("embedlinks")
                ->label(t("EmbedLinks"))
                ->url(url::site("admin/embedlinks")));
+  }
+
+  static function album_menu($menu, $theme) {
+    // Display embedlinks toolbar icon, if the corresponding setting is enabled.
+    if (module::get_var("embedlinks", "ToolbarLinks") == true) {
+      $menu
+        ->append(Menu::factory("link")
+                 ->id("embedlinks")
+                 ->label(t("Link to this page"))
+                 ->url(url::site("embedlinks/showlinks/" . $theme->item()->id))
+                 ->css_class("g-dialog-link")
+                 ->css_id("g-embedlinks-link"));
+    }
+  }
+
+  static function photo_menu($menu, $theme) {
+    // Display embedlinks toolbar icon, if the corresponding setting is enabled.
+    if (module::get_var("embedlinks", "ToolbarLinks") == true) {
+      $menu
+        ->append(Menu::factory("link")
+                 ->id("embedlinks")
+                 ->label(t("Link to this page"))
+                 ->url(url::site("embedlinks/showlinks/" . $theme->item()->id))
+                 ->css_class("g-dialog-link")
+                 ->css_id("g-embedlinks-link"));
+    }
+  }
+
+  static function movie_menu($menu, $theme) {
+    // Display embedlinks toolbar icon, if the corresponding setting is enabled.
+    if (module::get_var("embedlinks", "ToolbarLinks") == true) {
+      $menu
+        ->append(Menu::factory("link")
+                 ->id("embedlinks")
+                 ->label(t("Link to this page"))
+                 ->url(url::site("embedlinks/showlinks/" . $theme->item()->id))
+                 ->css_class("g-dialog-link")
+                 ->css_id("g-embedlinks-link"));
+    }
   }
 }

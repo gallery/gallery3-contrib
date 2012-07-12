@@ -1,7 +1,0 @@
-name = "ItemChecksum"
-description = "Display's a photo or video's MD5 and SHA-1 checksum."
-version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:itemchecksum"
-discuss_url = "http://gallery.menalto.com/forum_module_itemchecksum"
