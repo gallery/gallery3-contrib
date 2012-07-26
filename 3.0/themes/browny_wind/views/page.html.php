@@ -1,50 +1,44 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<?php header("X-Frame-Options: SAMEORIGIN"); ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" <?= $theme->html_attributes() ?> xml:lang="en" lang="en">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <? $theme->start_combining("script,css") ?>
     <title>
       <? if ($page_title): ?>
         <?= $page_title ?>
       <? else: ?>
         <? if ($theme->item()): ?>
-          <? if ($theme->item()->is_album()): ?>
-          <?= t("Browse Album :: %album_title", array("album_title" => $theme->item()->title)) ?>
-          <? elseif ($theme->item()->is_photo()): ?>
-          <?= t("Photo :: %photo_title", array("photo_title" => $theme->item()->title)) ?>
-          <? else: ?>
-          <?= t("Movie :: %movie_title", array("movie_title" => $theme->item()->title)) ?>
-          <? endif ?>
+          <?= html::purify($theme->item()->title) ?>
         <? elseif ($theme->tag()): ?>
-          <?= t("Browse Tag :: %tag_title", array("tag_title" => $theme->tag()->name)) ?>
+          <?= t("Photos tagged with %tag_title", array("tag_title" => $theme->tag()->name)) ?>
         <? else: /* Not an item, not a tag, no page_title specified.  Help! */ ?>
-          <?= t("Gallery") ?>
+          <?= html::purify(item::root()->title) ?>
         <? endif ?>
       <? endif ?>
     </title>
-    <link rel="shortcut icon" href="<?= url::file(module::get_var("gallery", "favicon_url")) ?>" type="image/x-icon" />
-    <?= $theme->css("yui/reset-fonts-grids.css") ?>
-    <?= $theme->css("superfish/css/superfish.css") ?>
-    <?= $theme->css("themeroller/ui.base.css") ?>
-    <?= $theme->css("screen.css") ?>
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
-          media="screen,print,projection" />
-    <![endif]-->
+    <link rel="shortcut icon"
+          href="<?= url::file(module::get_var("gallery", "favicon_url")) ?>"
+          type="image/x-icon" />
+    <link rel="apple-touch-icon-precomposed"
+          href="<?= url::file(module::get_var("gallery", "apple_touch_icon_url")) ?>" />
     <? if ($theme->page_type == "collection"): ?>
-      <? if ($thumb_proportion != 1): ?>
+    <? if (($thumb_proportion = $theme->thumb_proportion($theme->item())) != 1): ?>
         <? $new_width = round($thumb_proportion * 213) ?>
         <? $new_height = round($thumb_proportion * 240) ?>
-    <style type="text/css">
-    .g-view #g-content #g-album-grid .g-item {
-      width: <?= $new_width ?>px;
-      height: <?= $new_height ?>px;
-      /* <?= $thumb_proportion ?> */
-    }
-    </style>
+        <style type="text/css">
+        .g-view #g-content #g-album-grid .g-item {
+          width: <?= $new_width ?>px;
+          height: <?= $new_height ?>px;
+          /* <?= $thumb_proportion ?> */
+        }
+        </style>
       <? endif ?>
     <? endif ?>
+
+    <?= $theme->script("json2-min.js") ?>
     <?= $theme->script("jquery.js") ?>
     <?= $theme->script("jquery.form.js") ?>
     <?= $theme->script("jquery-ui.js") ?>
@@ -57,9 +51,8 @@
     <?= $theme->script("gallery.dialog.js") ?>
     <?= $theme->script("superfish/js/superfish.js") ?>
     <?= $theme->script("jquery.localscroll.js") ?>
-    <?= $theme->script("ui.init.js") ?>
 
-    <? /* These are page specific, but if we put them before $theme->head() they get combined */ ?>
+    <? /* These are page specific but they get combined */ ?>
     <? if ($theme->page_subtype == "photo"): ?>
     <?= $theme->script("jquery.scrollTo.js") ?>
     <?= $theme->script("gallery.show_full_size.js") ?>
@@ -68,6 +61,26 @@
     <? endif ?>
 
     <?= $theme->head() ?>
+
+    <? /* Theme specific CSS/JS goes last so that it can override module CSS/JS */ ?>
+    <?= $theme->script("ui.init.js") ?>
+    <?= $theme->css("yui/reset-fonts-grids.css") ?>
+    <?= $theme->css("superfish/css/superfish.css") ?>
+    <?= $theme->css("themeroller/ui.base.css") ?>
+    <?= $theme->css("screen.css") ?>
+    <? if (locales::is_rtl()): ?>
+    <?= $theme->css("screen-rtl.css") ?>
+    <? endif; ?>
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
+          media="screen,print,projection" />
+    <![endif]-->
+
+    <!-- LOOKING FOR YOUR CSS? It's all been combined into the link below -->
+    <?= $theme->get_combined("css") ?>
+
+    <!-- LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link below -->
+    <?= $theme->get_combined("script") ?>
   </head>
 
   <body <?= $theme->body_attributes() ?>>
@@ -80,7 +93,7 @@
           <?= $header_text ?>
           <? else: ?>
           <a id="g-logo" class="g-left" href="<?= item::root()->url() ?>" title="<?= t("go back to the Gallery home")->for_html_attr() ?>">
-            <img alt="<?= t("Gallery logo: Your photos on your web site")->for_html_attr() ?>" src="<?= $theme->url("images/logo.png") ?>" />
+            <img width="107" height="48" alt="<?= t("Gallery logo: Your photos on your web site")->for_html_attr() ?>" src="<?= url::file("lib/images/logo.png") ?>" />
           </a>
           <? endif ?>
           <?= $theme->user_menu() ?>
@@ -95,28 +108,16 @@
           <?= $theme->header_bottom() ?>
         </div>
 
-        <? if ($theme->item() && !empty($parents)): ?>
+        <? if (!empty($breadcrumbs)): ?>
         <ul class="g-breadcrumbs">
-          <? $i = 0 ?>
-          <? foreach ($parents as $parent): ?>
-          <li<? if ($i == 0) print " class=\"g-first\"" ?>>
-            <? // Adding ?show=<id> causes Gallery3 to display the page
-               // containing that photo.  For now, we just do it for
-               // the immediate parent so that when you go back up a
-               // level you're on the right page. ?>
-            <a href="<?= $parent->url($parent->id == $theme->item()->parent_id ?
-                     "show={$theme->item()->id}" : null) ?>">
-              <? // limit the title length to something reasonable (defaults to 15) ?>
-              <?= html::purify(text::limit_chars($parent->title,
-                    module::get_var("gallery", "visible_title_length"))) ?>
-            </a>
-          </li>
-          <? $i++ ?>
+          <? foreach ($breadcrumbs as $breadcrumb): ?>
+           <li class="<?= $breadcrumb->last ? "g-active" : "" ?>
+                      <?= $breadcrumb->first ? "g-first" : "" ?>">
+            <? if (!$breadcrumb->last): ?> <a href="<?= $breadcrumb->url ?>"><? endif ?>
+            <?= html::purify(text::limit_chars($breadcrumb->title, module::get_var("gallery", "visible_title_length"))) ?>
+            <? if (!$breadcrumb->last): ?></a><? endif ?>
+           </li>
           <? endforeach ?>
-          <li class="g-active<? if ($i == 0) print " g-first" ?>">
-            <?= html::purify(text::limit_chars($theme->item()->title,
-                  module::get_var("gallery", "visible_title_length"))) ?>
-          </li>
         </ul>
         <? endif ?>
       </div>
