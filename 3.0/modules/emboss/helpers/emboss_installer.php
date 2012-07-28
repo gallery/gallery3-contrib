@@ -45,9 +45,14 @@ class emboss_installer {
   }
 
   static function upgrade($version)
-   {
-     module::set_version('emboss',$verion=1);
-     log::info('emboss',"Upgrade to version $version / No action taken");
+  {
+    $db = Database::instance();
+    if($version==1)
+    {
+      $db->query("ALTER TABLE {emboss_mappings} ADD COLUMN `cur_rotation` int(9) default 0");
+      module::set_version('emboss',2);
+      log::info('emboss',"Upgraded to version 2 / Added Column cur_rotation");
+    }
    }
 
   static function activate()

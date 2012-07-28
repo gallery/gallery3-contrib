@@ -333,7 +333,7 @@ class emboss_Core {
 
     $has_changes=0;
     foreach ($images as $image) {
-      $overlay_id = emboss::determine_best_overlay($image,$overlays);
+      $overlay_id = emboss::determine_best_overlay($image->width,$image->height,$overlays);
       if($overlay_id < 0) {
         $n_none++;
       }
@@ -378,7 +378,7 @@ class emboss_Core {
     }
   }
 
-  static function determine_best_overlay($image,$overlays=NULL)
+  static function determine_best_overlay($W,$H,$overlays=NULL)
   {
     if(!$overlays) {
       $overlays = ORM::factory('emboss_overlay')->where('active','=',1)->find_all();
@@ -387,8 +387,8 @@ class emboss_Core {
     $method = module::get_var('emboss','method');
     $size   = 0.01 * module::get_var('emboss','size');
 
-    $W = $size * $image->width;
-    $H = $size * $image->height;
+    $W *= $size;
+    $H *= $size;
 
     $bestID = -1;
     $bestScore=0;
@@ -454,6 +454,55 @@ class emboss_Core {
 
     log::info('emboss','module uninstalled (database dropped/overlays removed)');
   }
-    
 
+  public function copy_orig_to_album($item,$delta)
+  {
+    $itempath = $item->file_path();
+    $origpath = str_replace(VARPATH.'albums/',VARPATH.'originals/',$itempath);
+
+    $q = db::build()
+      ->select('cur_rotation')
+      ->from('emboss_mappings')
+      ->where('image_id','=',$item->id)
+      ->execute();
+
+    $old_rot = $q[0]->cur_rotation;
+    $new_rot = ($old_rot + $delta + 360)%360;
+
+    db::build()
+      ->update('emboss_mappings')
+      ->where('image_id','=',$item->id)
+      ->set('cur_rotation',$new_rot)
+      ->execute();
+
+    @unlink($itempath);
+    @copy($origpath,$itempath);
+
+    Image::factory($itempath)
+      ->quality(module::get_var('gallery', 'image_quality'))
+      ->rotate($old_rot)
+      ->save($itempath);
+  } 
+
+  public function reemboss_rotation($item)
+  {
+    // no, the following isn't backwards
+    //  After rotation, width and height are swapped
+    //  The $item object is from before rotation
+    $new_overlay = emboss::determine_best_overlay($item->height,$item->width);
+
+    db::build()
+      ->update('emboss_mappings')
+      ->where('image_id','=',$item->id)
+      ->set('best_overlay_id',$new_overlay)
+      ->execute();
+
+    db::build()
+      ->update('emboss_mappings')
+      ->where('image_id','=',$item->id)
+      ->set('cur_overlay_id',-1)
+      ->execute();
+
+    emboss::check_for_dirty();
+  }
 }
