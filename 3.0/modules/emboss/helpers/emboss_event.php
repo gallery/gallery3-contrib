@@ -108,7 +108,7 @@ class emboss_event_Core {
 
     $q = ORM::factory('emboss_mapping');
     $q->image_id = $item->id;
-    $q->best_overlay_id = emboss::determine_best_overlay($item);
+    $q->best_overlay_id = emboss::determine_best_overlay($item->width,$item->height);
     $q->cur_overlay_id = -1;
     $q->cur_gravity = '';
     $q->cur_transparency = -1;
@@ -117,5 +117,14 @@ class emboss_event_Core {
     emboss::check_for_dirty();
   }
 
+  static function graphics_rotate($in,$out,$opts,$item)
+  {
+    emboss::copy_orig_to_album($item,$opts['degrees']);
+  }
+
+  static function graphics_rotate_completed($in,$out,$opts,$item)
+  {
+    emboss::reemboss_rotation($item);
+  }
 }
 
