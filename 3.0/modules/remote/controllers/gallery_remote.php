@@ -239,7 +239,7 @@ class Gallery_Remote_Controller extends Controller {
         }
 
       } catch (ORM_Validation_Exception $e) {
-        $reply->set('status_text', t('Failed to validate album with name %name.', array('name' => $name)));
+        $reply->set('status_text', t('Failed to save album with name %name.', array('name' => $name)));
         $reply->send(gallery_remote::CREATE_ALBUM_FAILED);
       }
     }
