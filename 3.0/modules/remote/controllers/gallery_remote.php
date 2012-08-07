@@ -239,7 +239,7 @@ class Gallery_Remote_Controller extends Controller {
         }
 
       } catch (ORM_Validation_Exception $e) {
-        $reply->set('status_text', t('Failed to save album with name %name.', array('name' => $name)));
+        $reply->set('status_text', t('Failed to validate album with name %name.', array('name' => $name)));
         $reply->send(gallery_remote::CREATE_ALBUM_FAILED);
       }
     }
@@ -357,7 +357,7 @@ class Gallery_Remote_Controller extends Controller {
           catch (ORM_Validation_Exception $e) {
             $validation = $e->validation;
             //print_r($validation->errors()); exit;
-            $reply->set('status_text', t('Failed to validate item %item: %errors', array('item' => $filename, 'errors' => str_replace("\n", ' ', print_r($validation->errors(),true))) ));
+            $reply->set('status_text', t('Failed to save item %item: %errors', array('item' => $filename, 'errors' => str_replace("\n", ' ', print_r($validation->errors(),true))) ));
             $reply->send(gallery_remote::UPLOAD_PHOTO_FAIL); //FIXME gallery remote ignores this return value and continues to wait
           }
           catch (Exception $e) {
