@@ -116,6 +116,10 @@ class Gallery_Remote_Controller extends Controller {
     return (false); // no match at all
   }
 
+  private static function decode($input) {
+    return html_entity_decode(trim($input), ENT_COMPAT, 'UTF-8');
+  }
+
   private function _login(&$input, &$reply) {
     $uname = trim($input->post('uname'));
     if (empty($uname)) {
@@ -145,7 +149,7 @@ class Gallery_Remote_Controller extends Controller {
     $thumb_size = module::get_var('gallery', 'thumb_size');
     $resize_size = module::get_var('gallery', 'resize_size');
 
-		//* <FIXME duplication>
+    //* <FIXME duplication>
     $count = 1;
     $item = &$root;
     $reply->set('album.name.'.$count, $item->id);
@@ -198,9 +202,9 @@ class Gallery_Remote_Controller extends Controller {
   
   private function _new_album(&$input, &$reply) {
     $album = trim($input->post('set_albumName'));
-    $name = trim($input->post('newAlbumName'));
-    $title = trim($input->post('newAlbumTitle'));
-    $desc = trim($input->post('newAlbumDesc'));
+    $name = $this->decode($input->post('newAlbumName'));
+    $title = $this->decode($input->post('newAlbumTitle'));
+    $desc = $this->decode($input->post('newAlbumDesc'));
 
     if($album=='0') $parent = item::root();
     else $parent = ORM::factory("item")->where("id", "=", $album)->find();
@@ -269,9 +273,9 @@ class Gallery_Remote_Controller extends Controller {
   
   private function _add_item(&$input, &$reply) {
     $album = trim($input->post('set_albumName'));
-    $userfilename = trim($input->post('userfile_name'));
-    $title = trim($input->post('caption'));
-    $forcefilename = trim($input->post('force_filename'));
+    $userfilename = $this->decode($input->post('userfile_name'));
+    $title = $this->decode($input->post('caption'));
+    $forcefilename = $this->decode($input->post('force_filename'));
     $autorotate = trim($input->post('auto_rotate'));
 
     if($album=='0') $parent = item::root();
@@ -288,13 +292,13 @@ class Gallery_Remote_Controller extends Controller {
       /* <any ugly idea is welcome here> */
       if($type=='')
       {
-				if(function_exists('getimagesize')) {
-				  $size = getimagesize($_FILES['userfile']['tmp_name']);
-				  $type = $size['mime'];
-				}
-				else if(function_exists('exif_imagetype') && function_exists('image_type_to_mime_type')) {
-					$type = image_type_to_mime_type(exif_imagetype($_FILES['userfile']['tmp_name']));
-				}
+        if(function_exists('getimagesize')) {
+          $size = getimagesize($_FILES['userfile']['tmp_name']);
+          $type = $size['mime'];
+        }
+        else if(function_exists('exif_imagetype') && function_exists('image_type_to_mime_type')) {
+          $type = image_type_to_mime_type(exif_imagetype($_FILES['userfile']['tmp_name']));
+        }
       }
       /* </any ugly idea is welcome here> */
       
@@ -313,6 +317,18 @@ class Gallery_Remote_Controller extends Controller {
       $pos = strpos($slug, '.');
       if($pos!==false)
         $slug = substr($slug, 0, $pos);
+
+      //*/ fix for a gallery remote bug...
+      $filename = str_replace('.JPG.jpeg', '.jpeg', $filename);
+      //*/
+
+      //*/ suddenly gallery fails because the uploaded(!) file (of cause!) doesn't contain a file extension
+      if(strpos($_FILES['userfile']['tmp_name'], '.')===false) {
+        $moveto = $_FILES['userfile']['tmp_name'].'.'.substr($type, strpos($type, '/')+1);
+        rename($_FILES['userfile']['tmp_name'], $moveto);
+        $_FILES['userfile']['tmp_name'] = $moveto;
+      }
+      //*/
 
       try {
         $item = ORM::factory('item');
@@ -337,7 +353,14 @@ class Gallery_Remote_Controller extends Controller {
             $reply->set('status_text', 'New item created successfuly.');
             $reply->send();
 
-          } catch (Exception $e) {
+          }
+          catch (ORM_Validation_Exception $e) {
+            $validation = $e->validation;
+            //print_r($validation->errors()); exit;
+            $reply->set('status_text', t('Failed to validate item %item: %errors', array('item' => $filename, 'errors' => str_replace("\n", ' ', print_r($validation->errors(),true))) ));
+            $reply->send(gallery_remote::UPLOAD_PHOTO_FAIL); //FIXME gallery remote ignores this return value and continues to wait
+          }
+          catch (Exception $e) {
             $reply->set('status_text', t('Failed to add item %item.', array('item' => $filename)));
             $reply->send(gallery_remote::UPLOAD_PHOTO_FAIL); //FIXME gallery remote ignores this return value and continues to wait
           }
