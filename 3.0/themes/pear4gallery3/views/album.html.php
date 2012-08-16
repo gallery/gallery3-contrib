@@ -56,5 +56,7 @@ $(window).load(function () {
     </div>
   </div>
 <? endif ?>
+<? if(($theme->item())): ?>
 <?= $theme->album_bottom() ?>
+<? endif ?>
 
