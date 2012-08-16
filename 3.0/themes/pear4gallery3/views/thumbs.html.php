@@ -6,7 +6,7 @@
   <? if ($i > 50) break; ?>
     <? $item_class = "g-photo"; ?>
     <? if ($child->is_album()): ?>
-      <? $item_class = "g-album\" onclick=\"window.location='".$child->url()."/'+getAlbumHash(skimimg);"; ?>
+      <? $item_class = "g-album\" onclick=\"window.location='".$child->url()."/'+getAlbumHash((typeof skimimg === 'undefined') ? 0 : skimimg);"; ?>
     <? endif ?>
     <? $img_class = "g-thumbnail"; ?>
     <? if ($child->is_photo()): ?>
@@ -55,9 +55,7 @@ endif;
 <? $item_no = ($page*$page_size)-$page_size; ?>
 <? foreach ($children as $i => $child): ?>
 <? if(!($child->is_album() || $child->is_movie())): ?>
-slideshowImages[<?= $item_no++ ?>] = (['<?= $child->resize_url() ?>', '<?= $child->id ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= htmlentities($child->title, ENT_QUOTES) ?>', '<? if (access::can("view_full", $child)) print "true" ?>', '<?= $child->url() ?>']);
-<? else: ?>
-<? $item_no++ ?>
+slideshowImages[<?= $item_no++ ?>] = (['<?= $child->resize_url() ?>', '<?= $child->id ?>', '<?= $child->resize_width ?>','<?= $child->resize_height ?>', '<?= htmlentities($child->title, ENT_QUOTES) ?>', '<? if (access::can("view_full", $child)) print "true" ?>', '<?= $child->url() ?>']);
 <? endif ?>
 <? endforeach ?>
 <?= $javaScript ?>
