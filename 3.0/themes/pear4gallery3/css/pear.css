@@ -161,12 +161,11 @@ outline: medium none;
 
 #mosaicTable {
     position: fixed;
-    top: 45px;
     bottom: 40px;
     overflow: hidden;
     left: 0;
     right: 0;
-    margin-top: 5px;
+    margin: 0;
 }
 
 #mosaicDetail {
@@ -181,6 +180,7 @@ outline: medium none;
     margin: 0 auto;
     width: 100%;
     position: absolute;
+    padding: 5px 0;
 }
 
 #mosaicImg {
@@ -213,8 +213,8 @@ outline: medium none;
 }
 #toggleSidebar {
   position: absolute;
-  z-index: 1;
-  top: 2px;
+  z-index: 101;
+  top: 1px;
   left: -18px;
 }
 
