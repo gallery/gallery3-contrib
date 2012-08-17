@@ -201,6 +201,7 @@ function mosaicResize() {
     myHeight = myHeight - $('#g-site-status').outerHeight(true) - $('#paginator').outerHeight(true);
     myHeight -= 138;
     $('#g-header').css('top', $('#gsNavBar').outerHeight(true) + $('#g-site-status').outerHeight(true) - 4);
+    $('#mosaicTable, #sidebarContainer').css('top', $('#gsNavBar').outerHeight(true) + $('#g-site-status').outerHeight(true) + $('#g-action-status').outerHeight(true) - 2 );
 
     if ($('#g-movie').length) {
         myHeight += 18;
