@@ -120,7 +120,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
       ->label(t("<a href=\"http://www.google.com/analytics/\">Google analytics</a> code."))
       ->value(module::get_var("th_pear4gallery3", "ga_code"));
     $group->input("skimm_lim")
-      ->label(t("Limit amount of thumbs in album skimming"))
+      ->label(t("Limit amount of thumbs in album skimming (set to 0 to disable)"))
       ->value(module::get_var("th_pear4gallery3", "skimm_lim", "50"));
 
     /* Advanced Options - Mosaic page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
