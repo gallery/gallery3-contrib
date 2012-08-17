@@ -85,7 +85,7 @@ h2 {
   position: fixed;
   top: 44px;
   width: 100%;
-  z-index: 50;
+  z-index: 150;
 }
 /*Menu*/
 .sf-menu li:hover, .sf-menu li.sfHover, .sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
