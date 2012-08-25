@@ -77,6 +77,7 @@ class Gallery_Remote_Controller extends Controller {
 
   private function _check_protocol(&$input, &$reply) {
     $version = trim($input->post('protocol_version'));
+    $reply->set('status_text', 'Minimum protocol version required: '.gallery_remote::GR_PROT_MAJ.'.'.gallery_remote::GR_PROT_MIN.' - your client\'s protocol version: '.$version);
     if($version=='') {
       $reply->send(gallery_remote::PROTO_VER_MISSING);
       return false;
@@ -85,13 +86,20 @@ class Gallery_Remote_Controller extends Controller {
       $reply->send(gallery_remote::PROTO_MAJ_FMT_INVAL);
       return false;
     }
-    else if($version<'2') {
+    else if($version<gallery_remote::GR_PROT_MAJ) {
       $reply->send(gallery_remote::PROTO_MAJ_VER_INVAL);
       return false;
     }
-    else if($version<'2.3') {
-      $reply->send(gallery_remote::PROTO_MIN_VER_INVAL);
+    else if(strpos($version, '.')===false) {
+      $reply->send(gallery_remote::PROTO_MAJ_FMT_INVAL);
       return false;
+    }
+    else {
+      $ver = explode('.', $version);
+      if($ver[0]==gallery_remote::GR_PROT_MAJ && $ver[1]<gallery_remote::GR_PROT_MIN) {
+        $reply->send(gallery_remote::PROTO_MIN_VER_INVAL);
+        return false;
+      }
     }
 
     return true;
@@ -357,7 +365,7 @@ class Gallery_Remote_Controller extends Controller {
           catch (ORM_Validation_Exception $e) {
             $validation = $e->validation;
             //print_r($validation->errors()); exit;
-            $reply->set('status_text', t('Failed to save item %item: %errors', array('item' => $filename, 'errors' => str_replace("\n", ' ', print_r($validation->errors(),true))) ));
+            $reply->set('status_text', t('Failed to validate item %item: %errors', array('item' => $filename, 'errors' => str_replace("\n", ' ', print_r($validation->errors(),true))) ));
             $reply->send(gallery_remote::UPLOAD_PHOTO_FAIL); //FIXME gallery remote ignores this return value and continues to wait
           }
           catch (Exception $e) {
