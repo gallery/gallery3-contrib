@@ -18,21 +18,24 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class social_share_theme_Core {
-  static function head($theme) {
-    if ($theme->item()) {
-		$item = $theme->item();
-		$url = $item->thumb_url(true);
-		$appId = module::get_var("social_share", "facebook_like_appId");
-		$adminId = module::get_var("social_share", "facebook_like_adminId");
-		$site_name = module::get_var("social_share", "facebook_like_site_name");
-		$selfURL = url::abs_current(true);
-	  return "\t<meta property=\"og:image\" content=\"$url\"/>
-			<meta property=\"og:title\" content=\"$item->title\"/>
-			<meta property=\"og:type\" content=\"article\"/>
-			<meta property=\"og:url\" content=\"$selfURL\"/>
-			<meta property=\"og:site_name\" content=\"$site_name\"/>
-			<meta property=\"fb:app_id\" content=\"$appId\"/>
-			<meta property=\"fb:admins\" content=\"$adminId\"/>";
-	}
-  }
+    static function head($theme) {
+        $impageonly = module::get_var("social_share", "general_impage_only");
+        $showblock = !$impageonly || ($impageonly && ($theme->page_subtype == "photo") || ($theme->page_subtype == "movie"));
+
+        if ($showblock && $theme->item()) {
+            $item = $theme->item();
+            $url = $item->thumb_url(true);
+            $appId = module::get_var("social_share", "facebook_like_appId");
+            $adminId = module::get_var("social_share", "facebook_like_adminId");
+            $site_name = module::get_var("social_share", "facebook_like_site_name");
+            $selfURL = url::abs_current(true);
+            return "\t<meta property=\"og:image\" content=\"$url\"/>
+                  <meta property=\"og:title\" content=\"$item->title\"/>
+                  <meta property=\"og:type\" content=\"article\"/>
+                  <meta property=\"og:url\" content=\"$selfURL\"/>
+                  <meta property=\"og:site_name\" content=\"$site_name\"/>
+                  <meta property=\"fb:app_id\" content=\"$appId\"/>
+                  <meta property=\"fb:admins\" content=\"$adminId\"/>";
+        }
+    }
 }
