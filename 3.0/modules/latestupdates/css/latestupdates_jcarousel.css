@@ -1,0 +1,95 @@
+#jCarouselLite .carousel  {
+  padding: 10px 0 0 0;
+  margin: 0 0 20px 10px;
+  position: relative;     
+}
+
+#jCarouselLite .digg {
+  position: absolute;
+  left: 610px;
+  top: 110px;
+}
+
+#jCarouselLite .main {
+  margin-left: 0px;
+}
+
+#jCarouselLite .demo em {
+  color: #FF3300;
+  font-weight: bold;
+  font-size: 60%;        
+  font-style: normal;
+}
+
+#jCarouselLite .carousel a.prev, #jCarouselLite .carousel a.next {
+  display: block;
+  float: left;
+  width: 30px;
+  height: 90px;
+  text-decoration: none;
+  background: url("../images/imageNavLeft.gif") left 60px no-repeat;
+}
+
+#jCarouselLite .carousel a.next {
+  background: url("../images/imageNavRight.gif") right 60px no-repeat;
+}
+
+#jCarouselLite .carousel a.next:hover {
+  background-image: url("../images/imageNavRightHover.gif");
+}
+
+#jCarouselLite .carousel a.prev:hover {
+  background-image: url("../images/imageNavLeftHover.gif");
+} 
+
+#jCarouselLite .carousel a:hover, #jCarouselLite .carousel a:active {
+  border: none;
+  outline: none;
+}               
+
+#jCarouselLite .carousel .jCarouselLite {
+  border: 1px solid black;
+  float: left;
+  background-color: #dfdfdf;
+
+  /* Needed for rendering without flicker */
+  position: relative;
+  visibility: hidden;
+  left: -5000px;
+}
+
+#jCarouselLite .carousel ul {
+  margin: 0;
+}
+
+#jCarouselLite .carousel li img, 
+#jCarouselLite .carousel li p {
+  background-color: #fff;
+  margin: 10px;
+}
+
+#jCarouselLite .widget img {
+  cursor: pointer;
+}
+
+#jCarouselLite .mid {
+  margin-left: 80px;
+  width: 400px;
+  height: 300px;
+}
+
+#jCarouselLite .vertical {
+  margin-left: 90px;
+}
+
+#jCarouselLite .vertical .jCarouselLite {   /* so that in IE 6, the carousel div doesnt expand to fill the space */
+  width: 90px;
+}
+
+#jCarouselLite .imageSlider li img, 
+#jCarouselLite .imageSlider li p, 
+#jCarouselLite .imageSliderExt li img , 
+#jCarouselLite .imageSliderExt li p {
+  width: 400px;
+  height: 300px;
+}

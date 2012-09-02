@@ -77,11 +77,14 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
 
     $group = $form->group("edit_theme")->label(t("General Settings"));
     $group->input("favicon")
-      ->label(t("URL (or relative path) to your favicon.ico"))
+      ->label(t("URL (relative path) to your favicon.ico"))
       ->value(module::get_var("gallery", "favicon_url"));
     $group->input("appletouchicon")
-      ->label(t("URL (or relative path) to your apple-touch-icon.png"))
+      ->label(t("URL (relative path) to apple-touch-icon.png"))
       ->value(module::get_var("gallery", "appletouchicon_url"));
+    $group->input("logo_path")
+      ->label(t("URL (relative path) to custom logo"))
+      ->value(module::get_var("th_pear4gallery3", "logo_path"));
     $group->input("slideshow_time")
       ->label(t("Slideshow timeout (in ms)"))
       ->value(module::get_var("th_pear4gallery3", "slideshow_time", "5000"));
@@ -89,6 +92,9 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     /* Advanced Options - General ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
     $group = $form->group("edit_theme_adv_main")->label(t("Advanced Options - General"));
+    $group->checkbox("hide_item_count")
+      ->label(t("Hide Album Count"))
+      ->checked(module::get_var("th_pear4gallery3", "hide_item_count"));
     $group->checkbox("hide_logo")
       ->label(t("Hide Bottom Pear Logo"))
       ->checked(module::get_var("th_pear4gallery3", "hide_logo"));
@@ -108,11 +114,14 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
       ->checked(module::get_var("th_pear4gallery3", "show_breadcrumbs"));
     $group->dropdown("sidebar_view")
       ->label(t("Show Sidebar mode"))
-      ->options(array("hidden" => t("Hidden (Default)"), "static" => t("Always visible"), "toggle" => t("Toggleable")))
+      ->options(array("hidden" => t("Hidden (Default)"), "static" => t("Always visible"), "toggle" => t("Hover"), "button" => t("Togglable via button")))
       ->selected(module::get_var("th_pear4gallery3", "sidebar_view"));
     $group->input("ga_code")
       ->label(t("<a href=\"http://www.google.com/analytics/\">Google analytics</a> code."))
       ->value(module::get_var("th_pear4gallery3", "ga_code"));
+    $group->input("skimm_lim")
+      ->label(t("Limit amount of thumbs in album skimming (set to 0 to disable)"))
+      ->value(module::get_var("th_pear4gallery3", "skimm_lim", "50"));
 
     /* Advanced Options - Mosaic page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -131,6 +140,13 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
           "scale" => t("Shrink and grow an element"),
           "none" => t("Disable effects (faster switching)")))
       ->selected(module::get_var("th_pear4gallery3", "mosaic_effect", "blind"));
+
+    /* Advanced Options - Photo settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+    $group = $form->group("edit_theme_adv_photo")->label(t("Advanced Options - Photo settings"));
+    $group->input("resize_size")
+      ->label(t("Photo resize size (800 is default)"))
+      ->value(module::get_var("gallery", "resize_size", "800"));
 /*
     $group->dropdown("photo_descmode")
       ->label(t("Description Display Mode"))
@@ -155,6 +171,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     $group->checkbox("build_resize")->label(t("Mark all Image Resizes for Rebuild"))->checked(false);
     $group->checkbox("build_thumbs")->label(t("Mark all Thumbnails for Rebuild"))->checked(false);
     $group->checkbox("build_exif")->label(t("Mark Exif Info data for reload"))->checked(false);
+    $iptccheck = module::is_active("iptc") and module::info("iptc");
     if ($iptccheck):
       $group->checkbox("build_iptc")->label(t("Mark IPTC Info data for reload"))->checked(false);
     endif;
@@ -208,6 +225,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
   }
 
   protected function legacy() {
+    module::clear_var("th_pear4gallery3", "hide_item_count");
     module::clear_var("th_pear4gallery3", "hide_logo");
     module::clear_var("th_pear4gallery3", "mainmenu_view");
     module::clear_var("th_pear4gallery3", "show_guest_menu");
@@ -216,6 +234,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
     module::clear_var("th_pear4gallery3", "show_sidebar");
     module::clear_var("th_pear4gallery3", "sidebar_view");
     module::clear_var("th_pear4gallery3", "ga_code");
+    module::clear_var("th_pear4gallery3", "skimm_lim");
     module::clear_var("th_pear4gallery3", "mosaic_effect");
   }
 
@@ -246,8 +265,10 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         message::success(t("Theme details are reset"));
       else:
         // * General Settings ****************************************************
+        $old_resize_size  = module::get_var("gallery", "resize_size", 800);
+        module::set_var("gallery", "resize_size", filter_var($form->edit_theme_adv_photo->resize_size->value, FILTER_VALIDATE_INT, array('options' => array('default' => 800, 'min_range' => 640))));
 
-        $resize_size  = 800;
+        $resize_size  = module::get_var("gallery", "resize_size", 800);
 
         $build_resize = $form->maintenance->build_resize->value;
         $build_thumbs = $form->maintenance->build_thumbs->value;
@@ -259,13 +280,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         endif;
         $purge_cache  = $form->maintenance->purge_cache->value;
 
-        $thumb_descmode_a = $form->edit_theme_adv_thumb->thumb_descmode_a->value;
-        $thumb_descmode = $form->edit_theme_adv_thumb->thumb_descmode->value;
-        $thumb_metamode = $form->edit_theme_adv_thumb->thumb_metamode->value;
-        $photo_descmode = $form->edit_theme_adv_photo->photo_descmode->value;
-        $photo_popupbox = $form->edit_theme_adv_photo->photo_popupbox->value;
-
-        if ($build_resize):
+        if ($build_resize || $old_resize_size != $resize_size):
           graphics::remove_rule("gallery", "resize", "gallery_graphics::resize");
           graphics::add_rule("gallery", "resize", "gallery_graphics::resize",
             array("width" => $resize_size, "height" => $resize_size, "master" => Image::AUTO), 100);
@@ -291,12 +306,13 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         module::set_var("gallery", "page_size", 50);
         module::set_var("gallery", "favicon_url", $form->edit_theme->favicon->value);
         module::set_var("gallery", "appletouchicon_url", $form->edit_theme->appletouchicon->value);
-
         $this->save_item_state("logo_path", $form->edit_theme->logo_path->value, $form->edit_theme->logo_path->value);
+
         $this->save_item_state("slideshow_time", $form->edit_theme->slideshow_time->value != 5000, filter_var($form->edit_theme->slideshow_time->value, FILTER_VALIDATE_INT, array('options' => array('default' => 5000, 'min_range' => 1000))));
 
         // * Advanced Options - General ******************************************
 
+        $this->save_item_state("hide_item_count",       $form->edit_theme_adv_main->hide_item_count->value, TRUE);
         $this->save_item_state("hide_logo",       $form->edit_theme_adv_main->hide_logo->value, TRUE);
         $this->save_item_state("mainmenu_view",         $form->edit_theme_adv_main->mainmenu_view->value != "grid", $form->edit_theme_adv_main->mainmenu_view->value);
         $this->save_item_state("show_guest_menu",$form->edit_theme_adv_main->show_guest_menu->value, TRUE);
@@ -304,6 +320,7 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
         $this->save_item_state("show_breadcrumbs",$form->edit_theme_adv_main->show_breadcrumbs->value, TRUE);
         $this->save_item_state("sidebar_view",$form->edit_theme_adv_main->sidebar_view->value != "hidden", $form->edit_theme_adv_main->sidebar_view->value);
         $this->save_item_state("ga_code",            $form->edit_theme_adv_main->ga_code->value, $form->edit_theme_adv_main->ga_code->value);
+        $this->save_item_state("skimm_lim",            $form->edit_theme_adv_main->skimm_lim->value != 50, $form->edit_theme_adv_main->skimm_lim->value);
 
         // * Advanced Options - Photo page ***************************************
         $this->save_item_state("mosaic_effect",   $form->edit_theme_adv_mosaic->mosaic_effect->value != "blind", $form->edit_theme_adv_mosaic->mosaic_effect->value);
@@ -315,10 +332,6 @@ class Admin_Theme_Options_Controller extends Admin_Controller {
 */
 
         module::event("theme_edit_form_completed", $form);
-
-        if ($_priorratio != $thumb_ratio):
-          message::warning(t("Thumb aspect ratio has been changed. Consider rebuilding thumbs if needed."));
-        endif;
 
         message::success(t("Updated theme details"));
 

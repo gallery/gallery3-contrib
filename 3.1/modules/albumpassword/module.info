@@ -1,7 +1,0 @@
-name = "Album Password"
-description = "Restrict access to individual albums."
-version = 3
-author_name = "rWatcher"
-author_url = "http://codex.gallery2.org/User:RWatcher"
-info_url = "http://codex.gallery2.org/Gallery3:Modules:albumpassword"
-discuss_url = "http://gallery.menalto.com/node/98856"

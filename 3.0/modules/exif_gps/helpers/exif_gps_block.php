@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,18 @@ class exif_gps_block_Core {
   static function get($block_id, $theme) {
     $block = "";
 
+    // Make sure the user can view maps before displaying any sidebars.
+    if ((module::get_var("exif_gps", "restrict_maps") == true) && (identity::active_user()->guest)) {
+      return;
+    }
+
     switch ($block_id) {
     case "exif_gps_maps":
       // Display links to a map of the current album and
       //  a map of the current user.
       if ($theme->item()) {
         $album_id = "";
+        $user_name = "";
         $item = $theme->item;
         if ($item->is_album()) {
           $album_id = $item->id;
@@ -39,20 +45,22 @@ class exif_gps_block_Core {
           $album_id = $item->parent_id;
         }
         $curr_user = ORM::factory("user")->where("id", "=", $item->owner_id)->find_all();
-        $user_name = $curr_user[0]->full_name;
+        if (count($curr_user) > 0) {
+          $user_name = $curr_user[0]->full_name;
+        }
 
         // Make sure there are actually map-able items to display.
         $album_items_count = ORM::factory("item", $album_id)
                ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
                ->viewable()
                ->order_by("exif_coordinates.latitude", "ASC")
-               ->descendants_count();
+               ->descendants_count(1);
         $user_items_count = ORM::factory("item")
                ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
                ->where("items.owner_id", "=", $item->owner_id)
                ->viewable()
                ->order_by("exif_coordinates.latitude", "ASC")
-               ->count_all();
+               ->count_all(1);
 
         if (($album_items_count > 0) || ($user_items_count > 0)) {
           $block = new Block();
@@ -115,6 +123,7 @@ class exif_gps_block_Core {
           if (module::get_var("exif_gps", "sidebar_maptype") == 1) $block->content->sidebar_map_type = "SATELLITE";
           if (module::get_var("exif_gps", "sidebar_maptype") == 2) $block->content->sidebar_map_type = "HYBRID";
           if (module::get_var("exif_gps", "sidebar_maptype") == 3) $block->content->sidebar_map_type = "TERRAIN";
+          $block->content->items_count = 1;
         } else {
           $block->content = new View("exif_gps_static_sidebar.html");
           if (module::get_var("exif_gps", "sidebar_maptype") == 0) $block->content->sidebar_map_type = "roadmap";
@@ -126,21 +135,24 @@ class exif_gps_block_Core {
         $block->content->longitude = $longitude;
       } elseif (($theme->item()) && ($theme->item->is_album() && (module::get_var("exif_gps", "sidebar_mapformat") == 1))) {
         // If coordinates were NOT found, and this is an album with a dynamic map, then map the contents of the album.
-        $items = ORM::factory("item", $theme->item->id)
+        $items_count = ORM::factory("item", $theme->item->id)
                  ->join("exif_coordinates", "items.id", "exif_coordinates.item_id")
                  ->viewable()
                  ->order_by("exif_coordinates.latitude", "ASC")
-                 ->descendants();
-        if (count($items) > 0) {
+                 ->descendants_count();
+        if ($items_count > 0) {
           $block = new Block();
           $block->css_id = "g-exif-gps-location";
           $block->title = t("Location");
-          $block->content = new View("exif_gps_dynamic2_sidebar.html");
+          $block->content = new View("exif_gps_dynamic_sidebar.html");
           if (module::get_var("exif_gps", "sidebar_maptype") == 0) $block->content->sidebar_map_type = "ROADMAP";
           if (module::get_var("exif_gps", "sidebar_maptype") == 1) $block->content->sidebar_map_type = "SATELLITE";
           if (module::get_var("exif_gps", "sidebar_maptype") == 2) $block->content->sidebar_map_type = "HYBRID";
           if (module::get_var("exif_gps", "sidebar_maptype") == 3) $block->content->sidebar_map_type = "TERRAIN";
-          $block->content->items = $items;
+          $block->content->album_id = $theme->item->id;
+          $block->content->latitude = 0;
+          $block->content->longitude = 0;
+          $block->content->items_count = $items_count;
           $block->content->google_map_key = module::get_var("exif_gps", "googlemap_api_key");
         }
       }

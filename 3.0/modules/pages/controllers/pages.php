@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,15 @@ class Pages_Controller extends Controller {
       throw new Kohana_404_Exception();
     }
 
+    // Set up breadcrumbs.
+    $breadcrumbs = array();
+    $root = item::root();
+    $breadcrumbs[] = Breadcrumb::instance($root->title, $root->url())->set_first();
+    $breadcrumbs[] = Breadcrumb::instance(t($existing_page[0]->title), url::site("pages/show/{$page_name}"))->set_last();
+
     // Display the page.
     $template = new Theme_View("page.html", "other", "Pages");
+    $template->set_global(array("breadcrumbs" => $breadcrumbs));
     $template->page_title = t("Gallery :: ") . t($existing_page[0]->title);
     $template->content = new View("pages_display.html");
     $template->content->title = $existing_page[0]->title;

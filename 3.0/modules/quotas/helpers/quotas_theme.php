@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,11 +23,11 @@ class quotas_theme_Core {
     if (!identity::active_user()->guest) {
       $record = ORM::factory("users_space_usage")->where("owner_id", "=", identity::active_user()->id)->find();
       if ($record->get_usage_limit() == 0) {
-        print t("You are using %usage MB", array("usage" => number_format($record->total_usage_mb(), 2)));
+        print t("You are using %usage", array("usage" => $record->total_usage_string()));
       } else {
-        print t("You are using %usage of your %limit MB limit (%percentage%)", 
-                array("usage" => number_format($record->current_usage_mb(), 2), 
-                "limit" => number_format($record->get_usage_limit_mb(), 2), 
+        print t("You are using %usage of your %limit limit (%percentage%)", 
+                array("usage" => $record->current_usage_string(), 
+                "limit" => $record->get_usage_limit_string(), 
                 "percentage" => number_format((($record->current_usage() / $record->get_usage_limit()) * 100), 2)));
       }
     }
