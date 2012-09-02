@@ -46,7 +46,6 @@ if (module::get_var("social_share", "facebook_like_send")) {
 <?php if($codeType == 'xfbml'){?>
 
 <fb:like href="<?= $selfURL; ?>" send="<?= $send ?>" width="180" show_faces="<?= $show_faces ?>" layout="<?= $layout?>" action="<?= $layout ?>"></fb:like>
-<fb:like href="http://test.com" send="true"  width="180" show_faces="false"></fb:like>
 
 <?php } else { ?>
 
