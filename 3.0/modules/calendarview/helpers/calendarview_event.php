@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,5 +68,32 @@ class calendarview_event_Core {
     } else {
       site_status::clear("calendarview_needs_exif");
     }
+  }
+
+  static function show_user_profile($data) {
+    // Display a few months on the user profile screen.
+    $v = new View("user_profile_calendarview.html");
+    $v->user_id = $data->user->id;
+
+    // Figure out what month the users newest photo was taken it.
+    //   Make that the last month to display.
+    //   If a user hasn't uploaded anything, make the current month
+    //   the last to be displayed.
+    $latest_photo = ORM::factory("item")
+        ->viewable()
+        ->where("type", "!=", "album")
+        ->where("captured", "!=", "")
+        ->where("owner_id", "=", $data->user->id)
+        ->order_by("captured", "DESC")
+        ->find_all(1);
+    if (count($latest_photo) > 0) {
+      $v->user_year = date('Y', $latest_photo[0]->captured);
+      $v->user_month = date('n', $latest_photo[0]->captured);
+    } else {
+      $v->user_year = date('Y');
+      $v->user_month = date('n');
+    }
+
+    $data->content[] = (object) array("title" => t("User calendar"), "view" => $v);
   }
 }

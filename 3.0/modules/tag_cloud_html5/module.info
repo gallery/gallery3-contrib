@@ -1,0 +1,7 @@
+name = "Tag Cloud HTML5"
+description = "HTML5-compliant tag cloud.  Functions as non-Flash replacements for both 'tag_cloud' and 'tag_cloud_page' modules, with some extra features added."
+version = 4
+author_name = "Shad Laws"
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:tag_cloud_html5"
+discuss_url = "http://gallery.menalto.com/node/106774"

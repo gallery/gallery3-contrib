@@ -1,14 +1,35 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
+<?
+if (isset($_GET['ajax'])) {
+  if ($theme->page_subtype == "search") {
+    $v = new View("thumbs.html");
+    $v->children = $content->items;
+    print $v;
+    die(0);
+  }
+  echo new View("thumbs.html");
+  die(0);
+}
+?>
 <? if ($theme->page_subtype == "photo"):
   foreach (end($parents)->viewable()->children() as $i => $child)
     if(!($child->is_album() || $child->is_movie()))
-      if($child->url() == $_SERVER['REQUEST_URI']):
-        $page_size = module::get_var("gallery","page_size"); ?>
-<html><body>
-  <script type="text/javascript">window.location = '<?= end($parents)->url() . "?page=".((int)($i/$page_size)+1)."#img=".$i % $page_size ."&viewMode=detail&redirected=true"?>';</script>
-</body></html>
-        <? die(0) ?>
-      <? endif ?>
+      if($child->url() == $_SERVER['REQUEST_URI']) {
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" <?= $theme->html_attributes() ?> xml:lang="en" lang="en">
+  <head>
+    <title>Photo page</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="refresh" content="1;url=<?=end($parents)->url()?>#img=<?=$i?>&amp;viewMode=detail&amp;redirected=true" />
+    <?= $theme->head() ?>
+  </head>
+  <body>Page moved <a href="<?=end($parents)->url()?>#img=<?=$i?>&amp;viewMode=detail&amp;redirected=true">here</a>.</body>
+</html>
+<?
+        die(0);
+      }?>
 <? endif ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -49,9 +70,11 @@
     <? endif ?>
 
     <?= $theme->script("json2-min.js") ?>
-    <?= $theme->script("jquery-1.6.2.min.js") ?>
+    <?= $theme->script("jquery-1.7.1.min.js") ?>
     <?= $theme->script("jquery.form.js") ?>
-    <?= $theme->script("jquery-ui-1.8.16.custom.min.js") ?>
+    <?= $theme->script("jquery-ui-1.8.17.custom.min.js") ?>
+    <?= $theme->script("jquery.endless-scroll.js") ?>
+    <?= $theme->script("jquery.getscrollbarwidth.js") ?>
     <?= $theme->script("gallery.common.js") ?>
     <? /* MSG_CANCEL is required by gallery.dialog.js */ ?>
     <script type="text/javascript">
@@ -78,21 +101,20 @@
     <?= $theme->script("imageflow.packed.js") ?>
     <?= $theme->css("yui/reset-fonts-grids.css") ?>
     <?= $theme->css("superfish/css/superfish.css") ?>
-    <?= $theme->css("dark-hive/jquery.ui.all.css") ?>
+    <?= $theme->css("ui-pear-theme/jquery-ui-1.8.17.custom.css") ?>
     <?= $theme->css("screen.css") ?>
     <?= $theme->css("imageflow.packed.css") ?>
-    <!--[if lte IE 8]>
-    <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"
-          media="screen,print,projection" />
-    <![endif]-->
+    <?= $theme->css("pear.css") ?>
 
     <!-- LOOKING FOR YOUR JAVASCRIPT? It's all been combined into the link below -->
     <?= $theme->get_combined("script") ?>
 
     <!-- LOOKING FOR YOUR CSS? It's all been combined into the link below -->
     <?= $theme->get_combined("css") ?>
-		<link rel="stylesheet" type="text/css" href="<?= $theme->url("css/pear.css") ?>" media="screen,print,projection" />
-		<link rel="stylesheet" type="text/css" href="<?= $theme->url("icons/pear.css") ?>" media="screen,print,projection" />
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" type="text/css" href="<?= $theme->url("css/fix-ie.css") ?>"/>
+    <![endif]-->
+
 		<script type="text/javascript" src="<?= $theme->url("js/pear.js"); ?>"></script>
 		<!-- Google analytics code -->
 		<script type="text/javascript">
@@ -116,25 +138,40 @@
 <? if (($theme->page_subtype == "login") or ($theme->page_subtype == "reauthenticate")): ?>
 	<?= $content ?>
 <? else: /*not login | reauthenticate */ ?>
-<div class="pear">
 
 <div id="gsNavBar" class="gcBorder1">
-<? if ($theme->item()): ?>
     <div class="lNavBar">
     <? if(!empty($parents)): ?>
       <? foreach ($parents as $parent): ?>
       <? if (!module::get_var("th_pear4gallery3", "show_breadcrumbs")) $parent = end($parents); ?>
-        <button class="large push large-with-push" onclick="window.location='<?= $parent->url($parent->id == $theme->item()->parent_id ? "show={$theme->item()->id}" : null) ?>' + '#viewMode=' + viewMode;"> <div class="outer"> <div class="label"> <?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></div> </div></button>
+        <button class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all" onclick="window.location='<?= $parent->url() ?>' + getAlbumHash(0);"> <span class="ui-button-text"><?= html::purify(text::limit_chars($parent->title, module::get_var("gallery", "visible_title_length"))) ?></span> </button>
       <? if (!module::get_var("th_pear4gallery3", "show_breadcrumbs")) break; ?>
       <? endforeach ?>
+    <? elseif (!($theme->item() && $theme->item()->id == item::root()->id)): ?>
+        <button class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all" onclick="window.location='<?= item::root()->url() ?>' + getAlbumHash(0);"> <span class="ui-button-text"><?= html::purify(text::limit_chars(item::root()->title, module::get_var("gallery", "visible_title_length"))) ?></span> </button>
     <? endif ?>
     </div>
+<? if ($theme->item()): ?>
     <div class="pearTitle" title="<?= $theme->item()->description ?>"> <?= html::purify(text::limit_chars($theme->item()->title, 40)) ?> &nbsp;
+      <? if (!module::get_var("th_pear4gallery3", "hide_item_count")): ?>
         <span class="count">(<?= count($theme->item()->children()) ?>)</span>
+      <? endif ?>
+    </div>
+<? else: ?>
+    <div class="pearTitle">
+      <? if ($page_title): ?>
+          <?= html::purify(text::limit_chars($page_title, 40)) ?> &nbsp;
+      <? else: ?>
+        <? if ($theme->tag()): ?>
+          <?= t("Photos tagged with %tag_title", array("tag_title" => $theme->tag()->name)) ?>
+        <? else: /* Not an item, not a tag, no page_title specified.  Help! */ ?>
+          <?= html::purify(text::limit_chars(item::root()->title, 40)) ?> &nbsp;
+        <? endif ?>
+      <? endif ?>
     </div>
 <? endif ?>
     <div class="rNavBar">
-        <button class="large push large-with-push" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});//);toggleSidebar('ContentAlbum','sidebar'); return false;"> <div class="outer"> <div class="label" id="sidebarButton">Show Options</div></div></button>
+        <button class="ui-button ui-button-text-only ui-widget ui-state-default ui-corner-all" onclick="$('#g-header').slideToggle('normal', function(){$('#g-header').is(':hidden') ? $('#sidebarButton').text('Show Options') : $('#sidebarButton').text('Hide Options')});"> <span class="ui-button-text">Show Options</span> </button>
     </div>
 </div>
 <div id="g-header" class="ui-helper-clearfix" style="display: none;">
@@ -151,12 +188,12 @@
 		<?= $theme->header_bottom() ?>
 	</div>
 </div>
+<?= $theme->messages() ?>
 
 <?= $content ?>
 
 <div id="footerWrapper">
 	<div title="Change size of photos" id="sliderView" class="sliderView">
-		<div class="sliderRightCap"></div>
 		<div title="View at smallest photo size" class="smaller" onclick="$('#imgSlider').slider('value', 0);"></div>
 		<div title="View at largest photo size" class="larger" onclick="$('#imgSlider').slider('value', 250);"></div>
 		<div id="imgSlider" class="track">
@@ -187,10 +224,16 @@
 		</div>
         <div class="clear"></div>
 <? endif ?>
-	</div>
-    <? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?><button id="logoButton"></button><? endif ?>
+  </div>
+    <? if (!module::get_var("th_pear4gallery3", "hide_logo")): ?>
+    <? if (module::get_var("gallery", "logo_path")) {
+      $logo_url = url::file(module::get_var("th_pear4gallery3", "logo_path"));
+    } else {
+      $logo_url = $theme->url("icons/pear_logo_sml.png");
+    } ?>
+      <button id="logoButton" style="background-image: url('<?= $logo_url ?>') !important"></button>
+    <? endif ?>
 </div>
-</div> <? /*class="pear"*/ ?>
 <? endif ?>
   </body>
 </html>

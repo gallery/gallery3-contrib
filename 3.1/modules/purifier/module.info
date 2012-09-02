@@ -1,7 +1,0 @@
-name = "HTML Purifier"
-description = "Enable XSS protection using HTMLPurifier"
-version = 2
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:purifier"
-discuss_url = "http://gallery.menalto.com/forum_module_purifier"

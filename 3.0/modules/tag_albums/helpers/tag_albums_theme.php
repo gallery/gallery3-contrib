@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,5 +30,23 @@ class tag_albums_theme_Core {
       }
     }
     return;
+  }
+
+  static function dynamic_top($theme) {
+    // If this page is the "all tags" dynamic page, display filter link text.
+    if (isset($theme->content->filter_text) && module::get_var("tag_albums", "tag_index_filter_top", "0")) {
+      $view = new View("tag_albums_filter.html");
+      $view->filter_text = $theme->content->filter_text;
+      return $view;
+    }
+  }
+
+  static function dynamic_bottom($theme) {
+    // If this page is the "all tags" dynamic page, display filter link text.
+    if (isset($theme->content->filter_text) && module::get_var("tag_albums", "tag_index_filter_bottom", "0")) {
+      $view = new View("tag_albums_filter.html");
+      $view->filter_text = $theme->content->filter_text;
+      return $view;
+    }
   }
 }

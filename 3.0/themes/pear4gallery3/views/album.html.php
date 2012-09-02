@@ -1,123 +1,62 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
 <? /* Placeholder for infromation in mosaic view. */ ?>
 <script type="text/javascript">
-$(function() {
-    slideshowTimeout = <?=module::get_var("th_pear4gallery3", "slideshow_time", "5000")?>;
-    mosaicEffect = "<?
-$mosaic_effect = module::get_var("th_pear4gallery3", "mosaic_effect", "blind");
-if ($mosaic_effect == "none") print "";
-else print $mosaic_effect;
- ?>";
-    sidebarInit('<?=module::get_var("th_pear4gallery3", "sidebar_view")?>');
-	bodyLoad( "<?=module::get_var("th_pear4gallery3", "mainmenu_view")?>",
-	"<?=module::get_var("th_pear4gallery3", "background")?>");
- });
+var slideshowImages = new Array();
+var thumbImages = new Array();
+<?
+$defaultView = module::get_var("th_pear4gallery3", "mainmenu_view", "grid");
+try {
+  $result = ORM::factory("pear_album_view")->where("album_id", "=", $item->id)->find();
+  if($result->loaded()) {
+    $defaultView = $result->view_mode;
+  }
+} catch (Exception $e) {
+  unset($e);
+}
+?>
+$(window).load(function () {
+  pearInit( {
+    sitePath: "<?= url::site("/") ?>",
+    defaultView: "<?=$defaultView?>",
+    defaultBg: "<?=module::get_var("th_pear4gallery3", "background", "black")?>",
+    mosaicEffect: "<? $mosaic_effect = module::get_var("th_pear4gallery3", "mosaic_effect", "blind"); if ($mosaic_effect == "none") print ""; else print $mosaic_effect; ?>",
+    slideshowTimeout: <?=module::get_var("th_pear4gallery3", "slideshow_time", "5000")?> });
+  sidebarInit('<?=module::get_var("th_pear4gallery3", "sidebar_view")?>');
+});
 </script>
-<table id="mosaicTable" style="width: 100%; margin: -2px -2px 0px 0px; overflow: hidden">
-<tr>
-<td  class="left" style="	width: 65%; vertical-align: middle; padding: 0px;">
-<div id="gsImageView" class="gbBlock gcBorder1" style="padding: 0px !important; text-align: center;">
-	<div style="padding: 0px; width: 0px; margin-top: 0px; opacity: 0.999999; display: none;" id="mosaicDetail">
-		<div id="photo"> <img id="mosaicImg" src="" alt="Main image"/> </div>
-		<div class="gsContentDetail" style="width: 100%;">
-			<div class="gbBlock gcBorder1" id="imageTitle"> </div>
-		</div>
-	</div>
-</div>
-</td>
-<td class="right" style="margin: 0px; padding: 0px; width: 35%; vertical-align: top;">
-<div class="gallery-album" id="mosaicGridContainer" style="display: block;">
-<script type="text/javascript">
-  var slideshowImages = new Array();
-</script>
-<? if (count($children)): ?>
-  <? foreach ($children as $i => $child): ?>
-    <? $item_class = "g-photo"; ?>
-    <? if ($child->is_album()): ?>
-      <? $item_class = "g-album\" onclick=\"window.location='".$child->url()."/'+getAlbumHash(skimimg);"; ?>
-    <? endif ?>
-    <? $img_class = "g-thumbnail"; ?>
-    <? if ($child->is_photo()): ?>
-      <? $img_class = "g-thumbnail p-photo"; ?>
-    <? endif ?>
-    <? if ($child->is_movie()): ?>
-      <a href="<?= $child->url() ?>">
-    <? endif ?>
-  <div id="g-thumb-id-<?= $child->id ?>" class="g-item gallery-thumb <?= $item_class ?>" title="<?= $child->description?>">
-    <?= $theme->thumb_top($child) ?>
-    <? if ($child->is_album() || $child->is_movie()): ?>
-		<div class="gallery-thumb-round"></div>
-    <? endif ?>
-<?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
-      <? if ($child->has_thumb()): ?>
-		<?= $child->thumb_img(array("class" => $img_class, "id" => "thumb_$child->id", "style" => "width: 200px; height 200px;")) ?>
-      <? else: ?>
-        <span style="display: block; width: 200px; height: 200px;"></span>
-      <? endif ?>
-    <? if ($child->is_movie()): ?>
-      <span class="p-video"></span>
-    <? endif ?>
-<?// Begin skimming
-if($child->is_album()):
-	$granchildren = $child->viewable()->children();
-	$offset = 0;
-	$step = round(200/min(count($granchildren),50));
-	foreach ($granchildren as $i => $granchild):?>
-      <? if(++$i > 50) break; ?>
-      <? if ($granchild->has_thumb()): ?>
-      <?= $granchild->thumb_img(array("style" => "display: none;")) ?>
-	<div class="skimm_div" style="height: 200px; width: <?=$step?>px; left: <?=$offset?>px; top: 0px;" onmouseover="$('#thumb_<?=$child->id?>').attr('src', '<?=$granchild->thumb_url()?>');skimimg=<?=$i-1?>;" id="area_<?=$granchild->id?>"></div>
-      <? endif ?>
-<?		$offset+=$step;
-endforeach;
-endif;
-// End skimming // ?>
-	<p class="giTitle <? if(!$child->is_album()) print 'center';?>"><?= html::purify(text::limit_chars($child->title, 20)) ?> </p>
-	<? if($child->is_album()): ?><div class="giInfo"><?= count($granchildren)?> photos</div><? endif ?>
-</div>
-    <? if ($child->is_movie()): ?>
-      </a>
-    <? endif ?>
-   <?/* <?= $theme->thumb_bottom($child) ?>
-    <?= $theme->context_menu($child, "#g-item-id-{$child->id} .g-thumbnail") ?>
-    <h2><span class="<?= $item_class ?>"></span>
-      <a href="<?= $child->url() ?>"><?= html::purify($child->title) ?></a></h2>
-    <div class="g-metadata">
-      <ol><?= $theme->thumb_info($child) ?></ol>
+<div id="loading"></div>
+<div id="mosaicTable">
+  <div id="mosaicDetail">
+    <div id="mosaicHover" class="hoverViewTopMenu">
+        <div id="detail_download" title="Download this photo" class="controller half" onclick="window.open(pear.sitePath + 'pear/download/' + slideshowImages[pear.currentImg][1])"> </div>
+        <div id="detail_info" title="Show more information about this photo" class="controller half info_detail g-dialog-link"> </div>
+        <? if(module::is_active("comment")): ?>
+        <div id="detail_comment" title="Comments" class="detail controller half comments_detail g-dialog-link"></div>
+        <? endif ?>
     </div>
-  </div>*/?>
-  <? endforeach ?>
-<script  type="text/javascript">
-<? foreach ($children as $i => $child): ?>
-<? if(!($child->is_album() || $child->is_movie())): ?>
-    slideshowImages.push(['<?= $child->resize_url() ?>', '<?= url::site("exif/show/$child->id") ?>', '<?= $child->width ?>','<?= $child->height ?>', '<?= htmlentities($child->title, ENT_QUOTES) ?>', '<?= $child->file_url() ?>', '<?= $child->url() ?>']);
-	<? endif ?>
-<? endforeach ?>
-</script>
-<? else: ?>
-  <? if ($user->admin || access::can("add", $item)): ?>
-  <? $addurl = url::site("uploader/index/$item->id") ?>
-  <li><?= t("There aren't any photos here yet! <a %attrs>Add some</a>.",
-            array("attrs" => html::mark_clean("href=\"$addurl\" class=\"g-dialog-link\""))) ?></li>
-  <? else: ?>
-  <li><?= t("There aren't any photos here yet!") ?></li>
-  <? endif; ?>
-<? endif; ?>
+    <div id="mosaicDetailContainer">
+      <img id="mosaicImg" src="" alt="Main image"/>
+        <div class="gsContentDetail" style="width: 100%;">
+            <div class="gbBlock gcBorder1" id="imageTitle"> </div>
+        </div>
+    </div>
+  </div>
+  <div id="gridContainer" class="gallery-album">
+    <?= new View("thumbs.html") ?>
+  </div>
+  <div id="pearFlow"><div id="pearImageFlow" class="imageflow"></div></div>
 </div>
 <? if (module::get_var("th_pear4gallery3", "sidebar_view") != ''): ?>
-</td><td>
-<div id="sidebarContainer" style="overflow-y: auto;">
-<div id="sidebarBorder" style="background-color: darkGrey; width: 5px; height: 100%; position: absolute;"></div>
-<div id="sidebar" class="sidebar" style="width: 220px; position: aboslute; padding-left: 5px;">
-  <? if ($theme->page_subtype != "login"): ?>
-  <?= new View("sidebar.html") ?>
-  <? endif ?>
-</div>
-</div>
+  <div id="sidebarContainer">
+    <span id="toggleSidebar" class="ui-icon ui-icon-plusthick ui-state-default ui-helper-clearfix ui-widget ui-corner-all" title="Toggle Sidebar"></span>
+    <div id="sidebar">
+    <? if ($theme->page_subtype != "login"): ?>
+      <?= new View("sidebar.html") ?>
+    <? endif ?>
+    </div>
+  </div>
 <? endif ?>
-</td></tr></table>
-<div id="pearFlowPadd" class="imageflow" style="display: none;"></div>
-<div id="pearImageFlow" class="imageflow" style="display: none;"> </div>
+<? if(($theme->item())): ?>
 <?= $theme->album_bottom() ?>
+<? endif ?>
 
-<?= $theme->paginator() ?>

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2011 Bharat Mediratta
+ * Copyright (C) 2000-2012 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,11 +50,6 @@ class exif_gps_task_Core {
     $completed = $task->get("completed");
 
     // Generate an array of the next 100 photos to check.
-    //$all_photos = ORM::factory("item")
-    //         ->where("id", ">", $last_id)
-    //         ->where("type", "=", "photo")
-    //         ->order_by("id")
-    //         ->find_all(100);
 
     // Check each photo in the array to see if it already has exif gps data associated with it.
     //  If it doesn't, attempt to extract gps coordinates.
