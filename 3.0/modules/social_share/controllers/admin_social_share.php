@@ -27,6 +27,7 @@ class Admin_Social_Share_Controller extends Admin_Controller {
 
     $form = $this->_get_form();
     if ($form->validate()) {
+      module::set_var("social_share", "general_impage_only", $form->general_settings->general_impage_only->value);
       module::set_var("social_share", "facebook_share_enabled", $form->facebook_share_settings->facebook_share_enabled->value);
       module::set_var("social_share", "facebook_share_layout", $form->facebook_share_settings->facebook_share_layout->value);
       module::set_var("social_share", "facebook_share_link_text", $form->facebook_share_settings->facebook_share_link_text->value);
@@ -69,7 +70,7 @@ class Admin_Social_Share_Controller extends Admin_Controller {
     $group_general->checkbox("general_impage_only")->label(t("Display the enabled buttons on image and movie pages only"))
       ->checked(module::get_var("social_share", "general_impage_only", true) == 1);
     
-/// Facebook settings
+/// Facebook share settings
 	$group_facebook_share = $form->group("facebook_share_settings")->label(t("Facebook Share Button Settings"));
 	$group_facebook_share->checkbox("facebook_share_enabled")->label(t("Display the button"))
       ->checked(module::get_var("social_share", "facebook_share_enabled", false) == 1);
@@ -81,7 +82,8 @@ class Admin_Social_Share_Controller extends Admin_Controller {
       ->selected(module::get_var("social_share", "facebook_share_layout"));
 	$group_facebook_share->input("facebook_share_link_text")->label(t('Enter the text to place next to the Facebook icon.'))
 		->value(module::get_var("social_share", "facebook_share_link_text", "Share"));
-            
+
+/// Facebook like settings
 	$group_facebook_like = $form->group("facebook_like_settings")->label(t("Facebook Like Button Settings"));
 	$group_facebook_like->checkbox("facebook_like_enabled")->label(t("Display the button"))
       ->checked(module::get_var("social_share", "facebook_like_enabled", false) == 1);

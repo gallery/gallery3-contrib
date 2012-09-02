@@ -17,7 +17,6 @@ if (module::get_var("social_share", "facebook_like_send")) {
 	$send = "false";
 }
 ?>
-
 <div class="g-social_share-facebook_like">	
 <?php if ($codeType == 'iframe'){ ?>
 
@@ -28,14 +27,13 @@ if (module::get_var("social_share", "facebook_like_send")) {
 &amp;show_faces=<?= $show_faces ?>
 &amp;width=180
 &amp;locale=<?= locales::cookie_locale(); ?>
-&amp;action=<?= $layout ?>
+&amp;action=<?= $action ?>
 &amp;colorscheme=light&amp;height=<?= $hite; ?>" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:180px; height:<?= $hite; ?>px;" allowTransparency="true">
 </iframe>
 
 <?php } else { ?>
 <div id="fb-root"></div>
 <script>(function(d, s, id) {
-  window.FB = null;FB=null;// this is needed for the facebook share button being on.
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
@@ -45,11 +43,11 @@ if (module::get_var("social_share", "facebook_like_send")) {
 
 <?php if($codeType == 'xfbml'){?>
 
-<fb:like href="<?= $selfURL; ?>" send="<?= $send ?>" width="180" show_faces="<?= $show_faces ?>" layout="<?= $layout?>" action="<?= $layout ?>"></fb:like>
+<fb:like href="<?= $selfURL; ?>" send="<?= $send ?>" width="180" show_faces="<?= $show_faces ?>" layout="<?= $layout?>" action="<?= $action ?>"></fb:like>
 
 <?php } else { ?>
 
-<div class="fb-like" data-href="<?= $selfURL; ?>" data-send="<?= $send ?>" data-layout="<?= $layout?>" data-width="180" data-show-faces="<?= $show_faces ?>" data-action="<?= $layout ?>"></div>
+<div class="fb-like" data-href="<?= $selfURL; ?>" data-send="<?= $send ?>" data-layout="<?= $layout?>" data-width="180" data-show-faces="<?= $show_faces ?>" data-action="<?= $action ?>"></div>
 
 <?php } 
 }
