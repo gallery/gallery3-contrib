@@ -27,6 +27,7 @@ class Admin_Social_Share_Controller extends Admin_Controller {
 
     $form = $this->_get_form();
     if ($form->validate()) {
+      module::set_var("social_share", "general_impage_only", $form->general_settings->general_impage_only->value);
       module::set_var("social_share", "facebook_share_enabled", $form->facebook_share_settings->facebook_share_enabled->value);
       module::set_var("social_share", "facebook_share_layout", $form->facebook_share_settings->facebook_share_layout->value);
       module::set_var("social_share", "facebook_share_link_text", $form->facebook_share_settings->facebook_share_link_text->value);
@@ -42,6 +43,8 @@ class Admin_Social_Share_Controller extends Admin_Controller {
       module::set_var("social_share", "google_enabled", $form->google_settings->google_enabled->value);
       module::set_var("social_share", "google_size", $form->google_settings->google_size->value);
       module::set_var("social_share", "google_annotation", $form->google_settings->google_annotation->value);
+      module::set_var("social_share", "pinterest_enabled", $form->pinterest_settings->pinterest_enabled->value);
+      module::set_var("social_share", "pinterest_count_location", $form->pinterest_settings->pinterest_count_location->value);
       module::set_var("social_share", "twitter_enabled", $form->twitter_settings->twitter_enabled->value);
       module::set_var("social_share", "twitter_count_location", $form->twitter_settings->twitter_count_location->value);
       module::set_var("social_share", "twitter_size", $form->twitter_settings->twitter_size->value);
@@ -62,6 +65,12 @@ class Admin_Social_Share_Controller extends Admin_Controller {
   private function _get_form() {
     $form = new Forge("admin/social_share/handler", "", "post", array("id" => "g-admin-form"));
     
+/// General Settings
+    $group_general = $form->group("general_settings")->label(t("General Settings"));
+    $group_general->checkbox("general_impage_only")->label(t("Display the enabled buttons on image and movie pages only"))
+      ->checked(module::get_var("social_share", "general_impage_only", true) == 1);
+    
+/// Facebook share settings
 	$group_facebook_share = $form->group("facebook_share_settings")->label(t("Facebook Share Button Settings"));
 	$group_facebook_share->checkbox("facebook_share_enabled")->label(t("Display the button"))
       ->checked(module::get_var("social_share", "facebook_share_enabled", false) == 1);
@@ -73,7 +82,8 @@ class Admin_Social_Share_Controller extends Admin_Controller {
       ->selected(module::get_var("social_share", "facebook_share_layout"));
 	$group_facebook_share->input("facebook_share_link_text")->label(t('Enter the text to place next to the Facebook icon.'))
 		->value(module::get_var("social_share", "facebook_share_link_text", "Share"));
-            
+
+/// Facebook like settings
 	$group_facebook_like = $form->group("facebook_like_settings")->label(t("Facebook Like Button Settings"));
 	$group_facebook_like->checkbox("facebook_like_enabled")->label(t("Display the button"))
       ->checked(module::get_var("social_share", "facebook_like_enabled", false) == 1);
@@ -107,7 +117,8 @@ class Admin_Social_Share_Controller extends Admin_Controller {
                       "button_count" => t("Button count"),
 					  "box_count" => t("Box count")))
 	  ->selected(module::get_var("social_share", "facebook_like_layout"));
-	
+
+/// Google settings
 	$group_google = $form->group("google_settings")->label(t("Google+ +1 Button Settings"));
 	$group_google->checkbox("google_enabled")->label(t("Display the button"))
       ->checked(module::get_var("social_share", "google_enabled", false) == 1);
@@ -125,6 +136,18 @@ class Admin_Social_Share_Controller extends Admin_Controller {
 					  "none" => t("None")))
 	  ->selected(module::get_var("social_share", "google_annotation"));
 	
+/// Pinterest settings
+    $group_pinterest = $form->group("pinterest_settings")->label(t("Pinterest Pinit Settings"));
+	$group_pinterest->checkbox("pinterest_enabled")->label(t("Display the button"))
+      ->checked(module::get_var("social_share", "pinterest_enabled", false) == 1);
+    $group_pinterest->dropdown("pinterest_count_location")
+      ->label(t("Tweet count location"))
+      ->options(array("horizontal" => t("Horizontal"),
+                      "vertical" => t("Vertical"),
+					  "none" => t("None")))
+	  ->selected(module::get_var("social_share", "pinterest_count_location"));
+    
+/// Twitter settings
 	$group_twitter = $form->group("twitter_settings")->label(t("Twitter Tweet Settings"));
 	$group_twitter->checkbox("twitter_enabled")->label(t("Display the button"))
       ->checked(module::get_var("social_share", "twitter_enabled", false) == 1);

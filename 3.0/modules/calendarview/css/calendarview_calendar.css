@@ -8,6 +8,15 @@
   margin: 10px 10px 10px 10px;
 }
 
+#g-calendar-profile-grid {
+  position: relative;
+  align: center;
+  float: left;
+  width: 200px;
+  height: 145px;
+  margin: 10px 10px 10px 10px;
+}
+
 /* Search form ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #cal_user {
   top: 0px;

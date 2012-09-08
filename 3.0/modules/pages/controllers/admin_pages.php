@@ -57,7 +57,7 @@ class Admin_Pages_Controller extends Admin_Controller {
     $page_id = Input::instance()->post("page_id");
     $page_name = urlencode(trim(Input::instance()->post("page_name")));
     $page_title = Input::instance()->post("page_title");
-    $page_code = Input::instance()->post("page_code");
+    $page_code = stripslashes($_REQUEST["page_code"]); // access var directly to get around xss filtering.
     $display_menu = Input::instance()->post("display_menu");
 
     // If $page_id is set, update an existing page.
@@ -240,7 +240,7 @@ class Admin_Pages_Controller extends Admin_Controller {
     // Generate a form for editing an existing page.  Reuse the overwrite form for as it's basically the same thing.
     return ($this->get_overwrite_page_form($existing_page->id, $existing_page->name, $existing_page->title, $existing_page->html_code, $existing_page->display_menu));
   }
-  
+
   private function get_prefs_form() {
     // Generate a form for global preferences.
     $form = new Forge("admin/pages/saveprefs", "", "post",
@@ -250,12 +250,15 @@ class Admin_Pages_Controller extends Admin_Controller {
     $pages_group->checkbox("display_sidebar")
                 ->label(t("Hide sidebar on Pages?"))
                 ->checked(module::get_var("pages", "show_sidebar"));
+    $pages_group->checkbox("disable_rich_editor")
+                ->label(t("Disable rich text editor?"))
+                ->checked(module::get_var("pages", "disable_rte"));
     $pages_group->submit("save_prefs")
                 ->value(t("Save"));
 
     return $form;
   }
-  
+
   public function saveprefs() {
     // Save a preferences to the database.
 
@@ -263,6 +266,7 @@ class Admin_Pages_Controller extends Admin_Controller {
 
     // Save form variables.
     module::set_var("pages", "show_sidebar", Input::instance()->post("display_sidebar"));
+    module::set_var("pages", "disable_rte", Input::instance()->post("disable_rich_editor"));
 
     // Display message and load main pages admin screen.
     message::success(t("Your settings have been saved."));

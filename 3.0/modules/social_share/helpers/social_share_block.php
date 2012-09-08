@@ -18,30 +18,37 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class social_share_block_Core {
-  static function get_site_list() {
-    return array(
-		"social_share" => t("Social Share"));
-	}
+    static function get_site_list() {
+        return array("social_share" => t("Social Share"));
+    }
 
-  static function get($block_id, $theme) {
- 
-	$block = new Block();
-	$block->css_id = "g-social-share";
-	$block->title = 'Share With Friends';
-	$block->content = '';
-	if(module::get_var("social_share", "facebook_share_enabled")){
-		$block->content .= new View("facebook_share.html");
-	}
-	if(module::get_var("social_share", "facebook_like_enabled")){
-		$block->content .= new View("facebook_like.html");
-	}
-	if(module::get_var("social_share", "google_enabled")){
-		$block->content .= new View("google.html");
-	}
-	if(module::get_var("social_share", "twitter_enabled")){
-		$block->content .= new View("twitter.html");
-	}
-	
-    return $block;
-  }
+    static function get($block_id, $theme) {
+    /// Check if the user wants to show the block on all pages or just the image and movie page types.
+        $impageonly = module::get_var("social_share", "general_impage_only");
+        $showblock = !$impageonly || ($impageonly && ($theme->page_subtype == "photo") || ($theme->page_subtype == "movie"));
+        
+        if ($showblock){
+            $block = new Block();
+            $block->css_id = "g-social-share";
+            $block->title = 'Share With Friends';
+            $block->content = '';
+            if(module::get_var("social_share", "facebook_share_enabled")){
+                $block->content .= new View("facebook_share.html");
+            }
+            if(module::get_var("social_share", "facebook_like_enabled")){
+                $block->content .= new View("facebook_like.html");
+            }
+            if(module::get_var("social_share", "google_enabled")){
+                $block->content .= new View("google.html");
+            }
+            if(module::get_var("social_share", "pinterest_enabled")){
+                $block->content .= new View("pinterest.html");
+            }
+            if(module::get_var("social_share", "twitter_enabled")){
+                $block->content .= new View("twitter.html");
+            }
+
+            return $block;
+        }
+    }
 }
