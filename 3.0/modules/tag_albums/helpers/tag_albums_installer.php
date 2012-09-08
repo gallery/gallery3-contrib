@@ -44,10 +44,11 @@ class tag_albums_installer {
     module::set_var("tag_albums", "subalbum_sort_direction", "ASC");
     module::set_var("tag_albums", "tag_index", "default");
     module::set_var("tag_albums", "tag_index_scope", "0");
-    module::set_var("tag_albums", "tag_index_filter", "0");
+    module::set_var("tag_albums", "tag_index_filter_top", "0");
+    module::set_var("tag_albums", "tag_index_filter_bottom", "0");
 
     // Set the module's version number.
-    module::set_version("tag_albums", 2);
+    module::set_version("tag_albums", 4);
   }
 
   static function upgrade($version) {
@@ -68,6 +69,13 @@ class tag_albums_installer {
                KEY(`tag_id`, `id`))
                DEFAULT CHARSET=utf8;");
       module::set_version("tag_albums", 3);
+    }
+
+    if ($version == 3) {
+      module::set_var("tag_albums", "tag_index_filter_top", module::get_var("tag_albums", "tag_index_filter", "0"));
+      module::set_var("tag_albums", "tag_index_filter_bottom", module::get_var("tag_albums", "tag_index_filter", "0"));
+      module::clear_var("tag_albums", "tag_index_filter");
+      module::set_version("tag_albums", 4);
     }
   }
   

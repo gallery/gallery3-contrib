@@ -18,20 +18,21 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
  
-class fotomotorw_theme_Core {  
+class fotomotorw_theme_Core {
   static function head($theme) {
-    // Load fotomoto's js file on photo pages.
-    if($theme->page_subtype == "photo") {
+    // Load fotomoto's js file on photo and album pages.
+    if(($theme->page_subtype == "photo") || ($theme->page_subtype == "album")) {
       return html::script('http://widget.fotomoto.com/stores/script/' . module::get_var("fotomotorw", "fotomoto_site_key") . '.js?api=true');
     }
   }
 
   static function resize_bottom($theme) {
-    // Generate an array of links to display below photos.
+    // Create a new block to use to display Fotomoto buy links below the photo.
     $block = new Block;
     $block->css_id = "g-fotomoto";
     $block->anchor = "fotomoto";
 
+    // Generate an array of links to display below photos.
     $link_array = array();
     $counter = 0;
     if (module::get_var("fotomotorw", "fotomoto_buy_prints")) {
@@ -63,8 +64,18 @@ class fotomotorw_theme_Core {
       $counter++;
     }
 
-    $view = new View("fotomotorw_block.html");
+    $view = new View("fotomotorw_photo_block.html");
     $view->details = $link_array;
+    $block->content = $view;
+    return $block;
+  }
+
+  static function album_bottom($theme) {
+    // Add some javascript to the bottom of album pages.
+    $block = new Block;
+    $block->css_id = "g-fotomoto";
+    $block->anchor = "fotomoto"; 
+    $view = new View("fotomotorw_album_block.html");
     $block->content = $view;
     return $block;
   }

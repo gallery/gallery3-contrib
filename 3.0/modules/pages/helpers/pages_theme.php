@@ -20,8 +20,9 @@
 class pages_theme_Core {
   static function admin_head($theme) {
     // Load jHtmlArea js and css.
-    return $theme->script("jHtmlArea-0.7.0.js") . 
-           $theme->css("jHtmlArea.css");
+    if (module::get_var("pages", "disable_rte", false) == false) {
+      return $theme->script("jHtmlArea-0.7.0.js") . 
+             $theme->css("jHtmlArea.css");
+    }
   }
 }
-	
