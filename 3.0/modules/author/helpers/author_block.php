@@ -24,6 +24,9 @@ class author_block_Core {
 	
 	static function get($block_id, $theme) {
 		$item = $theme->item;
+		if (!$item) {
+		  return;
+		}
 		if ($block_id != 'author' || $item->is_album() ) { 
 			return '';
 		}
