@@ -17,7 +17,10 @@ window.onload=toggle;
   <div class="g-block">
   <hr />
   <h3><?= t("Notes:") ?></h3>
-  <p><?= t("Navigation buttons are hard to style and clutter the user interface.<br />
-		Use mouse wheel to scroll thought the images.") ?></p>
+  <p>
+    <?= t("Navigation buttons are hard to style and clutter the user interface.") ?>
+    <br />
+    <?= t("Use mouse wheel to scroll through the images.") ?>
+  </p>
   </div>
 </div>

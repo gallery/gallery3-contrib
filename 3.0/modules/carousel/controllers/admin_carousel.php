@@ -100,14 +100,14 @@ class Admin_Carousel_Controller extends Admin_Controller {
   		$shortrange["$key"] = sprintf("%.1f", (float)$i / 2);
   	}
   	if (module::get_var("carousel", "autoscroll") == true) {
-		$disableme == "false"; 
+		$disableme = "false"; 
 		} else {
-		$disableme == "true";
+		$disableme = "true";
   	}
     $form = new Forge("admin/carousel/handler", "", "post", array("id" => "g-admin-form"));
     
     $group = $form->group("carousel")->label(t("General carousel settings"));
-	$group->checkbox("circular")->label(t('Enable the carousel to be circular so it starts over again from the beggining.'))
+	$group->checkbox("circular")->label(t('Enable the carousel to be circular so it starts over again from the beginning.'))
 		->checked(module::get_var("carousel", "circular", "0"));
     $group->checkbox("autoscroll")->label(t('Carousel should auto scroll. Toggle value to change settings below.'))
         ->onClick("toggle()")
@@ -135,7 +135,7 @@ class Admin_Carousel_Controller extends Admin_Controller {
     $group->dropdown("visible2")->label(t('Enter number of thumbs to show. (height of carousel)'))
     	->options($shortrange)
 		->selected(module::get_var("carousel", "visible2", "1"));
-    $group->dropdown("quantity2")->label(t("Choose the toal quantity of thumbs in recent carousel."))
+    $group->dropdown("quantity2")->label(t("Choose the total quantity of thumbs in recent carousel."))
       	->options($range)
       	->selected(module::get_var("carousel", "quantity2", "25"));
 	$group->checkbox("onalbum2")->label(t("Show on album & collection pages"))
@@ -152,7 +152,7 @@ class Admin_Carousel_Controller extends Admin_Controller {
     $group->dropdown("visible3")->label(t('Enter number of thumbs to show. (height of carousel)'))
     	->options($shortrange)
 		->selected(module::get_var("carousel", "visible3", "1"));
-    $group->dropdown("quantity3")->label(t("Choose the toal quantity of thumbs in popular carousel."))
+    $group->dropdown("quantity3")->label(t("Choose the total quantity of thumbs in popular carousel."))
       	->options($range)
       	->selected(module::get_var("carousel", "quantity3", "25"));
 	$group->checkbox("onalbum3")->label(t("Show on album & collection pages"))
@@ -169,7 +169,7 @@ class Admin_Carousel_Controller extends Admin_Controller {
     $group->dropdown("visible")->label(t('Enter number of thumbs to show. (height of carousel)'))
     	->options($shortrange)
 		->selected(module::get_var("carousel", "visible", "1"));
-    $group->dropdown("quantity")->label(t("Choose the toal quantity of thumbs in random carousel."))
+    $group->dropdown("quantity")->label(t("Choose the total quantity of thumbs in random carousel."))
       	->options($range)
       	->selected(module::get_var("carousel", "quantity", "25"));
 	$group->checkbox("onalbum")->label(t("Show on album & collection pages"))
