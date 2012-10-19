@@ -24,7 +24,8 @@ class Pear_Controller extends Controller {
 
     if(module::is_active("facebook_comment")) {
       $v = new Theme_View("facebook_comment.html", "other", "comment-fragment");
-      $v->url = $item->url();
+      $v->url = $item->abs_url();
+      $v->title = $item->title;
       print $v;
     } else {
       $comments = ORM::factory("comment")
@@ -42,7 +43,7 @@ class Pear_Controller extends Controller {
   public function about($id){
     $item = ORM::factory("item", $id);
     access::required("view", $item);
-    $v = new Theme_View("about.html");
+    $v = new Theme_View("about.html","","");
     $v->item = $item;
     $details = array(array("caption" => "Title", "value" => $item->title));
     if ( $item->description != $item->title) {
