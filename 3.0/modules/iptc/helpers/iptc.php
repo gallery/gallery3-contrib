@@ -71,8 +71,8 @@ class iptc_Core {
     $record->key_count = count($keys);
     $record->dirty = 0;
     $record->save();
-    if (!empty($iptc['KEYWORDS']) {
-      $tags = explode(';', $iptc['KEYWORDS']);
+    if (!empty($iptc['Keywords']) {
+      $tags = explode(';', $iptc['Keywords']);
       foreach ($tags as $tag) {
         try {
           tag::add($item, $tag);
