@@ -9,6 +9,7 @@ var pear = {defaultView: "grid",
     slideshowTimeout: 5000,
     currentImg: 0,
     hovering: false,
+    redirected: false,
     mosaicEffect: "" };
 
 function thumbPadding() {
@@ -49,6 +50,9 @@ function scaleIt(v, sliding) {
 }
 
 function thumbLoad(index) {
+    //Reindex the slideshowImages array.
+    slideshowImages = slideshowImages.filter(function (i) { return i != undefined});
+
     //Load non skimming thumbs
     $('.g-thumbnail').each( function() { $(this).attr('src', thumbImages[$(this).attr('id')]); });
     //Load skimming thumbs
@@ -57,7 +61,12 @@ function thumbLoad(index) {
     //Re-initiate all fancyness.
     if (pear.currentView === 'mosaic') { $('p.giTitle,div.giInfo').hide(); } else { $('p.giTitle,div.giInfo').show(); }
     scaleIt($('#imgSlider').slider('value'));
-    $('.g-item:not(.g-hover-item)').each(function (index) { $(this).unbind('click'); if ($(this).is('.g-photo')) { $(this).click(function () { if (pear.currentView === 'mosaic') { swatchImg(index); } else { focusImage(index); } }); }});
+    $('.g-photo:not(.g-hover-item)').each(function (index) {
+        $(this).unbind('click');
+        $(this).click(function () {
+            if (pear.currentView === 'mosaic') { swatchImg(index); }
+            else { focusImage(index); } });
+    });
     // Apply jQuery UI icon and hover styles to context menus
     if ($(".g-context-menu").length) {
         $(".g-context-menu li").addClass("ui-state-default");
@@ -192,6 +201,7 @@ function mosaicResize() {
     myHeight = myHeight - $('#g-site-status').outerHeight(true) - $('#paginator').outerHeight(true);
     myHeight -= 138;
     $('#g-header').css('top', $('#gsNavBar').outerHeight(true) + $('#g-site-status').outerHeight(true) - 4);
+    $('#mosaicTable, #sidebarContainer').css('top', $('#gsNavBar').outerHeight(true) + $('#g-site-status').outerHeight(true) + $('#g-action-status').outerHeight(true) - 2 );
 
     if ($('#g-movie').length) {
         myHeight += 18;
@@ -308,6 +318,8 @@ function swatchImg(imageId) {
     }
 
     pear.currentImg = imageId;
+    //Image count.
+    if (!pear.redirected) { $.get(slideshowImages[pear.currentImg][6]); pear.redirected = false;}
 
     if (pear.currentView === 'mosaic') {
         $('#imageTitle').each(function (i) {$(this).html("<h2></h2>"); $(this).attr("savedH", $(this).height()); });
@@ -362,7 +374,7 @@ function showHoverView() {
     pear.hideHoverViewHandler = setTimeout(hideHoverView, 3000);
 }
 
-function focusImage(id, redirected) {
+function focusImage(id) {
     if (id < 0 || id >= slideshowImages.length) {
         if ( navigation.next !== '') {
             $.get(navigation.next,{ ajax: '1'},function (data) {
@@ -377,10 +389,9 @@ function focusImage(id, redirected) {
     pear.detailView = true;
     swatchImg(id);
     $('#play_detail,#pause_detail').addClass('hidden');
+    $('.g-block-content').hide();
     $('#detailView').fadeIn('slow');
     showHoverView();
-    //Image count.
-    //if (!redirected) { $.get(slideshowImages[pear.currentImg][6]); }
 }
 
 function checkCookie() {
@@ -440,6 +451,7 @@ function startSlideshow() {
     slideShowMode = true;
     $('#play_detail').addClass('hidden');
     $('#pause_detail').removeClass('hidden');
+    $('.g-block-content').hide();
     $('#detailView').fadeIn('slow');
     showHoverView();
     pear.slideShowId = pear.currentImg;
@@ -510,6 +522,7 @@ function startImageFlow() {
 
 function hideDetailView() {
     $('#detailView').hide();
+    $('.g-block-content').show();
     pear.slideShowMode = pear.detailView = false;
     if (pear.slideShowHandler !== null) { clearTimeout(pear.slideShowHandler); }
     pear.slideShowHandler = null;
@@ -563,10 +576,11 @@ function pearInit(options) {
     if (h.bgcolor !== undefined) {
         pear.currentBg = h.bgcolor;
     }
+    pear.redirected = (h.redirected === 'true');
     if (h.viewMode !== undefined) {
         if (h.viewMode === 'detail') { 
             pear.currentView = pear.defaultView; 
-            focusImage(pear.currentImg, h.redirected);
+            focusImage(pear.currentImg);
         }
         pear.currentView = h.viewMode;
     }
@@ -594,7 +608,7 @@ function pearInit(options) {
     }
 
     setKeys();
-    thumbLoad();
+    setTimeout(thumbLoad, 1);
     $('#gridContainer').endlessScroll({ fireOnce: true, bottomPixels: 200, callback: function(p) { loadMore(); } });
     $('#gridContainer').trigger('scroll');
 
