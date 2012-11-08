@@ -45,8 +45,7 @@ class emboss_task_Core {
         foreach ($q as $item) {
           $ids[] = array('id'=>$item->id,
                          'image_id'=>$item->image_id,
-                         'overlay_id'=>$item->best_overlay_id,
-                         'rotation'=>$item->cur_rotation);
+                         'overlay_id'=>$item->best_overlay_id);
         }
         $count = count($ids);
 
@@ -76,7 +75,7 @@ class emboss_task_Core {
       $current++;
       $task->set('current',$current);
       
-      emboss_task::do_embossing($id['id'],$id['image_id'],$id['overlay_id'],$id['rotation']);
+      emboss_task::do_embossing($id['id'],$id['image_id'],$id['overlay_id']);
 
       if($current>=$count) {
         $task->done = true;
@@ -102,7 +101,7 @@ class emboss_task_Core {
     }
   }
 
-  static function do_embossing($id,$image_id,$overlay_id,$rotation)
+  static function do_embossing($id,$image_id,$overlay_id)
   {
     $gravity      = module::get_var('emboss','gravity');
     $transparency = module::get_var('emboss','transparency');
@@ -125,26 +124,9 @@ class emboss_task_Core {
       $opts['position'] = $gravity;
       $opts['transparency'] = 100-$transparency;
       
-      if($rotation==0)
-      {
-        log::info('emboss','Embossing '.$item->name.' with '.$overlay->name);
-        gallery_graphics::composite($orig,$path,$opts);
-      }
-      else
-      {
-        log::info('emboss','Embossing Rotation('.$rotation.') '.$item->name.' with '.$overlay->name);
-        $orig_path = explode('/',$orig);
-        $orig_name = array_pop($orig_path);
-        $orig_path = implode('/',$orig_path);
-        $rotpath = $orig_path.'/rotated_'.$orig_name;
+      log::info('emboss','Embossing '.$item->name.' with '.$overlay->name);
 
-        Image::factory($orig)
-          ->quality(module::get_var('gallery', 'image_quality'))
-          ->rotate($rotation)
-          ->save($rotpath);
-
-        gallery_graphics::composite($rotpath,$path,$opts);
-      }
+      gallery_graphics::composite($orig,$path,$opts);
     }
 
     $item->thumb_dirty = 1;
