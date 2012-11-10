@@ -1,0 +1,7 @@
+name = "Event Watcher"
+description = "Watches various events and posts them to the top of the screen"
+version = 1
+author_name = "Mike Mayer"
+author_url = "http://codex.gallery2.org/User:Mikemayer67"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:event_watcher"
+discuss_url =  "http://gallery.menalto.com/node/109668"
