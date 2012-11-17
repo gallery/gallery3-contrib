@@ -37,6 +37,17 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     * 
     * @author brentil <forums@inner-ninja.com>
     */
+
+    protected $gm_ini;
+    protected $gm_core_ini;
+
+    public function __construct() {
+        parent::__construct();
+
+        $this->gm_ini = realpath(VARPATH.'/tmp').'/gm.ini';
+        $this->gm_core_ini = realpath(VARPATH.'/tmp').'/gm_core.ini';
+    }
+
 	public function index() {
   
     //Start execution timer
@@ -94,8 +105,8 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     
     if($refreshCache == true){
 		// Only poll GalleryModules.com once for the ini file.
-		$fp = fopen('gm.ini', 'w');
-		$fp2 = fopen('gm_core.ini','w');
+		$fp = fopen($this->gm_ini, 'w');
+		$fp2 = fopen($this->gm_core_ini,'w');
 		if(function_exists("curl_init")) {
 			$cp = curl_init("http://www.gallerymodules.com/gallerymodules.ini");
 			curl_setopt($cp, CURLOPT_FILE, $fp);
@@ -186,10 +197,10 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
       log::success("moduleupdates", t("Completed checking remote GitHub for modules updates."));
 		}
 		
-    if(is_file('gm.ini'))
-      unlink('gm.ini'); 
-    if(is_file('gm_core.ini'))
-      unlink('gm_core.ini');		
+    if(is_file($this->gm_ini))
+      unlink($this->gm_ini); 
+    if(is_file($this->gm_core_ini))
+      unlink($this->gm_core_ini);		
     
 		$view->content->vars = $cache;
     $view->content->update_time = $cache_updates['date'];
@@ -288,11 +299,11 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
           //Check the main Gallery3 GitHub
           if ($file == null) {
             try {
-              if(file_exists('gm_core.ini')) {
+              if(file_exists($this->gm_core_ini)) {
                 $file = 1;
               }	
               if ($file != null) {
-                $gm_core_array = parse_ini_file('gm_core.ini',true);
+                $gm_core_array = parse_ini_file($this->gm_core_ini,true);
                 $server = '(G)';
               }
             }
@@ -303,11 +314,11 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
       case "GH":
           //Parse ini file from GalleryModules.com
             try {
-              if(file_exists('gm.ini')) {
+              if(file_exists($this->gm_ini)) {
                 $file = 1;
               }	
               if ($file != null) {
-                $gm_array = parse_ini_file('gm.ini',true);
+                $gm_array = parse_ini_file($this->gm_ini,true);
                 $server = '(GH)';
               }
             }
