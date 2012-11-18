@@ -44,8 +44,8 @@ class Admin_Moduleupdates_Controller extends Admin_Controller {
     public function __construct() {
         parent::__construct();
 
-        $this->gm_ini = realpath(VARPATH.'/tmp').'/gm.ini';
-        $this->gm_core_ini = realpath(VARPATH.'/tmp').'/gm_core.ini';
+        $this->gm_ini = TMPPATH.'/gm.ini';
+        $this->gm_core_ini = TMPPATH.'/gm_core.ini';
     }
 
 	public function index() {
