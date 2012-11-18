@@ -1,6 +1,6 @@
 name = "ModuleUpdates"
 description = "Compares your installed module version against the ones stored in the GitHub."
-version = 11
+version = 12
 author_name = "brentil"
 author_url = "http://gallery.menalto.com/user/153736"
 info_url = "http://codex.gallery2.org/Gallery3:Modules:moduleupdates"
