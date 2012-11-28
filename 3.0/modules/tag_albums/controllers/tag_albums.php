@@ -227,12 +227,10 @@ class tag_albums_Controller extends Controller {
 
     // Set up breadcrumbs.
     $tag_album_breadcrumbs = Array();
-    $parent_url = "";
     if ($id > 0) {
       $counter = 0;
       $tag_album_breadcrumbs[] = Breadcrumb::instance($album->title, $album->url())->set_last();
       $parent_item = ORM::factory("item", $album->parent_id);
-      $parent_url = $parent_item->url();
       while ($parent_item->id != 1) {
         $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url());
         $parent_item = ORM::factory("item", $parent_item->parent_id);
@@ -241,9 +239,8 @@ class tag_albums_Controller extends Controller {
       $tag_album_breadcrumbs[1]->url .= "?show=" . $album->id;
       $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
     } else {
-      $parent_url = item::root()->url();
       $tag_album_breadcrumbs[] = Breadcrumb::instance(item::root()->title, item::root()->url())->set_first();
-      $tag_album_breadcrumbs[] = Breadcrumb::instance($page_title, $str_page_url)->set_first();
+      $tag_album_breadcrumbs[] = Breadcrumb::instance($page_title, $str_page_url)->set_last();
     }
 
     // Set up and display the actual page.
@@ -259,8 +256,6 @@ class tag_albums_Controller extends Controller {
     $template->content = new View("dynamic.html");
     $template->content->title = $page_title;
     $template->content->description = $page_description;
-
-    $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
     $template->content->filter_text = $this->_get_filter_html($id, $filter);
     print $template;
   }
@@ -344,15 +339,16 @@ class tag_albums_Controller extends Controller {
 
     // Set up breadcrumbs for the page.
     $tag_album_breadcrumbs = Array();
-    $parent_url = "";
     if ($album_id > 0) {
       $counter = 0;
       $tag_album_breadcrumbs[] = Breadcrumb::instance($display_tag->name, $str_page_url)->set_last();
       $parent_item = ORM::factory("item", $album_tags[0]->album_id);
       if ($album_tags[0]->tags != "*") {
         $parent_item = ORM::factory("item", $parent_item->parent_id);
-      }	
-      $parent_url = $parent_item->url(); // Used by Grey Dragon.
+      }	else {
+        $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->name, url::site("tag_albums/album/" . $album_tags[0]->id . "/" . urlencode($parent_item->name)));
+        $parent_item = ORM::factory("item", $parent_item->parent_id);
+      }
       while ($parent_item->id != 1) {
         $tag_album_breadcrumbs[] = Breadcrumb::instance($parent_item->title, $parent_item->url());
         $parent_item = ORM::factory("item", $parent_item->parent_id);
@@ -362,7 +358,6 @@ class tag_albums_Controller extends Controller {
       $tag_album_breadcrumbs[1]->url .= "?show=" . $id;
       $tag_album_breadcrumbs = array_reverse($tag_album_breadcrumbs, true);
     } else {
-      $parent_url = url::site("tag_albums/");
       $tag_album_breadcrumbs[] = Breadcrumb::instance(item::root()->title, item::root()->url())->set_first();
       if (module::get_var("tag_albums", "tag_index", "default") == "default") {
         $tag_album_breadcrumbs[] = Breadcrumb::instance(module::get_var("tag_albums", "tag_page_title", "All Tags"), url::site("tag_albums/") . "?show=" . $id);
@@ -387,7 +382,6 @@ class tag_albums_Controller extends Controller {
     $template->content->description = $page_description;
 
     $template->set_global("all_siblings", $this->_get_records(Array($id), $count, 0, "items." . $sort_page_field, $sort_page_direction, "OR", false));
-    $template->set_global("parent_url", $parent_url); // Used by Grey Dragon.
     print $template;
 
     // Set breadcrumbs on the photo pages to point back to the calendar day view.
@@ -518,8 +512,6 @@ class tag_albums_Controller extends Controller {
       $template->content->description = $page_description;
 
       $template->set_global("all_siblings", $this->_get_records($tag_ids, $count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false));
-      $parent_album = ORM::factory("item", $album->parent_id);
-      $template->set_global("parent_url", $parent_album->url()); // Used by Grey Dragon.
       print $template;
 
     // Set breadcrumbs on the photo pages to point back to the calendar day view.
@@ -580,6 +572,8 @@ class tag_albums_Controller extends Controller {
 
   static function get_display_context($item, $tag_id, $album_id) {
     // Make sure #album_id is valid, clear it out if it isn't.
+    // Note:  $dynamic_siblings is used exclusively for Grey Dragon.
+
     $album_tags = ORM::factory("tags_album_id")
       ->where("id", "=", $album_id)
       ->find_all();
@@ -608,6 +602,7 @@ class tag_albums_Controller extends Controller {
     $previous_item = "";
     $next_item = "";
     $position = 0;
+    $dynamic_siblings = "";
     if ($tag_id > 0) {	
       $sibling_count = tag_albums_Controller::_count_records(Array($tag_id), "OR", false);
       $position = tag_albums_Controller::_get_position($item->$sort_page_field, $item->id, Array($tag_id), "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
@@ -621,6 +616,7 @@ class tag_albums_Controller extends Controller {
       if (count($next_item_object) > 0) {
         $next_item = $next_item_object[0];
       }
+      $dynamic_siblings = tag_albums_Controller::_get_records(Array($tag_id), $sibling_count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
     } else {
       $tag_ids = Array();
       foreach (explode(",", $album_tags[0]->tags) as $tag_name) {
@@ -642,7 +638,7 @@ class tag_albums_Controller extends Controller {
       if (count($next_item_object) > 0) {
         $next_item = $next_item_object[0];
       }
-	  
+      $dynamic_siblings = tag_albums_Controller::_get_records($tag_ids, $sibling_count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
     }
 
     // Set up breadcrumbs
@@ -676,6 +672,7 @@ class tag_albums_Controller extends Controller {
                  "tag_id" => $tag_id,
                  "album_id" => $album_id,
                  "is_tagalbum_page" => true,
+                 "dynamic_siblings" => $dynamic_siblings,
                  "sibling_count" => $sibling_count,
                  "breadcrumbs" => $tag_album_breadcrumbs);
   }
@@ -798,6 +795,7 @@ class tag_albums_Controller extends Controller {
     if ($search_type == "AND") {
       $items_model->having("result_count", "=", count($tag_ids));
     }
+
     return $items_model->find_all($page_size, $offset);
   }
 
