@@ -12,7 +12,7 @@
   class="g-dialog-link g-button ui-icon-left ui-state-default ui-corner-all">
   <span class="ui-icon ui-icon-info"></span>
   <?= t("Show BBCode") ?>
-</a>
+</a><br />
 <? } ?>
 
 <? if (module::get_var("embedlinks", "FullURL")) { ?>
@@ -20,5 +20,5 @@
   class="g-dialog-link g-button ui-icon-left ui-state-default ui-corner-all">
   <span class="ui-icon ui-icon-info"></span>
   <?= t("Show URLs") ?>
-</a>
+</a><br />
 <? } ?>
