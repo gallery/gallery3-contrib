@@ -1,0 +1,17 @@
+#g-content fieldset {
+  display: block;
+}
+#g-content fieldset.g-image-optimizer-admin-form-top {
+  width: 80%;
+  clear: both;
+}
+#g-content fieldset.g-image-optimizer-admin-form-left {
+  width: 45%;
+  float: left;
+  clear: left;
+  margin-right: 2%
+}
+#g-content fieldset.g-image-optimizer-admin-form-right {
+  width: 45%;
+  clear: right;
+}
