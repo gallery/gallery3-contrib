@@ -51,9 +51,15 @@ class register_Controller extends Controller {
       } else if ($pending_user->state == 1) {
         site_status::warning(
           t("There are pending user registration. <a href=\"%url\">Review now!</a>",
-            array("url" => html::mark_clean(url::site("admin/register")))),
+            // modified by Shad Laws, v2
+            // array("url" => html::mark_clean(url::site("admin/register")))),
+            array("url" => html::mark_clean(url::site("admin/register")), "locale" => module::get_var("gallery", "default_locale"))),
           "pending_user_registrations");
         message::success(t("Your registration request is awaiting administrator approval"));
+        // added by Shad Laws, v2
+        if (module::get_var("registration", "admin_notify") == 1) {
+          register::send_admin_notify($pending_user);
+        }
       } else {
         register::send_confirmation($pending_user);
         message::success(t("A confirmation email has been sent to your email address."));
@@ -84,9 +90,15 @@ class register_Controller extends Controller {
       } else {
         site_status::warning(
           t("There are pending user registration. <a href=\"%url\">Review now!</a>",
-            array("url" => html::mark_clean(url::site("admin/register")))),
+            // modified by Shad Laws, v2
+            // array("url" => html::mark_clean(url::site("admin/register")))),
+            array("url" => html::mark_clean(url::site("admin/register")), "locale" => module::get_var("gallery", "default_locale"))),
           "pending_user_registrations");
         message::success(t("Your registration request is awaiting administrator approval"));
+        // added by Shad Laws, v2
+        if (module::get_var("registration", "admin_notify") == 1) {
+          register::send_admin_notify($pending_user);
+        }
       }
     } else {
       message::error(t("Your registration request is no longer valid, Please re-register."));
@@ -144,7 +156,9 @@ class register_Controller extends Controller {
       ->rules("required|valid_email|length[1,255]");
     $group->input("email2")->label(t("Confirm email"))->id("g-email2")
       ->matches($group->email);
-    $group->input("url")->label(t("URL"))->id("g-url")
+    // modified by Shad Laws, v2
+    // $group->input("url")->label(t("URL"))->id("g-url")
+    $group->input("url")->label(t("URL")." (".t("optional").")")->id("g-url")
       ->rules("valid_url");
 
     module::event("register_add_form", $form);
