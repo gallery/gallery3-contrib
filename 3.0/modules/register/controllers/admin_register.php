@@ -35,11 +35,17 @@ class Admin_register_Controller extends Admin_Controller {
     $post->add_rules("policy", "required");
     $post->add_rules("group", array($this, "passthru"));
     $post->add_rules("email_verification", array($this, "passthru"));
+    // added Shad Laws, v2
+    $post->add_rules("admin_notify", array($this, "passthru"));
+    $post->add_rules("subject_prefix", array($this, "passthru"));
     $group_list = array();
     if ($post->validate()) {
       module::set_var("registration", "policy", $post->policy);
       module::set_var("registration", "default_group", $post->group);
       module::set_var("registration", "email_verification", !empty($post->email_verification));
+      // added Shad Laws, v2
+      module::set_var("registration", "admin_notify", !empty($post->admin_notify));
+      module::set_var("registration", "subject_prefix", $post->subject_prefix);
 
       message::success(t("Registration defaults have been updated."));
 
@@ -108,6 +114,12 @@ class Admin_register_Controller extends Admin_Controller {
     if (empty($admin->email)) {
       module::set_var("registration", "email_verification", false);
     }
+    // below lines added Shad Laws, v2
+    $v->content->disable_admin_notify =
+      empty($admin->email) || $form["policy"] !== "admin_approval" ? "disabled" : "";
+    if (empty($admin->email)) {
+      module::set_var("registration", "admin_notify", false);
+    }
 
     $v->content->group_list = array();
     foreach (identity::groups() as $group) {
@@ -134,7 +146,10 @@ class Admin_register_Controller extends Admin_Controller {
   private function _get_form() {
     $form = array("policy" => module::get_var("registration", "policy"),
                   "group" => module::get_var("registration", "default_group"),
-                  "email_verification" => module::get_var("registration", "email_verification"));
+                  "email_verification" => module::get_var("registration", "email_verification"),
+                  // added Shad Laws, v2
+                  "subject_prefix" => module::get_var("registration", "subject_prefix"),
+                  "admin_notify" => module::get_var("registration", "admin_notify"));
     $errors = array_fill_keys(array_keys($form), "");
 
     return array($form, $errors);
