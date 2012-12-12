@@ -7,6 +7,12 @@
       } else {
         $(":checkbox[name=email_verification]").removeAttr("disabled");
       }
+      if ($(this).val() !== "admin_approval") {
+        $(":checkbox[name=admin_notify]").attr("disabled", "disabled");
+      } else {
+        $(":checkbox[name=admin_notify]").removeAttr("disabled");
+      }
+
     });
   });
 </script>
@@ -26,6 +32,14 @@
         <li>
           <?= form::checkbox("email_verification", "true", !empty($form["email_verification"]), $disable_email) ?>
           <?= form::label("email_verification", t("Require e-mail verification when a visitor creates an account")) ?>
+        </li>
+        <li>
+          <?= form::checkbox("admin_notify", "true", !empty($form["admin_notify"]), $disable_admin_notify) ?>
+          <?= form::label("admin_notify", t("Send a pending user registration notification email to the site 'reply to' email address")) ?>
+        </li>
+        <li>
+          <?= form::input("subject_prefix", $form["subject_prefix"]) ?>
+          <?= form::label("subject_prefix", t("Email subject line prefix, with trailing spaces as needed (e.g. '[Gallery3] ')")) ?>
         </li>
         <li>
           <? if (!empty($group_list)): ?>

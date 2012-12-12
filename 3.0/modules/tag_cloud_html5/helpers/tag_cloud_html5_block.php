@@ -32,6 +32,7 @@ class tag_cloud_html5_block {
 	    $maxtags = module::get_var("tag_cloud_html5", "maxtags_sidebar", null);
       $showlink = module::get_var("tag_cloud_html5", "show_wholecloud_link", null);
       $showaddtag = module::get_var("tag_cloud_html5", "show_add_tag_form", null);
+      $width = module::get_var("tag_cloud_html5", "width_sidebar", null);
       $height = module::get_var("tag_cloud_html5", "height_sidebar", null);
 
 	    // make the block
@@ -41,6 +42,7 @@ class tag_cloud_html5_block {
       $block->content = new View("tag_cloud_html5_block.html");
       $block->content->cloud = tag::cloud($maxtags);
       $block->content->options = $options;
+      $block->content->width = $width;
       $block->content->height = $height;
       
       // add the 'View whole cloud' link if needed

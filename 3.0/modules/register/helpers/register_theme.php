@@ -25,4 +25,9 @@ class register_theme_Core {
       return new View("register_welcome_message_loader.html");
     }
   }
+  // added Shad Laws, v2
+  static function head($theme) {
+    return $theme->css("register.css");
+  }
+
 }
