@@ -20,8 +20,12 @@
 
 /**
  * Generate a PDF proof sheet on-the-fly of the current album or tag.
- * By Shad Laws.  Version 5, 2012/04/05
+ * By Shad Laws.  Version 7, 2012/10/05
  * 
+ * 2012/10/04, version 7
+ *  Fixed bug related to the URL for proofsheets of tags (as opposed to albums)
+ * 2012/06/15, version 6
+ *  Fixed bug that could cause a crash when trying to use GD or GIF files (a typo from version 5)
  * 2012/04/05, version 5
  *  Added ability to include GIF thumbnails if GD is installed (FPDF uses GD)
  *  Changed behavior of unhandled file types - now provides missing image icon instead of throwing an exception
@@ -84,7 +88,8 @@ class proofsheet_Controller extends Controller {
 
         $pdfname = $container->name.'.pdf';
         $headerText = $container->name;
-        $headerLink = $container->abs_url();
+        //$headerLink = $container->abs_url();
+        $headerLink = url::abs_site("tag/{$container->id}/" . urlencode($container->name));
         break;
 
       default:
@@ -214,7 +219,7 @@ class proofsheet_Controller extends Controller {
     $cfg['footerY'] = $cfg['pageH']-$cfg['marginB']+$cfg['footerSpace'];
     $cfg['imageNum'] = $cfg['imageNumW']*$cfg['imageNumH'];
     $cfgImageMissing['iconInfo'] = getimagesize($cfgImageMissing['iconPath']);
-    $cfgImageMissing['GDflag'] = graphics::detect_toolkits()->gd>installed; // FPDF uses GD to convert GIFs
+    $cfgImageMissing['GDflag'] = graphics::detect_toolkits()->gd->installed; // FPDF uses GD to convert GIFs
 
     /**
      * Initialize and build PDF... the main routine.  Note that almost all of the

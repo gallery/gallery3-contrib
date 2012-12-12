@@ -1,12 +1,14 @@
 <?php defined("SYSPATH") or die("No direct script access.") ?>
-<!--[if lt IE 9]><?= $theme->script("excanvas.compiled.js"); ?><![endif]-->
+<!--[if lt IE 9]>
+<?= html::script(gallery::find_file("js", "excanvas.compiled.js", false)) ?>
+<![endif]-->
 <script type="text/javascript">
   function redraw() {
 
     // set g-tag-cloud-html5-page-canvas size
     $("#g-tag-cloud-html5-page-canvas").attr({
-      'height': Math.min( $(window).height()*0.75, $("#g-tag-cloud-html5-page").width() ),
-      'width':  Math.min( $(window).height()*0.95, $("#g-tag-cloud-html5-page").width() )
+      'width' : Math.floor(Math.min( $(window).height()*<?= $width ?>,  $("#g-tag-cloud-html5-page").width() )),
+      'height': Math.floor(          $(window).height()*<?= $height ?> )
     });
     
     // start g-tag-cloud-html5-page-canvas
