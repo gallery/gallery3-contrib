@@ -17,17 +17,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class register_theme_Core {
-  static function page_bottom($theme) {
-    $session = Session::instance();
-    if ($session->get("registration_first_usage")) {
-      $session->delete("registration_first_usage");
-      return new View("register_welcome_message_loader.html");
-    }
+class image_optimizer_event_Core {
+  static function admin_menu($menu, $theme) {
+    $menu->get("settings_menu")
+      ->append(
+        Menu::factory("link")
+        ->id("image_optimizer")
+        ->label(t("Image optimizer"))
+        ->url(url::site("admin/image_optimizer")));
   }
-  // added Shad Laws, v2
-  static function head($theme) {
-    return $theme->css("register.css");
-  }
-
 }
