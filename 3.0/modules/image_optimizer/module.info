@@ -1,0 +1,7 @@
+name = Image Optimizer
+description = "Use jpegtran, optipng, and gifsicle for lossless optimization and rotation."
+version = 1
+author_name = "Shad Laws"
+author_url = ""
+info_url = "http://codex.gallery2.org/Gallery3:Modules:image_optimizer"
+discuss_url = "http://gallery.menalto.com/node/110262"

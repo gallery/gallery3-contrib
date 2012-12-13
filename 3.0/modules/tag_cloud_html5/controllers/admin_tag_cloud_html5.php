@@ -29,111 +29,88 @@ class Admin_Tag_Cloud_Html5_Controller extends Admin_Controller {
     $cfg = $this->_get_config();
     $form = $this->_get_admin_form();
     if ($form->validate()) {
-      if ($form->options_general->load_defaults->value) {
+      if ($form->general->reset_defaults->value) {
         // reset all to defaults, redirect with message
         module::install("tag_cloud_html5");
         message::success(t("Tag cloud options reset successfully"));
         url::redirect("admin/tag_cloud_html5");
-      } else {
-        $valid = true;
-        // run checks on various inputs
-        $options_general = $form->options_general;
-        if ($options_general->height_sidebar->value < 0) {
-          $form->options_general->height_sidebar->add_error("not_valid", 1);
-          $valid = false;
-        }
-        foreach ($cfg['groups'] as $groupname => $grouptext) {
-          ${"options".$groupname} = $form->{"options".$groupname};
-          if ($options_general->{"maxtags".$groupname}->value < 0) {
-            $form->options_general->{"maxtags".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if (${"options".$groupname}->{"maxSpeed".$groupname}->value < 0) {
-            $form->{"options".$groupname}->{"maxSpeed".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if ((${"options".$groupname}->{"initialX".$groupname}->value < -1) || (${"options".$groupname}->{"initialX".$groupname}->value > 1)) {
-            $form->{"options".$groupname}->{"initialX".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if ((${"options".$groupname}->{"initialY".$groupname}->value < -1) || (${"options".$groupname}->{"initialY".$groupname}->value > 1)) {
-            $form->{"options".$groupname}->{"initialY".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if ((${"options".$groupname}->{"deadZone".$groupname}->value < 0) || (${"options".$groupname}->{"deadZone".$groupname}->value > 1)) {
-            $form->{"options".$groupname}->{"deadZone".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if (${"options".$groupname}->{"zoom".$groupname}->value < 0) {
-            $form->{"options".$groupname}->{"zoom".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if ((${"options".$groupname}->{"depth".$groupname}->value < 0) || (${"options".$groupname}->{"depth".$groupname}->value > 1)) {
-            $form->{"options".$groupname}->{"depth".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if (${"options".$groupname}->{"outlineOffset".$groupname}->value < 0) {
-            $form->{"options".$groupname}->{"outlineOffset".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if (preg_match("/^#[0-9A-Fa-f]{6}$/", ${"options".$groupname}->{"outlineColour".$groupname}->value) == 0) {
-            $form->{"options".$groupname}->{"outlineColour".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if ((preg_match("/^#[0-9A-Fa-f]{6}$/", ${"options".$groupname}->{"textColour".$groupname}->value) == 0) && (strcmp(${"options".$groupname}->{"textColour".$groupname}->value, "") != 0) ) {
-            $form->{"options".$groupname}->{"textColour".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-          if (${"options".$groupname}->{"textHeight".$groupname}->value < 0) {
-            $form->{"options".$groupname}->{"textHeight".$groupname}->add_error("not_valid", 1);
-            $valid = false;
-          }
-        }
-        if ($valid) {
-          // all inputs passed tests above; save them
-          module::set_var("tag_cloud_html5", "show_wholecloud_link", ($options_general->show_wholecloud_link->value == 1));
-          module::set_var("tag_cloud_html5", "show_add_tag_form", ($options_general->show_add_tag_form->value == 1));
-          module::set_var("tag_cloud_html5", "height_sidebar", $options_general->height_sidebar->value);
-          module::set_var("tag_cloud_html5", "show_wholecloud_list", ($options_general->show_wholecloud_list->value == 1));
-          foreach ($cfg['groups'] as $groupname => $grouptext) {
-            module::set_var("tag_cloud_html5", "maxtags".$groupname, $options_general->{"maxtags".$groupname}->value);
-            
-            $optionsarray = array();
-            $optionsarray['maxSpeed'] = ${"options".$groupname}->{"maxSpeed".$groupname}->value;
-            $optionsarray['deadZone'] = ${"options".$groupname}->{"deadZone".$groupname}->value;
-            $optionsarray['initial'] = array(${"options".$groupname}->{"initialX".$groupname}->value, ${"options".$groupname}->{"initialY".$groupname}->value);
-            $optionsarray['initialDecel'] = (${"options".$groupname}->{"initialDecel".$groupname}->value == 1);
-            $optionsarray['zoom'] = ${"options".$groupname}->{"zoom".$groupname}->value;
-            $optionsarray['depth'] = ${"options".$groupname}->{"depth".$groupname}->value;
-            $optionsarray['outlineMethod'] = ${"options".$groupname}->{"outlineMethod".$groupname}->value;
-            $optionsarray['outlineOffset'] = ${"options".$groupname}->{"outlineOffset".$groupname}->value;
-            $optionsarray['outlineColour'] = ${"options".$groupname}->{"outlineColour".$groupname}->value;
-            $optionsarray['textColour'] = ${"options".$groupname}->{"textColour".$groupname}->value;
-            $optionsarray['textFont'] = ${"options".$groupname}->{"textFont".$groupname}->value;
-            $optionsarray['textHeight'] = ${"options".$groupname}->{"textHeight".$groupname}->value;
-            $optionsarray['frontSelect'] = (${"options".$groupname}->{"frontSelect".$groupname}->value == 1);
-            $optionsarray['wheelZoom'] = false; // note that this is locked - otherwise scrolling through the page screws everything up
-            module::set_var("tag_cloud_html5", "options".$groupname, json_encode($optionsarray));
-          }
-          // all done; redirect with message
-          message::success(t("Tag cloud options updated successfully"));
-          url::redirect("admin/tag_cloud_html5");
-        }
       }
+      // save the new inputs
+      module::set_var("tag_cloud_html5", "show_wholecloud_link", ($form->general->show_wholecloud_link->value == 1));
+      module::set_var("tag_cloud_html5", "show_add_tag_form", ($form->general->show_add_tag_form->value == 1));
+      module::set_var("tag_cloud_html5", "show_wholecloud_list", ($form->general->show_wholecloud_list->value == 1));
+      foreach ($cfg['groups'] as $groupname => $grouptext) {
+        module::set_var("tag_cloud_html5", "maxtags".$groupname, $form->{"size".$groupname}->{"maxtags".$groupname}->value);
+        module::set_var("tag_cloud_html5", "width".$groupname, $form->{"size".$groupname}->{"width".$groupname}->value);
+        module::set_var("tag_cloud_html5", "height".$groupname, $form->{"size".$groupname}->{"height".$groupname}->value);
+        
+        $optionsarray = array();
+        // group size
+        $optionsarray['shape'] = $form->{"size".$groupname}->{"shape".$groupname}->value;
+        $optionsarray['zoom'] = $form->{"size".$groupname}->{"zoom".$groupname}->value;
+        $optionsarray['stretchX'] = $form->{"size".$groupname}->{"stretchX".$groupname}->value;
+        $optionsarray['stretchY'] = $form->{"size".$groupname}->{"stretchY".$groupname}->value;
+        // group motion
+        $optionsarray['maxSpeed'] = $form->{"motion".$groupname}->{"maxSpeed".$groupname}->value;
+        $optionsarray['minSpeed'] = $form->{"motion".$groupname}->{"minSpeed".$groupname}->value;
+        $optionsarray['deadZone'] = $form->{"motion".$groupname}->{"deadZone".$groupname}->value;
+        $optionsarray['decel'] = $form->{"motion".$groupname}->{"decel".$groupname}->value;
+        $optionsarray['initial'] = array($form->{"motion".$groupname}->{"initialX".$groupname}->value, $form->{"motion".$groupname}->{"initialY".$groupname}->value);
+        $optionsarray['maxInputZone'] = $form->{"motion".$groupname}->{"maxInputZone".$groupname}->value;
+        // group select
+        $optionsarray['outlineMethod'] = $form->{"select".$groupname}->{"outlineMethod".$groupname}->value;
+        $optionsarray['outlineOffset'] = $form->{"select".$groupname}->{"outlineOffset".$groupname}->value;
+        $optionsarray['outlineColour'] = $form->{"select".$groupname}->{"outlineColour".$groupname}->value;
+        $optionsarray['frontSelect'] = ($form->{"select".$groupname}->{"frontSelect".$groupname}->value == 1);
+        // group appearance
+        $optionsarray['textHeight'] = $form->{"appearance".$groupname}->{"textHeight".$groupname}->value;
+        $optionsarray['textColour'] = $form->{"appearance".$groupname}->{"textColour".$groupname}->value;
+        $optionsarray['textFont'] = $form->{"appearance".$groupname}->{"textFont".$groupname}->value;
+        $optionsarray['depth'] = $form->{"appearance".$groupname}->{"depth".$groupname}->value;
+        // options that are not explicitly defined in admin menu
+        $optionsarray['wheelZoom'] = false; // otherwise scrolling through the page screws everything up (was a problem in v1)
+        $optionsarray['initialDecel'] = true; // this was an option in v4, but it's sorta useless - use minSpeed for a related but better effect
+        $optionsarray['physModel'] = true; // this is the big enhancement for v5, and is a major modification that I did to TagCanvas
+        switch ($optionsarray['shape']) {
+          case "hcylinder":
+            // keep it horizontal - lock x-axis rotation
+            $optionsarray['lock'] = "x";
+            break;
+          case "vcylinder":
+            // keep it vertical - lock y-axis rotation
+            $optionsarray['lock'] = "y";
+            break;
+          default:
+            // do not lock either axis
+            $optionsarray['lock'] = "";
+        }
+        module::set_var("tag_cloud_html5", "options".$groupname, json_encode($optionsarray));
+      }
+      // all done; redirect with message
+      message::success(t("Tag cloud options updated successfully"));
+      url::redirect("admin/tag_cloud_html5");
     }
-    // print screen from existing form - you wind up here if something wasn't validated
+    // not valid - print screen from existing form
     $this->_print_screen($form);
   }
 
   private function _get_config() {
     // these define the two variable name groups, along with their labels which are always shown with t() for i18n.
-    $cfg['groups'] = array("_sidebar"=>"Sidebar", "_wholecloud"=>"Whole cloud");
+    $cfg['groups'] = array("_sidebar"=>t("Sidebar"), "_wholecloud"=>t("Whole cloud"));
     // this defines the separator that's used between the group name and the attribute, and is *not* put through t().
-    $cfg['sep'] = ": ";
+    $cfg['sep'] = " : ";
+    // this is used in the labels of the width/height parameters
+    $cfg['size'] = array("_sidebar"=>t("as fraction of sidebar width, e.g. 'g-block-content' class"), "_wholecloud"=>t("as fraction of browser window height"));
     return $cfg;
   }
   
   private function _print_screen($form) {
+    // this part is a bit of a hack, but Forge doesn't seem to allow set_attr() for groups.
+    $form = $form->render();
+    $form = preg_replace("/<fieldset>/","<fieldset class=\"g-tag-cloud-html5-admin-form-top\">",$form,1);
+    $form = preg_replace("/<fieldset>/","<fieldset class=\"g-tag-cloud-html5-admin-form-left\">",$form,4);
+    $form = preg_replace("/<fieldset>/","<fieldset class=\"g-tag-cloud-html5-admin-form-right\">",$form,4);
+
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_tag_cloud_html5.html");
     $view->content->form = $form;
@@ -144,12 +121,12 @@ class Admin_Tag_Cloud_Html5_Controller extends Admin_Controller {
     $cfg = $this->_get_config();
     $sep = $cfg['sep'];
     
-    // Make the form.  This form has three groups: group_general, group_sidebar, and group_wholecloud.
+    // Make the main form.  This form has *nine* groups: general, then size, motion, select, and appearance for _sidebar and _wholecloud.
     $form = new Forge("admin/tag_cloud_html5/edit", "", "post", array("id" => "g-tag-cloud-html5-admin-form"));
 
-    // group_general
-    $group_general = $form->group("options_general")->label(t("Tag cloud options").$sep.t("General"));
-    $group_general->checkbox("load_defaults")
+    // group general
+    $group_general = $form->group("general")->label(t("General"))->set_attr("id","g-tag-cloud-html5-admin-form-general");
+    $group_general->checkbox("reset_defaults")
       ->label(t("Reset all to default values"))
       ->checked(false);
     $group_general->checkbox("show_wholecloud_link")
@@ -158,94 +135,115 @@ class Admin_Tag_Cloud_Html5_Controller extends Admin_Controller {
     $group_general->checkbox("show_add_tag_form")
       ->label(t("Show 'Add tag to album' form in sidebar (when permitted and applicable)"))
       ->checked(module::get_var("tag_cloud_html5", "show_add_tag_form", null));
-    $group_general->input("height_sidebar")
-      ->label(t("Height of sidebar (as fraction of width)"))
-      ->value(round(module::get_var("tag_cloud_html5", "height_sidebar", null),3)) // round or else it gets 6 decimal places...
-      ->error_message("not_valid", t("Height of sidebar must be a 1-5 digit number"))
-      ->rules("required|valid_numeric|length[1,5]");
     $group_general->checkbox("show_wholecloud_list")
-      ->label(t("Show tag list under cloud on 'View whole cloud' page"))
+      ->label(t("Show inline tag list under cloud on 'View whole cloud' page")." {hideTags}")
       ->checked(module::get_var("tag_cloud_html5", "show_wholecloud_list", null));
-   
+    
     foreach ($cfg['groups'] as $groupname => $grouptext) {
-      // maxtags - note that this is displayed under group_general!
-      $maxtags = module::get_var("tag_cloud_html5", "maxtags".$groupname, null);
-      $group_general->input("maxtags".$groupname)
-        ->label(t($grouptext).$sep.t("max tags shown"))
-        ->value($maxtags)
-        ->error_message("not_valid", t("Max tags must be a 1-4 digit number"))
-        ->rules("required|valid_numeric|length[1,4]");
-      // group_sidebar and group_wholecloud
+      $maxtags =      strval(module::get_var("tag_cloud_html5", "maxtags".$groupname, null));
+      $width =        strval(module::get_var("tag_cloud_html5", "width".$groupname, null));
+      $height =       strval(module::get_var("tag_cloud_html5", "height".$groupname, null));
       $options = json_decode(module::get_var("tag_cloud_html5", "options".$groupname, null),true);
-      ${"group".$groupname} = $form->group("options".$groupname)->label(t("Tag cloud options").$sep.t($grouptext));
-      ${"group".$groupname}->input("maxSpeed".$groupname)
-        ->label(t($grouptext).$sep.t("max speed (typically 0.01-0.20)"))
-        ->value($options['maxSpeed'])
-        ->error_message("not_valid", t("Max speed must be a 1-5 digit number"))
-        ->rules("required|valid_numeric|length[1,5]");
-      ${"group".$groupname}->input("initialX".$groupname)
-        ->label(t($grouptext).$sep.t("initial horizontal speed (between +/-1.0, as fraction of max speed)"))
-        ->value($options['initial'][0])
-        ->error_message("not_valid", t("Initial horizontal speed must be a 1-4 digit number"))
-        ->rules("required|valid_numeric|length[1,4]");
-      ${"group".$groupname}->input("initialY".$groupname)
-        ->label(t($grouptext).$sep.t("initial vertical speed (between +/-1.0, as fraction of max speed)"))
-        ->value($options['initial'][1])
-        ->error_message("not_valid", t("Initial vertical speed must be a 1-4 digit number"))
-        ->rules("required|valid_numeric|length[1,4]");
-      ${"group".$groupname}->checkbox("initialDecel".$groupname)
-        ->label(t($grouptext).$sep.t("initial deceleration (if false, the initial speed is held until a mouseover event)"))
-        ->checked($options['initialDecel']);
-      ${"group".$groupname}->input("deadZone".$groupname)
-        ->label(t($grouptext).$sep.t("dead zone (0.0-1.0, where 0.0 is no dead zone and 1.0 is no active zone)"))
-        ->value($options['deadZone'])
-        ->error_message("not_valid", t("Dead zone must be a 1-4 digit number"))
-        ->rules("required|valid_numeric|length[1,4]");
-      ${"group".$groupname}->input("zoom".$groupname)
-        ->label(t($grouptext).$sep.t("zoom (<1.0 is zoom out, >1.0 is zoom in)"))
+
+      // group size/shape
+      ${"group_size".$groupname} = $form->group("size".$groupname)->label(t("Size and shape").$sep.$grouptext);
+      ${"group_size".$groupname}->input("maxtags".$groupname)
+        ->label(t("maximum tags shown"))
+        ->value($maxtags)
+        ->rules("required|numrange[0]");
+      ${"group_size".$groupname}->input("width".$groupname)
+        ->label(t("width")." (".$cfg['size'][$groupname].")")
+        ->value($width)
+        ->rules("required|numrange[0]");
+      ${"group_size".$groupname}->input("height".$groupname)
+        ->label(t("height")." (".$cfg['size'][$groupname].")")
+        ->value($height)
+        ->rules("required|numrange[0]");
+      ${"group_size".$groupname}->dropdown("shape".$groupname)
+        ->label(t("shape of cloud")." {shape,lock}")
+        ->options(array("sphere"=>t("sphere"),"hcylinder"=>t("horizontal cylinder"),"vcylinder"=>t("vertical cylinder")))
+        ->selected($options['shape']);
+      ${"group_size".$groupname}->input("zoom".$groupname)
+        ->label(t("zoom (<1.0 is zoom out, >1.0 is zoom in)")." {zoom}")
         ->value($options['zoom'])
-        ->error_message("not_valid", t("Zoom must be a 1-4 digit number"))
-        ->rules("required|valid_numeric|length[1,4]");
-      ${"group".$groupname}->input("depth".$groupname)
-        ->label(t($grouptext).$sep.t("depth (0.0-1.0)"))
-        ->value($options['depth'])
-        ->error_message("not_valid", t("Depth must be a 1-4 digit number"))
-        ->rules("required|valid_numeric|length[1,4]");
-      ${"group".$groupname}->dropdown("outlineMethod".$groupname)
-        ->label(t($grouptext).$sep.t("outline method (mouseover event)"))
+        ->rules("required|numrange[0]");
+      ${"group_size".$groupname}->input("stretchX".$groupname)
+        ->label(t("x-axis stretch factor (<1.0 squishes, >1.0 stretches)")." {stretchX}")
+        ->value($options['stretchX'])
+        ->rules("required|numrange[0]");
+      ${"group_size".$groupname}->input("stretchY".$groupname)
+        ->label(t("y-axis stretch factor (<1.0 squishes, >1.0 stretches)")." {stretchY}")
+        ->value($options['stretchY'])
+        ->rules("required|numrange[0]");
+
+      // group motion
+      ${"group_motion".$groupname} = $form->group("motion".$groupname)->label(t("Motion").$sep.$grouptext);
+      ${"group_motion".$groupname}->input("maxSpeed".$groupname)
+        ->label(t("max speed (typically 0.01-0.20)")." {maxSpeed}")
+        ->value($options['maxSpeed'])
+        ->rules("required|numrange[0]");
+      ${"group_motion".$groupname}->input("minSpeed".$groupname)
+        ->label(t("no mouseover speed (typically 0.00-0.01)")." {minSpeed}")
+        ->value($options['minSpeed'])
+        ->rules("required|numrange[0]");
+      ${"group_motion".$groupname}->input("deadZone".$groupname)
+        ->label(t("dead zone size (0.0-1.0 - 0.0 is none and 1.0 is entire cloud)")." {deadZone}")
+        ->value($options['deadZone'])
+        ->rules("required|numrange[0,1]");
+      ${"group_motion".$groupname}->input("decel".$groupname)
+        ->label(t("inertia (0.0-1.0 - 0.0 changes velocity instantly and 1.0 never changes)")." {decel}")
+        ->value($options['decel'])
+        ->rules("required|numrange[0,1]");
+      ${"group_motion".$groupname}->input("initialX".$groupname)
+        ->label(t("initial horizontal speed (between +/-1.0, as fraction of max speed)")." {initial}")
+        ->value($options['initial'][0])
+        ->rules("required|numrange[-1,1]");
+      ${"group_motion".$groupname}->input("initialY".$groupname)
+        ->label(t("initial vertical speed (between +/-1.0, as fraction of max speed)")." {initial}")
+        ->value($options['initial'][1])
+        ->rules("required|numrange[-1,1]");
+      ${"group_motion".$groupname}->input("maxInputZone".$groupname)
+        ->label(t("mouseover region beyond cloud (as fraction of cloud - 0.0 is tight around cloud)")." {maxInputZone}")
+        ->value($options['maxInputZone'])
+        ->rules("required|numrange[0]");
+
+      // group select
+      ${"group_select".$groupname} = $form->group("select".$groupname)->label(t("Tag selection").$sep.$grouptext);
+      ${"group_select".$groupname}->dropdown("outlineMethod".$groupname)
+        ->label(t("change of display for selected tag")." {outlineMethod}")
         ->options(array("colour"=>t("change text color"),"outline"=>t("add outline around text"),"block"=>t("add block behind text")))
         ->selected($options['outlineMethod']);
-      ${"group".$groupname}->input("outlineOffset".$groupname)
-        ->label(t($grouptext).$sep.t("outline offset (mouseover region size around text, in pixels)"))
+      ${"group_select".$groupname}->input("outlineOffset".$groupname)
+        ->label(t("mouseover region around tag text (in pixels - 0 is tight around text)")." {outlineOffset}")
         ->value($options['outlineOffset'])
-        ->error_message("not_valid", t("Outline offset must be a 1-2 digit number"))
-        ->rules("required|valid_numeric|length[1,2]");
-      ${"group".$groupname}->input("outlineColour".$groupname)
-        ->label(t($grouptext).$sep.t("outline color (mouseover color, as #hhhhhh)"))
+        ->rules("required|numrange[0]");
+      ${"group_select".$groupname}->input("outlineColour".$groupname)
+        ->label(t("color used for change of display (as #hhhhhh)")." {outlineColour}")
         ->value($options['outlineColour'])
-        ->error_message("not_valid", t("Outline color must be specified as #hhhhhh"))
-        ->rules("required|length[7]");
-      ${"group".$groupname}->input("textColour".$groupname)
-        ->label(t($grouptext).$sep.t("text color (as #hhhhhh, or empty to use theme color)"))
-        ->value($options['textColour'])
-        ->error_message("not_valid", t("Text color must be specified as empty or #hhhhhh"))
-        ->rules("length[0,7]");
-      ${"group".$groupname}->input("textFont".$groupname)
-        ->label(t($grouptext).$sep.t("text font family (empty to use theme font)"))
-        ->value($options['textFont'])
-        ->error_message("not_valid", t("Text font must be empty or a 0-40 character string"))
-        ->rules("length[0,40]");
-      ${"group".$groupname}->input("textHeight".$groupname)
-        ->label(t($grouptext).$sep.t("text height (in pixels)"))
-        ->value($options['textHeight'])
-        ->error_message("not_valid", t("Text height must be a 1-2 digit number"))
-        ->rules("required|valid_numeric|length[1,2]");
-      ${"group".$groupname}->checkbox("frontSelect".$groupname)
-        ->label(t($grouptext).$sep.t("only allow tags in front to be selected"))
+        ->rules('required|color');
+      ${"group_select".$groupname}->checkbox("frontSelect".$groupname)
+        ->label(t("only allow tags in front to be selected")." {frontSelect}")
         ->checked($options['frontSelect']);
-    
-    }
 
+      // group appearance
+      ${"group_appearance".$groupname} = $form->group("appearance".$groupname)->label(t("Appearance").$sep.$grouptext);
+      ${"group_appearance".$groupname}->input("textHeight".$groupname)
+        ->label(t("text height (in pixels)")." {textHeight}")
+        ->value($options['textHeight'])
+        ->rules("required|numrange[0]");
+      ${"group_appearance".$groupname}->input("textColour".$groupname)
+        ->label(t("text color (as #hhhhhh, or empty to use theme color)")." {textColour}")
+        ->value($options['textColour'])
+        ->rules('color');
+      ${"group_appearance".$groupname}->input("textFont".$groupname)
+        ->label(t("text font family (empty to use theme font family)")." {textFont}")
+        ->value($options['textFont'])
+        ->rules("length[0,60]");
+      ${"group_appearance".$groupname}->input("depth".$groupname)
+        ->label(t("depth/perspective of cloud (0.0-1.0 - 0.0 is none and >0.9 gets strange)")." {depth}")
+        ->value($options['depth'])
+        ->rules("required|numrange[0,1]");
+    }
     $form->submit("")->value(t("Save"));
 
     return $form;
