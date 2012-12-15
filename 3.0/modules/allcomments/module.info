@@ -1,0 +1,6 @@
+name = "AllComments"
+description = "This module shows all comments"
+version = 1
+author_name = "Vladimir Dimitrov"
+author_url = "http://vladko.org"
+info_url = "https://github.com/vkdimitrov/allcomments"
