@@ -1,0 +1,18 @@
+#allcomments {
+}
+
+#allcomments .allcomments-author {
+  color: #999;
+  height: 32px;
+  line-height: 32px;
+}
+
+#allcomments .allcomments-comment {
+  border-top: 1px solid;
+  color: #999;
+  height: 150px;
+  line-height: 32px;
+  padding-top: 10px;
+  padding-bottom: 15px;
+}
+
