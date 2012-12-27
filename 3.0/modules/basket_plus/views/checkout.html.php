@@ -87,7 +87,7 @@
       alert('Om te kunnen bestellen dient u akkoord te gaan met de Algemene voorwaarden.');
       return false;
     }
-		if (!isHotmail(doc.email.value)){
+    if (!isHotmail(doc.email.value)){
       alert('Attentie: U heeft een e-mailadres van Hotmail opgegeven. Als u na het afronden van de bestelling geen bevestiging ontvangt, controleer dan de Junk-folder.');
     }
     return true;
@@ -95,17 +95,17 @@
   //checkout with pickup
   function checkCheckout() {
     if (checkMandatory()){
-			if (checkTerms()) {
-				document.checkout.submit();
-			}
+      if (checkTerms()) {
+        document.checkout.submit();
+      }
     }
   }
   //checkout with e-mail
   function checkCheckoutMail() {
     if (checkMandatory()){
-			if (checkTerms()) {
-				document.checkout.submit();
-			}
+      if (checkTerms()) {
+	document.checkout.submit();
+      }
     }
   }
   //checkout with pack&post
