@@ -162,7 +162,7 @@ class basket_Core {
     $form->configure->paypal_account->value(basket::getPaypalAccount());
     $form->configure->currency->selected(basket::getCurrency());
     $form->configure->allow_pickup->checked(basket::isAllowPickup());
-		$form->configure->pickup_location->value(basket::getPickupLocation());
+    $form->configure->pickup_location->value(basket::getPickupLocation());
     $form->configure->order_prefix->value(basket::getOrderPrefix());
     $form->configure->order_bankaccount->value(basket::getOrderBankAccount());
     $form->configure->order_accountowner->value(basket::getOrderAccountOwner());
@@ -197,7 +197,7 @@ class basket_Core {
     $paypal_account = $form->configure->paypal_account->value;
     $currency = $form->configure->currency->selected;
     $allow_pickup = $form->configure->allow_pickup->value;
-		$pickup_location = $form->configure->pickup_location->value;
+    $pickup_location = $form->configure->pickup_location->value;
     $order_prefix = $form->configure->order_prefix->value;
     $order_bankaccount = $form->configure->order_bankaccount->value;
     $order_accountowner = $form->configure->order_accountowner->value;
@@ -291,12 +291,12 @@ class basket_Core {
 	* Get pickup location from user profile unless it's empty. Then get it from the general settings.
 	*/
   static function getPickupLocation(){
-		$user = identity::active_user();
-		$user_basket = ORM::factory("user_basket")->where("id", "=", $user->id)->find();
-		$pickup_location = $user_basket->pickup_location;
-		if (($pickup_location == "") or ($pickup_location == null)) {
-			$pickup_location = module::get_var("basket","pickup_location");}
-		return $pickup_location;
+    $user = identity::active_user();
+    $user_basket = ORM::factory("user_basket")->where("id", "=", $user->id)->find();
+    $pickup_location = $user_basket->pickup_location;
+    if (($pickup_location == "") or ($pickup_location == null)) {
+            $pickup_location = module::get_var("basket","pickup_location");}
+    return $pickup_location;
   }
 	
   static function getPaymentDetails(){
@@ -319,7 +319,7 @@ class basket_Core {
     return module::get_var("basket","allow_pickup");
   }
 
-		static function getOrderCompletePage(){
+  static function getOrderCompletePage(){
     return module::get_var("basket","order_complete_page");
   }
 
@@ -333,6 +333,7 @@ class basket_Core {
   static function getOrderPaidEmail(){
     return module::get_var("basket","order_paid_email");
   }
+
   static function getOrderPaidEmailSubject(){
     return module::get_var("basket","order_paid_email_subject");
   }
@@ -405,16 +406,16 @@ class basket_Core {
 
 //Added 2011-10-02
   static function replaceStringsAll($string, $order) {
-	$string_new = basket::replaceStrings($string,Array(
-            "name"=>$order->name,
-            "order_number"=> basket::getOrderPrefix().$order->id,
-            "total_cost" => basket::formatMoneyForMail($order->cost),
-            "order_details"=> $order->text,
-			"email"=>basket::getEmailAddress(),	
-            "pickup_location"=> basket::getPickupLocation(),
-            "website"=> basket::getWebsite(),
-            "webshop"=> basket::getWebshop()));
-	return $string_new;
+    $string_new = basket::replaceStrings($string,Array(
+        "name"=>$order->name,
+        "order_number"=> basket::getOrderPrefix().$order->id,
+        "total_cost" => basket::formatMoneyForMail($order->cost),
+        "order_details"=> $order->text,
+                    "email"=>basket::getEmailAddress(),	
+        "pickup_location"=> basket::getPickupLocation(),
+        "website"=> basket::getWebsite(),
+        "webshop"=> basket::getWebshop()));
+    return $string_new;
   }
 
 //Added 2011-10-02
@@ -428,13 +429,13 @@ class basket_Core {
 
 //Added 2011-10-02
   static function deliveryMethod($order) {
-//@TODO: configurable delivery methods
-  if ($order->method == Order_Model::DELIVERY_MAIL) {$delivery_method = "verstuurd per post";}
+  //@TODO: configurable delivery methods
+    if ($order->method == Order_Model::DELIVERY_MAIL) {$delivery_method = "verstuurd per post";}
     elseif ($order->method == Order_Model::DELIVERY_EMAIL) {$delivery_method = "verstuurd per e-mail";}
     elseif ($order->method == Order_Model::DELIVERY_PICKUP) {$delivery_method = "klaargelegd om af te halen bij ".basket::getPickupLocation()."";}
-	else {$delivery_method = "GEEN LEVERINGSWIJZE BEKEND";}
-	return $delivery_method;
-}
+    else {$delivery_method = "GEEN LEVERINGSWIJZE BEKEND";}
+    return $delivery_method;
+  }
 
   static function setWebshop($webshop){
     module::set_var("basket","webshop",$webshop);
@@ -542,7 +543,6 @@ class basket_Core {
   }
 
   static function createOrder($basket, $method){
-
 // fill customer record; added 2011-08-20
     $customer = ORM::factory("customer");
     $customer->title=$basket->title;
@@ -697,7 +697,7 @@ Bestelde foto's:";
   }
 
     public function send_invoice_copy($order){
-  // order confirmation mail to customer 
+  // copy of order confirmation mail to customer 
     $to = $order->email;
 	$from = "From: ".basket::getEmailAddress();
 	$subject = basket::replaceStringsAll(basket::getOrderCompleteEmailSubject(),$order);

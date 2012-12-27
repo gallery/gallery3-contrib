@@ -61,7 +61,7 @@ class basket_installer
    $db->query("CREATE TABLE IF NOT EXISTS {orders} (
                  `id` int(9) NOT NULL auto_increment,
                  `customerid` int(9) NOT NULL,
-				 `status` int(9) DEFAULT 0,
+		 `status` int(9) DEFAULT 0,
                  `name` varchar(512),
                  `email` varchar(256),
                  `cost` DECIMAL(10,2) default 0,
