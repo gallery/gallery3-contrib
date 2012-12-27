@@ -73,10 +73,8 @@ class Order_Model extends ORM {
         //return "offline";
         return "Overmaking - versturen per post";
       case 3:
-        //return "offline";
         return "Overmaking - versturen per e-mail";
       case 4:
-        //return "offline";
         return "Overmaking - afhalen";
 
       default:

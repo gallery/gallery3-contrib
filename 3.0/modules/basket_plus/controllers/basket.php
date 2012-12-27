@@ -187,8 +187,8 @@ class Basket_Controller extends Controller {
 
     if ($order->loaded()){
   //Send order copy 
-			basket::send_invoice_copy($order);
-			order_log::log($order,order_log::COPY_SENT);
+      basket::send_invoice_copy($order);
+      order_log::log($order,order_log::COPY_SENT);
     }
     url::redirect("basket/view_orders");
   }
@@ -202,16 +202,16 @@ class Basket_Controller extends Controller {
       if ($order->status == 1)
       {
         $order->status = 2;
-				order_log::log($order,order_log::PAID);
+	order_log::log($order,order_log::PAID);
       }
       elseif ($order->status == 10)
       {
         $order->status = 20;
-				order_log::log($order,order_log::PAID);
+	order_log::log($order,order_log::PAID);
       }
       $order->save();
   //Send payment confirmation 
-			basket::send_payment_confirmation($order);
+      basket::send_payment_confirmation($order);
     }
     url::redirect("basket/view_orders");
   }
@@ -282,38 +282,38 @@ class Basket_Controller extends Controller {
 
   private function getCheckoutForm(){
   
-		$basket = Session_Basket::get();
-		$ppon = $basket->ispp();
-		$postage = $basket->postage_cost();
+    $basket = Session_Basket::get();
+    $ppon = $basket->ispp();
+    $postage = $basket->postage_cost();
 
     //labels for fields
-		$input1_lbl=t("Title");
-		$input2_lbl=t("Initials/First name")."*";
-		$input3_lbl=t("Insertion");
-		$input4_lbl=t("Name")."*";
-		$input5_lbl=t("Street");
-		$input6_lbl=t("House Number / Name");
-		$input7_lbl=t("Suburb");
-		$input8_lbl=t("Postcode");
-		$input9_lbl=t("Town or City");
-		$input10_lbl=t("E-mail Address")."*";
-		$input11_lbl=t("Telephone Number")."*";
-		$input12_lbl=t("Child's Name");
-		$input13_lbl=t("Child's Group");
-		$input14_lbl=t("Additional comments");
-		$input15_lbl=t("I agree with the General Terms")."*";
+    $input1_lbl=t("Title");
+    $input2_lbl=t("Initials/First name")."*";
+    $input3_lbl=t("Insertion");
+    $input4_lbl=t("Name")."*";
+    $input5_lbl=t("Street");
+    $input6_lbl=t("House Number / Name");
+    $input7_lbl=t("Suburb");
+    $input8_lbl=t("Postcode");
+    $input9_lbl=t("Town or City");
+    $input10_lbl=t("E-mail Address")."*";
+    $input11_lbl=t("Telephone Number")."*";
+    $input12_lbl=t("Child's Name");
+    $input13_lbl=t("Child's Group");
+    $input14_lbl=t("Additional comments");
+    $input15_lbl=t("I agree with the General Terms")."*";
     //labels for mandatory fields with p&p
     if (($ppon) && ($postage > 0)){
-			$input5_lbl=$input5_lbl."*";
-			$input6_lbl=$input6_lbl."*";
-			$input8_lbl=$input8_lbl."*";
-			$input9_lbl=$input9_lbl."*";
+      $input5_lbl=$input5_lbl."*";
+      $input6_lbl=$input6_lbl."*";
+      $input8_lbl=$input8_lbl."*";
+      $input9_lbl=$input9_lbl."*";
     }
     //labels for mandatory fields with pickup
-		elseif ($postage > 0){
-			$input12_lbl=$input12_lbl."*";
-			$input13_lbl=$input13_lbl."*";
-		}
+    elseif ($postage > 0){
+      $input12_lbl=$input12_lbl."*";
+      $input13_lbl=$input13_lbl."*";
+    }
     $form = new Forge("basket/confirm", "", "post", array("id" => "checkout", "name" =>"checkout"));
     $group = $form->group("contact")->label(t("Contact Details"));
     $group->input("title")->label($input1_lbl)->id("title");
@@ -329,14 +329,14 @@ class Basket_Controller extends Controller {
     $group->input("phone")->label($input11_lbl)->id("phone");
     //show child fields only with pickup DISABLED
     if ((!$ppon) && ($postage > 1000)){
-			$group->input("childname")->label($input12_lbl)->id("childname");
-			$group->input("childgroup")->label($input13_lbl)->id("childgroup");
+      $group->input("childname")->label($input12_lbl)->id("childname");
+      $group->input("childgroup")->label($input13_lbl)->id("childgroup");
     }
-		else{
-			$group->hidden("childname")->label($input12_lbl)->id("childname");
-			$group->hidden("childgroup")->label($input13_lbl)->id("childgroup");
+    else{
+      $group->hidden("childname")->label($input12_lbl)->id("childname");
+      $group->hidden("childgroup")->label($input13_lbl)->id("childgroup");
     }
-		$group->input("comments")->label($input14_lbl)->id("comments");
+    $group->input("comments")->label($input14_lbl)->id("comments");
     $group->checkbox("agreeterms")->label($input15_lbl)->id("agreeterms");
     $group->hidden("paypal")->id("paypal");
 
@@ -402,8 +402,8 @@ class Basket_Controller extends Controller {
       $basket->suburb = $form->contact->suburb->value;
       $basket->email = $form->contact->email->value;
       $basket->phone = $form->contact->phone->value;
-			$basket->childname = $form->contact->childname->value;
-			$basket->childgroup = $form->contact->childgroup->value;
+      $basket->childname = $form->contact->childname->value;
+      $basket->childgroup = $form->contact->childgroup->value;
       $basket->comments = $form->contact->comments->value;
       $basket->agreeterms=$form->contact->agreeterms->value;
 
@@ -427,8 +427,8 @@ class Basket_Controller extends Controller {
 
         // redirect to paypal
 // NOT USED END ===============================
-      }else
-      {
+      }
+      else{
         $form = new Forge("basket/complete", "", "post", array("id" => "confirm", "name" =>"confirm"));
         $view = new View("confirm_order.html");
         $view->basket = $basket;
@@ -437,8 +437,7 @@ class Basket_Controller extends Controller {
         print $template;
       }
     }
-    else
-    {
+    else{
       die("Invalid confirmation!");
     }
   }
