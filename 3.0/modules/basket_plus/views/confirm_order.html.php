@@ -38,19 +38,19 @@
       </tr>
       <? foreach ($basket->contents as $key => $prod_details): ?>
         <tr id="" class="<?= text::alternate("gOddRow", "gEvenRow") ?>">
-			<td id="item-<?= $prod_details->item ?>" class="core-info ">
-			  <? $item = $prod_details->getItem(); ?>
-			  <? $width = $item->width; /* added JtK */?>
-			  <div id="basketThumb">
-				<a href="<?= $item->resize_url()?>" class="preview-image">
-				  <img src="<?= $item->thumb_url()?>" title="<?= $item->title?>" alt="<?= $item->title?>
-				<? if ($width < module::get_var("gallery", "resize_size")):/* added JtK */?>
-				  style="width=30px;"/></a>
-				<? else: ?>
-				  style="width=45px;"/></a>
-				<? endif; ?>
-			  </div>
-			</td>
+	  <td id="item-<?= $prod_details->item ?>" class="core-info ">
+	    <? $item = $prod_details->getItem(); ?>
+	    <? $width = $item->width; /* added JtK */?>
+	    <div id="basketThumb">
+		  <a href="<?= $item->resize_url()?>" class="preview-image">
+		    <img src="<?= $item->thumb_url()?>" title="<?= $item->title?>" alt="<?= $item->title?>
+		  <? if ($width < module::get_var("gallery", "resize_size")):/* added JtK */?>
+		    style="width=30px;"/></a>
+		  <? else: ?>
+		    style="width=45px;"/></a>
+		  <? endif; ?>
+	    </div>
+	  </td>
           <td id="item-<?= $prod_details->item ?>" class="core-info ">
             <?  $item = $prod_details->getItem(); ?>
             <div>
@@ -87,47 +87,47 @@
   <table>
     <tr>
       <td>
-				<? if ($basket->street <> ""):?>
-					<h3><label><?= t("Name and Address") ?></label></h3>
-				<? else :?>
-					<h3><label><?= t("Name") ?></label></h3>
-				<? endif;?>
-				<?= basket::createFullName($basket) ?><br/>
-				<? if ($basket->street <> ""):?>
-					<?= $basket->street ?>&nbsp;<?= $basket->house ?><br/>
-					<?= $basket->postcode ?>&nbsp;<?= $basket->town ?><br/>
-				<? endif;?>
-				<br/>
-				<label><?= t("E-mail Address") ?>: </label><?= $basket->email ?><br/>
-				<? if ($basket->phone <> ""):?>
-					<label><?= t("Phone") ?>: </label><?= $basket->phone ?><br/>
-				<? endif;?>
-				<br/>
-				<? $postage = $basket->postage_cost();
-					$ppon = $basket->ispp();?>
-				<label><?= t("Delivery")?>:</label>&nbsp;
-				<? if (($ppon) && ($postage > 0)):?>
-						<?= t("Delivery by mail") ?><br/>
-				<? elseif ($postage > 0):?>
-					<?  $pickup_location = basket::getPickupLocation(); ?>
-					<?= t("Pickup at")." ".$pickup_location ?><br/>
-				<? else:?>
-					<?= t("Delivery by e-mail") ?><br/>
-				<? endif;?>
-				<br/>
-				<label><input type="checkbox" checked=checked disabled=disabled/> <?= t(" I agree with the General Terms")?></label>
+	<? if ($basket->street <> ""):?>
+		<h3><label><?= t("Name and Address") ?></label></h3>
+	<? else :?>
+		<h3><label><?= t("Name") ?></label></h3>
+	<? endif;?>
+	<?= basket::createFullName($basket) ?><br/>
+	<? if ($basket->street <> ""):?>
+		<?= $basket->street ?>&nbsp;<?= $basket->house ?><br/>
+		<?= $basket->postcode ?>&nbsp;<?= $basket->town ?><br/>
+	<? endif;?>
+	<br/>
+	<label><?= t("E-mail Address") ?>: </label><?= $basket->email ?><br/>
+	<? if ($basket->phone <> ""):?>
+		<label><?= t("Phone") ?>: </label><?= $basket->phone ?><br/>
+	<? endif;?>
+	<br/>
+	<? $postage = $basket->postage_cost();
+		$ppon = $basket->ispp();?>
+	<label><?= t("Delivery")?>:</label>&nbsp;
+	<? if (($ppon) && ($postage > 0)):?>
+			<?= t("Delivery by mail") ?><br/>
+	<? elseif ($postage > 0):?>
+		<?  $pickup_location = basket::getPickupLocation(); ?>
+		<?= t("Pickup at")." ".$pickup_location ?><br/>
+	<? else:?>
+		<?= t("Delivery by e-mail") ?><br/>
+	<? endif;?>
+	<br/>
+	<label><input type="checkbox" checked=checked disabled=disabled/> <?= t(" I agree with the General Terms")?></label>
       </td>
       <td>
-				<? if ($basket->childname <> ""):?>
-					<br/>
-					<label><?= t("Child's Name")?>:</label>&nbsp;<?= $basket->childname ?><br/>
-					<label><?= t("Child's Group")?>:</label>&nbsp;<?= $basket->childgroup ?><br/>
-				<? endif;?>
-				<? if ($basket->comments <> ""):?>
-					<br/>
-					<b><label>Opmerking:</label></b> <?= $basket->comments ?>
-					<br/>
-				<? endif;?>
+	<? if ($basket->childname <> ""):?>
+		<br/>
+		<label><?= t("Child's Name")?>:</label>&nbsp;<?= $basket->childname ?><br/>
+		<label><?= t("Child's Group")?>:</label>&nbsp;<?= $basket->childgroup ?><br/>
+	<? endif;?>
+	<? if ($basket->comments <> ""):?>
+		<br/>
+		<b><label>Opmerking:</label></b> <?= $basket->comments ?>
+		<br/>
+	<? endif;?>
       </td>
     </tr>
   </table>
