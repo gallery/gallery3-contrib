@@ -74,16 +74,16 @@ class Gallery1DataParser {
          * We renamed User.php to Gallery_User.php in v1.2, so port forward
          * any saved user objects.
          */
-        if (!strcmp(substr($tmp, 0, 10), 'O:4:"user"')) {
-            $tmp = str_replace('O:4:"user"', 'O:12:"gallery_user"', $tmp);
+        if (stripos($tmp, 'O:4:"user"')!==false) {
+            $tmp = str_ireplace('O:4:"user"', 'O:12:"gallery_user"', $tmp);
         }
         
         /*
          * Gallery3 already contains a class named Image so
          * we need to rename the G1 Image class to G1Img here
          */
-        if (strpos($tmp, 'O:5:"Image"')!==false) {
-            $tmp = str_replace('O:5:"Image"', 'O:5:"G1Img"', $tmp);
+        if (stripos($tmp, 'O:5:"image"')!==false) {
+            $tmp = str_ireplace('O:5:"image"', 'O:5:"G1Img"', $tmp);
         }
 
         $object = unserialize($tmp);
