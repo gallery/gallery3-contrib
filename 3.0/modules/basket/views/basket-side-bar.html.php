@@ -4,6 +4,7 @@
      ?><a class="g-button ui-icon-left ui-state-default ui-corner-all ui-state-hover" href="<?= url::site("basket/view_Orders") ?>" title="<?= t("View Orders") ?>"><span class="ui-icon ui-icon-clipboard"></span><?= t("View Orders")?></a><?
   }
 
+    if (isset($theme->item)) {
 
     $item = $theme->item();
      if ($item->is_photo() && product::isForSale($theme->item()->id)){
@@ -12,7 +13,7 @@
 title="<?= t("Add To Basket")?>"><span class="ui-icon ui-icon-plusthick"></span><?= t("Add To Basket") ?></a></p>
 <?
      }
-
+}
 
   if (isset($basket) && isset($basket->contents) && ($basket->size() > 0)) {
     ?><div id="sidebar-basket"><table id="gBasketList"><tr><th><?= t("Product") ?></th><th><?= t("Cost") ?></th><th></th></tr><?

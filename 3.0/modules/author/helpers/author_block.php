@@ -23,26 +23,35 @@ class author_block_Core {
 	}
 	
 	static function get($block_id, $theme) {
+		$block = "";
+
 		$item = $theme->item;
-		if ($block_id != 'author' || $item->is_album() ) { 
-			return '';
+
+		if ((!isset($theme->item)) || ($item->is_album())) { 
+			return;
 		}
-		$record = db::build()
-				->select("author")
-				->from("author_records")
-				->where("item_id", "=", $item->id)
-				->execute()
-				->current();
+
+		switch ($block_id) {
+		case "author":
+			$record = ORM::factory("author_record")->where("item_id", "=", $item->id)->find();
+			
+			$byline = "";
+			if ($record->loaded()) {
+				$byline = $record->author;
+			}
+
+			if ($byline == '') {
+				$byline = author::fix($item);
+			}
 		
-		$byline = $record->author;
-		if ($byline == '') {
-			$byline = author::fix($item);
+			$block = new Block();
+			$block->css_id = "g-author";
+			$block->content = new View("author_block.html");
+			$block->content->author = $byline;
+		
+			break;
 		}
-		
-		$block = new Block();
-		$block->content = new View("author_block.html");
-		$block->content->author = $byline;
-		
 		return $block;
+
 	}
 }

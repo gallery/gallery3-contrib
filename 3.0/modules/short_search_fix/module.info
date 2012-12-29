@@ -1,6 +1,6 @@
 name = "Short Search Fix"
 description = "Allows 2-3 letter searches to be performed without requiring SQL system variable modification (useful for shared hosting)."
-version = 1
+version = 2
 author_name = "Shad Laws"
 author_url = ""
 info_url = "http://codex.gallery2.org/Gallery3:Modules:short_search_fix"

@@ -23,36 +23,101 @@ class search extends search_Core {
    * few terms in the query.
    */
   static function add_query_terms($q) {
-    $MAX_TERMS = 5;
-
+    $MAX_TERMS = 5; // used to limit the max number of extra terms
+    $prefix = module::get_var("short_search_fix","search_prefix"); // short search fix prefix
     // strip leading, trailing, and extra whitespaces
     $terms = preg_replace('/^\s+/', '', $q);
     $terms = preg_replace('/\s+$/', '', $terms);
     $terms = preg_replace('/\s\s+/', ' ', $terms);
-
-    $terms = explode(" ", $terms, $MAX_TERMS);
-    //$terms = explode(" ", $q, $MAX_TERMS); // commented out from original function
-    for ($i = 0; $i < min(count($terms), $MAX_TERMS - 1); $i++) {
-      // Don't wildcard quoted or already wildcarded terms
-      if ((substr($terms[$i], 0, 1) != '"') && (substr($terms[$i], -1, 1) != "*")) {
-        $terms[] = rtrim($terms[$i], "s") . "*";
+    // explode terms, initialize the loop
+    $terms = explode(" ", $terms); // array
+    $termsextra = ""; // string, not array
+    $numtermsextra = 0;
+    $flagwild = 1;
+    $countquote = 0;
+    $countparen = 0;
+    // run the loop for each term
+    foreach ($terms as &$term) {
+      $countprefix = 0;
+      $countsuffix = 0;
+      $flagopenparen = 0;
+      $flagcloseparen = 0;
+      // set flagwild to 0 if we're over MAX_TERMS (only runs if we're not in the middle of parens/quotes)
+      if ($countparen == 0 && $countquote == 0 && ($numtermsextra >= ($MAX_TERMS - 1))) {
+        $flagwild = 0;
+      }
+      // find opening special characters
+      while ((substr($term, $countprefix, 1) == "(" ||
+              substr($term, $countprefix, 1) == '"' ||
+              substr($term, $countprefix, 1) == "+" ||
+              substr($term, $countprefix, 1) == "-" ||
+              substr($term, $countprefix, 1) == "~" ||
+              substr($term, $countprefix, 1) == "<" ||
+              substr($term, $countprefix, 1) == ">") &&
+             ($countprefix+$countsuffix) < strlen($term)) {
+        if (substr($term, $countprefix, 1) == '"') {
+          $countquote++;
+          $flagwild = 0;
+        }
+        if (substr($term, $countprefix, 1) == "(") {
+          $countparen++;
+          $flagopenparen = 1;
+        }
+        $countprefix++;
+      }
+      // reset flagwild to 1 if we're under MAX_TERMS (only runs if we're not in the middle of quotes, and forced to run if we're still in paren)
+      if ($countquote == 0 && ($countparen > 0 || $numtermsextra < ($MAX_TERMS - 1))) {
+        $flagwild = 1;
+      }
+      // find closing special characters
+      while ((substr($term, -$countsuffix-1, 1) == ")" ||
+              substr($term, -$countsuffix-1, 1) == '"') &&
+             ($countprefix+$countsuffix) < strlen($term)) {
+        if (substr($term, -$countsuffix-1, 1) == '"') {
+          $countquote = max(0, $countquote-1);
+        }
+        if (substr($term, -$countsuffix-1, 1) == ")") {
+          $countparen = max(0, $countparen-1);
+          $flagcloseparen = 1;
+        }
+        $countsuffix++;
+      }
+      // split term
+      $termprefix = substr($term, 0, $countprefix);
+      $termterm = substr($term."A", $countprefix, -$countsuffix-1); // artificial padded A assures that the third argument is always negative
+      $termsuffix = substr($term, -$countsuffix, $countsuffix);
+      // add extra terms with wildcards
+      if ($flagwild == 1 && 
+          substr($termterm, -1, 1) != "*" &&
+          strlen($termterm) > 0) {
+        // @todo: make this i18n friendly with the plural character (only works here with s)
+        $termsextra = $termsextra . $termprefix . $prefix . rtrim($termterm, "s") . "*" . $termsuffix . " ";
+        $numtermsextra++;
+      } elseif ($flagopenparen == 1 && $flagcloseparen == 0) {
+        $termsextra = $termsextra . str_replace('"', '', $termprefix);
+      } elseif ($flagopenparen == 0 && $flagcloseparen == 1) {
+        $termsextra = preg_replace('/\s+$/', '', $termsextra) . ") ";
+      }
+      // add short search prefixes
+      if (strlen($termterm) > 0) {
+        $term = $termprefix . $prefix . $termterm . $termsuffix;
       }
     }
-    //return implode(" ", $terms); // commented out from original function
-
-  /**
-   * Add the search prefix to the start of every word.  
-   */
-    $prefix = module::get_var("short_search_fix","search_prefix");
+    // implode terms, trim termsextra trailing space (if it exists)
     $terms = implode(" ", $terms);
-    $terms = preg_replace('/^\s+/', '', $terms); // the implode seems to add this back in
-    // add the prefixes
-    if (preg_match('/\w/',$terms) > 0) {
-      $terms = ' ' . $terms;
-      $terms = str_replace(' ', ' '.$prefix, $terms);
-      $terms = str_replace(' '.$prefix.'"', ' '.'"'.$prefix, $terms);
-      $terms = substr($terms,1);
+    $termsextra = preg_replace('/\s+$/', '', $termsextra);
+    // add extra closing quotes and parentheses
+    while ($countquote > 0) {
+      $terms = $terms.'"';
+      $termsextra = $termsextra.'"';
+      $countquote--;
     }
-    return $terms;
+    while ($countparen > 0) {
+      $terms = $terms.")";
+      $termsextra = $termsextra.")";
+      $countparen--;
+    }
+    // all done!
+    return ($terms." ".$termsextra);
   }
 }
