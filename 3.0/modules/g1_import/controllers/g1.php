@@ -51,7 +51,7 @@ class G1_Controller extends Controller {
     $pos = strrpos($path, '/');
     if($pos!==false) {
       // Get ItemX into g1_item
-      $g1_item = substr($path,$pos+1);
+      $g1_item = substr($path,$pos+1,strlen($path));
       // Get FolderX into g1_item
       $g1_album = substr($path,0,$pos);
     }
@@ -69,7 +69,12 @@ class G1_Controller extends Controller {
       $g1_item = substr($g1_item, 0, $pos);
     }
     
-     $mapping = ORM::factory('g1_map')->where('album', '=', $g1_album)->where('item', '=', $g1_item)->where('resource_type', '=', $album ? 'album':'item')->find();
+    if(($pos=strrpos($g1_item, '.sized'))!==false||($pos=strrpos($g1_item, '.thumb'))!==false) {
+      $mapping = ORM::factory('g1_map')->where('album', '=', $g1_album)->where('item', '=', substr($g1_item,0, $pos))->where('resource_type', '=', $album ? 'album':'item')->find();
+    }
+    else {
+      $mapping = ORM::factory('g1_map')->where('album', '=', $g1_album)->where('item', '=', $g1_item)->where('resource_type', '=', $album ? 'album':'item')->find();
+    }
     if(!$mapping->loaded()) {
       throw new Kohana_404_Exception();
     }
@@ -80,7 +85,15 @@ class G1_Controller extends Controller {
     access::required('view', $item);
 
     if($binary) {
-      url::redirect($item->file_url(true), '301');
+		  if(strrpos($g1_item, '.sized')!==false) {
+      	url::redirect($item->resize_url(true), '301');
+      }
+		  else if(strrpos($g1_item, '.thumb')!==false) {
+      	url::redirect($item->thumb_url(true), '301');
+      }
+      else {
+      	url::redirect($item->file_url(true), '301');
+      }
     }
     else {
       $url = $item->abs_url();
