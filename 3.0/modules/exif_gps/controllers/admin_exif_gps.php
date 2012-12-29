@@ -76,11 +76,11 @@ class Admin_EXIF_GPS_Controller extends Admin_Controller {
       ->label(t("Maximum Auto-Zoom Level:"))
       ->value(module::get_var("exif_gps", "googlemap_max_autozoom"));
     $gps_global_group->checkbox("toolbar_map_album")->label(t("Show \"Map this album\" icon?"))
-      ->checked(module::get_var("exif_gps", "toolbar_map_album", false));	
+      ->checked(module::get_var("exif_gps", "toolbar_map_album", false));
     $gps_global_group->checkbox("toolbar_map_user")->label(t("Show \"Map this user\" icon?"))
-      ->checked(module::get_var("exif_gps", "toolbar_map_user", false));	
+      ->checked(module::get_var("exif_gps", "toolbar_map_user", false));
     $gps_global_group->checkbox("restrict_maps")->label(t("Restrict maps to registered users?"))
-      ->checked(module::get_var("exif_gps", "restrict_maps", false));	
+      ->checked(module::get_var("exif_gps", "restrict_maps", false));
 
     // Create a group for marker cluster settings
     $gps_markercluster = $form->group("markercluster")
