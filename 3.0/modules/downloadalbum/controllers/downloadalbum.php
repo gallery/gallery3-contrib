@@ -216,7 +216,9 @@ class downloadalbum_Controller extends Controller {
    */
   private function prepareOutput() {
     // Close output buffers
-    Kohana::close_buffers(FALSE);
+    while (ob_get_level() > 0) {
+      ob_end_clean();
+    }
     // Clear any output
     Event::add('system.display', create_function('', 'Kohana::$output = "";'));
   }
