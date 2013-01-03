@@ -20,6 +20,7 @@
 
 class editcaptured_theme_Core {
   static function head($theme) {
+      $theme->css("editcaptured.css");
     if (!$theme->item()) {
       return;
     }
