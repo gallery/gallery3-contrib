@@ -20,12 +20,6 @@
 
 class editcaptured_theme_Core {
   static function head($theme) {
-    if (!$theme->item()) {
-      return;
-    }
-    $item = $theme->item();
-    if ( $item && access::can("edit", $item) ) {
-      $theme->css("editcaptured.css");
-    }
+    $theme->css("editcaptured.css");
   }
 }

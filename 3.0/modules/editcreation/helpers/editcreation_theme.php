@@ -20,12 +20,6 @@
 
 class editcreation_theme_Core {
   static function head($theme) {
-    if (!$theme->item()) {
-      return;
-    }
-    $item = $theme->item();
-    if ( $item && access::can("edit", $item) ) {
-      return $theme->css("editcreation.css");
-    }
+    return $theme->css("editcreation.css");
   }
 }
