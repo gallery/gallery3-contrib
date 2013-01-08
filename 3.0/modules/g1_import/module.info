@@ -1,0 +1,7 @@
+name = "Gallery1 Import"
+description = "Import your Gallery 1 content into Gallery 3"
+version = 1
+author_name = "Thomas E. Horner"
+author_url = "http://www.t-horner.com"
+info_url = "http://www.t-horner.com/g1_import"
+discuss_url = "http://gallery.menalto.com/forum_module_g1_import"
