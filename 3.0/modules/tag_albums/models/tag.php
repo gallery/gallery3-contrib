@@ -141,7 +141,7 @@ class Tag_Model_Core extends ORM {
 
   /**
    * Return the server-relative url to this item, eg:
-   *   /gallery3/index.php/tags/35
+   *   /gallery3/index.php/tag_albums/tags/35/0/Bob
    *
    * @param string $query the query string (eg "page=3")
    */
@@ -152,6 +152,24 @@ class Tag_Model_Core extends ORM {
       $album_id = 0;
     }
     $url = url::site("/tag_albums/tag/{$this->id}/{$album_id}/" . urlencode($this->name));
+    if ($query) {
+      $url .= "?$query";
+    }
+    return $url;
+  }
+
+  /**
+   * Return the full url to this item, eg:
+   *   http://example.com/gallery3/index.php/tag_albums/tag/35/0/Bob
+   *
+   * @param string $query the query string (eg "page=3")
+   */
+  public function abs_url($query=null) {
+    $album_id = Input::instance()->get("album");
+    if (!($album_id)) {
+      $album_id = 0;
+    }
+    $url = url::abs_site("/tag_albums/tag/{$this->id}/{$album_id}/" . urlencode($this->name));
     if ($query) {
       $url .= "?$query";
     }
