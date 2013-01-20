@@ -39,7 +39,7 @@ class jhead_event_Core {
     }
 
     // Invoke jhead
-    if ($error = exec(escapeshellcmd($binary).' -q -autorot '.$item->file_path())) {
+    if ($error = exec(escapeshellcmd($binary).' -q -autorot '.escapeshellarg($item->file_path()))) {
       // @todo throw an exception ?
       Kohana::log('error', 'Error during execution of jhead');
     }
