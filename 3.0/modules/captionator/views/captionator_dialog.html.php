@@ -3,7 +3,7 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $('form input[name^=tags]').ready(function() {
-          $('form input[name^=tags]').autocomplete(
+          $('form input[name^=tags]').gallery_autocomplete(
             "<?= url::site("/tags/autocomplete") ?>",
             {max: 30, multiple: true, multipleSeparator: ',', cacheLength: 1});
         });
