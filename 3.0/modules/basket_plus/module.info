@@ -1,0 +1,3 @@
+name = "Shopping Basket"
+description = "Provides a simple shopping basket and checkout with paypal integration"
+version = 5
