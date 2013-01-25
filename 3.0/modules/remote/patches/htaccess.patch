@@ -1,15 +1,21 @@
 diff --git a/.htaccess b/.htaccess
-index 1d8bcb3..8229928 100644
+index d255efa..68b66bb 100644
 --- a/.htaccess
 +++ b/.htaccess
-@@ -56,3 +56,10 @@
- #   RewriteRule ^(.*)$ index.php?kohana_uri=$1 [QSA,PT,L]
- #   RewriteRule ^$ index.php?kohana_uri=$1 [QSA,PT,L]
- # </IfModule>
-+
+@@ -22,6 +84,16 @@
+   SecFilterScanPOST Off
+ </IfModule>
+ 
 +# URL rewriting for Gallery Remote
-+#<IfModule mod_rewrite.c>
-+#  RewriteEngine On
-+#  RewriteBase /~bharat/gallery3/
-+#  RewriteRule ^gallery_remote2.php$ index.php?kohana_uri=/remote [QSA,PT,L]
-+#</IfModule>
++<IfModule mod_rewrite.c>
++      Options +FollowSymLinks
++      RewriteEngine On
++      RewriteBase /gallery/
++      ErrorDocument 404 default
++      RewriteRule ^main.php(.*)$ / [QSA,L,R=404]
++      RewriteRule ^gallery_remote2.php(.*)$ index.php?kohana_uri=/gallery_remote$1 [QSA,PT,L]
++</IfModule>
++
+ # Increase security by uncommenting this block.  It keeps browsers
+ # from seeing support files that they shouldn't have access to.  We
+ # comment this out because Apache2 requires some minor configuration
