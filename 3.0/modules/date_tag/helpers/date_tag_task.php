@@ -41,7 +41,7 @@ class date_tag_task_Core {
 
 			switch ($task->get("mode", "init")) {
 			case "init":
-				$task->set("total", ORM::factory("item")->count_all());
+				$task->set("total", ORM::factory("item")->where("type", "=", "photo")->count_all());
 				$task->set("mode", "date_tag_all");
 				$task->set("completed", 0);
 				$task->set("last_item_id", 0);
