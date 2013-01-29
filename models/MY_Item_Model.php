@@ -32,9 +32,11 @@ class Item_Model extends Item_Model_Core {
         <param name=\"movie\" value=\"$swfUrl?panoSrc=$img_url&FOV=40&minFOV=20&maxFOV=40&panHFOV=$panoramaHFOV&panVFOV=$panorama->VFOV\" />
         <param name=\"quality\" value=\"high\" />
         <param name=\"BGCOLOR\" value=\"#AAAAAA\" />
+        <param name=\"wmode\" value=\"transparent\" />
         <embed src=\"$swfUrl?panoSrc=$img_url&FOV=40&minFOV=20&maxFOV=40&panHFOV=$panoramaHFOV&panVFOV=$panoramaVFOV\"
         allowFullScreen=\"true\"
-        width=\"640\" height=\"480\" quality=\"high\" 
+		width=\"640\" height=\"480\" quality=\"high\"
+		wmode=\"transparent\"
         pluginspage=\"http://www.macromedia.com/go/getflashplayer\"
         type=\"application/x-shockwave-flash\" bgcolor=\"#DDDDDD\">
         </embed>
