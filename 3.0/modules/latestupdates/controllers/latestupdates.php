@@ -392,6 +392,7 @@ class latestupdates_Controller extends Controller {
                  "previous_item" => $previous_item,
                  "next_item" => $next_item,
                  "sibling_count" => $count,
+                 "siblings_callback" => array("latestupdates_Controller::items", array($str_display_type, $user_id)),
                  "breadcrumbs" => $breadcrumbs
                 );
   }
