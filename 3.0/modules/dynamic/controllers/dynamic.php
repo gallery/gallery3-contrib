@@ -94,6 +94,7 @@ class Dynamic_Controller extends Controller {
                  "previous_item" => $previous_item,
                  "next_item" => $next_item,
                  "sibling_count" => dynamic::get_display_count($album_defn),
+                 "siblings_callback" => array("dynamic::items", array($album_defn->key_field)),
                  "breadcrumbs" => array(
                    Breadcrumb::instance($root->title, $root->url())->set_first(),
                    Breadcrumb::instance($album_defn->title,
