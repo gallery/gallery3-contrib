@@ -19,13 +19,14 @@
  */
 class date_tag_installer {
   static function install() {
-    module::set_version("date_tag", 1);
+    module::set_version("date_tag", 2);
   }
 
   static function upgrade($version) {
     if ($version == 1) {
-      module::set_version("date_tag", $version = 1);
+      module::set_var("date_tag", "template", "F, Y");
     }
+    module::set_version("date_tag", $version = 2);
   }
 
   static function deactivate() {
