@@ -20,7 +20,7 @@
 class date_tag {
   static function tag_item($item) {
 
-    if ($item->is_photo() && $item->captured) {
+    if (!$item->is_album() && $item->captured) {
       $date_format = module::get_var("date_tag", "template");
       foreach (explode(",", date($date_format, $item->captured)) as $tag_name) {
         $tag_name = trim($tag_name);
