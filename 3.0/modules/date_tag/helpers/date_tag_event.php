@@ -18,6 +18,15 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class date_tag_event_Core {
+  static function admin_menu($menu, $theme) {
+    $menu
+      ->get("settings_menu")
+      ->append(Menu::factory("link")
+      ->id("date_tag_menu")
+      ->label(t("Date Tag"))
+      ->url(url::site("admin/date_tag")));
+  }
+
   static function item_created($item) {
     date_tag::tag_item($item);
   }
