@@ -1,0 +1,7 @@
+name = "Movie Tools"
+description = "Add support for custom movie thumbs and additional movie formats"
+version = 1
+author_name = "Shad Laws"
+author_url = ""
+info_url = "http://codex.galleryproject.org/Gallery3:Modules:movie_tools"
+discuss_url = ""
