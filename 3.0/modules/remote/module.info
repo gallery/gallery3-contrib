@@ -1,7 +1,7 @@
 name = "Gallery Remote"
-description = "Use Gallery Remote and other similar applications to control your Gallery"
+description = "Use Gallery Remote and other similar applications to control Gallery 3"
 version = 1
-author_name = ""
-author_url = ""
-info_url = "http://codex.gallery2.org/Gallery3:Modules:remote"
+author_name = "Thomas E. Horner"
+author_url = "http://www.t-horner.com"
+info_url = "http://www.t-horner.com/g3_remote"
 discuss_url = "http://gallery.menalto.com/forum_module_remote"

@@ -1,13 +1,11 @@
-diff --git a/system/helpers/cookie.php b/system/helpers/cookie.php
-index 901b6d8..df276ee 100644
---- a/system/helpers/cookie.php
-+++ b/system/helpers/cookie.php
-@@ -45,7 +45,7 @@ class cookie_Core {
- 		// Expiration timestamp
- 		$expire = ($expire == 0) ? 0 : time() + (int) $expire;
- 
--		return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
-+		return setcookie($name, $value, $expire, $path, $domain, $secure, 0);
- 	}
- 
- 	/**
+diff --git a/modules/gallery/config/cookie.php b/modules/gallery/config/cookie.php
+index a865231..a2a0af7 100644
+--- a/modules/gallery/config/cookie.php
++++ b/modules/gallery/config/cookie.php
+@@ -45,4 +45,4 @@ $config['secure'] = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
+  * Enable this option to disable the cookie from being accessed when using a
+  * secure protocol. This option is only available in PHP 5.2 and above.
+  */
+-$config['httponly'] = true;
+\ No newline at end of file
++$config['httponly'] = false;

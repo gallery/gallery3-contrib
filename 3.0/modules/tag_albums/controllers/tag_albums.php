@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2012 Bharat Mediratta
+ * Copyright (C) 2000-2013 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -379,7 +379,7 @@ class tag_albums_Controller extends Controller {
     $template->page_title = $display_tag->name;
     $template->content = new View("dynamic.html");
     $template->content->title = $display_tag->name;
-    $template->content->description = $page_description;
+    $template->content->description = isset($page_description) ? $page_description : "";
 
     $template->set_global("all_siblings", $this->_get_records(Array($id), $count, 0, "items." . $sort_page_field, $sort_page_direction, "OR", false));
     print $template;
@@ -603,7 +603,9 @@ class tag_albums_Controller extends Controller {
     $next_item = "";
     $position = 0;
     $dynamic_siblings = "";
+    $siblings_callback_param=array();
     if ($tag_id > 0) {	
+      $album_tags_search_type = "";
       $sibling_count = tag_albums_Controller::_count_records(Array($tag_id), "OR", false);
       $position = tag_albums_Controller::_get_position($item->$sort_page_field, $item->id, Array($tag_id), "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
       if ($position > 1) {
@@ -617,6 +619,7 @@ class tag_albums_Controller extends Controller {
         $next_item = $next_item_object[0];
       }
       $dynamic_siblings = tag_albums_Controller::_get_records(Array($tag_id), $sibling_count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
+      $siblings_callback_param= array(Array($tag_id), $sibling_count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
     } else {
       $tag_ids = Array();
       foreach (explode(",", $album_tags[0]->tags) as $tag_name) {
@@ -639,6 +642,7 @@ class tag_albums_Controller extends Controller {
         $next_item = $next_item_object[0];
       }
       $dynamic_siblings = tag_albums_Controller::_get_records($tag_ids, $sibling_count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
+      $siblings_callback_param= array($tag_ids, $sibling_count, 0, "items." . $sort_page_field, $sort_page_direction, $album_tags_search_type, false);
     }
 
     // Set up breadcrumbs
@@ -674,6 +678,7 @@ class tag_albums_Controller extends Controller {
                  "is_tagalbum_page" => true,
                  "dynamic_siblings" => $dynamic_siblings,
                  "sibling_count" => $sibling_count,
+                 "siblings_callback" => array("tag_albums_Controller::get_siblings", $siblings_callback_param),
                  "breadcrumbs" => $tag_album_breadcrumbs);
   }
 
@@ -754,6 +759,10 @@ class tag_albums_Controller extends Controller {
 
     return ($position);
   }
+
+  public function get_siblings($tag_ids, $page_size, $offset, $sort_field, $sort_direction, $search_type, $include_albums) {
+	  return tag_albums_Controller::_get_records($tag_ids, $page_size, $offset, $sort_field, $sort_direction, $search_type, $include_albums);
+  } 
 
   private function _get_records($tag_ids, $page_size, $offset, $sort_field, $sort_direction, $search_type, $include_albums) {
     // Returns an array of items to be displayed on the current page.

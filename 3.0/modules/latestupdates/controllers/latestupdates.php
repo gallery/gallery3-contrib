@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2012 Bharat Mediratta
+ * Copyright (C) 2000-2013 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -392,6 +392,7 @@ class latestupdates_Controller extends Controller {
                  "previous_item" => $previous_item,
                  "next_item" => $next_item,
                  "sibling_count" => $count,
+                 "siblings_callback" => array("latestupdates_Controller::items", array($str_display_type, $user_id)),
                  "breadcrumbs" => $breadcrumbs
                 );
   }
