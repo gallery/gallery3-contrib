@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2012 Bharat Mediratta
+ * Copyright (C) 2000-2013 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,6 +107,15 @@ class register_Core {
     $new_user->admin = false;
     $new_user->guest = false;
     $new_user->save();
+
+    $group_id = module::get_var("registration", "default_group");
+    if ($group_id != null) {
+        $default_group = group::lookup($group_id);
+        if ($default_group != null) {
+            $default_group->add($new_user);
+            $default_group->save();
+        }
+    }
 
     $user->hash =  md5(uniqid(mt_rand(), true));
     $user->state = 2;
