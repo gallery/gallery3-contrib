@@ -1,0 +1,7 @@
+name = PDF
+description = "Add PDF support for uploading, viewing, and generating thumbnails."
+version = 1
+author_name = "Shad Laws"
+author_url = ""
+info_url = "http://codex.galleryproject.org/Gallery3:Modules:pdf"
+discuss_url = ""
