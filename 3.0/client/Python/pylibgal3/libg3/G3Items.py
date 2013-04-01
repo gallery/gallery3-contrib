@@ -22,7 +22,6 @@ __all__ = ['Album' , 'Image' , 'LocalImage' , 'RemoteImage' , 'LocalMovie' ,
     'RemoteMovie' , 'getItemFromResp' , 'getItemsFromResp']
 
 from datetime import datetime
-from base64 import b64encode
 import weakref , types , os , mimetypes , re
 try:
     import json
