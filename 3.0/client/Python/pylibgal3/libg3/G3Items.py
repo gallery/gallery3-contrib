@@ -22,6 +22,7 @@ __all__ = ['Album' , 'Image' , 'LocalImage' , 'RemoteImage' , 'LocalMovie' ,
     'RemoteMovie' , 'getItemFromResp' , 'getItemsFromResp']
 
 from datetime import datetime
+from base64 import b64encode
 import weakref , types , os , mimetypes , re
 try:
     import json
@@ -307,6 +308,13 @@ class LocalImage(Image):
         self.Filename = os.path.basename(self.path)
         self.fh = None
         self.type = 'photo'
+
+    def __del__(self):
+        if self.fh:
+            try:
+                self.fh.close()
+            except:
+                pass
 
     def setContentType(self , ctype=None):
         if ctype is not None:
