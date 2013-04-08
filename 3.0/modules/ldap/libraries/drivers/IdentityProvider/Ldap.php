@@ -236,14 +236,16 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
          $entry_id = ldap_next_entry(self::$_connection, $entry_id)) {
       $group_id = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
       $group_name = ldap_get_values(self::$_connection, $entry_id, "cn");
-      if (in_array($group_name[0], $associated_groups)) {
-        $groups[] = new Ldap_Group($group_id[0], $group_name[0]);
-      }
       if ($group_name[0] == self::$_params["everybody_group"]) {
         $in_everybody_group = true;
+	$group_id=array(LDAP_EVERYBODY_ID);
       }
       if ($group_name[0] == self::$_params["registered_users_group"]) {
         $in_registered_users_group = true;
+	$group_id=array(LDAP_REGISTERED_USERS_ID);
+      }
+      if (in_array($group_name[0], $associated_groups)) {
+        $groups[] = new Ldap_Group($group_id[0], $group_name[0]);
       }
     }
     if (!$in_everybody_group) {
