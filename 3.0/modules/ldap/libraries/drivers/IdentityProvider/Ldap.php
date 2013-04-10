@@ -20,6 +20,8 @@
 define("LDAP_GUEST_ID", 0);
 define("LDAP_EVERYBODY_ID", 0);
 define("LDAP_REGISTERED_USERS_ID", 99999);
+define("LDAP_USER_ATTRIBUTES", "uid,uidnumber,mail,cn,dn,displayname");
+define("LDAP_GROUP_ATTRIBUTES", "gidnumber,cn");
 
 class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
   static $_params;
@@ -87,7 +89,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
     if ($id == LDAP_GUEST_ID) {
       return self::lookup_user_by_name(self::$_params["guest_user"]);
     }
-    $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uidNumber=$id");
+    $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uidNumber=$id", explode(",", LDAP_USER_ATTRIBUTES));
     $entries = ldap_get_entries(self::$_connection, $result);
     if ($entries["count"] > 0) {
       return new Ldap_User($entries[0]);
@@ -102,7 +104,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * specified by the "admins" driver params
    */
   public function lookup_user_by_name($name) {
-    $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uid=$name");
+    $result = ldap_search(self::$_connection, self::$_params["user_domain"], "uid=$name", explode(",", LDAP_USER_ATTRIBUTES));
     $entries = ldap_get_entries(self::$_connection, $result);
     if ($entries["count"] > 0) {
       return new Ldap_User($entries[0]);
@@ -148,18 +150,18 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * @see IdentityProvider_Driver::lookup_group.
    */
   public function lookup_group($id) {
-    if ($id = LDAP_EVERYBODY_GROUP_ID) {
+    if ($id == LDAP_EVERYBODY_ID) {
       return self::lookup_group_by_name(self::$_params["everybody_group"]);
-    } else if ($id = LDAP_REGISTERED_USERS_ID) {
+    } else if ($id == LDAP_REGISTERED_USERS_ID) {
       return self::lookup_group_by_name(self::$_params["registered_users_group"]);
     }
-    $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "gidNumber=$id");
+    $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "gidNumber=$id", explode(",", LDAP_GROUP_ATTRIBUTES));
     $entry_id = ldap_first_entry(self::$_connection, $result);
 
     if ($entry_id !== false) {
       $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
       $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
-      if (in_array($cn_entry, self::$_params["groups"])) {
+      if (in_array($cn_entry[0], self::$_params["groups"])) {
         return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
       }
     }
@@ -172,13 +174,13 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * @return Group_Definition
    */
   public function lookup_group_by_name($name) {
-    $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "cn=$name");
+    $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "cn=$name", explode(",", LDAP_GROUP_ATTRIBUTES));
     $entry_id = ldap_first_entry(self::$_connection, $result);
 
     if ($entry_id !== false) {
       $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
       $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
-      if (in_array($cn_entry, self::$_params["groups"])) {
+      if (in_array($cn_entry[0], self::$_params["groups"])) {
         return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
       }
     }
@@ -225,7 +227,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
 
   static function groups_for($user) {
     $result = ldap_search(self::$_connection, self::$_params["group_domain"],
-                          "(memberUid=$user->name)");
+                          "(memberUid=$user->name)", explode(",", LDAP_GROUP_ATTRIBUTES));
 
     $associated_groups = self::$_params["groups"];
     $groups = array();
@@ -236,14 +238,16 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
          $entry_id = ldap_next_entry(self::$_connection, $entry_id)) {
       $group_id = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
       $group_name = ldap_get_values(self::$_connection, $entry_id, "cn");
-      if (in_array($group_name[0], $associated_groups)) {
-        $groups[] = new Ldap_Group($group_id[0], $group_name[0]);
-      }
       if ($group_name[0] == self::$_params["everybody_group"]) {
         $in_everybody_group = true;
+	$group_id=array(LDAP_EVERYBODY_ID);
       }
       if ($group_name[0] == self::$_params["registered_users_group"]) {
         $in_registered_users_group = true;
+	$group_id=array(LDAP_REGISTERED_USERS_ID);
+      }
+      if (in_array($group_name[0], $associated_groups)) {
+        $groups[] = new Ldap_Group($group_id[0], $group_name[0]);
       }
     }
     if (!$in_everybody_group) {
