@@ -159,7 +159,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
     if ($entry_id !== false) {
       $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
       $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
-      if (in_array($cn_entry, self::$_params["groups"])) {
+      if (in_array($cn_entry[0], self::$_params["groups"])) {
         return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
       }
     }
@@ -178,7 +178,7 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
     if ($entry_id !== false) {
       $cn_entry = ldap_get_values(self::$_connection, $entry_id, "cn");
       $gid_number_entry = ldap_get_values(self::$_connection, $entry_id, "gidNumber");
-      if (in_array($cn_entry, self::$_params["groups"])) {
+      if (in_array($cn_entry[0], self::$_params["groups"])) {
         return new Ldap_Group($gid_number_entry[0], $cn_entry[0]);
       }
     }
