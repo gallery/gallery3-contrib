@@ -148,9 +148,9 @@ class IdentityProvider_Ldap_Driver implements IdentityProvider_Driver {
    * @see IdentityProvider_Driver::lookup_group.
    */
   public function lookup_group($id) {
-    if ($id = LDAP_EVERYBODY_GROUP_ID) {
+    if ($id == LDAP_EVERYBODY_GROUP_ID) {
       return self::lookup_group_by_name(self::$_params["everybody_group"]);
-    } else if ($id = LDAP_REGISTERED_USERS_ID) {
+    } else if ($id == LDAP_REGISTERED_USERS_ID) {
       return self::lookup_group_by_name(self::$_params["registered_users_group"]);
     }
     $result = @ldap_search(self::$_connection, self::$_params["group_domain"], "gidNumber=$id");
