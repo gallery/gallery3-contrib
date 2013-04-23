@@ -22,15 +22,28 @@
 
 
 from distutils.core import setup
-from libg3 import __version__ as version
-import sys
 
 setup(name='pylibgal3' ,
-    version=version ,
+    version='0.1.6' ,
     author='Jay Deiman' ,
     author_email='admin@splitstreams.com' ,
     url='http://stuffivelearned.org' ,
     description='A library for accessing/manipulating a Gallery 3 install' ,
     packages=['libg3'] ,
     package_dir={'libg3': 'libg3'} ,
+    classifiers=[
+        'Development Status :: 4 - Beta' ,
+        'Intended Audience :: System Administrators' ,
+        'Intended Audience :: Information Technology' ,
+        'License :: OSI Approved :: GNU General Public License (GPL)' ,
+        'Natural Language :: English' ,
+        'Operating System :: POSIX' ,
+        'Programming Language :: Python' ,
+        'Topic :: System :: Systems Administration' ,
+        'Topic :: Internet :: WWW/HTTP' ,
+        'Topic :: Software Development :: Libraries :: Python Modules' ,
+        'Topic :: Software Development :: Libraries' ,
+        'Topic :: System' ,
+    ]
+
 )

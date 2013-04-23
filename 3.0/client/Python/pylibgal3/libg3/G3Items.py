@@ -308,6 +308,13 @@ class LocalImage(Image):
         self.fh = None
         self.type = 'photo'
 
+    def __del__(self):
+        if self.fh:
+            try:
+                self.fh.close()
+            except:
+                pass
+
     def setContentType(self , ctype=None):
         if ctype is not None:
             self.contentType = ctype

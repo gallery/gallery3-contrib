@@ -1,0 +1,15 @@
+-------------
+Version 0.1.6
+-------------
+
+* Fixed a unicode/ascii error when adding image: 
+  https://github.com/crustymonkey/pylibgal3/issues/1
+
+-------------
+Version 0.1.4
+-------------
+
+* Fixed large album access
+* Added thumbnail access
+* Added resize access
+
