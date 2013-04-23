@@ -20,9 +20,12 @@ class facebook_opengraph_theme {
   static function head($theme) {
     if ($theme->item()) {
       $item = $theme->item();
-      $url = $item->thumb_url(true);
-      $selfURL = url::abs_current(true);
-      return "<meta property=\"og:image\" content=\"$url\"/> <meta property=\"og:title\" content=\"$item->title\"/> <meta property=\"og:type\" content=\"article\"/> <meta property=\"og:url\" content=\"$selfURL\"/>";
+      $image_url = $item->thumb_url(true);
+      $page_url = url::abs_current(true);
+	  return "<meta property=\"og:image\" content=\"$image_url\"/>
+		  <meta property=\"og:title\" content=\"$item->title\"/>
+		  <meta property=\"og:type\" content=\"article\"/>
+		  <meta property=\"og:url\" content=\"$page_url\"/>";
     }
   }
 
