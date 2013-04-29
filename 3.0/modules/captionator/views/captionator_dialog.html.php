@@ -34,7 +34,7 @@
             <ul>
               <li>
                 <label for="title[<?= $child->id ?>]"> <?= t("Title") ?> </label>
-                <input type="text" name="title[<?= $child->id ?>]" value="<?= html::chars($child->title) ?>"/>
+                <input required type="text" name="title[<?= $child->id ?>]" value="<?= html::chars($child->title) ?>"/>
               </li>
               <li>
                 <label for="description[<?= $child->id ?>]"> <?= t("Description") ?> </label>
