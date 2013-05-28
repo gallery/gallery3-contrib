@@ -44,7 +44,7 @@
   // Remember to invoke within jQuery(window).load(...)
   // If you don't, Jcrop may not initialize properly
   jQuery(document).ready(function(){
-    jQuery('#g-photo-id-<?=$item->id ?>').Jcrop({
+    jQuery('#g-item-id-<?=$item->id ?>').Jcrop({
       onChange: showCoords,
       onSelect: showCoords
     });
