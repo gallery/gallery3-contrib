@@ -30,14 +30,14 @@
 <script type="text/JavaScript">
   function setfacemap() {
 	// Insert the usemap element into the resize photo's image tag.
-    var photoimg = document.getElementById('g-photo-id-<?=$item->id ?>');
+    var photoimg = document.getElementById('g-item-id-<?=$item->id ?>');
     photoimg.useMap = '#faces';
   }
 
   function highlightbox(x1, y1, x2, y2, str_title, str_description, str_url) {
     var divtext = document.getElementById('divtagtext');
-    var photodiv = document.getElementById('g-photo');
-    var photoimg = document.getElementById('<?="g-photo-id-{$item->id}"?>');
+    var photodiv = document.getElementById('g-item');
+    var photoimg = document.getElementById('<?="g-item-id-{$item->id}"?>');
     var divface = document.getElementById('divsquare');
 
     divface.style.display = 'block';
