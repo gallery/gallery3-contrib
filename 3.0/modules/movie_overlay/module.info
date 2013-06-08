@@ -1,0 +1,7 @@
+name = "Movie overlay"
+description = "Overlay a graphic & movie duration over the thumbnail to signify a movie. "
+version = 3
+author_name = "floridave"
+author_url = "http://codex.gallery2.org/User:Floridave"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:movie_overlay"
+discuss_url = "http://gallery.menalto.com/forum_module_movie_overlay"
