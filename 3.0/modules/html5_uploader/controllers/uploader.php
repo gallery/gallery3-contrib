@@ -114,6 +114,8 @@ class Uploader_Controller extends Controller {
       ->label(t("Add photos to %album_title", array("album_title" => html::purify($album->title))));
     $group->input("files[]")->type("file")->multiple();
 
+    $form->input("FOO")->type("hidden")->label(sprintf("You may upload several files at once. Uploading pictures may take some time - please be patient. Max. upload size of all pictures: %.0f MB.", ini_get("upload_max_filesize")));
+
     module::event("add_photos_form", $album, $form);
 
     $group = $form->group("buttons")->label("");
