@@ -42,20 +42,18 @@ class Uploader_Controller extends Controller {
       $count = 0;
       $added_a_movie = false;
       $added_a_photo = false;
-      foreach (array("file1", "file2", "file3") as $key) {
-        if ($form->add_photos->$key->value == "") {
-          continue;
-        }
 
+      $files_list=$_FILES['files'];
+      foreach (array_keys($files_list['name']) as $index) {
         try {
-          $temp_filename = $form->add_photos->$key->value;
+          $temp_filename = $files_list['tmp_name'][$index];
           $item = ORM::factory("item");
-          $item->name = basename($temp_filename);
+          $item->name = basename($files_list['name'][$index]);
           $item->title = item::convert_filename_to_title($item->name);
           $item->parent_id = $album->id;
           $item->set_data_file($temp_filename);
 
-          $path_info = @pathinfo($temp_filename);
+          $path_info = @pathinfo($item->name);
           if (array_key_exists("extension", $path_info) &&
               in_array(strtolower($path_info["extension"]), array("flv", "mp4", "m4v"))) {
             $item->type = "movie";
@@ -114,9 +112,7 @@ class Uploader_Controller extends Controller {
     $form = new Forge("uploader/add/{$album->id}", "", "post", array("id" => "g-add-photos-form"));
     $group = $form->group("add_photos")
       ->label(t("Add photos to %album_title", array("album_title" => html::purify($album->title))));
-    $group->upload("file1")->add_rule("foo");
-    $group->upload("file2");
-    $group->upload("file3");
+    $group->input("files[]")->type("file")->multiple();
 
     module::event("add_photos_form", $album, $form);
 
