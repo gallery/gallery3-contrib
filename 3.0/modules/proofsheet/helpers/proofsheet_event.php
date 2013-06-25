@@ -24,20 +24,20 @@ class proofsheet_event_Core {
    * either the A4 or LTR part, do so here *and* below for tags.
    */
   static function album_menu($menu, $theme) {
-    $proofsheetA4Link = url::site("proofsheet/makepdf/a4/album/{$theme->item->id}");
-    $menu
-      ->append(Menu::factory("link")
-          ->id("proofsheetA4")
-          ->label(t("A4 Proof Sheet"))
-          ->url($proofsheetA4Link)
-          ->css_id("g-proofsheet-a4-link"));
-    $proofsheetLTRLink = url::site("proofsheet/makepdf/ltr/album/{$theme->item->id}");
-    $menu
-      ->append(Menu::factory("link")
+    if (access::can("view_full", $theme->item)) {
+      $proofsheetA4Link = url::site("proofsheet/makepdf/a4/album/{$theme->item->id}");
+      $menu->append(Menu::factory("link")
+        ->id("proofsheetA4")
+        ->label(t("A4 Proof Sheet"))
+        ->url($proofsheetA4Link)
+        ->css_id("g-proofsheet-a4-link"));
+      $proofsheetLTRLink = url::site("proofsheet/makepdf/ltr/album/{$theme->item->id}");
+      $menu->append(Menu::factory("link")
           ->id("proofsheetLTR")
           ->label(t("LTR Proof Sheet"))
           ->url($proofsheetLTRLink)
           ->css_id("g-proofsheet-ltr-link"));
+    }
   }
 
   /**
