@@ -1,0 +1,7 @@
+name = "Twitter"
+description = "Share Gallery albums, photos, and movies on Twitter."
+version = 1
+author_name = "Chad Kieffer"
+author_url = "http://2tbsp.com/content/twitter-module-gallery-3"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:twitter"
+discuss_url = "http://gallery.menalto.com/forum_module_twitter"
