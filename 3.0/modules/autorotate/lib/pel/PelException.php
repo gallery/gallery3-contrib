@@ -1,6 +1,7 @@
 <?php
 
-/*  PEL: PHP Exif Library.  A library with support for reading and
+/**
+ *  PEL: PHP Exif Library.  A library with support for reading and
  *  writing all Exif headers in JPEG and TIFF images using PHP.
  *
  *  Copyright (C) 2004, 2005  Martin Geisler.
@@ -21,15 +22,15 @@
  *  Boston, MA 02110-1301 USA
  */
 
-/* $Id: PelException.php 396 2005-10-23 22:36:10Z mgeisler $ */
+/* $Id$ */
 
 
 /**
  * Standard PEL exception.
  *
  * @author Martin Geisler <mgeisler@users.sourceforge.net>
- * @version $Revision: 396 $
- * @date $Date: 2005-10-24 00:36:10 +0200 (Mon, 24 Oct 2005) $
+ * @version $Revision$
+ * @date $Date$
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public
  * License (GPL)
  * @package PEL
@@ -47,22 +48,22 @@
  */
 class PelException extends Exception {
 
-  /**
-   * Construct a new PEL exception.
-   *
-   * @param string $fmt an optional format string can be given.  It
-   * will be used as a format string for vprintf().  The remaining
-   * arguments will be available for the format string as usual with
-   * vprintf().
-   *
-   * @param mixed $args,... any number of arguments to be used with
-   * the format string.
-   */
-  function __construct(/* fmt, args... */) {
-    $args = func_get_args();
-    $fmt = array_shift($args);
-    parent::__construct(vsprintf($fmt, $args));
-  }
+    /**
+     * Construct a new PEL exception.
+     *
+     * @param string $fmt an optional format string can be given.  It
+     * will be used as a format string for vprintf().  The remaining
+     * arguments will be available for the format string as usual with
+     * vprintf().
+     *
+     * @param mixed $args,... any number of arguments to be used with
+     * the format string.
+     */
+    function __construct(/* fmt, args... */) {
+        $args = func_get_args();
+        $fmt = array_shift($args);
+        parent::__construct(vsprintf($fmt, $args));
+    }
 }
 
 
@@ -84,4 +85,3 @@ class PelInvalidDataException extends PelException {}
  */
 class PelInvalidArgumentException extends PelException {}
 
-?>
