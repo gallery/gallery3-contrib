@@ -18,25 +18,25 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class autorotate_installer {
-	// static function install() {
-	// 	module::set_version("autorotate", 2);
-	// }
+  // static function install() {
+  //  module::set_version("autorotate", 2);
+  // }
 
-	// static function upgrade($version) {
-	// 	if ($version == 1) {
-	// 		module::set_version("autorotate", $version = 2);
-	// 	}
-	// }
+  // static function upgrade($version) {
+  //  if ($version == 1) {
+  //    module::set_version("autorotate", $version = 2);
+  //  }
+  // }
 
-	static function deactivate() {
-		site_status::clear("autorotate_needs_exif");
-	}
+  static function deactivate() {
+    site_status::clear("autorotate_needs_exif");
+  }
 
-	static function can_activate() {
-		$messages = array();
-		if (!module::is_active("exif")) {
-			$messages["warn"][] = t("The autorotate module requires the EXIF module.");
-		}
-		return $messages;
-	}
+  static function can_activate() {
+    $messages = array();
+    if (!module::is_active("exif")) {
+      $messages["warn"][] = t("The autorotate module requires the EXIF module.");
+    }
+    return $messages;
+  }
 }
