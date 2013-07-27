@@ -164,7 +164,8 @@ class Gallery3(object):
         newObjUrl = self._getUrlFromResp(resp)
         item = getItemFromResp(self.getRespFromUrl(newObjUrl) , self , parent)
         parent._members.append(newObjUrl)
-        parent.members.append(item)
+        # This appears to cause a race 
+        #parent.members.append(item)
         return item
 
     def addImage(self , parent , image , title='' , description='' , name=''):
@@ -213,7 +214,7 @@ class Gallery3(object):
         newObjUrl = self._getUrlFromResp(resp)
         item = getItemFromResp(self.getRespFromUrl(newObjUrl) , self , parent)
         parent._members.append(newObjUrl)
-        parent.members.append(item)
+        #parent.members.append(item)
         return item
 
     def addMovie(self , parent , movie , title='' , description='' , name=''):
