@@ -44,7 +44,6 @@ class rwinfo_theme_Core {
     }
     // rWatcher End Edit
 
-
     if ($item->owner) {
       // rWatcher Edit:  Display profile instead of web site, if viewable.
       $str_owner_url = $item->owner->url;
@@ -66,7 +65,7 @@ class rwinfo_theme_Core {
     return $results;
   }
 
-  // This came from modules/gallery/controllers/user_profile.php.
+  // rWatcher Edit:  This came from modules/gallery/controllers/user_profile.php, I modified it to be static.
   static private function _can_view_profile_pages($user) {
     if (!$user->loaded()) {
       return false;
