@@ -17,29 +17,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
-class rwinfo_installer {
-
-  static function install() {
-    module::set_var("rwinfo", "show_title", 0);
-    module::set_var("rwinfo", "show_description", 0);
-    module::set_var("rwinfo", "show_owner", 1);
-    module::set_var("rwinfo", "show_name", 1);
-    module::set_var("rwinfo", "show_captured", 1);
-    module::set_var("rwinfo", "show_dimensions", 1);
-  }
-
-  static function upgrade($version) {
-    if ($version == 1) {
-      module::set_var("rwinfo", "show_title", 0);
-      module::set_var("rwinfo", "show_description", 0);
-      module::set_var("rwinfo", "show_owner", 1);
-      module::set_var("rwinfo", "show_name", 1);
-      module::set_var("rwinfo", "show_captured", 1);
-      module::set_version("rwinfo", $version = 2);
-    }
-    if ($version == 2) {
-      module::set_var("rwinfo", "show_dimensions", 1);
-      module::set_version("rwinfo", $version = 3);
+class ogp_tags_theme_Core {
+  static function head($theme) {
+    if ($theme->item()) {
+      return new View("ogp_tags_block.html");
     }
   }
 }
