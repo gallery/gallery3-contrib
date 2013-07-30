@@ -1,0 +1,7 @@
+name = "OGP Tags"
+description = "Automatically generates and Open Graph protocol meta tags for album/photo/movie pages."
+version = 1
+author_name = "rWatcher"
+author_url = "http://codex.galleryproject.org/User:RWatcher"
+info_url = "http://codex.galleryproject.org/Gallery3:Modules:ogp_tags"
+discuss_url = "http://gallery.menalto.com/node/XXXXXX"
