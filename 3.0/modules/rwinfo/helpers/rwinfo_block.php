@@ -19,14 +19,15 @@
  */
 class rwinfo_block_Core {
   static function get_site_list() {
-    return array("metadata" => t("rWInfo"));
+    return array("rwinfo" => t("rWInfo"));
   }
 
   static function get($block_id, $theme) {
     $block = "";
     switch ($block_id) {
-    case "metadata":
+    case "rwinfo":
       if ($theme->item()) {
+
         // rWatcher Edit: Don't display on root album.
         if ($theme->item->id == 1) {
           return "";
@@ -35,43 +36,32 @@ class rwinfo_block_Core {
 
         $block = new Block();
         $block->css_id = "g-metadata";
-		
-        // rWatcher Edit:  Add Movie Info Option
-        //$block->title = $theme->item()->is_album() ? t("Album info") : t("Photo info");
-        $block_title = "";
-        if ($theme->item->is_album()) {
-          $block_title = t("Album Info");
-        } else if ($theme->item->is_movie()) {
-          $block_title = t("Movie Info");
-        } else {
-          $block_title = t("Photo Info");
-        }
-        $block->title = $block_title;
-        // End rWatcher Edit
-		
+        $block->title = $theme->item()->is_album() ? t("Album info") :
+          ($theme->item()->is_movie() ? t("Movie info") : t("Photo info"));
+
         // rWatcher Edit:  File Name change.
         $block->content = new View("rwinfo_block.html");
-		
-        if ($theme->item->title && module::get_var("rwinfo", "show_title")) {
+
+        if ($theme->item->title && module::get_var("rwinfo", "show_title")) {  //rWatcher Edit:  rwinfo
           $info["title"] = array(
             "label" => t("Title:"),
             "value" => html::purify($theme->item->title)
           );
         }
-        if ($theme->item->description && module::get_var("rwinfo", "show_description")) {
+        if ($theme->item->description && module::get_var("rwinfo", "show_description")) {  //rWatcher Edit:  rwinfo
           $info["description"] = array(
             "label" => t("Description:"),
             "value" => nl2br(html::purify($theme->item->description))
           );
         }
-        if (!$theme->item->is_album() && module::get_var("rwinfo", "show_name")) {
+        if (!$theme->item->is_album() && module::get_var("rwinfo", "show_name")) {  //rWatcher Edit:  rwinfo
           $info["file_name"] = array(
             "label" => t("File name:"),
             "value" => html::clean($theme->item->name)
           );
         }
 
-        // rWatcher Edit: 
+        // rWatcher Edit:  Display file size
         if (!$theme->item->is_album()) {
           // Calculate file size.
           $filesize_unit = array("B","kB","MB","GB","TB","PB","EB","ZB","YB");
@@ -86,15 +76,11 @@ class rwinfo_block_Core {
             "label" => t("File size:"),
             "value" => $item_filesize
           );
-
-          // Display photo/video resolution.
-          $info["file_resolution"] = array(
-            "label" => t("Resolution:"),
-            "value" => $theme->item->width . " x " . $theme->item->height . " " . t("pixels")
-          );
         }
+        // End rWatcher Edit
 
-        //if ($theme->item->captured && module::get_var("rwinfo", "show_captured")) {
+        // rWatcher Edit:  Remove Show Captured for everything -- Show created DATE for album, captured DATE/TIME for everything else.
+        //if ($theme->item->captured && module::get_var("info", "show_captured")) {
         //  $info["captured"] = array(
         //    "label" => t("Captured:"),
         //    "value" => gallery::date_time($theme->item->captured)
@@ -114,7 +100,7 @@ class rwinfo_block_Core {
         }
         // End rWatcher Edit
 
-        if ($theme->item->owner && module::get_var("rwinfo", "show_owner")) {
+        if ($theme->item->owner && module::get_var("info", "show_owner")) {
           $display_name = $theme->item->owner->display_name();
 
           // rWatcher Edit:  Display profile instead of web site, if viewable.
@@ -127,8 +113,9 @@ class rwinfo_block_Core {
           if ($str_owner_url) { //rW Edit $str_owner_url.
             $info["owner"] = array(
               "label" => t("Owner:"),
-              "value" => "<a href=\"{$str_owner_url}\">" .
-                         html::clean($display_name) . "</a>"  //rW Edit $str_owner_url.
+              "value" => html::anchor(
+                html::clean($str_owner_url), //rW Edit $str_owner_url.
+                html::clean($display_name))
             );
           } else {
             $info["owner"] = array(
@@ -137,6 +124,16 @@ class rwinfo_block_Core {
             );
           }
         }
+        if (($theme->item->width && $theme->item->height) &&
+            module::get_var("info", "show_dimensions")) {
+          $info["size"] = array(
+            "label" => t("Dimensions:"),
+            "value" => t(
+              "%width x %height px",
+              array("width" => $theme->item->width, "height" => $theme->item->height))
+            );
+        }
+
         $block->content->metadata = $info;
 
         module::event("info_block_get_metadata", $block, $theme->item);
@@ -146,7 +143,7 @@ class rwinfo_block_Core {
     return $block;
   }
 
-  // This came from modules/gallery/controllers/user_profile.php.
+  // rWatcher Edit:  This came from modules/gallery/controllers/user_profile.php, I modified it to be static.
   static private function _can_view_profile_pages($user) {
     if (!$user->loaded()) {
       return false;
