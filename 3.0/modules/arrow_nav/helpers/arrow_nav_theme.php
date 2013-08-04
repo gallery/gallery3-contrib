@@ -18,9 +18,7 @@
  * Foundation, Inc., 51 Franklin Street - Fifth Floor, Boston, MA  02110-1301, USA.
  */
 class arrow_nav_theme {
-  function head($theme) {
-    if($theme->page_subtype == "photo") {
-      return $theme->script("arrow_nav.js");
-    }
-  }
+	function head($theme) {
+		return $theme->script("arrow_nav.js");
+	}
 }
