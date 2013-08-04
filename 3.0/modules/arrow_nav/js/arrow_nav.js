@@ -15,13 +15,15 @@
 			keyNext = 37;
 		}
 
-		if (cooliris) {
-			var show = cooliris.embed.show;
+		if (typeof cooliris !== 'undefined') {
+			if ('embed' in cooliris) {
+				var show = cooliris.embed.show;
 
-			cooliris.embed.show = function() {
-				slideshowOpen = true;
-				show.apply(this, arguments);
-			};
+				cooliris.embed.show = function() {
+					slideshowOpen = true;
+					show.apply(this, arguments);
+				};
+			}
 		}
 	});
 
