@@ -1,9 +1,20 @@
 (function ($) {
 	'use strict';
 
-	var slideshowOpen = false;
+	var slideshowOpen = false,
+		direction = 'ltr',
+		keyPrevious = 37,
+		keyNext = 39,
+		url;
 
 	$(document).ready(function() {
+		direction = $(document.body).css("direction");
+
+		if (direction === 'rtl') {
+			keyPrevious = 39;
+			keyNext = 37;
+		}
+
 		if (cooliris) {
 			var show = cooliris.embed.show;
 
@@ -37,16 +48,6 @@
 			if (slideshowOpen) { return; }
 		}
 
-		var direction = $(document.body).css("direction"),
-			keyPrevious = 37,
-			keyNext = 39,
-			url;
-
-		if (direction === 'rtl') {
-			keyPrevious = 39;
-			keyNext = 37;
-		}
-
 		switch (e.keyCode) {
 			case keyPrevious:
 				url = $('.g-paginator .g-first a').eq(-1).attr("href");
@@ -57,7 +58,7 @@
 				break;
 		}
 
-		if (typeof url !== "undefined") {
+		if (url !== undefined) {
 			window.location = url;
 			return false;
 		}
