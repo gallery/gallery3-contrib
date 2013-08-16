@@ -1,3 +1,7 @@
 name = "Arrow Navigation"
-description = "Use the left/right arrow keys to go to the previous/next photo"
-version = 1
+description = "Use the left/right arrow keys to go to the previous/next page"
+version = 3
+author_name = ""
+author_url = ""
+info_url = "http://codex.galleryproject.org/Gallery3:Modules:arrow_nav"
+discuss_url = ""
