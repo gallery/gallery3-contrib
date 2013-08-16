@@ -52,6 +52,14 @@ class BaseRemote(object):
             pass
         return self.name
 
+    def __repr__(self):
+        try:
+            return '%s : %s : %s' % (self.__dict__.get('id') , 
+                self.__dict__.get('type') , self.__dict__.get('name'))
+        except:
+            pass
+        return type(self)
+
     def __getattr__(self , name):
         """
         A bit of magic to make the retrieval of member objects lazy

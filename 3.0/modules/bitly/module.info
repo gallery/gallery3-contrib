@@ -1,0 +1,7 @@
+name = "bit.ly"
+description = "Shorten and track Gallery URLs with bit.ly (http://bit.ly). You'll need a bit.ly API key."
+version = 1
+author_name = "Chad Kieffer"
+author_url = "http://2tbsp.com/content/bitly-module-gallery-3"
+info_url = "http://codex.gallery2.org/Gallery3:Modules:bitly"
+discuss_url = "http://gallery.menalto.com/forum_module_bitly"

@@ -101,9 +101,10 @@ class Ecard_Controller extends Controller {
   }  
   private static function _notify($to, $from, $subject, $item, $text, $headers, $bcc, $cc) {
       $sendmail = Sendmail::factory();
-	  $sendmail
+      $sendmail
         ->to($to)
-		->from($from)
+	->from($from)
+	->reply_to($from)
         ->subject($subject);
 	  if(isset($bcc)) {
 	    $sendmail->header("bcc",$bcc);
