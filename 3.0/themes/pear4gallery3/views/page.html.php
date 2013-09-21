@@ -116,6 +116,7 @@ if (isset($_GET['ajax'])) {
     <![endif]-->
 
 		<script type="text/javascript" src="<?= $theme->url("js/pear.js"); ?>"></script>
+		<? /* Remove Comment if Google Analytics wanted
 		<!-- Google analytics code -->
 		<script type="text/javascript">
 			var _gaq = _gaq || [];
@@ -129,6 +130,7 @@ if (isset($_GET['ajax'])) {
 			 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 			 })();
 		</script>
+		End remove section */?>
 	</head>
 
   <body <?= $theme->body_attributes() ?>>
