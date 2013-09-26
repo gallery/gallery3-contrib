@@ -1,0 +1,7 @@
+name 		= "Ratings"
+description 	= "Provides options for a sidebar block and under photo block for a ratings system<br>Inspired from and utilizing Michelle Steigerwalt's <a href=\"http://www.msteigerwalt.com/widgets/ratings/v1.5/\">Rabid Ratings</a><br> | By J.E. Nash"
+version 	= 20
+author_name 	= "J.E. Nash & Floridave"
+discuss_url     = "http://galleryproject.org/node/106724"
+info_url 	= "http://codex.galleryproject.org/Gallery3:Modules:ratings"
+author_url      = "http://codex.galleryproject.org/User:jnash"

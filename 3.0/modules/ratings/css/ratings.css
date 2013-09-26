@@ -1,0 +1,28 @@
+.rabidRating { position: relative; }
+
+.rabidRating .wrapper {	
+	cursor: pointer;
+	background: #ccc;
+}
+
+.rabidRating .wrapper {
+	overflow: hidden;
+}
+
+.rabidRating span,.rabidRating .wrapper {
+	display: block;
+	width: 110px;
+	height: 60px;
+}
+
+.rabidRating span {
+	position: relative;
+	top: 0;
+	left: 0;
+	text-indent: -999em;
+}
+
+.rabidRating .ratingText.ratingError {
+	color: #f00;	
+}
+
