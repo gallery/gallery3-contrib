@@ -19,22 +19,26 @@
  */
 class downloadalbum_event_Core {
   static function album_menu($menu, $theme) {
-    $downloadLink = url::site("downloadalbum/zip/album/{$theme->item->id}");
-    $menu
-      ->append(Menu::factory("link")
-          ->id("downloadalbum")
-          ->label(t("Download Album"))
-          ->url($downloadLink)
-          ->css_id("g-download-album-link"));
+    if( access::can("downloadalbum", $theme->item) && $theme->children_count > 0 ) {
+      $downloadLink = url::site("downloadalbum/zip/album/{$theme->item->id}");
+      $menu
+        ->append(Menu::factory("link")
+            ->id("downloadalbum")
+            ->label(t("Download Album"))
+            ->url($downloadLink)
+            ->css_id("g-download-album-link"));
+    }
   }
 
   static function tag_menu($menu, $theme) {
-    $downloadLink = url::site("downloadalbum/zip/tag/{$theme->tag()->id}");
-    $menu
-      ->append(Menu::factory("link")
-          ->id("downloadalbum")
-          ->label(t("Download Album"))
-          ->url($downloadLink)
-          ->css_id("g-download-album-link"));
-  } 
+    if( $theme->children_count > 0 ) {
+      $downloadLink = url::site("downloadalbum/zip/tag/{$theme->tag()->id}");
+      $menu
+        ->append(Menu::factory("link")
+            ->id("downloadalbum")
+            ->label(t("Download Album"))
+            ->url($downloadLink)
+            ->css_id("g-download-album-link"));
+    }
+  }
 }

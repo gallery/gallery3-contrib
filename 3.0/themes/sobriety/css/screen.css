@@ -540,11 +540,10 @@ span.ui-icon-key { background-position: -112px -128px; }
   display: block;
   position: absolute;
   right: 340px; /* 640/2 + 10 + 10 */
-  top: 230px;
+  top: 260px;
   width: 230px;
   height: 30px;
   padding-top: 10px;
-  margin-top: 30px;
   text-align: right;
   font-style: italic;
   background-image: url("../images/divider_l.png");
@@ -580,16 +579,16 @@ span.ui-icon-key { background-position: -112px -128px; }
   top: 260px; /* (230 + 30) */
   left: 50%;
   margin-left: 340px; /* (640/2 + 10 + 10) */
+  padding-top: 10px;
+  background-image: url("../images/divider_r.png");
+  background-position: left top;
+  background-repeat: no-repeat;
 }
 
 #g-item #g-info h1 {
   text-align: left;
   font-size: 1em;
   border: none;
-  padding-top: 10px;
-  background-image: url("../images/divider_r.png");
-  background-position: left top;
-  background-repeat: no-repeat;
 }
 
 #g-item .g-block {
@@ -597,7 +596,7 @@ span.ui-icon-key { background-position: -112px -128px; }
   margin: auto;
 }
 
-#g-item .g-block#g-metadata {
+#g-item .g-block#sobriety-actions-menu {
   text-align: right;
   display: block;
   width: 300px; /* 230px is not enought: french is verbose */
@@ -607,7 +606,7 @@ span.ui-icon-key { background-position: -112px -128px; }
   top: 300px; /* (230 + 30 + 10 + 30) */
 }
 
-#g-item .g-block#g-metadata h2 {
+#g-item .g-block#sobriety-actions-menu h2 {
   font-size: 1em;
   padding-top: 10px;
   text-align: right;
@@ -617,7 +616,7 @@ span.ui-icon-key { background-position: -112px -128px; }
   background-repeat: no-repeat;
 }
 
-#g-item .g-block#g-metadata ul {
+#g-item .g-block#sobriety-actions-menu ul {
   list-style: none;
   padding: 0;
 }
@@ -726,13 +725,16 @@ div#g-action-status {
 #g-dialog {
   padding: 0 2em 0 15px;
   margin: 0;
+  min-height: 64px !important;
 }
 
-#g-dialog form, #g-dialog div#g-edit-permissions-form {
+#g-dialog form,
+#g-dialog div#g-edit-permissions-form {
   padding: 0 0 0 63px; /* 48 + 15 */
   margin: 0;
   background-repeat: no-repeat;
-  background-position: 0px 3em;
+  background-position: 0px 1em;
+  min-height: 64px; /* ~1em + 48px */
 }
 #g-dialog form#g-add-album-form {
   background-image: url("../images/icons/g-add-album-form.png");
@@ -762,10 +764,8 @@ div#g-action-status {
 #g-dialog div#g-edit-permissions-form fieldset legend {
   font-size: 1em;
   font-weight: bold;
-  /*text-align: center;*/
   display: block;
   padding: 1em 0 1em 0;
-  /*margin: auto;*/
 }
 
 
@@ -806,8 +806,39 @@ div#g-action-status {
 #g-dialog a.g-cancel {
   float: right;
   -moz-appearance: button;
+
   -webkit-appearance: push-button;
+  color: black;
+  cursor: default;
+  margin-bottom: 2px;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 2px;
   /*clear: left;*/
+}
+
+/* SUPPRESSION */
+#g-dialog > div > p {
+  padding-left: 63px;
+}
+
+#g-dialog form#g-confirm-delete {
+  left: 15px;
+  min-height: 64px;
+  position: absolute;
+  right: 2em;
+  top: 0px;
+}
+
+#g-dialog form#g-confirm-delete fieldset {
+  bottom: 0px;
+  left: 0px;
+  position: absolute;
+  right: 0px;
+}
+
+#g-dialog form#g-confirm-delete fieldset legend {
+  display: none;
 }
 
 
