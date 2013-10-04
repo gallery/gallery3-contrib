@@ -6,7 +6,7 @@
 
 ?>
 <? if( !empty($menu->elements['add_menu']->elements) || !empty($menu->elements['options_menu']->elements) ): ?>
-  <div id="g-metadata" class="g-block">
+  <div id="sobriety-actions-menu" class="g-block">
     <h2><?= t("Actions") ?></h2>
     <div class="g-block-content">
       <ul class="g-metadata">

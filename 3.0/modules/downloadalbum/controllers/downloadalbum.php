@@ -35,7 +35,7 @@ class downloadalbum_Controller extends Controller {
             : $container->name.'.zip';
         break;
 
-     case "tag":
+      case "tag":
         // @todo: if the module is not installed, it crash
         $container = ORM::factory("tag", $id);
         if (is_null($container->name)) {
@@ -45,11 +45,11 @@ class downloadalbum_Controller extends Controller {
         $zipname = $container->name.'.zip';
         break;
 
-     default:
-       throw new Kohana_Exception('unhandled container type: '.$container_type);
-   }
+      default:
+        throw new Kohana_Exception('unhandled container type: '.$container_type);
+    }
 
-   $files = $this->getFilesList($container);
+    $files = $this->getFilesList($container);
 
     // Calculate ZIP size (look behind for details)
     $zipsize = 22;
@@ -165,7 +165,7 @@ class downloadalbum_Controller extends Controller {
       $items = $container->viewable()
           ->descendants(null, null, array(array("type", "<>", "album")));
       foreach($items as $i) {
-        if (!access::can('view_full', $i)) {
+        if (!access::can('downloadalbum', $i)) {
           continue;
         }
 
@@ -216,7 +216,9 @@ class downloadalbum_Controller extends Controller {
    */
   private function prepareOutput() {
     // Close output buffers
-    Kohana::close_buffers(FALSE);
+    while (ob_get_level() > 0) {
+      ob_end_clean();
+    }
     // Clear any output
     Event::add('system.display', create_function('', 'Kohana::$output = "";'));
   }

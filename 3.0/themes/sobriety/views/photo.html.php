@@ -46,7 +46,6 @@
     <h1><?= html::purify($item->title) ?></h1>
     <div><?= nl2br(html::purify($item->description)) ?></div>
   </div>
-  <?= new View("sobriety_actions.html") ?>
 
   <?= $theme->photo_bottom() ?>
 </div>
