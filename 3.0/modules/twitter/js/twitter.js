@@ -11,13 +11,22 @@
          self._set_count(event.currentTarget);
          return false;
        });
+       $("#g-attach_image").click( function(){
+         self._set_count();
+       });
      },
 
      _set_count: function() {
        var self = this;
        var character_array = $("#g-tweet").val().split("");
        var count = character_array.length;
-       var remaining = self.options.max_count - count;
+       var remaining;
+       if( $("#g-attach_image").is(':checked') ) { 
+       	       remaining = self.options.max_pic_count - count;
+       }
+       else {
+       	       remaining = self.options.max_count - count;
+       }
        var count_container = $("#g-twitter-character-count");
        var color = "#000000";
        if (remaining < 10) {
@@ -41,6 +50,7 @@
   $.extend($.ui.gallery_twitter, {
     defaults: {
       max_count: 140,
+      max_pic_count: 115,
       warn_color: "#7F0005",
       error_color: "#FF0000"
     }

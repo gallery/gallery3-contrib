@@ -103,6 +103,10 @@ class twitter_Core {
           ->error_messages("required", t("Your tweet cannot be empty!"))
           ->id("g-tweet");
     $group->hidden("tweet_id")->value($tweet_id)->id("tweet_id");
+    $group->checkbox("attach_image")
+          ->label(t("Attach resize image to tweet?"))
+          ->value(1)
+          ->id("g-attach_image");
     $form->submit("")->value(t("Tweet"));
     return $form;
   }
