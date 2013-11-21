@@ -179,12 +179,18 @@ class Twitter_Controller extends Controller {
               $user->oauth_token_secret);
 
       $message = $form->twitter_message->tweet->value;
-      $filename = APPPATH . "../var/thumbs/" . $item->relative_path_cache;
-      $handle = fopen($filename, "rb");
-      $image = fread($handle, filesize($filename));
-      fclose($handle);
-
-      $response = $connection->upload('statuses/update_with_media', array('media[]' => "{$image};type=image/jpeg;filename={$filename}", 'status' => $message));
+      $attach_image = $form->twitter_message->attach_image->value;
+      if ($attach_image == 1) {
+	      $filename = APPPATH . "../var/resizes/" . $item->relative_path_cache;
+	      $handle = fopen($filename, "rb");
+	      $image = fread($handle, filesize($filename));
+	      fclose($handle);
+	
+	      $response = $connection->upload('statuses/update_with_media', array('media[]' => "{$image};type=image/jpeg;filename={$filename}", 'status' => $message));
+      }
+      else {
+      	      $response = $connection->post('statuses/update', array('status' => $message));
+      } 
 
       if (200 == $connection->http_code) {
         message::success(t("Tweet sent!"));
