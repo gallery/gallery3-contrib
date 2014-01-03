@@ -114,7 +114,17 @@ Order for:
 					str_replace('$','"',"<h2>Order e-mail Html</h2><p>Insert Html formatted order template e-mail from directory $!install$ here</p>"));
 				bp_email_template::create(
 					"order_paypal",
-					"Not used.",
+					str_replace('$','"',"INTERNAL ORDER
+Order number: %order_number
+Ordered on: %order_datetime
+Total amount: %total_cost
+Delivery method: %delivery_method
+
+Order for: 
+%customer_details 
+%comments 
+
+%order_lines"),
 					str_replace('$','"',"<h2>PayPal Order e-mail Html</h2><p>Insert Html formatted PayPal order template e-mail from directory $!install$ here</p>"));
 				bp_email_template::create(
 					"order_update",
@@ -141,7 +151,17 @@ Bestemd voor:
 					str_replace('$','"',"<h2>bestelbevestigingsmail Html</h2><p>Voeg de Html bestelbevestigingsmail uit directory $!install$ hier toe</p>"));
 				bp_email_template::create(
 					"order_paypal",
-					"Niet gebruikt.",
+					str_replace('$','"',"INTERNE BESTELLING
+Bestelnummer: %order_number
+Besteld op: %order_datetime
+Totaalbedrag: %total_cost
+Bezorgwijze: %delivery_method
+
+Bestemd voor: 
+%customer_details 
+%comments 
+
+%order_lines"),
 					str_replace('$','"',"<h2>PayPal Bestelling e-mail Html</h2><p>Voeg de Html PayPal bestelling e-mail uit directory $!install$ hier toe</p>"));
 				bp_email_template::create(
 					"order_update",
