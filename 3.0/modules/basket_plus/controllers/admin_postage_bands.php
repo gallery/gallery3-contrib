@@ -27,33 +27,34 @@ class Admin_Postage_Bands_Controller extends Controller
   {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_postage_bands.html");
-    $view->content->postage_bands = ORM::factory("postage_band")->order_by("name")->find_all();
+    $view->content->postage_bands = ORM::factory("bp_postage_band")->order_by("name")->find_all();
 
     print $view;
   }
 
   public function add_postage_band_form() {
-    print postage_band::get_add_form_admin();
+    print bp_postage_band::get_add_form_admin();
   }
 
 
   public function add_postage_band() {
     access::verify_csrf();
 
-    $form = postage_band::get_add_form_admin();
+    $form = bp_postage_band::get_add_form_admin();
     $valid = $form->validate();
     $name = $form->add_postage->inputs["name"]->value;
-    $postage  = ORM::factory("postage_band")->where("name","=", $name)->find();
+    $postage  = ORM::factory("bp_postage_band")->where("name","=", $name)->find();
     if ($postage->loaded()) {
       $form->add_postage->inputs["name"]->add_error("in_use", 1);
       $valid = false;
     }
 
     if ($valid) {
-      $postage = postage_band::create(
+      $postage = bp_postage_band::create(
         $name,
         $form->add_postage->flat_rate->value,
-        $form->add_postage->per_item->value
+        $form->add_postage->per_item->value,
+        $form->add_postage->via_download->checked
         );
 
       $postage->save();
@@ -66,22 +67,22 @@ class Admin_Postage_Bands_Controller extends Controller
   }
 
   public function delete_postage_band_form($id) {
-    $postage = ORM::factory("postage_band", $id);
+    $postage = ORM::factory("bp_postage_band", $id);
     if (!$postage->loaded()) {
       kohana::show_404();
     }
-    print postage_band::get_delete_form_admin($postage);
+    print bp_postage_band::get_delete_form_admin($postage);
   }
 
   public function delete_postage_band($id) {
     access::verify_csrf();
 
-    $postage  = ORM::factory("postage_band", $id);
+    $postage = ORM::factory("bp_postage_band", $id);
     if (!$postage->loaded()) {
       kohana::show_404();
     }
 
-    $form = postage_band::get_delete_form_admin($postage);
+    $form = bp_postage_band::get_delete_form_admin($postage);
     if($form->validate()) {
       $name = $postage->name;
       $postage->delete();
@@ -98,17 +99,17 @@ class Admin_Postage_Bands_Controller extends Controller
   public function edit_postage_band($id) {
     access::verify_csrf();
 
-    $postage = ORM::factory("postage_band", $id);
+    $postage = ORM::factory("bp_postage_band", $id);
     if (!$postage->loaded()) {
       kohana::show_404();
     }
 
-    $form = postage_band::get_edit_form_admin($postage);
+    $form = bp_postage_band::get_edit_form_admin($postage);
     $valid = $form->validate();
     if ($valid) {
       $new_name = $form->edit_postage->inputs["name"]->value;
       if ($new_name != $postage->name &&
-          ORM::factory("postage_band")
+          ORM::factory("bp_postage_band")
           ->where("name", "=", $new_name)
           ->where("id","!=", $postage->id)
           ->find()
@@ -118,15 +119,12 @@ class Admin_Postage_Bands_Controller extends Controller
       } else {
         $postage->name = $new_name;
       }
-    }
-
-    if ($valid) {
       $postage->flat_rate = $form->edit_postage->flat_rate->value;
       $postage->per_item = $form->edit_postage->per_item->value;
+      $postage->via_download = $form->edit_postage->via_download->checked;
       $postage->save();
 
-      message::success(t("Changed postage band %postage_name",
-          array("postage_name" => html::clean($postage->name))));
+      message::success(t("Changed postage band %postage_name",array("postage_name" => html::clean($postage->name))));
       print json::reply(array("result" => "success"));
     } else {
       print $form;
@@ -134,12 +132,12 @@ class Admin_Postage_Bands_Controller extends Controller
   }
 
   public function edit_postage_band_form($id) {
-    $postage = ORM::factory("postage_band", $id);
+    $postage = ORM::factory("bp_postage_band", $id);
     if (!$postage->loaded()) {
       kohana::show_404();
     }
 
-    $form = postage_band::get_edit_form_admin($postage);
+    $form = bp_postage_band::get_edit_form_admin($postage);
 
     print $form;
   }

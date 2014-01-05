@@ -1,4 +1,4 @@
 <?= $form?>
-<h1>Processing</h1><h3>If you are not automatically redirected to
- paypal within 5 seconds <a href='javascript:s_f();'>Click Here</a>.</h3>
+<h1>Processing</h1><h3><?=t("If you are not automatically redirected to
+ PayPal within 5 seconds")?> <a href='javascript:s_f();'><?=t("Click Here")?></a>.</h3>
 

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2013 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  */
 ?>
 <h1>IPN Messages for <?= $order->title()?></h1>
-<a href="<?=url::site("basket/view_orders");?>">Back to orders</a>
+<a href="<?=url::site("basket_plus/view_orders");?>">Back to orders</a>
 <div class="left" style="width:150px;float:left;font-size:10px;">
 
 <ul>
@@ -37,7 +37,7 @@ var ot,csrf;
 $(window).load(new function(){ot=$("#ipn_text");csrf="?csrf=<?= $csrf ?>"});
 function ld(n){
 ot.html("Loading...");
-ot.load('<?=url::site("basket/show_ipn")?>/'+n+csrf,
+ot.load('<?=url::site("basket_plus/show_ipn")?>/'+n+csrf,
 function (responseText, textStatus, XMLHttpRequest) {
 if (textStatus == "error") {ot.html(responseText);}
 });

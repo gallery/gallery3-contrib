@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2013 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,17 +20,17 @@
 ?>
 <div class="left" style="width:600px;float:left;font-size:12px;display:block;">
 <h2><?= t("Order History") ?></h2>
-  <table id="order_ovw" class="pretty-table">
+  <table id="order_ovw" class="bp-table">
       <tr>
-        <th>Bestelnummer</th>
-        <th>Bestelstatus</th>
-        <th>Gebeurtenis</th>
-        <th>Datum/tijd</th>
+        <th><?= t("Order Number") ?></th>
+        <th><?= t("Order Status") ?></th>
+        <th><?= t("Event") ?></th>
+        <th><?= t("Date/Time") ?></th>
       </tr>     
     <? foreach ($order_logs as $i => $order_log){
       ?>
       <tr>
-        <td><?=basket::getOrderPrefix().$order_log->id?></td>
+        <td><?=basket_plus::getBasketVar(ORDER_PREFIX).$order_log->id?></td>
         <td><?=$order_log->status()?></td>
         <td><?=$order_log->event()?></td>
         <td><?=gallery::date_time($order_log->timestamp)?></td>

@@ -27,30 +27,30 @@ class Admin_Product_Lines_Controller extends Controller
   {
     $view = new Admin_View("admin.html");
     $view->content = new View("admin_product_lines.html");
-    $view->content->products = ORM::factory("product")->order_by("name")->find_all();
+    $view->content->products = ORM::factory("bp_product")->order_by("name")->find_all();
 
     print $view;
   }
 
   public function add_product_form() {
-    print product::get_add_form_admin();
+    print bp_product::get_add_form_admin();
   }
 
 
   public function add_product() {
     access::verify_csrf();
 
-    $form = product::get_add_form_admin();
+    $form = bp_product::get_add_form_admin();
     $valid = $form->validate();
     $name = $form->add_product->inputs["name"]->value;
-    $product = ORM::factory("product")->where("name", "=", $name)->find();
+    $product = ORM::factory("bp_product")->where("name", "=", $name)->find();
     if ($product->loaded()) {
       $form->add_product->inputs["name"]->add_error("in_use", 1);
       $valid = false;
     }
 
     if ($valid) {
-      $product = product::create(
+      $product = bp_product::create(
         $name,
         $form->add_product->cost->value,
         $form->add_product->description->value,
@@ -67,22 +67,22 @@ class Admin_Product_Lines_Controller extends Controller
   }
 
   public function delete_product_form($id) {
-    $product = ORM::factory("product", $id);
+    $product = ORM::factory("bp_product", $id);
     if (!$product->loaded()) {
       kohana::show_404();
     }
-    print product::get_delete_form_admin($product);
+    print bp_product::get_delete_form_admin($product);
   }
 
   public function delete_product($id) {
     access::verify_csrf();
 
-    $product = ORM::factory("product", $id);
+    $product = ORM::factory("bp_product", $id);
     if (!$product->loaded()) {
       kohana::show_404();
     }
 
-    $form = product::get_delete_form_admin($product);
+    $form = bp_product::get_delete_form_admin($product);
     if($form->validate()) {
       $name = $product->name;
       $product->delete();
@@ -99,17 +99,17 @@ class Admin_Product_Lines_Controller extends Controller
   public function edit_product($id) {
     access::verify_csrf();
 
-    $product = ORM::factory("product", $id);
+    $product = ORM::factory("bp_product", $id);
     if (!$product->loaded()) {
       kohana::show_404();
     }
 
-    $form = product::get_edit_form_admin($product);
+    $form = bp_product::get_edit_form_admin($product);
     $valid = $form->validate();
     if ($valid) {
       $new_name = $form->edit_product->inputs["name"]->value;
       if ($new_name != $product->name &&
-          ORM::factory("product")
+          ORM::factory("bp_product")
           ->where("name", "=", $new_name)
           ->where("id","!=", $product->id)
           ->find()
@@ -119,16 +119,12 @@ class Admin_Product_Lines_Controller extends Controller
       } else {
         $product->name = $new_name;
       }
-    }
-
-    if ($valid) {
       $product->cost = $form->edit_product->cost->value;
       $product->description = $form->edit_product->description->value;
-      $product->postage_band_id = $form->edit_product->postage_band->value;
+      $product->bp_postage_band_id = $form->edit_product->postage_band->value;
       $product->save();
 
-      message::success(t("Changed product %product_name",
-          array("product_name" => html::clean($product->name))));
+      message::success(t("Changed product %product_name",array("product_name" => html::clean($product->name))));
       print json::reply(array("result" => "success"));
     } else {
       print $form;
@@ -136,12 +132,12 @@ class Admin_Product_Lines_Controller extends Controller
   }
 
   public function edit_product_form($id) {
-    $product = ORM::factory("product", $id);
+    $product = ORM::factory("bp_product", $id);
     if (!$product->loaded()) {
       kohana::show_404();
     }
 
-    $form = product::get_edit_form_admin($product);
+    $form = bp_product::get_edit_form_admin($product);
 
     print $form;
   }

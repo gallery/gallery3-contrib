@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2013 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@ class basket_item
   public $item;
   public $quantity;
 
-  public $cost = 0;
-  public $cost_per = 0;
+  public $product_cost = 0;
+  public $product_cost_per = 0;
 
   public $items;
 
@@ -33,18 +33,53 @@ class basket_item
     $this->product = $aProduct;
     $this->item = $aItem;
     $this->quantity = $aQuantity;
-    $this->calculate_cost();
+    $this->calculate_product_cost();
   }
 
-  private function calculate_cost(){
-    $prod = ORM::factory("product", $this->product);
-    $this->cost = $prod->cost * $this->quantity;
-    $this->cost_per = $prod->cost;
+  private function calculate_product_cost(){
+    $prod = ORM::factory("bp_product", $this->product);
+    $this->product_cost = $prod->cost * $this->quantity;
+    $this->product_cost_per = $prod->cost;
+
+    // check for product override
+    $product_override = ORM::factory("bp_product_override")->where('item_id', "=", $this->item)->find();
+    if ($product_override->loaded()){
+      $item_product = ORM::factory("bp_item_product")
+            ->where('product_override_id', "=", $product_override->id)
+            ->where('product_id', "=", $this->product)->find();
+      if ($item_product->loaded()){
+				$this->product_cost_per = $item_product->cost;
+				$this->product_cost = $this->product_cost_per * $this->quantity;
+			}
+		}
+    if (!$product_override->loaded()){
+      // no override found so check parents
+      // check parents for product override
+      $item = ORM::factory("item",$this->item);
+
+      $parents = $item->parents();
+      foreach ($parents as $parent){
+        // check for product override
+        $temp_override = ORM::factory("bp_product_override")->where('item_id', "=", $parent->id)->find();
+        if ($temp_override ->loaded()){
+          $product_override = $temp_override;
+          //break;
+        }
+      }
+    }
+		$item_product = ORM::factory("bp_item_product")
+					->where('product_override_id', "=", $product_override->id)
+					->where('product_id', "=", $this->product)->find();
+		if ($item_product->loaded()){
+			$this->product_cost_per = $item_product->cost;
+			$this->product_cost = $this->product_cost_per * $this->quantity;
+		}
   }
-// PUBLIC FUNCTIONS
+
+	// PUBLIC FUNCTIONS
   public function add($quantity){
     $this->quantity += $quantity;
-    $this->calculate_cost();
+    $this->calculate_product_cost();
   }
 
   public function size(){
@@ -57,23 +92,23 @@ class basket_item
   }
 
   public function product_description(){
-     $prod = ORM::factory("product", $this->product);
+     $prod = ORM::factory("bp_product", $this->product);
      return $prod->description;
   }
 /* added for basket sidebar labels */
   public function product_name(){
-     $prod = ORM::factory("product", $this->product);
+     $prod = ORM::factory("bp_product", $this->product);
      return $prod->name;
   }
 
   public function getProduct(){
-     $prod = ORM::factory("product", $this->product);
+     $prod = ORM::factory("bp_product", $this->product);
      return $prod;
    }
 
   public function getCode(){
      $photo = ORM::factory("item", $this->item);
-     $prod = ORM::factory("product", $this->product);
+     $prod = ORM::factory("bp_product", $this->product);
      return $photo->id." - ".$photo->title." - ".$prod->name;
   }
 }
@@ -87,23 +122,26 @@ class Session_Basket_Core {
   public $initials = "";
   public $insertion = "";
 
-  public $name = "";
+  public $fname = "";
   public $house = "";
   public $street = "";
   public $suburb = "";
+  public $postalcode = "";
   public $town = "";
-  public $postcode = "";
+  public $province = "";
+  public $country = "";
   public $email = "";
   public $phone = "";
 // added for user comment
   public $comments = "";
-// added for reference with pickup
-  public $childname = "";
-  public $childgroup = "";
+// added for reference with delivery method 'pickup'
+  public $order_ref1 = "";
+  public $order_ref2 = "";
 // added for agreement to General Terms
   public $agreeterms = "";
-  
-  public $ppenabled = true;
+	public $paypal = "";
+  //
+	public $pickup = "";
 
 //clear the basket
   public function clear(){
@@ -112,21 +150,18 @@ class Session_Basket_Core {
         unset($this->contents[$key]);
       }
     }
-    $this->ppenabled = true;
+	// get default pickup setting
+    $this->pickup = basket_plus::getBasketVar(IS_PICKUP_DEFAULT);
   }
 
-//enable/disble pack&post
-  public function enablepp(){
-    $this->ppenabled = true;
+//enable pickup
+  public function enable_pickup(){
+    $this->pickup = true;
   }
 
-  public function disablepp(){
-    $this->ppenabled = false;
-  }
-
-//get pack&post choice
-  public function ispp(){
-    return $this->ppenabled;
+//disable pickup
+  public function disable_pickup(){
+    $this->pickup = false;
   }
 
   private function create_key($product, $id){
@@ -168,9 +203,9 @@ class Session_Basket_Core {
     $postage_bands = array();
     $postage_quantities = array();
     if (isset($this->contents)){
-      // create array of postage bands
+      // create array of used postage bands and product qty's
       foreach ($this->contents as $product => $basket_item){
-        $postage_band = $basket_item->getProduct()->postage_band;
+        $postage_band = $basket_item->getProduct()->bp_postage_band;
         if (isset($postage_bands[$postage_band->id])){
           $postage_quantities[$postage_band->id] += $basket_item->quantity;
         }
@@ -179,23 +214,23 @@ class Session_Basket_Core {
           $postage_bands[$postage_band->id] = $postage_band;
         }
       }
-
+			//calculate total postage: for each postband used in the ordered products: flatrate + 'per item'-rate * qty
       foreach ($postage_bands as $id => $postage_band){
         $postage_cost += $postage_band->flat_rate + ($postage_band->per_item * $postage_quantities[$id]);
-      }
-    }
+      }		
+		}
     return $postage_cost;
   }
 
-  //calculate total basket cost 
-	public function cost(){
-    $cost = 0;
+  //calculate total basket product cost
+	public function product_cost(){
+    $product_cost = 0;
     if (isset($this->contents)){
       foreach ($this->contents as $product => $basket_item){
-        $cost += $basket_item->cost;
+        $product_cost += $basket_item->product_cost;
       }
     }
-    return $cost;
+    return $product_cost;
   }
 
   //return the basket of the session
@@ -203,10 +238,11 @@ class Session_Basket_Core {
     return Session::instance()->get("basket");
   }
 
-  public static function getOrCreate(){
-    $session = Session::instance();
+  //get the current basket, or create a new basket, if there isn't one
+  public static function getOrCreate(){	
+		$session = Session::instance();
 
-    $basket = $session->get("basket");
+		$basket = self::get();
     if (!$basket){
       $basket = new Session_Basket();
       $session->set("basket", $basket);
