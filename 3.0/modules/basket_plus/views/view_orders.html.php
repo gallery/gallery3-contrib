@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.")
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2013 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,46 +25,38 @@
   <input type="text" id="orderno" name="orderno" value="" class="textbox"  />
   <a href="javascript: so()" class="g-button ui-state-default ui-icon-right">
   <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Search") ?></a>
-  <a style="display:none" id="print_button" href="" class="g-button ui-state-default ui-icon-right">
-  <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("Print") ?></a>
-  <a style="display:none" id="print_button" href="" class="g-button ui-state-default ui-icon-right">
-  <span class="ui-icon ui-icon-arrow-1-e"></span><?= t("No products except..") ?></a>
 </form>
 </div>
 <div class="left" style="width:600px;float:left;font-size:12px;display:block;">
-  <table id="order_ovw" class="pretty-table">
+  <table id="order_ovw" class="bp-table">
       <tr>
-        <th>Bestelnummer</th>
-        <th>Naam</th>
-        <th>Bestelstatus</th>
-        <th>Verzending</th>
-        <th>Bedrag</th>
+        <th><?= t("Order number") ?></th>
+        <th><?= t("Name") ?></th>
+        <th><?= t("Order Status") ?></th>
+        <th><?= t("Payment - Delivery") ?></th>
+        <th><?= t("Total Amount") ?></th>
       </tr>     
-    <? foreach ($orders as $i => $order){
+    <? $total = 0;
+			foreach ($orders as $i => $order){
       ?>
       <tr class="order-status-<?=$order->status?>">
-        <td class="order-status-<?=$order->status?>"><a href="javascript:loadOrder(<?=$order->id?>)"><?=basket::getOrderPrefix().$order->id?></a></td>
+        <td class="order-status-<?=$order->status?>"><a href="javascript:loadOrder(<?=$order->id?>)"><?=basket_plus::getBasketVar(ORDER_PREFIX).$order->id?></a></td>
         <td><?=$order->name?></td>
         <? $id=$order->id;?>
-        <?/*
-        <td class="order-status-<?=$order->status?>"><a href="javascript:loadOrder(<?=$order->id?>)"><?=basket::getOrderPrefix().$order->id?>
-        <td><a href="<?=url::site("basket/view_order_logs(".$id.")")?>"><?=$order->status()?></a></td>
-        <td><?=$order->status()?></td>
-        */?>
-        <td class="order-status-<?=$order->status?>"><a href="javascript:loadOrderLog(<?=$order->id?>)" alt="toon order historie"><?=$order->status()?></a></td>
-        <td class="order-status-<?=$order->status?>"><?=$order->payment_method()?></td>
-        <td style="text-align:right;"><?=basket::formatMoneyForWeb($order->cost)?></td>
+        <td class="order-status-<?=$order->status?>"><a href="javascript:loadOrderLog(<?=$order->id?>)" alt=<?=t("Show order history")?>><?=t($order->status())?></a></td>
+        <td class="order-status-<?=$order->status?>"><?=t($order->payment_method())?>&nbsp;-&nbsp;<?= $order->delivery_method()?></td>
+        <td style="text-align:right;"><?=basket_plus::formatMoneyForWeb($order->cost)?></td>
       </tr>     
     <?
-    $total=$total+$order->cost;
+    $total = $total + $order->cost;
     }
     ?>
       <tr class="order-status-<?=$order->status?>">
         <td></td>
         <td></td>
         <td></td>
-        <td style="text-align:right;"><b>Totaal</b></td>
-        <td style="text-align:right;"><b><?=basket::formatMoneyForWeb($total)?></b></td>
+        <td style="text-align:right;"><b><?= t("Total") ?></b></td>
+        <td style="text-align:right;"><b><?=basket_plus::formatMoneyForWeb($total)?></b></td>
       </tr>     
   </table>
 </div>
@@ -89,12 +81,12 @@ function ci(v){if ((!v.value)||(v.value.length==0)){se(v);return false;}re(v);re
 function loadOrder(n){
   printButton.css({display:'none'});
   orderText.html("Loading...");
-  orderText.load('<?=url::site("basket/show_order")?>/'+n+csrf,
+  orderText.load('<?=url::site("basket_plus/show_order")?>/'+n+csrf,
     function (responseText, textStatus, XMLHttpRequest) {
       if (textStatus == "success") {
         doc.orderno.value=n;
         printButton.css({display:'inline-block'});
-        printButton.attr({target: "_blank",href : '<?=url::site("basket/print_order")?>/'+n+csrf});
+        printButton.attr({target: "_blank",href : '<?=url::site("basket_plus/print_order")?>/'+n+csrf});
       }
       if (textStatus == "error") {
         orderText.html(responseText);
@@ -107,7 +99,7 @@ function loadOrder(n){
 function loadOrderLog(n){
   printButton.css({display:'none'});
   orderText.html("Loading...");
-  orderText.load('<?=url::site("basket/show_order_logs")?>/'+n+csrf,
+  orderText.load('<?=url::site("basket_plus/show_order_logs")?>/'+n+csrf,
     function (responseText, textStatus, XMLHttpRequest) {
       if (textStatus == "success") {
         doc.orderno.value=n;

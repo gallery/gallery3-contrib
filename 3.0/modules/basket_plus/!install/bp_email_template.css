@@ -1,0 +1,45 @@
+#outlook a{padding:0;} 
+body{width:100% !important;} .ReadMsgBody{width:100%;} .ExternalClass{width:100%;}
+body{-webkit-text-size-adjust:none;} 
+body{margin:0; padding:0;}
+img{border:0; height:auto; line-height:100%; outline:none; text-decoration:none;}
+table td{border-collapse:collapse;}
+#backgroundTable{height:100% !important; margin:0; padding:0; width:100% !important;}	
+body, #backgroundTable{background-color:#FAFAFA;}
+#templateContainer{border:1;}
+
+h1, .h1{color:#202020;display:block;font-family:Arial;font-size:24px;font-weight:bold;line-height:100%;margin-top:2%;margin-right:0;margin-bottom:1%;margin-left:0;text-align:left;}
+h3, .h3{color:#606060;display:block;font-family:Arial;font-size:16px;font-weight:bold;line-height:100%;margin-top:2%;margin-right:0;margin-bottom:1%;margin-left:0;text-align:left;}
+
+#social div{text-align:right;}
+#templateHeader{background-color:#FFFFFF;border-bottom:5px solid #505050;}
+
+.headerContent{color:#202020;font-family:Verdana;font-size:34px;font-weight:bold;line-height:100%;padding:10px;text-align:right;vertical-align:middle;}
+.headerContent a:link, .headerContent a:visited, .headerContent a .yshortcuts {color:#336699;font-weight:normal;text-decoration:underline;}
+#headerImage{height:auto;max-width:600px !important;}
+
+/*MAIN BODY*/
+#templateContainer, .bodyContent{background-color:#FDFDFD;}	
+.bodyContent div{color:#505050;font-family:Verdana;font-size:14px;line-height:120%;text-align:justify;}
+.bodyContent div a:link, .bodyContent div a:visited, .bodyContent div a .yshortcuts {color:#336699;font-weight:normal;text-decoration:underline;}	
+.bodyContent img{display:inline;height:auto;width: 60px;}
+.bodyContent p,td{font-family: Verdana, sans-serif;font-size: 11px;color: rgb(80, 84, 80);line-height: 19px;border: none;margin-top: 5px;vertical-align: top;}
+
+/*SIDEBAR*/
+#templateSidebar{background-color:#FDFDFD;}
+.sidebarContent{border-left:1px solid #DDDDDD;}
+.sidebarContent div{color:#505050;font-family:Verdana;font-size:10px;line-height:150%;text-align:left;}
+.sidebarContent div a:link, .sidebarContent div a:visited, .sidebarContent div a .yshortcuts {color:#336699;font-weight:normal;text-decoration:underline;}
+.sidebarContent img{display:inline;height:auto;}
+
+/*FOOTER*/
+#templateFooter{background-color:#FAFAFA;border-top:3px solid #909090;}
+.footerContent div{color:#707070;font-family:Verdana;font-size:11px;line-height:125%;text-align:left;}
+.footerContent div a:link, .footerContent div a:visited, .footerContent div a .yshortcuts {color:#336699;font-weight:normal;text-decoration:underline;}
+.footerContent img{display:inline;}
+
+#social{background-color:#FFFFFF;border:0;}
+#social div{text-align:left;}
+#utility{background-color:#FAFAFA;border-top:0;}
+#utility div{text-align:left;}
+#monkeyRewards img{max-width:170px !important;}

@@ -1,7 +1,7 @@
 <?php defined("SYSPATH") or die("No direct script access.");
 /**
  * Gallery - a web based photo album viewer and editor
- * Copyright (C) 2000-2009 Bharat Mediratta
+ * Copyright (C) 2000-2013 Bharat Mediratta
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,19 +25,19 @@ class Admin_Configure_Controller extends Controller
    */
   public function index()
   {
-    $form = basket::get_configure_form();
+    $form = basket_plus::get_configure_form();
     if (request::method() == "post") {
       access::verify_csrf();
 
       if ($form->validate()) {
 
-        basket::extractForm($form);
+        basket_plus::extractForm($form);
         message::success(t("Basket Module Configured!"));
       }
     }
     else
     {
-      basket::populateForm($form);
+      basket_plus::populateForm($form);
     }
 
     $view = new Admin_View("admin.html");
@@ -53,19 +53,19 @@ class Admin_Configure_Controller extends Controller
    */
   public function templates()
   {
-    $form = basket::get_template_form();
+    $form = basket_plus::get_template_form();
     if (request::method() == "post") {
       access::verify_csrf();
 
       if ($form->validate()) {
 
-        basket::extractTemplateForm($form);
+        basket_plus::extractTemplateForm($form);
         message::success(t("Basket Module Configured!"));
       }
     }
     else
     {
-      basket::populateTemplateForm($form);
+      basket_plus::populateTemplateForm($form);
     }
 
     $view = new Admin_View("admin.html");
@@ -73,6 +73,13 @@ class Admin_Configure_Controller extends Controller
 
     $view->content->form = $form;
 
+    print $view;
+  }
+
+  public function translates()
+  {
+    $view = new Admin_View("admin.html");
+    $view->content = new View("admin_translates.html");
     print $view;
   }
 

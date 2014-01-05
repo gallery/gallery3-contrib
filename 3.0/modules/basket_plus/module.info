@@ -1,3 +1,8 @@
-name = "Shopping Basket"
-description = "Provides a simple shopping basket and checkout with paypal integration"
-version = 5
+name = "Shopping Basket Plus"
+description = "Provides a shopping basket and checkout with order workflow and html e-mails. Based on the module 'basket'. 
+<br />Version 1.0 / 31-12-2013 | By Jeroen ten Kate 
+| <a href=http://codex.gallery2.org/Gallery3:Modules:Basket_Plus>Module page</a> | <a href=http://gallery.menalto.com/node/TODO>Support</a> | <a href=basket_plus>Settings</a>"
+version = 1
+info_url = "http://codex.gallery2.org/Gallery3:Modules:Basket_plus"
+discuss_url = "http://gallery.menalto.com/node/TODO"
+

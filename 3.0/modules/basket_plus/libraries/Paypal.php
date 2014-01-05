@@ -93,25 +93,24 @@
 class Paypal_Core {
 
   var $last_error;                 // holds the last error encountered
-
   var $ipn_response;               // holds the IPN response from paypal
-  public $ipn_data = array();         // array contains the POST values for IPN
-
+  public $ipn_data = array();      // array contains the POST values for IPN
   var $fields = array();           // array holds the fields to submit to paypal
-
 
   public function __construct()
   {
     // initialization constructor.  Called when class is created.
 
-    // sandbox paypal
-
-    //$this->paypal_url =  "https://www.sandbox.paypal.com/cgi-bin/webscr";
-    //$this->secure_url =  "ssl://www.sandbox.paypal.com";
-
+		if (basket_plus::getBasketVar(PAYPAL_TEST_MODE)){
+			// sandbox paypal
+			$this->paypal_url =  "https://www.sandbox.paypal.com/cgi-bin/webscr";
+			$this->secure_url =  "ssl://www.sandbox.paypal.com";
+		}
+		else{
     // normal paypal
-    $this->paypal_url =  "https://www.paypal.com/cgi-bin/webscr";
-    $this->secure_url =  "ssl://www.paypal.com";
+			$this->paypal_url =  "https://www.paypal.com/cgi-bin/webscr";
+			$this->secure_url =  "ssl://www.paypal.com";
+		}
 
     $this->last_error = '';
 
@@ -120,9 +119,8 @@ class Paypal_Core {
     $this->ipn_response = '';
 
     // populate $fields array with a few default values.  See the paypal
-    // documentation for a list of fields and their data types. These defaul
+    // documentation for a list of fields and their data types. These default
     // values can be overwritten by the calling script.
-
 
   }
 
@@ -141,8 +139,8 @@ class Paypal_Core {
     $this->add_field('cmd','_cart');
     $this->add_field('upload','1');
 
-    $this->add_field('currency_code', basket::getCurrency());
-    $this->add_field('business', basket::getPaypalAccount());
+    $this->add_field('currency_code', basket_plus::getCurrency());
+    $this->add_field('business', basket_plus::getBasketVar(PAYPAL_ACCOUNT));
 
     // IPN stuff
     $this->add_field('return', $return_url);
@@ -150,7 +148,8 @@ class Paypal_Core {
     $this->add_field('notify_url', $notify_url);
 
     // postage
-    if ($session_basket->ispp()){
+		$pickup = $session_basket->pickup;
+    if (!$pickup){
       $postage = $session_basket->postage_cost();
       if ($postage > 0) {
         $this->add_field('shipping_1',$postage);
@@ -161,17 +160,17 @@ class Paypal_Core {
     $id = 1;
     foreach ($session_basket->contents as $key => $basket_item){
       $this->add_field("item_name_$id", $basket_item->getCode());
-      $this->add_field("amount_$id", $basket_item->cost_per);
+      $this->add_field("amount_$id", $basket_item->product_cost_per);
       $this->add_field("quantity_$id",$basket_item->quantity);
       $id++;
     }
 
     // shipping address
     $this->add_field("payer_email", $session_basket->email);
-    $this->add_field("address_name", $session_basket->name);
+    $this->add_field("address_name", $session_basket->fname);
     $this->add_field("address_street", $session_basket->house." ".$session_basket->street);
     $this->add_field("address_city", $session_basket->town);
-    $this->add_field("address_zip", $session_basket->postcode);
+    $this->add_field("address_zip", $session_basket->postalcode);
     $this->add_field("contact_phone", $session_basket->phone);
 
     $string = "<form method=\"post\" name=\"paypal_form\" "
@@ -181,17 +180,23 @@ class Paypal_Core {
       $string = $string."<input type=\"hidden\" name=\"$name\" value=\"$value\"/>\n";
     }
 
-    $string = $string."</form><script>function s_f(){document.forms[\"paypal_form\"].submit();}; window.setTimeout(s_f,20);</script>";
+    $string = $string."</form>
+		<script>
+			function s_f(){
+				document.forms[\"paypal_form\"].submit();
+				}; 
+			window.setTimeout(s_f,20);
+		</script>";
     return $string;
   }
 
   function validate_ipn($key) {
 
     // parse the paypal URL
-    $url_parsed=parse_url($this->paypal_url);
+    $url_parsed = parse_url($this->paypal_url);
 
-    // generate the post string from the _POST vars aswell as load the
-    // _POST vars into an arry so we can play with them from the calling
+    // generate the post string from the _POST vars as well as load the
+    // _POST vars into an array so we can play with them from the calling
     // script.
     $post_string = 'cmd=_notify-validate';
     foreach ($_POST as $field=>$value) {
@@ -202,11 +207,10 @@ class Paypal_Core {
     }
 
     // open the connection to paypal
-
     $fp = fsockopen($this->secure_url,443,$err_num,$err_str,30);
     if(!$fp) {
 
-      // could not open the connection.  If loggin is on, the error message
+      // could not open the connection.  If logging is on, the error message
       // will be in the log.
       $this->last_error = "fsockopen error no. $errnum: $errstr";
       $this->log_ipn_results($key,false);
@@ -227,27 +231,22 @@ class Paypal_Core {
       while(!feof($fp)) {
         $this->ipn_response .= fgets($fp, 1024);
       }
-
       fclose($fp); // close connection
-
     }
 
-    if (stristr($this->ipn_response,"VERIFIED")===false)
-    {
+    if (stristr($this->ipn_response,"VERIFIED")===false){
       // Invalid IPN transaction.  Check the log for details.
       $this->last_error = 'IPN Validation Failed. '.$url_parsed['host'].'\\'.$url_parsed['path'];
       $this->log_ipn_results($key,false);
       return false;
     }
     else{
-
       // Valid IPN transaction.
 
       // check recievers e-mail
-      $business = basket::getPaypalAccount();
+      $business = basket_plus::getBasketVar(PAYPAL_ACCOUNT);
 
-      if ($this->ipn_data['receiver_email']!=$business)
-      {
+      if ($this->ipn_data['receiver_email']!=$business){
         $this->last_error = 'receivers e-mail did not match '.$business;
         $this->log_ipn_results($key,false);
         return false;
@@ -256,13 +255,13 @@ class Paypal_Core {
       // if confirmed check message has not been received already
       if ($this->ipn_data['payment_status'] == "Completed"){
 
-        $message = ORM::factory("ipn_message")
+        $message = ORM::factory("bp_ipn_message")
           ->where('key',"=",$key)
           ->where('status',"=",'completed')
           ->where('txn_id',"=",$this->ipn_data['txn_id'])->find();
 
         if ($message->loaded()){
-          $this->last_error = 'Message alread received.';
+          $this->last_error = 'Message already received.';
           $this->log_ipn_results($key,false);
           return false;
         }
@@ -270,9 +269,7 @@ class Paypal_Core {
 
       $this->log_ipn_results($key,true);
       return true;
-
     }
-
   }
 
   function log_ipn_results($key, $success) {
@@ -280,7 +277,7 @@ class Paypal_Core {
     // Timestamp
     $text = '['.date('m/d/Y g:i A').'] - ';
 
-    $message = ORM::factory("ipn_message");
+    $message = ORM::factory("bp_ipn_message");
     $message->date = time();
     $message->key = $key;
     $message->txn_id = $this->ipn_data['txn_id'];
