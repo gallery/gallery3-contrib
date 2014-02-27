@@ -52,7 +52,7 @@
 
 		switch (e.keyCode) {
 			case keyPrevious:
-				url = $('.g-paginator .g-first a').eq(-1).attr("href");
+				url = $('.g-paginator .g-first a').eq(0).attr("href");
 				break;
 
 			case keyNext:
