@@ -1,6 +1,6 @@
 name = "Arrow Navigation"
 description = "Use the left/right arrow keys to go to the previous/next page"
-version = 3
+version = 4
 author_name = ""
 author_url = ""
 info_url = "http://codex.galleryproject.org/Gallery3:Modules:arrow_nav"
