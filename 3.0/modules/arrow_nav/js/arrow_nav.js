@@ -5,6 +5,7 @@
 		direction = 'ltr',
 		keyPrevious = 37,
 		keyNext = 39,
+		keyDelete = 119,
 		url;
 
 	$(document).ready(function() {
@@ -52,12 +53,16 @@
 
 		switch (e.keyCode) {
 			case keyPrevious:
-				url = $('.g-paginator .g-first a').eq(-1).attr("href");
+				url = $('.g-paginator .g-first a').eq(0).attr("href");
 				break;
 
 			case keyNext:
 				url = $('.g-paginator .g-text-right a').eq(0).attr("href");
 				break;
+
+			case keyDelete:
+				$('a.g-dialog-link.g-quick-delete').click();
+				return false;
 		}
 
 		if (url !== undefined) {
