@@ -181,7 +181,7 @@ class Twitter_Controller extends Controller {
       $message = $form->twitter_message->tweet->value;
       $attach_image = $form->twitter_message->attach_image->value;
       if ($attach_image == 1) {
-	      $filename = APPPATH . "../var/resizes/" . $item->relative_path_cache;
+	      $filename = VARPATH . "resizes/" . urldecode($item->relative_path_cache);
 	      $handle = fopen($filename, "rb");
 	      $image = fread($handle, filesize($filename));
 	      fclose($handle);
@@ -196,7 +196,7 @@ class Twitter_Controller extends Controller {
         message::success(t("Tweet sent!"));
         json::reply(array("result" => "success", "location" => $item->url()));
       } else {
-        message::error(t("Unable to send, your Tweet has been saved. Please try again later: %http_code, %response_error", array("http_code" => $connection->http_code, "response_error" => $response->error)));
+        message::error(t("Unable to send, your Tweet has been saved. Please try again later: %http_code, %response_code: %response_error", array("http_code" => $connection->http_code, "response_code" => $response->errors[0]->code, "response_error" => $response->errors[0]->message)));
         log::error("content", "Twitter", t("Unable to send tweet: %http_code",
                 array("http_code" => $connection->http_code)));
         json::reply(array("result" => "success", "location" => $item->url()));
