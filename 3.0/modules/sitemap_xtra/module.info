@@ -1,0 +1,4 @@
+name = "Sitemap_xtra"
+description = "Based on the Module 'Sitemap' - an XML sitemap for Gallery 3, by Niklas Dougherty. Sitemap_xtra extends 'Sitemap's' functionality to include static pages in the XML Sitemap, optionally checked in 'Pages_xtra' module.  Admins MUST have 'Pages_xtra' Module installed to be able to add static pages to the XML Sitemap"
+version = 1
+author_name = "graficat"
