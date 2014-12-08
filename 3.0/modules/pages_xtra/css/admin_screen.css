@@ -1,0 +1,19 @@
+                        /* ~~~~~ CSS changes admin_wind css/screen.css -  ~~~~~~~~~~~~ */
+                        
+ /* Code brought forward from pages/views/admin_pages_new.html.php */
+ 
+/*  CSS code from themes/admin_wind/css/screen.css - changed nput width  50% to 85%
+*   ToDo: Individualize  text input box width  ie. shorter for name & title, wider for description & keywords
+*/
+
+/* #g-description-input, */
+input.textbox,
+input[type="text"],
+textarea {
+  width: 84%;  /* Allow for 150 characters visible in textbox */
+}
+
+textarea {
+  height: 35em;
+  width: 97%;
+} 
