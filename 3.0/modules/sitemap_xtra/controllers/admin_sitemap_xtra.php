@@ -32,7 +32,7 @@ class Admin_Sitemap_Xtra_Controller extends Admin_Controller {
 			module::set_var("sitemap_xtra", "movies", $form->movies->sitemap_movies->value);
 			module::set_var("sitemap_xtra", "movies_freq", $form->movies->sitemap_movies_freq->value);
 			module::set_var("sitemap_xtra", "movies_prio", $form->movies->sitemap_movies_prio->value);
-// New for pages:					
+					
 	         	module::set_var("sitemap_xtra", "pages", $form->pages->sitemap_pages->value);	
 	        	module::set_var("sitemap_xtra", "pages_freq", $form->pages->sitemap_pages_freq->value);	
 	        	module::set_var("sitemap_xtra", "pages_prio", $form->pages->sitemap_pages_prio->value);	
@@ -126,7 +126,7 @@ class Admin_Sitemap_Xtra_Controller extends Admin_Controller {
 		$group->dropdown("sitemap_movies_prio")->label(t("Priority"))
 			->options($prio_range)
 			->selected(module::get_var("sitemap_xtra", "movies_prio", "0.3"));
-// New for Pages:			
+			
 		$group = $form->group("pages")->label(t("Pages"));
 		$group->checkbox("sitemap_pages")->label(t("Include static pages"))
 			->checked(module::get_var("sitemap_xtra", "pages"));
@@ -168,15 +168,15 @@ class Admin_Sitemap_Xtra_Controller extends Admin_Controller {
 		$movies = module::get_var("sitemap_xtra", "movies");
 		$movies_freq = module::get_var("sitemap_xtra", "movies_freq");
 		$movies_prio = module::get_var("sitemap_xtra", "movies_prio");
-// New for Pages:
+
 		$pages = module::get_var("sitemap_xtra", "pages");
 		$pages_freq = module::get_var("sitemap_xtra", "pages_freq");
 		$pages_prio = module::get_var("sitemap_xtra", "pages_prio");
 		
 		$base_url = module::get_var("sitemap_xtra", "base_url");
 		$base_path1 = str_replace("index.php", '', $base_url);
-//  2-10-14  Is above line correct ??  Check ping urls - lines 197-200 		
-//  2-10-14  next line is faulty -> strips "/" from base path in Sitemap url ($robots_txt file). Replaced with following line.			
+ 		
+//  next line appears to strip "/" from base path in Sitemap url ($robots_txt file). Replaced with following line.			
 //      	$base_path = rtrim($base_path1, "/");		
 		$base_path = str_replace("/index.php", '', $base_url);
 
@@ -186,7 +186,7 @@ class Admin_Sitemap_Xtra_Controller extends Admin_Controller {
 		if ($albums) $locations .= $this->_add_to_sitemap("album", $albums_freq, $albums_prio, $base_url);
 		if ($photos) $locations .= $this->_add_to_sitemap("photo", $photos_freq, $photos_prio, $base_url);
 		if ($movies) $locations .= $this->_add_to_sitemap("movie", $movies_freq, $movies_prio, $base_url);
-// New for Pages:		
+		
 		if ($pages) $locations .= $this->_add_pages_to_sitemap("1", $pages_freq, $pages_prio, $base_url);
 		
 
@@ -240,8 +240,6 @@ EOT;
 		as $item) {
 			$relative_url_cache = $item->relative_url();		
 			        $url = "$base_url" . $relative_url_cache;
-// 5-10-14 - if needed can change above line to following line:			
-//			$url = "$base_url" . "gallery3/$relative_url_cache";
 
 			if ($relative_url_cache)
 				$url .= Kohana::config('core.url_suffix');
@@ -261,7 +259,7 @@ EOT;
 		return $locations;
      }
     
-// 8-10-14 New for pages:
+
 	private function _add_pages_to_sitemap($type, $freq, $prio, $base_url) {
 		$locations = '';		  
 		 foreach (ORM::factory("px_static_page")
