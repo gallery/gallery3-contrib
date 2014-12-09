@@ -1,0 +1,5 @@
+name = "Pages_xtra"
+description = "A search engine optimized version of the module 'Pages' by rWatcher. Allows Gallery admins to create static pages, add metadescription & metatags, and optionally include pages in an XML Sitemap. Admins MUST manually add a line of code to their theme's page.html.php file; Go to README_IMPORTANT.TXT for instructions.  (Note: An XML sitemap which includes both Static and Gallery pages requires Sitemap_xtra Module to be installed, instead of Sitemap module.)"
+version = 1
+author_name = "graficat"
+
