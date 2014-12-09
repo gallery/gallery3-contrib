@@ -18,7 +18,7 @@ class sitemap_xtra_installer {
 		module::clear_var("sitemap_xtra", "movies");
 		module::clear_var("sitemap_xtra", "movies_freq");
 		module::clear_var("sitemap_xtra", "movies_prio");
-// New for Pages: 
+ 
 		module::clear_var("sitemap_xtra", "pages");
 		module::clear_var("sitemap_xtra", "pages_freq");
 		module::clear_var("sitemap_xtra", "pages_prio");
