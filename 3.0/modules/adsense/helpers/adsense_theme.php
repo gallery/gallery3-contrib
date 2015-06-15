@@ -29,7 +29,7 @@ class adsense_theme {
 		$google_code = '
 		<script type="text/javascript">' . $code . '</script>
 		<script type="text/javascript"
-			src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+			src="//pagead2.googlesyndication.com/pagead/show_ads.js">
 		</script>';
 
 		return $google_code;
@@ -45,7 +45,7 @@ class adsense_theme {
 		$google_code = '
 		<script type="text/javascript">' . $code . '</script>
 		<script type="text/javascript"
-			src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+			src="//pagead2.googlesyndication.com/pagead/show_ads.js">
 		</script>';
 
 		return $google_code;
