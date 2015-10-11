@@ -58,9 +58,10 @@ class Browse_Controller extends Controller {
       item::make_album_cover($target);
     }
 
-    print json_encode(
-      array("result" => "success",
-            "location" => $target->url()));
+    $msg = t("Made <b>%title</b> album's cover for <b>%album</b>", 
+	array("title" => html::purify($source->title), "album" => html::purify($target->title)));
+    message::success($msg);
+    json::reply(array("result" => "success"));
   }
  
   public function show_sub_tree($source_id, $target_id) {
