@@ -1,0 +1,3 @@
+name = "Album Cover Browser"
+description = "Browse for an album to set it's cover thumbnail."
+version = 1.0
