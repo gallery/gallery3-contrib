@@ -5,10 +5,11 @@ if(module::get_var("adsense","location") == "sidebar") {
 	if (!$code) {
 	  return;
 	}
+	$proto = request::protocol();
 	$google_code = '
 	<script type="text/javascript">' . $code . '</script>
 	<script type="text/javascript"
-		src="//pagead2.googlesyndication.com/pagead/show_ads.js">
+		src="' . $proto . '://pagead2.googlesyndication.com/pagead/show_ads.js">
 	</script>';
 	
 	echo $google_code;
