@@ -2,7 +2,7 @@
 <?
   // Base URL for flag pictures.
   $flag_type = module::get_var("language_flags", "flag_shape");
-  $base_url = url::base(false, "http") . "modules/language_flags/images/" . $flag_type . "/";
+  $base_url = url::base(false, request::protocol()) . "modules/language_flags/images/" . $flag_type . "/";
 
   // Loop through each installed locale and display a flag.
   while ($one_locale = current($installed_locales)) {
